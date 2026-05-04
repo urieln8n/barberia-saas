@@ -37,6 +37,7 @@ export default async function PublicBookingPage({ params }: Props) {
     <main className="min-h-screen bg-neutral-950 px-6 py-10">
       <div className="mx-auto max-w-2xl">
         <BookingForm
+          barbershopId={barbershop.id}
           barbershopName={barbershop.name}
           barbershopCity={barbershop.city ?? ""}
           services={services ?? []}

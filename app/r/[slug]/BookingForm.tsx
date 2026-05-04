@@ -3,25 +3,29 @@
 import { useState } from "react";
 import { Clock, ChevronLeft, CalendarDays, CheckCircle, User, Scissors } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
+import { createPublicBooking } from "./actions";
 
 type Service = { id: string; name: string; price: number; duration_minutes: number };
 type Barber  = { id: string; name: string };
 
 type Props = {
+  barbershopId: string;
   barbershopName: string;
   barbershopCity: string;
   services: Service[];
   barbers: Barber[];
 };
 
-export function BookingForm({ barbershopName, barbershopCity, services, barbers }: Props) {
-  const [step,    setStep]    = useState(1);
-  const [service, setService] = useState<Service | null>(null);
-  const [barber,  setBarber]  = useState<Barber | null>(null);
-  const [date,    setDate]    = useState("");
-  const [time,    setTime]    = useState("");
-  const [name,    setName]    = useState("");
-  const [phone,   setPhone]   = useState("");
+export function BookingForm({ barbershopId, barbershopName, barbershopCity, services, barbers }: Props) {
+  const [step,      setStep]      = useState(1);
+  const [service,   setService]   = useState<Service | null>(null);
+  const [barber,    setBarber]    = useState<Barber | null>(null);
+  const [date,      setDate]      = useState("");
+  const [time,      setTime]      = useState("");
+  const [name,      setName]      = useState("");
+  const [phone,     setPhone]     = useState("");
+  const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const slots = generateTimeSlots();
   const today = new Date().toISOString().split("T")[0];
@@ -29,6 +33,7 @@ export function BookingForm({ barbershopName, barbershopCity, services, barbers 
   function reset() {
     setStep(1); setService(null); setBarber(null);
     setDate(""); setTime(""); setName(""); setPhone("");
+    setFormError(null);
   }
 
   return (
@@ -184,12 +189,34 @@ export function BookingForm({ barbershopName, barbershopCity, services, barbers 
             </p>
           </div>
 
+          {formError && (
+            <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">{formError}</p>
+          )}
           <button
-            onClick={() => { if (name.trim() && phone.trim()) setStep(5); }}
-            disabled={!name.trim() || !phone.trim()}
+            onClick={async () => {
+              if (!name.trim() || !phone.trim() || !service || !date || !time) return;
+              setSaving(true);
+              setFormError(null);
+              const result = await createPublicBooking({
+                barbershopId,
+                serviceId: service.id,
+                barberId: barber?.id ?? null,
+                date,
+                time,
+                name,
+                phone,
+              });
+              setSaving(false);
+              if (result.error) {
+                setFormError(result.error);
+              } else {
+                setStep(5);
+              }
+            }}
+            disabled={!name.trim() || !phone.trim() || saving}
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-ink py-4 font-bold text-white transition-opacity hover:opacity-80 disabled:opacity-40"
           >
-            <CalendarDays size={18} /> Confirmar reserva
+            <CalendarDays size={18} /> {saving ? "Enviando..." : "Confirmar reserva"}
           </button>
         </section>
       )}

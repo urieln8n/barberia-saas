@@ -134,11 +134,14 @@ export function AgendaClient({ appointments, clients, services, barbers, barbers
                   </div>
                   <div>
                     <p className="font-bold">{a.clients?.name ?? "—"}</p>
-                    <p className="flex items-center gap-3 text-sm text-neutral-500">
+                    <p className="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
                       <span className="flex items-center gap-1"><Scissors size={12} /> {a.services?.name}</span>
                       {a.barbers && <span className="flex items-center gap-1"><User size={12} /> {a.barbers.name}</span>}
                       <span className="flex items-center gap-1"><Clock size={12} /> {a.start_time.slice(0, 5)}–{a.end_time.slice(0, 5)}</span>
                     </p>
+                    {a.clients?.phone && (
+                      <p className="mt-1 text-xs text-neutral-400">{a.clients.phone}</p>
+                    )}
                     {a.notes && <p className="mt-1 text-xs text-neutral-400">{a.notes}</p>}
                   </div>
                 </div>
