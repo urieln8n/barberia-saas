@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import Sidebar from "@/components/dashboard/Sidebar";
 
-export const metadata: Metadata = {
-  title: "BarberíaOS — Reservas y marketing para barberías",
-  description: "Sistema de reservas con QR, dashboard y marketing local para barberías."
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="es">
-      <body>{children}</body>
-    </html>
+    <div className="min-h-screen bg-neutral-50">
+      <Sidebar />
+
+      <main className="min-h-screen px-4 pb-10 pt-24 md:ml-64 md:px-8 md:py-8">
+        {children}
+      </main>
+    </div>
   );
 }
