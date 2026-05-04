@@ -1,17 +1,20 @@
-import Sidebar from "@/components/dashboard/Sidebar";
+import type { Metadata } from "next";
+// @ts-ignore
+import "./globals.css";
 
-export default function DashboardLayout({
+export const metadata: Metadata = {
+  title: "BarberíaOS",
+  description: "SaaS de reservas, QR y marketing para barberías",
+};
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Sidebar />
-
-      <main className="min-h-screen px-4 pb-10 pt-24 md:ml-64 md:px-8 md:py-8">
-        {children}
-      </main>
-    </div>
+    <html lang="es">
+      <body>{children}</body>
+    </html>
   );
 }
