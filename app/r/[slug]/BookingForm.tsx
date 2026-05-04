@@ -200,7 +200,7 @@ export function BookingForm({
               <div
                 key={s}
                 className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                  s <= step ? "bg-ink" : "bg-neutral-100"
+                  s <= step ? "bg-red-600" : "bg-neutral-100"
                 }`}
               />
             ))}
@@ -391,7 +391,7 @@ export function BookingForm({
                         isUnavailable
                           ? "border-red-100 bg-red-50 text-red-300 line-through"
                           : time === slot.time
-                          ? "border-ink bg-ink text-white"
+                          ? "border-red-600 bg-red-600 text-white"
                           : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
                       }`}
                     >
@@ -417,7 +417,7 @@ export function BookingForm({
 
       {step === 4 && (
         <section className="mt-6">
-          <h2 className="text-xl font-black">¿A nombre de quién?</h2>
+          <h2 className="text-xl font-black">Último paso: tus datos</h2>
           <p className="mt-1 text-sm text-neutral-500">
             Solo necesitamos tu nombre y teléfono. Sin contraseñas.
           </p>
@@ -493,7 +493,7 @@ export function BookingForm({
             type="button"
             onClick={handleConfirmBooking}
             disabled={!name.trim() || !phone.trim() || saving}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-ink py-4 text-base font-black text-white shadow-lg shadow-neutral-900/10 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 py-4 text-base font-black text-white shadow-lg shadow-red-600/20 transition-all hover:bg-red-700 active:scale-[0.98] disabled:opacity-40"
           >
             <CalendarDays size={18} />
             {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}

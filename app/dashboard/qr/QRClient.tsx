@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check, ExternalLink } from "lucide-react";
+import { Copy, Check, ExternalLink, Printer, Instagram, MessageCircle, Globe } from "lucide-react";
 
 type Props = { name: string; slug: string };
 
@@ -9,86 +9,104 @@ export function QRClient({ name, slug }: Props) {
   const [copied, setCopied] = useState(false);
 
   const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? (typeof window !== "undefined" ? window.location.origin : "")}/r/${slug}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(publicUrl)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(publicUrl)}`;
 
   async function handleCopy() {
     await navigator.clipboard.writeText(publicUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 2500);
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
+      {/* Cabecera */}
       <div>
         <p className="text-sm text-neutral-500">Panel de control</p>
         <h1 className="text-4xl font-black">QR de reservas</h1>
+        <p className="mt-1 text-neutral-500">
+          Comparte este QR en Instagram, WhatsApp, Google o en tu local. Tus clientes reservan en 30 segundos.
+        </p>
       </div>
 
-      <div className="mt-8 flex flex-col items-center gap-8 lg:flex-row lg:items-start">
-        {/* QR */}
-        <div className="flex w-full flex-col items-center gap-4 rounded-3xl border border-neutral-200 bg-white p-4 sm:p-8 lg:w-auto">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+
+        {/* QR card */}
+        <div className="flex w-full flex-col items-center gap-5 rounded-3xl border border-neutral-200 bg-white p-6 lg:w-72 lg:shrink-0">
           <img
             src={qrUrl}
-            alt={`QR de reservas para ${name}`}
-            className="w-full max-w-[250px] rounded-2xl"
+            alt={`QR de reservas de ${name}`}
+            className="w-full max-w-[260px] rounded-2xl"
           />
-          <p className="text-sm font-semibold text-neutral-600">{name}</p>
+          <div className="text-center">
+            <p className="font-black text-neutral-950">{name}</p>
+            <p className="mt-0.5 text-xs text-neutral-400">Escanear para reservar</p>
+          </div>
           <a
             href={qrUrl}
-            download={`qr-${slug}.png`}
-            className="w-full rounded-2xl border border-neutral-200 px-5 py-2.5 text-center text-sm font-semibold hover:bg-neutral-50 sm:w-auto"
+            download={`qr-reservas-${slug}.png`}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-bold text-white hover:opacity-80"
           >
-            Descargar QR
+            <Printer size={15} /> Descargar QR
           </a>
         </div>
 
         {/* Info */}
-        <div className="flex w-full min-w-0 flex-1 flex-col gap-6">
+        <div className="flex min-w-0 flex-1 flex-col gap-5">
+
+          {/* Enlace */}
           <div className="rounded-3xl border border-neutral-200 bg-white p-6">
-            <h2 className="text-lg font-bold">Tu enlace de reservas</h2>
+            <h2 className="font-black text-neutral-950">Tu enlace de reservas</h2>
             <p className="mt-1 text-sm text-neutral-500">
-              Comparte este enlace en Instagram, Google, WhatsApp o imprímelo en tu barbería.
+              Copia y pega este link donde quieras. Tus clientes reservan sin crear cuenta.
             </p>
             <div className="mt-4 flex min-w-0 items-center gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3">
-              <span className="min-w-0 flex-1 break-all text-sm text-neutral-700">{publicUrl}</span>
+              <span className="min-w-0 flex-1 break-all font-mono text-sm text-neutral-700">{publicUrl}</span>
               <button
                 onClick={handleCopy}
-                className="shrink-0 rounded-xl p-1.5 hover:bg-neutral-200"
+                className="shrink-0 rounded-xl border border-neutral-200 p-2 hover:bg-neutral-100"
                 title="Copiar enlace"
               >
-                {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                {copied ? <Check size={15} className="text-green-600" /> : <Copy size={15} />}
               </button>
               <a
                 href={publicUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-xl p-1.5 hover:bg-neutral-200"
-                title="Abrir en nueva pestaña"
+                className="shrink-0 rounded-xl border border-neutral-200 p-2 hover:bg-neutral-100"
+                title="Abrir página pública"
               >
-                <ExternalLink size={16} />
+                <ExternalLink size={15} />
               </a>
             </div>
+            {copied && (
+              <p className="mt-2 text-xs font-semibold text-green-600">✓ Enlace copiado al portapapeles</p>
+            )}
           </div>
 
+          {/* Cómo usarlo */}
           <div className="rounded-3xl border border-neutral-200 bg-white p-6">
-            <h2 className="text-lg font-bold">Cómo usarlo</h2>
-            <ul className="mt-3 flex flex-col gap-2 text-sm text-neutral-600">
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">1</span>
-                Descarga el QR e imprímelo en tu local.
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">2</span>
-                Añade el enlace en la bio de Instagram y en Google Maps.
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-bold text-white">3</span>
-                Envíalo por WhatsApp a tus clientes para reservas directas.
-              </li>
-            </ul>
+            <h2 className="font-black text-neutral-950">Dónde compartirlo</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                { icon: Instagram,      color: "bg-pink-50 text-pink-600",    title: "Instagram",    text: "Añade el link en tu bio y comparte el QR en historias." },
+                { icon: MessageCircle,  color: "bg-green-50 text-green-700",  title: "WhatsApp",     text: "Envía el link a grupos y clientes para reservas directas." },
+                { icon: Globe,          color: "bg-blue-50 text-blue-700",    title: "Google Maps",  text: "Añade el link de reservas en tu ficha de Google Business." },
+                { icon: Printer,        color: "bg-neutral-100 text-neutral-600", title: "Tu local", text: "Imprime el QR y colócalo en el mostrador o la vitrina." },
+              ].map(({ icon: Icon, color, title, text }) => (
+                <div key={title} className="flex gap-3 rounded-2xl border border-neutral-100 bg-neutral-50 p-4">
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${color}`}>
+                    <Icon size={16} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-neutral-900">{title}</p>
+                    <p className="mt-0.5 text-xs leading-5 text-neutral-500">{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

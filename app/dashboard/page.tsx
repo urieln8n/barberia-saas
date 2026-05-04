@@ -244,158 +244,127 @@ export default async function DashboardPage() {
   const publicBookingUrl = `/r/${barbershop?.slug ?? "demo-barber"}`;
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl bg-neutral-950 p-6 text-white shadow-sm">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-red-400">
-              Panel principal
-            </p>
+    <div className="space-y-6">
 
+      {/* ── Hero ── */}
+      <section className="overflow-hidden rounded-3xl bg-neutral-950 text-white shadow-lg">
+        <div className="h-1 w-full bg-gradient-to-r from-red-600 via-red-500 to-red-700" />
+        <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-red-400">Panel principal</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
-
-            <p className="mt-2 max-w-2xl text-sm text-white/60">
-              Gestiona reservas, clientes, servicios, barberos y pagos desde un
-              solo lugar.
+            <p className="mt-2 text-sm text-white/50">
+              Gestiona citas, clientes, servicios, barberos y pagos — todo desde aquí.
             </p>
           </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl bg-white px-5 py-3 text-center text-sm font-bold text-neutral-950 hover:bg-neutral-100"
+              className="rounded-2xl bg-red-600 px-5 py-3 text-center text-sm font-bold text-white hover:bg-red-700"
             >
-              Ver agenda
+              Ver agenda hoy
             </Link>
-
+            <Link
+              href="/dashboard/qr"
+              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white hover:bg-white/10"
+            >
+              Ver QR de reservas
+            </Link>
             <Link
               href={publicBookingUrl}
-              className="rounded-2xl border border-white/20 px-5 py-3 text-center text-sm font-bold text-white hover:bg-white/10"
+              target="_blank"
+              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white hover:bg-white/10"
             >
-              Ver página pública
+              Página pública ↗
             </Link>
           </div>
         </div>
       </section>
 
+      {/* ── Métricas ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Citas de hoy</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {todayAppointments.length}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas hoy</p>
+          <p className="mt-3 text-4xl font-black text-neutral-950">{todayAppointments.length}</p>
           <p className="mt-1 text-xs text-neutral-400">{today}</p>
         </div>
-
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Ingresos de hoy</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {todayRevenue.toFixed(2)} €
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos hoy</p>
+          <p className="mt-3 text-4xl font-black text-neutral-950">{todayRevenue.toFixed(0)} €</p>
           <p className="mt-1 text-xs text-neutral-400">Pagos registrados</p>
         </div>
-
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Clientes</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {totalClients}
-          </p>
-          <p className="mt-1 text-xs text-neutral-400">Total guardados</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Clientes</p>
+          <p className="mt-3 text-4xl font-black text-neutral-950">{totalClients}</p>
+          <p className="mt-1 text-xs text-neutral-400">Total en CRM</p>
         </div>
-
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Servicios activos</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {totalServices}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicios</p>
+          <p className="mt-3 text-4xl font-black text-neutral-950">{totalServices}</p>
           <p className="mt-1 text-xs text-neutral-400">Disponibles online</p>
         </div>
       </section>
 
+      {/* ── Próximas citas + Link ── */}
       <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-xl font-black text-neutral-950">
-                Próximas citas
-              </h2>
-              <p className="mt-1 text-sm text-neutral-500">
-                Reservas reales desde hoy en adelante.
-              </p>
-            </div>
 
+        {/* Próximas citas */}
+        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-black text-neutral-950">Próximas citas</h2>
+              <p className="text-sm text-neutral-500">Reservas activas desde hoy.</p>
+            </div>
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl border border-neutral-200 px-4 py-2 text-center text-sm font-semibold hover:bg-neutral-50"
+              className="rounded-2xl border border-neutral-200 px-4 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
             >
-              Abrir agenda
+              Abrir agenda →
             </Link>
           </div>
 
           {upcomingAppointments.length === 0 ? (
-            <div className="mt-6 rounded-3xl border border-dashed border-neutral-300 bg-neutral-50 p-8 text-center">
-              <p className="font-semibold text-neutral-700">
-                No hay próximas citas
-              </p>
+            <div className="mt-6 rounded-3xl border border-dashed border-neutral-200 bg-neutral-50 p-8 text-center">
+              <p className="font-semibold text-neutral-600">Sin citas próximas</p>
               <p className="mt-1 text-sm text-neutral-400">
-                Cuando un cliente reserve desde el QR o link público, aparecerá
-                aquí.
+                Comparte tu QR o link para recibir reservas.
               </p>
+              <Link
+                href="/dashboard/qr"
+                className="mt-4 inline-flex items-center gap-1 rounded-full bg-neutral-950 px-4 py-2 text-xs font-bold text-white hover:opacity-80"
+              >
+                Ver QR de reservas
+              </Link>
             </div>
           ) : (
-            <div className="mt-6 flex flex-col gap-3">
+            <div className="mt-5 flex flex-col gap-3">
               {upcomingAppointments.map((appointment) => (
-                <article
-                  key={appointment.id}
-                  className="rounded-3xl border border-neutral-200 bg-white p-4"
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex gap-4">
-                      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-neutral-100 text-center">
-                        <span className="text-[10px] font-semibold uppercase text-neutral-400">
-                          {formatDate(appointment.appointment_date).split(" ")[1]}
+                <article key={appointment.id} className="rounded-2xl border border-neutral-100 bg-neutral-50 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex gap-3">
+                      <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-white text-center shadow-sm">
+                        <span className="text-[9px] font-bold uppercase text-neutral-400">
+                          {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
                         </span>
-                        <span className="text-lg font-black text-neutral-950">
-                          {new Date(
-                            appointment.appointment_date + "T00:00:00"
-                          ).getDate()}
+                        <span className="text-base font-black text-neutral-950">
+                          {new Date(appointment.appointment_date + "T00:00:00").getDate()}
                         </span>
                       </div>
-
                       <div className="min-w-0">
-                        <p className="font-bold text-neutral-950">
+                        <p className="font-bold text-neutral-950 leading-tight">
                           {appointment.clients?.name ?? "Cliente sin nombre"}
                         </p>
-
-                        {appointment.clients?.phone && (
-                          <p className="text-xs text-neutral-400">
-                            {appointment.clients.phone}
-                          </p>
-                        )}
-
-                        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-neutral-500">
-                          <span>
-                            {appointment.services?.name ??
-                              "Servicio no definido"}
-                          </span>
-                          <span>·</span>
-                          <span>
-                            {appointment.barbers?.name ??
-                              "Sin barbero asignado"}
-                          </span>
-                          <span>·</span>
-                          <span>{formatTime(appointment.start_time)}</span>
+                        <p className="mt-0.5 text-xs text-neutral-500">
+                          {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}
                         </p>
+                        {appointment.clients?.phone && (
+                          <p className="mt-0.5 text-xs text-neutral-400">{appointment.clients.phone}</p>
+                        )}
                       </div>
                     </div>
-
-                    <span
-                      className={`w-fit rounded-full border px-3 py-1 text-xs font-semibold ${statusClass(
-                        appointment.status
-                      )}`}
-                    >
+                    <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(appointment.status)}`}>
                       {statusLabel(appointment.status)}
                     </span>
                   </div>
@@ -405,35 +374,54 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-black text-neutral-950">
-            Link de reservas
-          </h2>
-
-          <p className="mt-1 text-sm text-neutral-500">
-            Comparte este enlace con clientes o úsalo en tu QR.
-          </p>
-
-          <div className="mt-5 rounded-2xl bg-neutral-50 p-4">
-            <p className="break-all text-sm font-semibold text-neutral-800">
-              {publicBookingUrl}
+        {/* Link de reservas */}
+        <div className="flex flex-col gap-4">
+          <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Tu link de reservas</p>
+            <p className="mt-2 text-sm text-neutral-600">
+              Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
             </p>
+            <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3">
+              <p className="break-all font-mono text-xs font-semibold text-neutral-700">
+                {typeof window !== "undefined" ? window.location.origin : "https://barberiaos.com"}{publicBookingUrl}
+              </p>
+            </div>
+            <div className="mt-4 grid gap-2">
+              <Link
+                href="/dashboard/qr"
+                className="flex items-center justify-center gap-2 rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-bold text-white hover:opacity-80"
+              >
+                Ver y descargar QR
+              </Link>
+              <Link
+                href={publicBookingUrl}
+                target="_blank"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-neutral-200 px-5 py-3 text-sm font-bold text-neutral-700 hover:bg-neutral-50"
+              >
+                Abrir página pública ↗
+              </Link>
+            </div>
           </div>
 
-          <div className="mt-5 grid gap-3">
-            <Link
-              href="/dashboard/qr"
-              className="rounded-2xl bg-neutral-950 px-5 py-3 text-center text-sm font-bold text-white hover:opacity-80"
-            >
-              Ver QR de reservas
-            </Link>
-
-            <Link
-              href={publicBookingUrl}
-              className="rounded-2xl border border-neutral-200 px-5 py-3 text-center text-sm font-bold hover:bg-neutral-50"
-            >
-              Abrir página pública
-            </Link>
+          {/* Acciones rápidas */}
+          <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Acciones rápidas</p>
+            <div className="mt-3 grid gap-2">
+              {[
+                { href: "/dashboard/clientes",  label: "Clientes"  },
+                { href: "/dashboard/servicios", label: "Servicios" },
+                { href: "/dashboard/pagos",     label: "Pagos"     },
+                { href: "/dashboard/barberos",  label: "Barberos"  },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
+                >
+                  {label} <span className="text-neutral-300">→</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
