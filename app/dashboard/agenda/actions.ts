@@ -1,83 +1,295 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { createClient } from "@/src/lib/supabase/server";
+import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 
-async function getBarbershopId() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
-  return { supabase, barbershopId };
+type BarberRow = {
+  id: string;
+  name: string | null;
+};
+
+type ServiceRow = {
+  id: string;
+  duration_minutes: number | null;
+};
+
+type ClientRow = {
+  id: string;
+};
+
+function addMinutesToTime(time: string, minutesToAdd: number) {
+  const [hoursRaw, minutesRaw] = time.split(":");
+  const hours = Number(hoursRaw);
+  const minutes = Number(minutesRaw);
+
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  date.setMinutes(date.getMinutes() + minutesToAdd);
+
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+
+  return `${hh}:${mm}:00`;
 }
 
-function addMinutes(time: string, minutes: number): string {
-  const [h, m] = time.split(":").map(Number);
-  const total = h * 60 + m + minutes;
-  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+async function getLoggedBarbershopId() {
+  const authClient = await createServerClient();
+
+  const {
+    data: { user },
+    error,
+  } = await authClient.auth.getUser();
+
+  if (error || !user) {
+    return {
+      error: "Debes iniciar sesión.",
+      barbershopId: null as string | null,
+    };
+  }
+
+  const barbershopId = await getCurrentBarbershopId(authClient, user.id);
+
+  if (!barbershopId) {
+    return {
+      error: "No se encontró la barbería actual.",
+      barbershopId: null as string | null,
+    };
+  }
+
+  return {
+    error: null,
+    barbershopId,
+  };
 }
 
-export async function createAppointment(formData: FormData) {
-  const { supabase, barbershopId } = await getBarbershopId();
-  if (!barbershopId) return { error: "Sin barbería" };
+async function findAvailableBarber({
+  supabase,
+  barbershopId,
+  appointmentDate,
+  startTime,
+}: {
+  supabase: ReturnType<typeof createServiceRoleClient>;
+  barbershopId: string;
+  appointmentDate: string;
+  startTime: string;
+}) {
+  const { data: barbersData, error } = await supabase
+    .from("barbers")
+    .select("id, name")
+    .eq("barbershop_id", barbershopId)
+    .eq("active", true)
+    .order("name", { ascending: true });
 
-  const client_id   = formData.get("client_id") as string;
-  const service_id  = formData.get("service_id") as string;
-  const barber_id   = formData.get("barber_id") as string || null;
-  const date        = formData.get("appointment_date") as string;
-  const start_time  = formData.get("start_time") as string;
-  const notes       = (formData.get("notes") as string)?.trim() || null;
+  if (error) {
+    return {
+      error: error.message,
+      barberId: null as string | null,
+    };
+  }
 
-  // Obtener duración del servicio para calcular end_time
-  const { data: service } = await supabase
-    .from("services")
-    .select("duration_minutes")
-    .eq("id", service_id)
-    .single();
+  const barbers = (barbersData ?? []) as BarberRow[];
 
-  if (!service) return { error: "Servicio no encontrado" };
-
-  const end_time = addMinutes(start_time, service.duration_minutes);
-
-  // Validación anti-doble reserva
-  if (barber_id) {
-    const { data: conflicts } = await supabase
+  for (const barber of barbers) {
+    const { data: conflict, error: conflictError } = await supabase
       .from("appointments")
       .select("id")
       .eq("barbershop_id", barbershopId)
-      .eq("barber_id", barber_id)
-      .eq("appointment_date", date)
-      .not("status", "in", '("cancelled","no_show")')
-      .lt("start_time", end_time)
-      .gt("end_time", start_time)
-      .limit(1);
+      .eq("barber_id", barber.id)
+      .eq("appointment_date", appointmentDate)
+      .eq("start_time", startTime)
+      .in("status", ["pending", "scheduled", "confirmed"])
+      .maybeSingle();
 
-    if (conflicts && conflicts.length > 0) {
-      return { error: "El barbero ya tiene una cita en ese horario" };
+    if (conflictError) {
+      return {
+        error: conflictError.message,
+        barberId: null as string | null,
+      };
+    }
+
+    if (!conflict) {
+      return {
+        error: null,
+        barberId: barber.id,
+      };
     }
   }
 
-  await supabase.from("appointments").insert({
-    barbershop_id:    barbershopId,
-    client_id,
-    service_id,
-    barber_id,
-    appointment_date: date,
-    start_time,
-    end_time,
-    status:           "scheduled",
-    source:           "dashboard",
-    notes,
+  return {
+    error: "Esta hora ya no está disponible. Elige otra.",
+    barberId: null as string | null,
+  };
+}
+
+export async function createAppointment(formData: FormData) {
+  const { error: authError, barbershopId } = await getLoggedBarbershopId();
+
+  if (authError || !barbershopId) {
+    return { error: authError ?? "No se pudo validar la barbería." };
+  }
+
+  const supabase = createServiceRoleClient();
+
+  const clientId = String(formData.get("client_id") ?? "").trim();
+  const serviceId = String(formData.get("service_id") ?? "").trim();
+  const barberIdRaw = String(formData.get("barber_id") ?? "").trim();
+  const appointmentDate = String(formData.get("appointment_date") ?? "").trim();
+  const startTime = String(formData.get("start_time") ?? "").trim();
+  const notes = String(formData.get("notes") ?? "").trim();
+
+  if (!clientId || !serviceId || !appointmentDate || !startTime) {
+    return { error: "Completa cliente, servicio, fecha y hora." };
+  }
+
+  const { data: serviceData, error: serviceError } = await supabase
+    .from("services")
+    .select("id, duration_minutes")
+    .eq("id", serviceId)
+    .eq("barbershop_id", barbershopId)
+    .eq("active", true)
+    .maybeSingle();
+
+  const service = serviceData as ServiceRow | null;
+
+  if (serviceError || !service) {
+    return { error: "Servicio no disponible." };
+  }
+
+  const { data: clientData, error: clientError } = await supabase
+    .from("clients")
+    .select("id")
+    .eq("id", clientId)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  const client = clientData as ClientRow | null;
+
+  if (clientError || !client) {
+    return { error: "Cliente no válido para esta barbería." };
+  }
+
+  let barberId: string | null = barberIdRaw || null;
+
+  if (barberId) {
+    const { data: barberData, error: barberError } = await supabase
+      .from("barbers")
+      .select("id")
+      .eq("id", barberId)
+      .eq("barbershop_id", barbershopId)
+      .eq("active", true)
+      .maybeSingle();
+
+    const barber = barberData as BarberRow | null;
+
+    if (barberError || !barber) {
+      return { error: "Barbero no disponible." };
+    }
+
+    const { data: conflict, error: conflictError } = await supabase
+      .from("appointments")
+      .select("id")
+      .eq("barbershop_id", barbershopId)
+      .eq("barber_id", barberId)
+      .eq("appointment_date", appointmentDate)
+      .eq("start_time", startTime)
+      .in("status", ["pending", "scheduled", "confirmed"])
+      .maybeSingle();
+
+    if (conflictError) {
+      return { error: conflictError.message };
+    }
+
+    if (conflict) {
+      return { error: "Esta hora ya no está disponible. Elige otra." };
+    }
+  } else {
+    const available = await findAvailableBarber({
+      supabase,
+      barbershopId,
+      appointmentDate,
+      startTime,
+    });
+
+    if (available.error || !available.barberId) {
+      return {
+        error: available.error ?? "No hay barberos disponibles para esa hora.",
+      };
+    }
+
+    barberId = available.barberId;
+  }
+
+  const endTime = addMinutesToTime(startTime, service.duration_minutes ?? 30);
+
+  const { error: insertError } = await supabase.from("appointments").insert({
+    barbershop_id: barbershopId,
+    client_id: clientId,
+    service_id: serviceId,
+    barber_id: barberId,
+    appointment_date: appointmentDate,
+    start_time: startTime,
+    end_time: endTime,
+    status: "scheduled",
+    notes: notes || null,
   });
 
+  if (insertError) {
+    const message = insertError.message.toLowerCase();
+
+    if (
+      message.includes("unique_active_barber_appointment_slot") ||
+      message.includes("duplicate")
+    ) {
+      return { error: "Esta hora ya no está disponible. Elige otra." };
+    }
+
+    return { error: insertError.message };
+  }
+
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/agenda");
-  return { error: null };
+  revalidatePath("/dashboard/clientes");
+
+  return { success: true };
 }
 
 export async function updateAppointmentStatus(id: string, status: string) {
-  const { supabase } = await getBarbershopId();
-  await supabase.from("appointments").update({ status }).eq("id", id);
+  const allowedStatus = [
+    "pending",
+    "scheduled",
+    "confirmed",
+    "completed",
+    "cancelled",
+    "no_show",
+  ];
+
+  if (!allowedStatus.includes(status)) {
+    return { error: "Estado no válido." };
+  }
+
+  const { error: authError, barbershopId } = await getLoggedBarbershopId();
+
+  if (authError || !barbershopId) {
+    return { error: authError ?? "No se pudo validar la barbería." };
+  }
+
+  const supabase = createServiceRoleClient();
+
+  const { error } = await supabase
+    .from("appointments")
+    .update({ status })
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/clientes");
+
+  return { success: true };
 }
