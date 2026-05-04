@@ -135,7 +135,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}
@@ -143,7 +143,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-2xl bg-ink py-3 font-semibold text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+              className="mt-2 w-full rounded-2xl bg-red-700 py-3 font-semibold text-white transition-colors hover:bg-red-800 disabled:opacity-50"
             >
               {loading
                 ? "Cargando..."

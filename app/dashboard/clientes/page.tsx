@@ -80,6 +80,18 @@ function statusLabel(status?: string | null) {
   return status ? labels[status] ?? status : "Sin estado";
 }
 
+function statusBadgeClass(status?: string | null): string {
+  const classes: Record<string, string> = {
+    pending:   "bg-amber-50 text-amber-700 border-amber-100",
+    scheduled: "bg-amber-50 text-amber-700 border-amber-100",
+    confirmed: "bg-blue-50  text-blue-700  border-blue-100",
+    completed: "bg-green-50 text-green-700 border-green-100",
+    cancelled: "bg-red-50   text-red-700   border-red-100",
+    no_show:   "bg-red-50   text-red-700   border-red-100",
+  };
+  return classes[status ?? ""] ?? "bg-neutral-100 text-neutral-600 border-neutral-200";
+}
+
 async function getDataClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -436,7 +448,7 @@ export default async function ClientesPage() {
 
             <button
               type="submit"
-              className="w-full rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-bold text-white hover:opacity-80"
+              className="w-full rounded-2xl bg-red-700 px-5 py-3 text-sm font-bold text-white hover:bg-red-800"
             >
               Guardar cliente
             </button>
@@ -516,8 +528,10 @@ export default async function ClientesPage() {
                           {client.totalAppointments}
                         </td>
 
-                        <td className="px-4 py-4 text-neutral-600">
-                          {statusLabel(client.lastStatus)}
+                        <td className="px-4 py-4">
+                          <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(client.lastStatus)}`}>
+                            {statusLabel(client.lastStatus)}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -568,11 +582,11 @@ export default async function ClientesPage() {
                         {client.lastBarberName || "Sin barbero"}
                       </p>
 
-                      <p>
-                        <span className="font-semibold text-neutral-950">
-                          Estado:
-                        </span>{" "}
-                        {statusLabel(client.lastStatus)}
+                      <p className="flex items-center gap-2">
+                        <span className="font-semibold text-neutral-950">Estado:</span>
+                        <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(client.lastStatus)}`}>
+                          {statusLabel(client.lastStatus)}
+                        </span>
                       </p>
                     </div>
 

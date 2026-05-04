@@ -33,7 +33,7 @@ const METHOD_LABEL: Record<string, string> = {
 const METHOD_COLOR: Record<string, string> = {
   cash:     "bg-green-50 text-green-700",
   card:     "bg-blue-50 text-blue-700",
-  bizum:    "bg-purple-50 text-purple-700",
+  bizum:    "bg-amber-50 text-amber-700",
   transfer: "bg-orange-50 text-orange-700",
   other:    "bg-neutral-100 text-neutral-600",
 };
@@ -77,7 +77,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
         </div>
         <button
           onClick={() => { setFormError(""); setShowModal(true); }}
-          className="flex items-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white hover:opacity-80"
+          className="flex items-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-semibold text-white hover:bg-red-800"
         >
           <Plus size={16} /> Registrar pago
         </button>
@@ -141,7 +141,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                     <button
                       onClick={() => handleDelete(p.id)}
                       disabled={deleting === p.id}
-                      className="rounded-xl p-2 text-neutral-400 hover:bg-red-50 hover:text-red-500 disabled:opacity-40"
+                      className="rounded-xl p-2 text-neutral-400 hover:bg-red-50 hover:text-red-700 disabled:opacity-40"
                     >
                       <Trash2 size={15} />
                     </button>
@@ -209,14 +209,14 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
               </div>
 
               {formError && (
-                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</p>
+                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{formError}</p>
               )}
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 rounded-2xl border border-neutral-200 py-3 text-sm font-semibold hover:bg-neutral-50">
                   Cancelar
                 </button>
-                <button type="submit" disabled={saving} className="flex-1 rounded-2xl bg-ink py-3 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-50">
+                <button type="submit" disabled={saving} className="flex-1 rounded-2xl bg-red-700 py-3 text-sm font-semibold text-white hover:bg-red-800 disabled:opacity-50">
                   {saving ? "Guardando..." : "Registrar"}
                 </button>
               </div>

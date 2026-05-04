@@ -62,7 +62,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white hover:opacity-80"
+          className="flex items-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-semibold text-white hover:bg-red-800"
         >
           <Plus size={16} /> Añadir barbero
         </button>
@@ -74,7 +74,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
           <p className="mt-1 text-sm text-neutral-400">Añade tu equipo para asignarles citas.</p>
           <button
             onClick={openCreate}
-            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white hover:opacity-80"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-semibold text-white hover:bg-red-800"
           >
             <Plus size={16} /> Añadir primer barbero
           </button>
@@ -100,7 +100,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                   <button
                     onClick={() => handleDelete(b.id)}
                     disabled={deleting === b.id}
-                    className="rounded-xl p-2 text-neutral-400 hover:bg-red-50 hover:text-red-500 disabled:opacity-40"
+                    className="rounded-xl p-2 text-neutral-400 hover:bg-red-50 hover:text-red-700 disabled:opacity-40"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -120,7 +120,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                 className="mt-4 flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-ink disabled:opacity-40"
               >
                 {b.active
-                  ? <><ToggleRight size={18} className="text-green-500" /> Activo</>
+                  ? <><ToggleRight size={18} className="text-green-600" /> Activo</>
                   : <><ToggleLeft size={18} /> Inactivo</>
                 }
               </button>
@@ -180,7 +180,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 rounded-2xl bg-ink py-3 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-50"
+                  className="flex-1 rounded-2xl bg-red-700 py-3 text-sm font-semibold text-white hover:bg-red-800 disabled:opacity-50"
                 >
                   {saving ? "Guardando..." : editing ? "Guardar cambios" : "Añadir barbero"}
                 </button>

@@ -22,12 +22,12 @@ export function PricingCard({
       className={[
         "relative flex h-full flex-col rounded-3xl border p-7 transition",
         highlighted
-          ? "border-red-600 bg-neutral-950 text-white shadow-2xl shadow-red-600/20 lg:-translate-y-4"
+          ? "border-red-700 bg-neutral-950 text-white shadow-2xl shadow-red-700/20 lg:-translate-y-4"
           : "border-neutral-200 bg-white text-neutral-950 shadow-sm hover:-translate-y-1 hover:shadow-xl",
       ].join(" ")}
     >
       {highlighted && (
-        <div className="absolute right-5 top-5 inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 text-xs font-black text-white">
+        <div className="absolute right-5 top-5 inline-flex items-center gap-2 rounded-full bg-red-700 px-3 py-1 text-xs font-black text-white">
           <Sparkles size={14} />
           Más recomendado
         </div>
@@ -91,7 +91,7 @@ export function PricingCard({
         className={[
           "mt-8 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-black transition",
           highlighted
-            ? "bg-red-600 text-white hover:bg-red-700"
+            ? "bg-red-700 text-white hover:bg-red-800"
             : "bg-neutral-950 text-white hover:bg-neutral-800",
         ].join(" ")}
       >

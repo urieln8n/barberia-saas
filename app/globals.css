@@ -4,6 +4,15 @@
 
 :root {
   color-scheme: light;
+
+  /* BarberíaOS palette tokens */
+  --ink:     #050505;
+  --carbon:  #111111;
+  --wine:    #B91C1C;
+  --pole:    #1D4ED8;
+  --gold:    #D4AF37;
+  --success: #16A34A;
+  --amber:   #D97706;
 }
 
 body {

@@ -9,8 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#111111",
-        gold: "#D6A84F"
+        ink:  "#050505",
+        gold: "#D4AF37",
+        wine: "#B91C1C",
+        pole: "#1D4ED8",
       }
     }
   },

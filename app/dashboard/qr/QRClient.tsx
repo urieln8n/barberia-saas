@@ -44,7 +44,7 @@ export function QRClient({ name, slug }: Props) {
           <a
             href={qrUrl}
             download={`qr-reservas-${slug}.png`}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-bold text-white hover:opacity-80"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-bold text-white hover:bg-red-800"
           >
             <Printer size={15} /> Descargar QR
           </a>

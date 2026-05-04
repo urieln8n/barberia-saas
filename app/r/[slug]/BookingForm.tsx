@@ -200,7 +200,7 @@ export function BookingForm({
               <div
                 key={s}
                 className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                  s <= step ? "bg-red-600" : "bg-neutral-100"
+                  s <= step ? "bg-red-700" : "bg-neutral-100"
                 }`}
               />
             ))}
@@ -361,7 +361,7 @@ export function BookingForm({
               </div>
 
               {formError && (
-                <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
+                <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
                   {formError}
                 </p>
               )}
@@ -391,7 +391,7 @@ export function BookingForm({
                         isUnavailable
                           ? "border-red-100 bg-red-50 text-red-300 line-through"
                           : time === slot.time
-                          ? "border-red-600 bg-red-600 text-white"
+                          ? "border-red-700 bg-red-700 text-white"
                           : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
                       }`}
                     >
@@ -484,7 +484,7 @@ export function BookingForm({
           </div>
 
           {formError && (
-            <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
+            <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
               {formError}
             </p>
           )}
@@ -493,7 +493,7 @@ export function BookingForm({
             type="button"
             onClick={handleConfirmBooking}
             disabled={!name.trim() || !phone.trim() || saving}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 py-4 text-base font-black text-white shadow-lg shadow-red-600/20 transition-all hover:bg-red-700 active:scale-[0.98] disabled:opacity-40"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40"
           >
             <CalendarDays size={18} />
             {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}

@@ -61,12 +61,12 @@ function statusLabel(status: string) {
 
 function statusClass(status: string) {
   const classes: Record<string, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-100",
-    scheduled: "bg-blue-50 text-blue-700 border-blue-100",
-    confirmed: "bg-green-50 text-green-700 border-green-100",
-    completed: "bg-neutral-100 text-neutral-700 border-neutral-200",
-    cancelled: "bg-red-50 text-red-700 border-red-100",
-    no_show: "bg-orange-50 text-orange-700 border-orange-100",
+    pending:   "bg-amber-50 text-amber-700 border-amber-100",
+    scheduled: "bg-amber-50 text-amber-700 border-amber-100",
+    confirmed: "bg-blue-50  text-blue-700  border-blue-100",
+    completed: "bg-green-50 text-green-700 border-green-100",
+    cancelled: "bg-red-50   text-red-700   border-red-100",
+    no_show:   "bg-red-50   text-red-700   border-red-100",
   };
 
   return classes[status] ?? "bg-neutral-100 text-neutral-700 border-neutral-200";

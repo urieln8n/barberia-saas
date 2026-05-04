@@ -110,7 +110,7 @@ export default function Sidebar() {
       {/* ── Mobile header ── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4 md:hidden">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Scissors size={18} className="text-red-600" />
+          <Scissors size={18} className="text-red-700" />
           <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
         </Link>
         <button
@@ -138,7 +138,7 @@ export default function Sidebar() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2"
               >
-                <Scissors size={16} className="text-red-600" />
+                <Scissors size={16} className="text-red-700" />
                 <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
               </Link>
               <button
@@ -177,7 +177,7 @@ export default function Sidebar() {
       <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-neutral-200 bg-white p-5 md:flex">
         <Link href="/dashboard" className="mb-8 flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-950">
-            <Scissors size={15} className="text-red-500" />
+            <Scissors size={15} className="text-red-700" />
           </div>
           <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
         </Link>

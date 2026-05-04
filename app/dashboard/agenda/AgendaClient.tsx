@@ -49,12 +49,12 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  pending: "bg-amber-50 text-amber-700 border border-amber-100",
-  scheduled: "bg-neutral-100 text-neutral-600 border border-neutral-200",
-  confirmed: "bg-blue-50 text-blue-700 border border-blue-100",
+  pending:   "bg-amber-50 text-amber-700 border border-amber-100",
+  scheduled: "bg-amber-50 text-amber-700 border border-amber-100",
+  confirmed: "bg-blue-50  text-blue-700  border border-blue-100",
   completed: "bg-green-50 text-green-700 border border-green-100",
-  cancelled: "bg-red-50 text-red-500 border border-red-100",
-  no_show: "bg-orange-50 text-orange-600 border border-orange-100",
+  cancelled: "bg-red-50   text-red-700   border border-red-100",
+  no_show:   "bg-red-50   text-red-700   border border-red-100",
 };
 
 const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
@@ -285,7 +285,7 @@ export function AgendaClient({
               setFormError("");
               setShowModal(true);
             }}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-semibold text-white hover:opacity-80"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-semibold text-white hover:bg-red-800"
           >
             <Plus size={16} /> Nueva cita
           </button>
@@ -535,7 +535,7 @@ export function AgendaClient({
               </div>
 
               {formError && (
-                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                   {formError}
                 </p>
               )}
