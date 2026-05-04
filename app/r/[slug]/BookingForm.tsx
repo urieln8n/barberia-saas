@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Clock,
   ChevronLeft,
@@ -12,7 +12,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
-import { createPublicBooking } from "./actions";
+import { createPublicBooking, getUnavailableSlots } from "./actions";
 
 type Service = {
   id: string;
@@ -51,6 +51,8 @@ export function BookingForm({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState(false);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
 
   const slots = generateTimeSlots();
@@ -63,6 +65,52 @@ export function BookingForm({
     return `${year}-${month}-${day}`;
   })();
 
+  const selectedBarberId =
+    barber?.id && barber.id !== "any" ? barber.id : null;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAvailability() {
+      if (!date || !barber) {
+        setUnavailableSlots([]);
+        return;
+      }
+
+      setCheckingAvailability(true);
+      setFormError(null);
+
+      const result = await getUnavailableSlots({
+        barbershopId,
+        barberId: selectedBarberId,
+        date,
+      });
+
+      if (cancelled) return;
+
+      setCheckingAvailability(false);
+
+      if (result.error) {
+        setUnavailableSlots([]);
+        setFormError(result.error);
+        return;
+      }
+
+      setUnavailableSlots(result.unavailableSlots);
+
+      if (time && result.unavailableSlots.includes(time)) {
+        setTime("");
+        setFormError("La hora seleccionada ya no está disponible.");
+      }
+    }
+
+    loadAvailability();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [barbershopId, date, selectedBarberId, barber, time]);
+
   function reset() {
     setStep(1);
     setService(null);
@@ -72,6 +120,8 @@ export function BookingForm({
     setName("");
     setPhone("");
     setSaving(false);
+    setCheckingAvailability(false);
+    setUnavailableSlots([]);
     setFormError(null);
   }
 
@@ -81,11 +131,13 @@ export function BookingForm({
       return;
     }
 
+    if (unavailableSlots.includes(time)) {
+      setFormError("Esta hora ya no está disponible. Elige otra.");
+      return;
+    }
+
     setSaving(true);
     setFormError(null);
-
-    const selectedBarberId =
-      barber?.id && barber.id !== "any" ? barber.id : null;
 
     const result = await createPublicBooking({
       barbershopId,
@@ -109,7 +161,6 @@ export function BookingForm({
 
   return (
     <div className="rounded-[2rem] bg-white p-6 text-ink shadow-2xl md:p-10">
-      {/* Cabecera */}
       <div className="flex items-center gap-4">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
           <Scissors size={22} />
@@ -125,7 +176,6 @@ export function BookingForm({
         </div>
       </div>
 
-      {/* Garantías */}
       {step === 1 && (
         <div className="mt-5 flex flex-wrap gap-3">
           <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
@@ -143,7 +193,6 @@ export function BookingForm({
         </div>
       )}
 
-      {/* Barra de progreso */}
       {step < 5 && (
         <div className="mt-5">
           <div className="flex gap-1.5">
@@ -166,7 +215,6 @@ export function BookingForm({
         </div>
       )}
 
-      {/* Volver */}
       {step > 1 && step < 5 && (
         <button
           type="button"
@@ -180,7 +228,6 @@ export function BookingForm({
         </button>
       )}
 
-      {/* Paso 1: Servicio */}
       {step === 1 && (
         <section className="mt-6">
           <h2 className="text-xl font-black">¿Qué servicio quieres?</h2>
@@ -220,7 +267,6 @@ export function BookingForm({
         </section>
       )}
 
-      {/* Paso 2: Barbero */}
       {step === 2 && (
         <section className="mt-6">
           <h2 className="text-xl font-black">¿Con quién quieres ir?</h2>
@@ -233,6 +279,9 @@ export function BookingForm({
               type="button"
               onClick={() => {
                 setBarber({ id: "any", name: "Cualquiera" });
+                setDate("");
+                setTime("");
+                setUnavailableSlots([]);
                 setFormError(null);
                 setStep(3);
               }}
@@ -256,6 +305,9 @@ export function BookingForm({
                 type="button"
                 onClick={() => {
                   setBarber(b);
+                  setDate("");
+                  setTime("");
+                  setUnavailableSlots([]);
                   setFormError(null);
                   setStep(3);
                 }}
@@ -272,7 +324,6 @@ export function BookingForm({
         </section>
       )}
 
-      {/* Paso 3: Fecha y hora */}
       {step === 3 && (
         <section className="mt-6">
           <h2 className="text-xl font-black">¿Cuándo vienes?</h2>
@@ -291,6 +342,7 @@ export function BookingForm({
             onChange={(e) => {
               setDate(e.target.value);
               setTime("");
+              setUnavailableSlots([]);
               setFormError(null);
             }}
             className="mt-1 w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
@@ -298,36 +350,71 @@ export function BookingForm({
 
           {date && (
             <>
-              <p className="mt-5 text-sm font-semibold text-neutral-700">
-                Hora
-              </p>
+              <div className="mt-5 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-neutral-700">Hora</p>
+
+                {checkingAvailability && (
+                  <p className="text-xs font-medium text-neutral-400">
+                    Comprobando disponibilidad...
+                  </p>
+                )}
+              </div>
+
+              {formError && (
+                <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
+                  {formError}
+                </p>
+              )}
 
               <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-5">
-                {slots.map((slot) => (
-                  <button
-                    key={slot.time}
-                    type="button"
-                    onClick={() => {
-                      setTime(slot.time);
-                      setFormError(null);
-                      setStep(4);
-                    }}
-                    className={`rounded-xl border py-3 text-sm font-semibold transition-all active:scale-[0.96] ${
-                      time === slot.time
-                        ? "border-ink bg-ink text-white"
-                        : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
-                    }`}
-                  >
-                    {slot.time}
-                  </button>
-                ))}
+                {slots.map((slot) => {
+                  const isUnavailable = unavailableSlots.includes(slot.time);
+
+                  return (
+                    <button
+                      key={slot.time}
+                      type="button"
+                      disabled={checkingAvailability || isUnavailable}
+                      onClick={() => {
+                        if (isUnavailable) {
+                          setFormError(
+                            "Esta hora ya no está disponible. Elige otra."
+                          );
+                          return;
+                        }
+
+                        setTime(slot.time);
+                        setFormError(null);
+                        setStep(4);
+                      }}
+                      className={`rounded-xl border py-3 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
+                        isUnavailable
+                          ? "border-red-100 bg-red-50 text-red-300 line-through"
+                          : time === slot.time
+                          ? "border-ink bg-ink text-white"
+                          : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
+                      }`}
+                    >
+                      <span>{slot.time}</span>
+                      {isUnavailable && (
+                        <span className="block text-[10px] no-underline">
+                          Ocupado
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+
+              <p className="mt-3 text-xs text-neutral-400">
+                Las horas marcadas como ocupadas ya tienen todos los barberos
+                disponibles reservados o el barbero elegido está ocupado.
+              </p>
             </>
           )}
         </section>
       )}
 
-      {/* Paso 4: Datos */}
       {step === 4 && (
         <section className="mt-6">
           <h2 className="text-xl font-black">¿A nombre de quién?</h2>
@@ -372,7 +459,6 @@ export function BookingForm({
             </div>
           </div>
 
-          {/* Resumen */}
           <div className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm">
             <p className="mb-2 font-bold text-neutral-700">
               Resumen de tu reserva
@@ -419,7 +505,6 @@ export function BookingForm({
         </section>
       )}
 
-      {/* Paso 5: Confirmación */}
       {step === 5 && (
         <section className="mt-8">
           <div className="text-center">
