@@ -17,12 +17,23 @@ type Appointment = {
   barbers: { name: string } | null;
 };
 
+type UpcomingAppointment = {
+  id: string;
+  appointment_date: string;
+  start_time: string;
+  status: string;
+  clients: { name: string; phone: string | null } | null;
+  services: { name: string; price: number } | null;
+  barbers: { name: string } | null;
+};
+
 type Client  = { id: string; name: string; phone: string | null };
 type Service = { id: string; name: string; price: number; duration_minutes: number };
 type Barber  = { id: string; name: string };
 
 type Props = {
   appointments: Appointment[];
+  upcomingAppointments: UpcomingAppointment[];
   clients: Client[];
   services: Service[];
   barbers: Barber[];
@@ -31,6 +42,7 @@ type Props = {
 };
 
 const STATUS_LABEL: Record<string, string> = {
+  pending:    "Por confirmar",
   scheduled:  "Pendiente",
   confirmed:  "Confirmada",
   completed:  "Completada",
@@ -39,6 +51,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
+  pending:    "bg-amber-50 text-amber-700",
   scheduled:  "bg-neutral-100 text-neutral-600",
   confirmed:  "bg-blue-50 text-blue-700",
   completed:  "bg-green-50 text-green-700",
@@ -47,6 +60,10 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
+  pending: [
+    { label: "Confirmar",    status: "confirmed" },
+    { label: "Cancelar",     status: "cancelled" },
+  ],
   scheduled: [
     { label: "Confirmar",    status: "confirmed" },
     { label: "Cancelar",     status: "cancelled" },
@@ -61,7 +78,7 @@ const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
   no_show:    [],
 };
 
-export function AgendaClient({ appointments, clients, services, barbers, barbershopId, fecha }: Props) {
+export function AgendaClient({ appointments, upcomingAppointments, clients, services, barbers, barbershopId, fecha }: Props) {
   const router = useRouter();
   const [showModal, setShowModal]     = useState(false);
   const [saving,    setSaving]        = useState(false);
@@ -118,10 +135,47 @@ export function AgendaClient({ appointments, clients, services, barbers, barbers
 
       {/* Lista de citas */}
       {appointments.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-neutral-300 bg-white p-12 text-center">
-          <CalendarDays className="mx-auto mb-3 text-neutral-300" size={36} />
-          <p className="font-semibold text-neutral-600">Sin citas para este día</p>
-          <p className="mt-1 text-sm text-neutral-400">Crea una nueva cita o selecciona otra fecha.</p>
+        <div className="mt-8">
+          <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-12 text-center">
+            <CalendarDays className="mx-auto mb-3 text-neutral-300" size={36} />
+            <p className="font-semibold text-neutral-600">Sin citas para este día</p>
+            <p className="mt-1 text-sm text-neutral-400">Crea una nueva cita o selecciona otra fecha.</p>
+          </div>
+
+          {upcomingAppointments.length > 0 && (
+            <div className="mt-8">
+              <p className="mb-3 text-sm font-semibold text-neutral-500">Próximas citas</p>
+              <div className="flex flex-col gap-3">
+                {upcomingAppointments.map((a) => (
+                  <div key={a.id} className="rounded-3xl border border-neutral-200 bg-white p-5">
+                    <div className="flex gap-4">
+                      <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl bg-neutral-100 text-center leading-tight">
+                        <span className="text-[10px] font-semibold uppercase text-neutral-400">
+                          {new Date(a.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
+                        </span>
+                        <span className="text-sm font-black">
+                          {new Date(a.appointment_date + "T00:00:00").getDate()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-bold">{a.clients?.name ?? "—"}</p>
+                        <p className="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
+                          <span className="flex items-center gap-1"><Scissors size={12} /> {a.services?.name}</span>
+                          {a.barbers && <span className="flex items-center gap-1"><User size={12} /> {a.barbers.name}</span>}
+                          <span className="flex items-center gap-1"><Clock size={12} /> {a.start_time.slice(0, 5)}</span>
+                        </p>
+                      </div>
+                      <div className="ml-auto">
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLOR[a.status] ?? "bg-neutral-100 text-neutral-600"}`}>
+                          {STATUS_LABEL[a.status] ?? a.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="mt-8 flex flex-col gap-3">

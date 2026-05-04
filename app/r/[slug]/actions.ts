@@ -105,7 +105,7 @@ export async function createPublicBooking(input: BookingInput): Promise<{ error:
       appointment_date: input.date,
       start_time: input.time,
       end_time: endTime,
-      status: "scheduled",
+      status: "pending",
       source: "public_booking",
     });
 

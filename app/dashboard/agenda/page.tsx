@@ -21,6 +21,7 @@ export default async function AgendaPage({ searchParams }: Props) {
     { data: clients },
     { data: services },
     { data: barbers },
+    { data: upcoming },
   ] = await Promise.all([
     supabase
       .from("appointments")
@@ -45,11 +46,22 @@ export default async function AgendaPage({ searchParams }: Props) {
       .eq("barbershop_id", barbershopId)
       .eq("active", true)
       .order("name", { ascending: true }),
+    // Próximas citas a partir de mañana (para mostrar cuando hoy está vacío)
+    supabase
+      .from("appointments")
+      .select("id, appointment_date, start_time, status, clients(name, phone), services(name, price), barbers(name)")
+      .eq("barbershop_id", barbershopId)
+      .gt("appointment_date", fecha)
+      .not("status", "in", '("cancelled","no_show")')
+      .order("appointment_date", { ascending: true })
+      .order("start_time", { ascending: true })
+      .limit(5),
   ]);
 
   return (
     <AgendaClient
       appointments={(appointments as any) ?? []}
+      upcomingAppointments={(upcoming as any) ?? []}
       clients={clients ?? []}
       services={services ?? []}
       barbers={barbers ?? []}
