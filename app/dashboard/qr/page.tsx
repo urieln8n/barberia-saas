@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { BarberosClient } from "./BarberosClient";
+import { QRClient } from "./QRClient";
 
-export default async function BarberosPage() {
+export default async function QRPage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -12,16 +12,13 @@ export default async function BarberosPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  const { data: barbers } = await supabase
-    .from("barbers")
-    .select("id, name, phone, active")
-    .eq("barbershop_id", barbershopId)
-    .order("created_at", { ascending: true });
+  const { data: barbershop } = await supabase
+    .from("barbershops")
+    .select("name, slug")
+    .eq("id", barbershopId)
+    .single();
 
-  return (
-    <BarberosClient
-      barbers={barbers ?? []}
-      barbershopId={barbershopId}
-    />
-  );
+  if (!barbershop) redirect("/onboarding");
+
+  return <QRClient name={barbershop.name} slug={barbershop.slug} />;
 }

@@ -1,25 +1,60 @@
-const appointments = [
-  { time: "10:00", client: "Carlos", service: "Corte + barba", status: "Confirmada" },
-  { time: "11:00", client: "Miguel", service: "Corte", status: "Pendiente" },
-  { time: "12:30", client: "Pedro", service: "Barba", status: "Confirmada" }
-];
+import { redirect } from "next/navigation";
+import { createClient } from "@/src/lib/supabase/server";
+import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { AgendaClient } from "./AgendaClient";
 
-export default function AgendaPage() {
+type Props = { searchParams: { fecha?: string } };
+
+export default async function AgendaPage({ searchParams }: Props) {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+  if (!barbershopId) redirect("/onboarding");
+
+  const fecha = searchParams.fecha ?? new Date().toISOString().split("T")[0];
+
+  const [
+    { data: appointments },
+    { data: clients },
+    { data: services },
+    { data: barbers },
+  ] = await Promise.all([
+    supabase
+      .from("appointments")
+      .select("id, start_time, end_time, status, notes, clients(name, phone), services(name, price), barbers(name)")
+      .eq("barbershop_id", barbershopId)
+      .eq("appointment_date", fecha)
+      .order("start_time", { ascending: true }),
+    supabase
+      .from("clients")
+      .select("id, name, phone")
+      .eq("barbershop_id", barbershopId)
+      .order("name", { ascending: true }),
+    supabase
+      .from("services")
+      .select("id, name, price, duration_minutes")
+      .eq("barbershop_id", barbershopId)
+      .eq("active", true)
+      .order("name", { ascending: true }),
+    supabase
+      .from("barbers")
+      .select("id, name")
+      .eq("barbershop_id", barbershopId)
+      .eq("active", true)
+      .order("name", { ascending: true }),
+  ]);
+
   return (
-    <div>
-      <h1 className="text-4xl font-black">Agenda</h1>
-      <p className="mt-2 text-neutral-500">Vista diaria de citas. Conectar con Supabase en T029-T032.</p>
-      <div className="mt-8 rounded-3xl border border-neutral-200 bg-white p-6">
-        {appointments.map((item) => (
-          <div key={item.time} className="mb-3 flex items-center justify-between rounded-2xl bg-neutral-50 p-4">
-            <div>
-              <p className="font-bold">{item.time} · {item.client}</p>
-              <p className="text-sm text-neutral-500">{item.service}</p>
-            </div>
-            <span className="rounded-full bg-white px-4 py-2 text-sm">{item.status}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <AgendaClient
+      appointments={(appointments as any) ?? []}
+      clients={clients ?? []}
+      services={services ?? []}
+      barbers={barbers ?? []}
+      barbershopId={barbershopId}
+      fecha={fecha}
+    />
   );
 }

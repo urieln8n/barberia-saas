@@ -1,0 +1,260 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Plus, X, CalendarDays, Clock, User, Scissors } from "lucide-react";
+import { generateTimeSlots } from "@/src/lib/booking/time-slots";
+import { createAppointment, updateAppointmentStatus } from "./actions";
+
+type Appointment = {
+  id: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  notes: string | null;
+  clients: { name: string; phone: string | null } | null;
+  services: { name: string; price: number } | null;
+  barbers: { name: string } | null;
+};
+
+type Client  = { id: string; name: string; phone: string | null };
+type Service = { id: string; name: string; price: number; duration_minutes: number };
+type Barber  = { id: string; name: string };
+
+type Props = {
+  appointments: Appointment[];
+  clients: Client[];
+  services: Service[];
+  barbers: Barber[];
+  barbershopId: string;
+  fecha: string;
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  scheduled:  "Pendiente",
+  confirmed:  "Confirmada",
+  completed:  "Completada",
+  cancelled:  "Cancelada",
+  no_show:    "No apareció",
+};
+
+const STATUS_COLOR: Record<string, string> = {
+  scheduled:  "bg-neutral-100 text-neutral-600",
+  confirmed:  "bg-blue-50 text-blue-700",
+  completed:  "bg-green-50 text-green-700",
+  cancelled:  "bg-red-50 text-red-500",
+  no_show:    "bg-orange-50 text-orange-600",
+};
+
+const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
+  scheduled: [
+    { label: "Confirmar",    status: "confirmed" },
+    { label: "Cancelar",     status: "cancelled" },
+  ],
+  confirmed: [
+    { label: "Completar",    status: "completed" },
+    { label: "No apareció",  status: "no_show" },
+    { label: "Cancelar",     status: "cancelled" },
+  ],
+  completed:  [],
+  cancelled:  [],
+  no_show:    [],
+};
+
+export function AgendaClient({ appointments, clients, services, barbers, barbershopId, fecha }: Props) {
+  const router = useRouter();
+  const [showModal, setShowModal]     = useState(false);
+  const [saving,    setSaving]        = useState(false);
+  const [formError, setFormError]     = useState("");
+  const [updating,  setUpdating]      = useState<string | null>(null);
+
+  const slots = generateTimeSlots(9, 20, 30);
+
+  function handleDateChange(date: string) {
+    router.push(`/dashboard/agenda?fecha=${date}`);
+  }
+
+  async function handleSubmit(formData: FormData) {
+    setSaving(true);
+    setFormError("");
+    const result = await createAppointment(formData);
+    setSaving(false);
+    if (result?.error) {
+      setFormError(result.error);
+    } else {
+      setShowModal(false);
+    }
+  }
+
+  async function handleStatus(id: string, status: string) {
+    setUpdating(id);
+    await updateAppointmentStatus(id, status);
+    setUpdating(null);
+  }
+
+  return (
+    <>
+      {/* Cabecera */}
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <p className="text-sm text-neutral-500">Panel de control</p>
+          <h1 className="text-4xl font-black">Agenda</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="date"
+            value={fecha}
+            onChange={(e) => handleDateChange(e.target.value)}
+            className="rounded-2xl border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-ink"
+          />
+          <button
+            onClick={() => { setFormError(""); setShowModal(true); }}
+            className="flex items-center gap-2 rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white hover:opacity-80"
+          >
+            <Plus size={16} /> Nueva cita
+          </button>
+        </div>
+      </div>
+
+      {/* Lista de citas */}
+      {appointments.length === 0 ? (
+        <div className="mt-8 rounded-3xl border border-dashed border-neutral-300 bg-white p-12 text-center">
+          <CalendarDays className="mx-auto mb-3 text-neutral-300" size={36} />
+          <p className="font-semibold text-neutral-600">Sin citas para este día</p>
+          <p className="mt-1 text-sm text-neutral-400">Crea una nueva cita o selecciona otra fecha.</p>
+        </div>
+      ) : (
+        <div className="mt-8 flex flex-col gap-3">
+          {appointments.map((a) => (
+            <div key={a.id} className="rounded-3xl border border-neutral-200 bg-white p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-neutral-100 text-sm font-bold">
+                    {a.start_time.slice(0, 5)}
+                  </div>
+                  <div>
+                    <p className="font-bold">{a.clients?.name ?? "—"}</p>
+                    <p className="flex items-center gap-3 text-sm text-neutral-500">
+                      <span className="flex items-center gap-1"><Scissors size={12} /> {a.services?.name}</span>
+                      {a.barbers && <span className="flex items-center gap-1"><User size={12} /> {a.barbers.name}</span>}
+                      <span className="flex items-center gap-1"><Clock size={12} /> {a.start_time.slice(0, 5)}–{a.end_time.slice(0, 5)}</span>
+                    </p>
+                    {a.notes && <p className="mt-1 text-xs text-neutral-400">{a.notes}</p>}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLOR[a.status]}`}>
+                    {STATUS_LABEL[a.status]}
+                  </span>
+                  {NEXT_ACTIONS[a.status]?.map((action) => (
+                    <button
+                      key={action.status}
+                      onClick={() => handleStatus(a.id, action.status)}
+                      disabled={updating === a.id}
+                      className="rounded-full border border-neutral-200 px-3 py-1 text-xs font-semibold hover:bg-neutral-100 disabled:opacity-40"
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Modal nueva cita */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black">Nueva cita</h2>
+              <button onClick={() => setShowModal(false)} className="rounded-xl p-2 hover:bg-neutral-100">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
+              <input type="hidden" name="barbershop_id" value={barbershopId} />
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">Cliente *</label>
+                <select name="client_id" required className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink">
+                  <option value="">Seleccionar cliente...</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}{c.phone ? ` · ${c.phone}` : ""}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">Servicio *</label>
+                <select name="service_id" required className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink">
+                  <option value="">Seleccionar servicio...</option>
+                  {services.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name} · {s.price} € · {s.duration_minutes} min</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">Barbero</label>
+                <select name="barber_id" className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink">
+                  <option value="">Cualquiera / Sin asignar</option>
+                  {barbers.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-sm font-semibold text-neutral-700">Fecha *</label>
+                  <input
+                    name="appointment_date"
+                    type="date"
+                    defaultValue={fecha}
+                    required
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-semibold text-neutral-700">Hora *</label>
+                  <select name="start_time" required className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink">
+                    <option value="">Hora...</option>
+                    {slots.map((s) => (
+                      <option key={s.time} value={s.time}>{s.time}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">Notas (opcional)</label>
+                <input
+                  name="notes"
+                  placeholder="Ej: Trae referencia de foto"
+                  className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                />
+              </div>
+
+              {formError && (
+                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</p>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 rounded-2xl border border-neutral-200 py-3 text-sm font-semibold hover:bg-neutral-50">
+                  Cancelar
+                </button>
+                <button type="submit" disabled={saving} className="flex-1 rounded-2xl bg-ink py-3 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-50">
+                  {saving ? "Guardando..." : "Crear cita"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

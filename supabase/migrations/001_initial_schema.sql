@@ -141,6 +141,9 @@ with check (public.is_barbershop_member(barbershop_id));
 create policy "Public can read active services" on public.services
 for select using (active = true);
 
+create policy "Public can read active barbers" on public.barbers
+for select using (active = true);
+
 create policy "Members can manage clients" on public.clients
 for all using (public.is_barbershop_member(barbershop_id))
 with check (public.is_barbershop_member(barbershop_id));

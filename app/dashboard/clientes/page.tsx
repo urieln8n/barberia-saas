@@ -1,11 +1,27 @@
-export default function ClientesPage() {
+import { redirect } from "next/navigation";
+import { createClient } from "@/src/lib/supabase/server";
+import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { ClientesClient } from "./ClientesClient";
+
+export default async function ClientesPage() {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+  if (!barbershopId) redirect("/onboarding");
+
+  const { data: clients } = await supabase
+    .from("clients")
+    .select("id, name, phone, email, notes, last_visit_at")
+    .eq("barbershop_id", barbershopId)
+    .order("name", { ascending: true });
+
   return (
-    <div>
-      <h1 className="text-4xl font-black">Clientes</h1>
-      <p className="mt-2 text-neutral-500">CRM básico de clientes, notas e historial.</p>
-      <div className="mt-8 rounded-3xl border border-dashed border-neutral-300 bg-white p-8 text-neutral-500">
-        Módulo preparado. Implementar CRUD con Supabase según docs/TASKS.md.
-      </div>
-    </div>
+    <ClientesClient
+      clients={clients ?? []}
+      barbershopId={barbershopId}
+    />
   );
 }
