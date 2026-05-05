@@ -212,7 +212,7 @@ export function BookingForm({
                 <div
                   key={s}
                   className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                    s <= step ? "bg-red-700" : "bg-neutral-100"
+                    s <= step ? "bg-[#8E1F2D]" : "bg-neutral-100"
                   }`}
                 />
               ))}
@@ -407,7 +407,7 @@ export function BookingForm({
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
                             : time === slot.time
-                            ? "border-red-700 bg-red-700 text-white"
+                            ? "border-[#8E1F2D] bg-[#8E1F2D] text-white"
                             : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
                         }`}
                       >
@@ -529,13 +529,28 @@ export function BookingForm({
 
                 <div className="flex items-center gap-2 text-neutral-600">
                   <CalendarDays size={13} className="shrink-0 text-neutral-400" />
-                  {date} · {time}h
+                  {date
+                    ? new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })
+                    : date}{" "}
+                  · {time}h
                 </div>
 
                 <div className="mt-1 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2.5">
                   <CreditCard size={14} className="shrink-0 text-neutral-400" />
                   <span className="font-medium text-neutral-700">Pago en el local</span>
-                  <span className="ml-auto text-xs text-neutral-400">sin tarjeta ahora</span>
+                  <span className="ml-auto text-xs text-neutral-400">efectivo · Bizum</span>
+                </div>
+
+                <div className="flex items-center gap-2 rounded-xl border border-dashed border-neutral-200 bg-neutral-50 px-3 py-2.5">
+                  <CreditCard size={14} className="shrink-0 text-neutral-300" />
+                  <span className="text-xs text-neutral-400">Tarjeta · Google Pay</span>
+                  <span className="ml-auto rounded-full bg-neutral-200 px-2 py-0.5 text-[10px] font-semibold text-neutral-500">
+                    Próximamente
+                  </span>
                 </div>
               </div>
             </div>
@@ -544,8 +559,8 @@ export function BookingForm({
             <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
               <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
               <p className="text-xs text-amber-800">
-                <span className="font-semibold">Política de cancelación:</span>{" "}
-                Cancela gratis con más de 24h de antelación. Pasado ese plazo, la barbería puede aplicar penalización.
+                <span className="font-semibold">Cancelación:</span>{" "}
+                Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
               </p>
             </div>
 
@@ -555,7 +570,7 @@ export function BookingForm({
                 type="checkbox"
                 checked={marketingConsent}
                 onChange={(e) => setMarketingConsent(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-red-700"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#8E1F2D]"
               />
               <span className="text-xs leading-relaxed text-neutral-500">
                 Acepto recibir recordatorios y comunicaciones de{" "}
@@ -577,7 +592,7 @@ export function BookingForm({
               type="button"
               onClick={handleConfirmBooking}
               disabled={!name.trim() || !phone.trim() || saving}
-              className="mt-5 hidden w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40 md:flex"
+              className="mt-5 hidden w-full items-center justify-center gap-2 rounded-2xl bg-[#8E1F2D] py-4 text-base font-black text-white shadow-lg shadow-[#8E1F2D]/20 transition-all hover:bg-[#6B1622] active:scale-[0.98] disabled:opacity-40 md:flex"
             >
               <CalendarDays size={18} />
               {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
@@ -642,7 +657,14 @@ export function BookingForm({
                 <div className="flex items-center gap-2">
                   <CalendarDays size={14} className="shrink-0 text-neutral-400" />
                   <span>
-                    {date} a las <span className="font-bold">{time}</span>
+                    {date
+                      ? new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                        })
+                      : date}{" "}
+                    a las <span className="font-bold">{time}h</span>
                   </span>
                 </div>
 
@@ -710,7 +732,7 @@ export function BookingForm({
             type="button"
             onClick={handleConfirmBooking}
             disabled={!name.trim() || !phone.trim() || saving}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#8E1F2D] py-4 text-base font-black text-white shadow-lg shadow-[#8E1F2D]/20 transition-all hover:bg-[#6B1622] active:scale-[0.98] disabled:opacity-40"
           >
             <CalendarDays size={18} />
             {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
