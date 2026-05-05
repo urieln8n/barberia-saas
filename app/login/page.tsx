@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gold text-ink">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-950 text-red-700">
             <Scissors size={20} />
           </div>
           <span className="text-xl font-bold text-white">BarberíaOS</span>

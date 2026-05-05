@@ -10,6 +10,10 @@ import {
   Scissors,
   Phone,
   BadgeCheck,
+  Mail,
+  CreditCard,
+  MessageCircle,
+  ShieldCheck,
 } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 import { createPublicBooking, getUnavailableSlots } from "./actions";
@@ -50,6 +54,8 @@ export function BookingForm({
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
@@ -119,6 +125,8 @@ export function BookingForm({
     setTime("");
     setName("");
     setPhone("");
+    setEmail("");
+    setMarketingConsent(false);
     setSaving(false);
     setCheckingAvailability(false);
     setUnavailableSlots([]);
@@ -160,151 +168,132 @@ export function BookingForm({
   }
 
   return (
-    <div className="rounded-[2rem] bg-white p-6 text-ink shadow-2xl md:p-10">
-      <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
-          <Scissors size={22} />
-        </div>
-
-        <div className="min-w-0">
-          <p className="truncate text-sm text-neutral-500">
-            {barbershopCity
-              ? `Reserva online · ${barbershopCity}`
-              : "Reserva online"}
-          </p>
-          <h1 className="truncate text-2xl font-black">{barbershopName}</h1>
-        </div>
-      </div>
-
-      {step === 1 && (
-        <div className="mt-5 flex flex-wrap gap-3">
-          <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
-            <BadgeCheck size={13} className="text-emerald-500" /> Sin cuenta
-            necesaria
-          </span>
-
-          <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
-            <Clock size={13} className="text-amber-500" /> Solo 30 segundos
-          </span>
-
-          <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
-            <Phone size={13} className="text-blue-500" /> Solo nombre y teléfono
-          </span>
-        </div>
-      )}
-
-      {step < 5 && (
-        <div className="mt-5">
-          <div className="flex gap-1.5">
-            {[1, 2, 3, 4].map((s) => (
-              <div
-                key={s}
-                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                  s <= step ? "bg-red-700" : "bg-neutral-100"
-                }`}
-              />
-            ))}
+    <>
+      <div className="rounded-[2rem] bg-white p-6 text-ink shadow-2xl md:p-10">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
+            <Scissors size={22} />
           </div>
 
-          <p className="mt-2 text-xs text-neutral-400">
-            Paso {step} de 4 ·{" "}
-            <span className="font-semibold text-neutral-600">
-              {STEP_LABELS[step - 1]}
+          <div className="min-w-0">
+            <p className="truncate text-sm text-neutral-500">
+              {barbershopCity
+                ? `Reserva online · ${barbershopCity}`
+                : "Reserva online"}
+            </p>
+            <h1 className="truncate text-2xl font-black">{barbershopName}</h1>
+          </div>
+        </div>
+
+        {/* Badges intro — solo step 1 */}
+        {step === 1 && (
+          <div className="mt-5 flex flex-wrap gap-3">
+            <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
+              <BadgeCheck size={13} className="text-emerald-500" /> Sin cuenta
+              necesaria
             </span>
-          </p>
-        </div>
-      )}
 
-      {step > 1 && step < 5 && (
-        <button
-          type="button"
-          onClick={() => {
-            setFormError(null);
-            setStep(step - 1);
-          }}
-          className="mt-3 flex items-center gap-1 text-sm text-neutral-400 hover:text-ink"
-        >
-          <ChevronLeft size={15} /> Volver
-        </button>
-      )}
+            <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
+              <Clock size={13} className="text-amber-500" /> Solo 30 segundos
+            </span>
 
-      {step === 1 && (
-        <section className="mt-6">
-          <h2 className="text-xl font-black">¿Qué servicio quieres?</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Toca el servicio para continuar.
-          </p>
-
-          <div className="mt-4 grid gap-3">
-            {services.length === 0 && (
-              <p className="rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-400">
-                Esta barbería no tiene servicios disponibles aún.
-              </p>
-            )}
-
-            {services.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => {
-                  setService(s);
-                  setFormError(null);
-                  setStep(2);
-                }}
-                className="flex items-center justify-between rounded-2xl border border-neutral-200 p-4 text-left transition-all hover:border-ink hover:bg-neutral-50 active:scale-[0.98]"
-              >
-                <div>
-                  <p className="font-bold">{s.name}</p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
-                    <Clock size={12} /> {s.duration_minutes} min
-                  </p>
-                </div>
-
-                <span className="text-xl font-black">{s.price} €</span>
-              </button>
-            ))}
+            <span className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-600">
+              <Phone size={13} className="text-blue-500" /> Solo nombre y teléfono
+            </span>
           </div>
-        </section>
-      )}
+        )}
 
-      {step === 2 && (
-        <section className="mt-6">
-          <h2 className="text-xl font-black">¿Con quién quieres ir?</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Elige tu barbero o selecciona el primero disponible.
-          </p>
+        {/* Progress bar */}
+        {step < 5 && (
+          <div className="mt-5">
+            <div className="flex gap-1.5">
+              {[1, 2, 3, 4].map((s) => (
+                <div
+                  key={s}
+                  className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                    s <= step ? "bg-red-700" : "bg-neutral-100"
+                  }`}
+                />
+              ))}
+            </div>
 
-          <div className="mt-4 grid gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setBarber({ id: "any", name: "Cualquiera" });
-                setDate("");
-                setTime("");
-                setUnavailableSlots([]);
-                setFormError(null);
-                setStep(3);
-              }}
-              className="flex items-center gap-3 rounded-2xl border border-neutral-200 p-4 text-left transition-all hover:border-ink hover:bg-neutral-50 active:scale-[0.98]"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
-                <User size={18} className="text-neutral-400" />
-              </div>
+            <p className="mt-2 text-xs text-neutral-400">
+              Paso {step} de 4 ·{" "}
+              <span className="font-semibold text-neutral-600">
+                {STEP_LABELS[step - 1]}
+              </span>
+            </p>
+          </div>
+        )}
 
-              <div>
-                <p className="font-bold">Cualquiera</p>
-                <p className="text-sm text-neutral-500">
-                  Primer barbero disponible
+        {/* Volver */}
+        {step > 1 && step < 5 && (
+          <button
+            type="button"
+            onClick={() => {
+              setFormError(null);
+              setStep(step - 1);
+            }}
+            className="mt-3 flex items-center gap-1 text-sm text-neutral-400 hover:text-ink"
+          >
+            <ChevronLeft size={15} /> Volver
+          </button>
+        )}
+
+        {/* ── Step 1: Servicio ── */}
+        {step === 1 && (
+          <section className="mt-6">
+            <h2 className="text-xl font-black">¿Qué servicio quieres?</h2>
+            <p className="mt-1 text-sm text-neutral-500">
+              Toca el servicio para continuar.
+            </p>
+
+            <div className="mt-4 grid gap-3">
+              {services.length === 0 && (
+                <p className="rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-400">
+                  Esta barbería no tiene servicios disponibles aún.
                 </p>
-              </div>
-            </button>
+              )}
 
-            {barbers.map((b) => (
+              {services.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => {
+                    setService(s);
+                    setFormError(null);
+                    setStep(2);
+                  }}
+                  className="flex items-center justify-between rounded-2xl border border-neutral-200 p-4 text-left transition-all hover:border-ink hover:bg-neutral-50 active:scale-[0.98]"
+                >
+                  <div>
+                    <p className="font-bold">{s.name}</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
+                      <Clock size={12} /> {s.duration_minutes} min
+                    </p>
+                  </div>
+
+                  <span className="text-xl font-black">{s.price} €</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Step 2: Barbero ── */}
+        {step === 2 && (
+          <section className="mt-6">
+            <h2 className="text-xl font-black">¿Con quién quieres ir?</h2>
+            <p className="mt-1 text-sm text-neutral-500">
+              Elige tu barbero o selecciona el primero disponible.
+            </p>
+
+            <div className="mt-4 grid gap-3">
               <button
-                key={b.id}
                 type="button"
                 onClick={() => {
-                  setBarber(b);
+                  setBarber({ id: "any", name: "Cualquiera" });
                   setDate("");
                   setTime("");
                   setUnavailableSlots([]);
@@ -313,273 +302,425 @@ export function BookingForm({
                 }}
                 className="flex items-center gap-3 rounded-2xl border border-neutral-200 p-4 text-left transition-all hover:border-ink hover:bg-neutral-50 active:scale-[0.98]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100 text-sm font-black uppercase">
-                  {b.name.charAt(0)}
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
+                  <User size={18} className="text-neutral-400" />
                 </div>
 
-                <p className="font-bold">{b.name}</p>
+                <div>
+                  <p className="font-bold">Cualquiera</p>
+                  <p className="text-sm text-neutral-500">
+                    Primer barbero disponible
+                  </p>
+                </div>
               </button>
-            ))}
-          </div>
-        </section>
-      )}
 
-      {step === 3 && (
-        <section className="mt-6">
-          <h2 className="text-xl font-black">¿Cuándo vienes?</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Elige el día y la hora que prefieras.
-          </p>
+              {barbers.map((b) => (
+                <button
+                  key={b.id}
+                  type="button"
+                  onClick={() => {
+                    setBarber(b);
+                    setDate("");
+                    setTime("");
+                    setUnavailableSlots([]);
+                    setFormError(null);
+                    setStep(3);
+                  }}
+                  className="flex items-center gap-3 rounded-2xl border border-neutral-200 p-4 text-left transition-all hover:border-ink hover:bg-neutral-50 active:scale-[0.98]"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100 text-sm font-black uppercase">
+                    {b.name.charAt(0)}
+                  </div>
 
-          <label className="mt-4 block text-sm font-semibold text-neutral-700">
-            Día
-          </label>
+                  <p className="font-bold">{b.name}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
-          <input
-            type="date"
-            min={today}
-            value={date}
-            onChange={(e) => {
-              setDate(e.target.value);
-              setTime("");
-              setUnavailableSlots([]);
-              setFormError(null);
-            }}
-            className="mt-1 w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
-          />
+        {/* ── Step 3: Fecha y hora ── */}
+        {step === 3 && (
+          <section className="mt-6">
+            <h2 className="text-xl font-black">¿Cuándo vienes?</h2>
+            <p className="mt-1 text-sm text-neutral-500">
+              Elige el día y la hora que prefieras.
+            </p>
 
-          {date && (
-            <>
-              <div className="mt-5 flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-neutral-700">Hora</p>
+            <label className="mt-4 block text-sm font-semibold text-neutral-700">
+              Día
+            </label>
 
-                {checkingAvailability && (
-                  <p className="text-xs font-medium text-neutral-400">
-                    Comprobando disponibilidad...
+            <input
+              type="date"
+              min={today}
+              value={date}
+              onChange={(e) => {
+                setDate(e.target.value);
+                setTime("");
+                setUnavailableSlots([]);
+                setFormError(null);
+              }}
+              className="mt-1 w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+            />
+
+            {date && (
+              <>
+                <div className="mt-5 flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-neutral-700">Hora</p>
+
+                  {checkingAvailability && (
+                    <p className="text-xs font-medium text-neutral-400">
+                      Comprobando disponibilidad...
+                    </p>
+                  )}
+                </div>
+
+                {formError && (
+                  <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+                    {formError}
                   </p>
                 )}
-              </div>
 
-              {formError && (
-                <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
-                  {formError}
+                <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-5">
+                  {slots.map((slot) => {
+                    const isUnavailable = unavailableSlots.includes(slot.time);
+
+                    return (
+                      <button
+                        key={slot.time}
+                        type="button"
+                        disabled={checkingAvailability || isUnavailable}
+                        onClick={() => {
+                          if (isUnavailable) {
+                            setFormError(
+                              "Esta hora ya no está disponible. Elige otra."
+                            );
+                            return;
+                          }
+
+                          setTime(slot.time);
+                          setFormError(null);
+                          setStep(4);
+                        }}
+                        className={`rounded-xl border py-3 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
+                          isUnavailable
+                            ? "border-red-100 bg-red-50 text-red-300 line-through"
+                            : time === slot.time
+                            ? "border-red-700 bg-red-700 text-white"
+                            : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
+                        }`}
+                      >
+                        <span>{slot.time}</span>
+                        {isUnavailable && (
+                          <span className="block text-[10px] no-underline">
+                            Ocupado
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-3 text-xs text-neutral-400">
+                  Las horas marcadas como ocupadas ya tienen todos los barberos
+                  disponibles reservados o el barbero elegido está ocupado.
                 </p>
-              )}
+              </>
+            )}
+          </section>
+        )}
 
-              <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-5">
-                {slots.map((slot) => {
-                  const isUnavailable = unavailableSlots.includes(slot.time);
+        {/* ── Step 4: Datos personales ── */}
+        {step === 4 && (
+          <section className="mt-6 pb-32 md:pb-0">
+            <h2 className="text-xl font-black">Último paso: tus datos</h2>
+            <p className="mt-1 text-sm text-neutral-500">
+              Solo necesitamos tu nombre y teléfono. Sin contraseñas.
+            </p>
 
-                  return (
-                    <button
-                      key={slot.time}
-                      type="button"
-                      disabled={checkingAvailability || isUnavailable}
-                      onClick={() => {
-                        if (isUnavailable) {
-                          setFormError(
-                            "Esta hora ya no está disponible. Elige otra."
-                          );
-                          return;
-                        }
-
-                        setTime(slot.time);
-                        setFormError(null);
-                        setStep(4);
-                      }}
-                      className={`rounded-xl border py-3 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
-                        isUnavailable
-                          ? "border-red-100 bg-red-50 text-red-300 line-through"
-                          : time === slot.time
-                          ? "border-red-700 bg-red-700 text-white"
-                          : "border-neutral-200 hover:border-ink hover:bg-neutral-50"
-                      }`}
-                    >
-                      <span>{slot.time}</span>
-                      {isUnavailable && (
-                        <span className="block text-[10px] no-underline">
-                          Ocupado
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+            <div className="mt-5 grid gap-4">
+              {/* Nombre */}
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                  Nombre completo *
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setFormError(null);
+                  }}
+                  placeholder="Ej: Carlos García"
+                  autoComplete="name"
+                  className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                />
               </div>
 
-              <p className="mt-3 text-xs text-neutral-400">
-                Las horas marcadas como ocupadas ya tienen todos los barberos
-                disponibles reservados o el barbero elegido está ocupado.
-              </p>
-            </>
-          )}
-        </section>
-      )}
+              {/* Teléfono */}
+              <div>
+                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                  Teléfono *
+                </label>
+                <div className="relative">
+                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      setFormError(null);
+                    }}
+                    placeholder="+34 600 000 000"
+                    autoComplete="tel"
+                    className="w-full rounded-2xl border border-neutral-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-ink"
+                  />
+                </div>
+              </div>
 
+              {/* Email opcional */}
+              <div>
+                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-neutral-700">
+                  Email
+                  <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-400">
+                    opcional
+                  </span>
+                </label>
+                <div className="relative">
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tu@email.com"
+                    autoComplete="email"
+                    className="w-full rounded-2xl border border-neutral-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-ink"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Resumen de reserva mejorado */}
+            <div className="mt-5 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
+              <div className="border-b border-neutral-100 px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
+                  Resumen de tu reserva
+                </p>
+              </div>
+
+              <div className="space-y-3 px-4 py-4 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2 font-semibold text-neutral-800">
+                    <Scissors size={13} className="shrink-0 text-neutral-400" />
+                    {service?.name}
+                  </span>
+                  <span className="font-black text-neutral-900">{service?.price} €</span>
+                </div>
+
+                <div className="flex items-center gap-2 text-neutral-500">
+                  <Clock size={13} className="shrink-0 text-neutral-400" />
+                  {service?.duration_minutes} min de duración
+                </div>
+
+                <div className="flex items-center gap-2 text-neutral-600">
+                  <User size={13} className="shrink-0 text-neutral-400" />
+                  {barber?.id === "any" ? "Primer barbero disponible" : barber?.name}
+                </div>
+
+                <div className="flex items-center gap-2 text-neutral-600">
+                  <CalendarDays size={13} className="shrink-0 text-neutral-400" />
+                  {date} · {time}h
+                </div>
+
+                <div className="mt-1 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2.5">
+                  <CreditCard size={14} className="shrink-0 text-neutral-400" />
+                  <span className="font-medium text-neutral-700">Pago en el local</span>
+                  <span className="ml-auto text-xs text-neutral-400">sin tarjeta ahora</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Política de cancelación */}
+            <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
+              <p className="text-xs text-amber-800">
+                <span className="font-semibold">Política de cancelación:</span>{" "}
+                Cancela gratis con más de 24h de antelación. Pasado ese plazo, la barbería puede aplicar penalización.
+              </p>
+            </div>
+
+            {/* Consentimiento marketing */}
+            <label className="mt-4 flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={marketingConsent}
+                onChange={(e) => setMarketingConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-red-700"
+              />
+              <span className="text-xs leading-relaxed text-neutral-500">
+                Acepto recibir recordatorios y comunicaciones de{" "}
+                <span className="font-semibold text-neutral-700">{barbershopName}</span>{" "}
+                por WhatsApp.{" "}
+                <span className="text-neutral-400">(Opcional)</span>
+              </span>
+            </label>
+
+            {/* Error */}
+            {formError && (
+              <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+                {formError}
+              </p>
+            )}
+
+            {/* Botón confirmar — desktop */}
+            <button
+              type="button"
+              onClick={handleConfirmBooking}
+              disabled={!name.trim() || !phone.trim() || saving}
+              className="mt-5 hidden w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40 md:flex"
+            >
+              <CalendarDays size={18} />
+              {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
+            </button>
+
+            {/* Mensaje de confianza — desktop */}
+            <p className="mt-3 hidden text-center text-xs text-neutral-400 md:block">
+              <ShieldCheck size={12} className="mr-1 inline-block" />
+              Reserva segura · Sin comisiones · Directo con {barbershopName}
+            </p>
+          </section>
+        )}
+
+        {/* ── Step 5: Confirmación ── */}
+        {step === 5 && (
+          <section className="mt-8">
+            <div className="text-center">
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <CheckCircle size={36} className="text-green-600" />
+              </div>
+
+              <h2 className="mt-4 text-2xl font-black">¡Reserva recibida!</h2>
+
+              <p className="mt-2 text-neutral-500">
+                Tu cita en{" "}
+                <span className="font-semibold text-ink">{barbershopName}</span>{" "}
+                está registrada.
+              </p>
+            </div>
+
+            {/* Detalle de la cita */}
+            <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
+              <div className="border-b border-neutral-100 px-5 py-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
+                  Detalle de tu cita
+                </p>
+              </div>
+
+              <div className="space-y-3 px-5 py-4 text-sm text-neutral-700">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2 font-bold">
+                    <Scissors size={14} className="shrink-0 text-neutral-400" />
+                    {service?.name}
+                  </span>
+                  <span className="font-black">{service?.price} €</span>
+                </div>
+
+                <div className="flex items-center gap-2 text-neutral-500">
+                  <Clock size={14} className="shrink-0 text-neutral-400" />
+                  {service?.duration_minutes} min de duración
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <User size={14} className="shrink-0 text-neutral-400" />
+                  <span>
+                    {barber?.id === "any"
+                      ? "Primer barbero disponible"
+                      : barber?.name}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} className="shrink-0 text-neutral-400" />
+                  <span>
+                    {date} a las <span className="font-bold">{time}</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Phone size={14} className="shrink-0 text-neutral-400" />
+                  <span>
+                    {name} · {phone}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2.5">
+                  <CreditCard size={14} className="shrink-0 text-neutral-400" />
+                  <span className="font-medium">Pago en el local</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Aviso confirmación */}
+            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <p className="text-sm font-bold text-amber-800">
+                La barbería confirmará tu cita en breve.
+              </p>
+              <p className="mt-1 text-sm text-amber-700">
+                Si tienes alguna duda, contacta directamente con {barbershopName}.
+              </p>
+            </div>
+
+            {/* Botón compartir por WhatsApp */}
+            {(() => {
+              const waText = encodeURIComponent(
+                `Hola, acabo de reservar en ${barbershopName}:\n` +
+                `• ${service?.name} · ${service?.price} €\n` +
+                `• ${barber?.id === "any" ? "Primer barbero disponible" : barber?.name}\n` +
+                `• ${date} a las ${time}h\n` +
+                `¡Nos vemos!`
+              );
+              return (
+                <a
+                  href={`https://wa.me/?text=${waText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-green-200 bg-green-50 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100 active:scale-[0.98]"
+                >
+                  <MessageCircle size={16} />
+                  Compartir cita por WhatsApp
+                </a>
+              );
+            })()}
+
+            <button
+              type="button"
+              onClick={reset}
+              className="mt-3 w-full rounded-2xl border border-neutral-200 py-3 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-50"
+            >
+              Hacer otra reserva
+            </button>
+          </section>
+        )}
+      </div>
+
+      {/* ── Botón fijo inferior — solo móvil, solo Step 4 ── */}
       {step === 4 && (
-        <section className="mt-6">
-          <h2 className="text-xl font-black">Último paso: tus datos</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Solo necesitamos tu nombre y teléfono. Sin contraseñas.
-          </p>
-
-          <div className="mt-5 grid gap-4">
-            <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
-                Nombre completo
-              </label>
-
-              <input
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setFormError(null);
-                }}
-                placeholder="Ej: Carlos García"
-                autoComplete="name"
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
-                Teléfono
-              </label>
-
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                  setFormError(null);
-                }}
-                placeholder="+34 600 000 000"
-                autoComplete="tel"
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
-              />
-            </div>
-          </div>
-
-          <div className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-sm">
-            <p className="mb-2 font-bold text-neutral-700">
-              Resumen de tu reserva
-            </p>
-
-            <div className="space-y-1 text-neutral-600">
-              <p>
-                ✂️ <span className="font-semibold">{service?.name}</span> ·{" "}
-                {service?.price} €
-              </p>
-
-              <p>
-                👤{" "}
-                {barber?.id === "any"
-                  ? "Primer barbero disponible"
-                  : barber?.name}
-              </p>
-
-              <p>
-                📅 {date} a las {time}
-              </p>
-            </div>
-          </div>
-
-          {formError && (
-            <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
-              {formError}
-            </p>
-          )}
-
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-100 bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(0,0,0,0.08)] md:hidden">
           <button
             type="button"
             onClick={handleConfirmBooking}
             disabled={!name.trim() || !phone.trim() || saving}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 py-4 text-base font-black text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 active:scale-[0.98] disabled:opacity-40"
           >
             <CalendarDays size={18} />
             {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
           </button>
-
-          <p className="mt-3 text-center text-xs text-neutral-400">
-            Al confirmar aceptas que la barbería guarde tu nombre y teléfono.
+          <p className="mt-2 text-center text-xs text-neutral-400">
+            <ShieldCheck size={11} className="mr-1 inline-block" />
+            Reserva segura · Sin comisiones · Directo con {barbershopName}
           </p>
-        </section>
+        </div>
       )}
-
-      {step === 5 && (
-        <section className="mt-8">
-          <div className="text-center">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle size={36} className="text-green-600" />
-            </div>
-
-            <h2 className="mt-4 text-2xl font-black">¡Reserva recibida!</h2>
-
-            <p className="mt-2 text-neutral-500">
-              Tu cita en{" "}
-              <span className="font-semibold text-ink">{barbershopName}</span>{" "}
-              está registrada.
-            </p>
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
-            <p className="mb-3 text-xs font-bold uppercase tracking-wide text-neutral-400">
-              Detalle de tu cita
-            </p>
-
-            <div className="space-y-2 text-sm text-neutral-700">
-              <div className="flex items-center gap-2">
-                <Scissors size={14} className="shrink-0 text-neutral-400" />
-                <span className="font-bold">{service?.name}</span>
-                <span className="text-neutral-500">· {service?.price} €</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <User size={14} className="shrink-0 text-neutral-400" />
-                <span>
-                  {barber?.id === "any"
-                    ? "Primer barbero disponible"
-                    : barber?.name}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <CalendarDays
-                  size={14}
-                  className="shrink-0 text-neutral-400"
-                />
-                <span>
-                  {date} a las <span className="font-bold">{time}</span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Phone size={14} className="shrink-0 text-neutral-400" />
-                <span>
-                  {name} · {phone}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm font-bold text-amber-800">
-              La barbería confirmará tu cita en breve.
-            </p>
-
-            <p className="mt-1 text-sm text-amber-700">
-              Si tienes alguna duda, contacta directamente con {barbershopName}.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-5 w-full rounded-2xl border border-neutral-200 py-3 text-sm font-semibold text-neutral-600 transition hover:bg-neutral-50"
-          >
-            Hacer otra reserva
-          </button>
-        </section>
-      )}
-    </div>
+    </>
   );
 }

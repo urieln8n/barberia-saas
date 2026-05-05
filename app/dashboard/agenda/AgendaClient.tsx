@@ -299,24 +299,24 @@ export function AgendaClient({
       )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5">
+        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Citas en esta fecha</p>
           <p className="mt-2 text-3xl font-black">{appointments.length}</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5">
+        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Próximas citas</p>
           <p className="mt-2 text-3xl font-black">
             {upcomingAppointments.length}
           </p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5">
+        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Total registradas</p>
           <p className="mt-2 text-3xl font-black">{allAppointments.length}</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5">
+        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Pendientes</p>
           <p className="mt-2 text-3xl font-black">
             {
@@ -371,35 +371,6 @@ export function AgendaClient({
         ) : (
           <div className="flex flex-col gap-3">
             {upcomingAppointments.map((appointment) => (
-              <AppointmentCard
-                key={appointment.id}
-                appointment={appointment}
-                showDate
-                updating={updating}
-                onStatusChange={handleStatus}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="mt-10">
-        <div className="mb-3">
-          <h2 className="text-xl font-black">Todas las citas registradas</h2>
-          <p className="text-sm text-neutral-500">
-            Esta sección sirve para comprobar que la agenda está leyendo
-            Supabase correctamente.
-          </p>
-        </div>
-
-        {allAppointments.length === 0 ? (
-          <EmptyState
-            title="Todavía no hay citas registradas"
-            text="Crea una reserva desde el enlace público de la barbería."
-          />
-        ) : (
-          <div className="flex flex-col gap-3">
-            {allAppointments.map((appointment) => (
               <AppointmentCard
                 key={appointment.id}
                 appointment={appointment}
@@ -552,7 +523,7 @@ export function AgendaClient({
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 rounded-2xl bg-neutral-950 py-3 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-50"
+                  className="flex-1 rounded-2xl bg-red-700 py-3 text-sm font-semibold text-white hover:bg-red-800 disabled:opacity-50"
                 >
                   {saving ? "Guardando..." : "Crear cita"}
                 </button>

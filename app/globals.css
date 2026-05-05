@@ -6,19 +6,21 @@
   color-scheme: light;
 
   /* BarberíaOS palette tokens */
-  --ink:     #050505;
-  --carbon:  #111111;
-  --wine:    #B91C1C;
-  --pole:    #1D4ED8;
-  --gold:    #D4AF37;
+  --ink:     #0A0A0A;
+  --carbon:  #171717;
+  --wine:    #8E1F2D;
+  --pole:    #1F4E8C;
+  --gold:    #C6A969;
+  --ivory:   #F8F5EF;
+  --border:  #E7E2D8;
   --success: #16A34A;
   --amber:   #D97706;
 }
 
 body {
   margin: 0;
-  background: #fafafa;
-  color: #111111;
+  background: #F8F5EF;
+  color: #0A0A0A;
 }
 
 * {

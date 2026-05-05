@@ -92,6 +92,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
         </div>
       ) : (
         <div className="mt-4 overflow-hidden rounded-3xl border border-neutral-200 bg-white">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-neutral-100 bg-neutral-50">
               <tr>
@@ -155,6 +156,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
           {filtered.length === 0 && search && (
             <p className="px-6 py-8 text-center text-sm text-neutral-400">
               Sin resultados para "{search}"

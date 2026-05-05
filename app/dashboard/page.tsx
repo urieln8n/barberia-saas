@@ -248,10 +248,10 @@ export default async function DashboardPage() {
 
       {/* ── Hero ── */}
       <section className="overflow-hidden rounded-3xl bg-neutral-950 text-white shadow-lg">
-        <div className="h-1 w-full bg-gradient-to-r from-red-600 via-red-500 to-red-700" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#8E1F2D] via-[#6B1622] to-[#C6A969]" />
         <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-red-400">Panel principal</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#C6A969]">Panel principal</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
@@ -262,7 +262,7 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl bg-red-600 px-5 py-3 text-center text-sm font-bold text-white hover:bg-red-700"
+              className="rounded-2xl bg-[#8E1F2D] px-5 py-3 text-center text-sm font-bold text-white hover:bg-[#6B1622]"
             >
               Ver agenda hoy
             </Link>

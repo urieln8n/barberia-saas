@@ -110,7 +110,9 @@ export default function Sidebar() {
       {/* ── Mobile header ── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4 md:hidden">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Scissors size={18} className="text-red-700" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-950">
+            <Scissors size={15} className="text-[#8E1F2D]" />
+          </div>
           <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
         </Link>
         <button
@@ -123,22 +125,23 @@ export default function Sidebar() {
       </header>
 
       {/* ── Mobile drawer ── */}
-      {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <button
-            type="button"
-            aria-label="Cerrar menú"
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-black/40"
-          />
-          <aside className="absolute left-0 top-0 flex h-full w-72 flex-col bg-white p-5 shadow-2xl">
+      <div className={`fixed inset-0 z-50 md:hidden transition-opacity duration-200 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <button
+          type="button"
+          aria-label="Cerrar menú"
+          onClick={() => setOpen(false)}
+          className="absolute inset-0 bg-black/40"
+        />
+        <aside className={`absolute left-0 top-0 flex h-full w-72 flex-col bg-white p-5 shadow-2xl transition-transform duration-200 ${open ? "translate-x-0" : "-translate-x-full"}`}>
             <div className="mb-6 flex items-center justify-between">
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2"
               >
-                <Scissors size={16} className="text-red-700" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-950">
+                  <Scissors size={15} className="text-[#8E1F2D]" />
+                </div>
                 <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
               </Link>
               <button
@@ -170,14 +173,13 @@ export default function Sidebar() {
               Cerrar sesión
             </button>
           </aside>
-        </div>
-      )}
+      </div>
 
       {/* ── Desktop sidebar ── */}
       <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-neutral-200 bg-white p-5 md:flex">
         <Link href="/dashboard" className="mb-8 flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-950">
-            <Scissors size={15} className="text-red-700" />
+            <Scissors size={15} className="text-[#8E1F2D]" />
           </div>
           <span className="text-lg font-black tracking-tight text-neutral-950">BarberíaOS</span>
         </Link>
