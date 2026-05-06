@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Copy, Check, ExternalLink, Printer, Instagram, MessageCircle, Globe } from "lucide-react";
+import { PageHeader } from "@/components/dashboard/PageHeader";
 
 type Props = { name: string; slug: string };
 
@@ -18,64 +19,67 @@ export function QRClient({ name, slug }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Cabecera */}
-      <div>
-        <p className="text-sm text-neutral-500">Panel de control</p>
-        <h1 className="text-4xl font-black">QR de reservas</h1>
-        <p className="mt-1 text-neutral-500">
-          Comparte este QR en Instagram, WhatsApp, Google o en tu local. Tus clientes reservan en 30 segundos.
-        </p>
-      </div>
+    <div className="space-y-5">
 
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+      <PageHeader
+        section="QR Reservas"
+        title="Tu código QR"
+        description="Comparte este QR en Instagram, WhatsApp, Google o en tu local. Tus clientes reservan en 30 segundos."
+      />
+
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
 
         {/* QR card */}
-        <div className="flex w-full flex-col items-center gap-5 rounded-3xl border border-neutral-200 bg-white p-6 lg:w-72 lg:shrink-0">
+        <div className="flex w-full flex-col items-center gap-5 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm lg:w-72 lg:shrink-0">
           <img
             src={qrUrl}
             alt={`QR de reservas de ${name}`}
             className="w-full max-w-[260px] rounded-2xl"
           />
           <div className="text-center">
-            <p className="font-black text-neutral-950">{name}</p>
+            <p className="font-black text-[#0D0D0D]">{name}</p>
             <p className="mt-0.5 text-xs text-neutral-400">Escanear para reservar</p>
           </div>
           <a
             href={qrUrl}
             download={`qr-reservas-${slug}.png`}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-700 px-5 py-3 text-sm font-bold text-white hover:bg-red-800"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
           >
             <Printer size={15} /> Descargar QR
           </a>
         </div>
 
         {/* Info */}
-        <div className="flex min-w-0 flex-1 flex-col gap-5">
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
 
           {/* Enlace */}
-          <div className="rounded-3xl border border-neutral-200 bg-white p-6">
-            <h2 className="font-black text-neutral-950">Tu enlace de reservas</h2>
+          <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Enlace público</p>
+            <h2 className="mt-0.5 font-black text-[#0D0D0D]">Tu enlace de reservas</h2>
             <p className="mt-1 text-sm text-neutral-500">
               Copia y pega este link donde quieras. Tus clientes reservan sin crear cuenta.
             </p>
-            <div className="mt-4 flex min-w-0 items-center gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3">
+            <div className="mt-4 flex min-w-0 items-center gap-2 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] px-4 py-3">
               <span className="min-w-0 flex-1 break-all font-mono text-sm text-neutral-700">{publicUrl}</span>
               <button
+                type="button"
                 onClick={handleCopy}
-                className="shrink-0 rounded-xl border border-neutral-200 p-2 hover:bg-neutral-100"
+                className="shrink-0 rounded-xl border border-[#E5E2D9] p-2 transition-colors hover:bg-white"
                 title="Copiar enlace"
               >
-                {copied ? <Check size={15} className="text-green-600" /> : <Copy size={15} />}
+                {copied
+                  ? <Check size={15} className="text-green-600" />
+                  : <Copy size={15} className="text-neutral-500" />
+                }
               </button>
               <a
                 href={publicUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-xl border border-neutral-200 p-2 hover:bg-neutral-100"
+                className="shrink-0 rounded-xl border border-[#E5E2D9] p-2 transition-colors hover:bg-white"
                 title="Abrir página pública"
               >
-                <ExternalLink size={15} />
+                <ExternalLink size={15} className="text-neutral-500" />
               </a>
             </div>
             {copied && (
@@ -83,28 +87,30 @@ export function QRClient({ name, slug }: Props) {
             )}
           </div>
 
-          {/* Cómo usarlo */}
-          <div className="rounded-3xl border border-neutral-200 bg-white p-6">
-            <h2 className="font-black text-neutral-950">Dónde compartirlo</h2>
+          {/* Dónde compartirlo */}
+          <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Distribución</p>
+            <h2 className="mt-0.5 font-black text-[#0D0D0D]">Dónde compartirlo</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {[
-                { icon: Instagram,      color: "bg-pink-50 text-pink-600",    title: "Instagram",    text: "Añade el link en tu bio y comparte el QR en historias." },
-                { icon: MessageCircle,  color: "bg-green-50 text-green-700",  title: "WhatsApp",     text: "Envía el link a grupos y clientes para reservas directas." },
-                { icon: Globe,          color: "bg-blue-50 text-blue-700",    title: "Google Maps",  text: "Añade el link de reservas en tu ficha de Google Business." },
-                { icon: Printer,        color: "bg-neutral-100 text-neutral-600", title: "Tu local", text: "Imprime el QR y colócalo en el mostrador o la vitrina." },
+                { icon: Instagram,     color: "bg-pink-50 text-pink-600",       title: "Instagram",   text: "Añade el link en tu bio y comparte el QR en historias." },
+                { icon: MessageCircle, color: "bg-green-50 text-green-700",     title: "WhatsApp",    text: "Envía el link a grupos y clientes para reservas directas." },
+                { icon: Globe,         color: "bg-blue-50 text-blue-700",       title: "Google Maps", text: "Añade el link de reservas en tu ficha de Google Business." },
+                { icon: Printer,       color: "bg-[#C89B3C]/10 text-[#C89B3C]", title: "Tu local",   text: "Imprime el QR y colócalo en el mostrador o la vitrina." },
               ].map(({ icon: Icon, color, title, text }) => (
-                <div key={title} className="flex gap-3 rounded-2xl border border-neutral-100 bg-neutral-50 p-4">
+                <div key={title} className="flex gap-3 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA]/50 p-4">
                   <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${color}`}>
                     <Icon size={16} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-neutral-900">{title}</p>
+                    <p className="text-sm font-bold text-[#0D0D0D]">{title}</p>
                     <p className="mt-0.5 text-xs leading-5 text-neutral-500">{text}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
         </div>
       </div>
     </div>

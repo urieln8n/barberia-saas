@@ -2,27 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Palette tokens ────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
 
-  /* BarberíaOS palette tokens */
-  --ink:     #0A0A0A;
-  --carbon:  #171717;
-  --wine:    #8E1F2D;
+  --ink:     #0D0D0D;
+  --carbon:  #1A1A1A;
+  --ivory:   #F5F2EA;
+  --gold:    #C89B3C;
+  --teal:    #00C2A8;
+  --wine:    #E5484D;
   --pole:    #1F4E8C;
-  --gold:    #C6A969;
-  --ivory:   #F8F5EF;
-  --border:  #E7E2D8;
+  --border:  #E5E2D9;
   --success: #16A34A;
   --amber:   #D97706;
 }
 
-body {
-  margin: 0;
-  background: #F8F5EF;
-  color: #0A0A0A;
+/* ─── Base layer ────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: #F5F2EA;
+    color: #0D0D0D;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI Variable",
+      "Segoe UI", system-ui, ui-sans-serif, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv11", "ss01", "kern";
+    letter-spacing: -0.011em;
+    line-height: 1.6;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #C89B3C;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 }
 
-* {
-  box-sizing: border-box;
+/* ─── Component layer — design token library ────────────────────────────── */
+@layer components {
+
+  /* ── Cards ── */
+  .card {
+    @apply rounded-3xl border border-neutral-200 bg-white shadow-sm;
+  }
+  .card-ghost {
+    @apply rounded-3xl border border-neutral-100 bg-neutral-50;
+  }
+  .card-dark {
+    @apply rounded-3xl border border-white/10 bg-[#1A1A1A] text-white;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl
+           px-5 py-2.5 text-sm font-bold transition-all duration-150 active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-[#00C2A8] text-[#0D0D0D] shadow-sm hover:bg-[#009e88] hover:shadow-md;
+  }
+  .btn-dark {
+    @apply btn bg-[#0D0D0D] text-white shadow-sm hover:bg-[#1A1A1A] hover:shadow-md;
+  }
+  .btn-gold {
+    @apply btn bg-[#C89B3C] text-[#0D0D0D] shadow-sm hover:bg-[#b08933] hover:shadow-md;
+  }
+  .btn-outline {
+    @apply btn border border-neutral-200 bg-white text-neutral-700
+           hover:border-neutral-300 hover:bg-neutral-50;
+  }
+  .btn-ghost {
+    @apply btn text-neutral-500 hover:bg-neutral-100 hover:text-neutral-950;
+  }
+  .btn-danger {
+    @apply btn bg-[#E5484D] text-white hover:bg-red-700;
+  }
+
+  /* ── Inputs ── */
+  .input {
+    @apply w-full rounded-2xl border border-neutral-200 bg-white px-4 py-2.5
+           text-sm text-neutral-900 placeholder:text-neutral-400 outline-none
+           transition-colors duration-150
+           focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10;
+  }
+  .input-error {
+    @apply border-[#E5484D] focus:border-[#E5484D] focus:ring-[#E5484D]/10;
+  }
+
+  /* ── Badges ── */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .badge-gold {
+    @apply badge border border-[#C89B3C]/30 bg-[#C89B3C]/10 text-[#C89B3C];
+  }
+  .badge-teal {
+    @apply badge border border-[#00C2A8]/30 bg-[#00C2A8]/10 text-[#009e88];
+  }
+  .badge-success {
+    @apply badge border border-emerald-100 bg-emerald-50 text-emerald-700;
+  }
+  .badge-warning {
+    @apply badge border border-amber-100 bg-amber-50 text-amber-700;
+  }
+  .badge-danger {
+    @apply badge border border-red-100 bg-red-50 text-[#E5484D];
+  }
+  .badge-neutral {
+    @apply badge border border-neutral-200 bg-neutral-100 text-neutral-600;
+  }
+
+  /* ── Section labels ── */
+  .label-section {
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C];
+  }
 }

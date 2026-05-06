@@ -3,6 +3,19 @@ import { redirect } from "next/navigation";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import {
+  CalendarCheck,
+  TrendingUp,
+  Users,
+  AlertCircle,
+  QrCode,
+  ArrowRight,
+  Scissors,
+  User,
+  CreditCard,
+} from "lucide-react";
+import { StatCard }   from "@/components/dashboard/StatCard";
+import { EmptyState } from "@/components/dashboard/empty-state";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +85,23 @@ function statusClass(status: string) {
   return classes[status] ?? "bg-neutral-100 text-neutral-700 border-neutral-200";
 }
 
+function getWeekStartISO() {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = day === 0 ? 6 : day - 1;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - diff);
+  return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
+}
+
+function getMonthBoundsISO(): { start: string; end: string } {
+  const now = new Date();
+  const start = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const end = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+  return { start, end };
+}
+
 function normalizeAppointment(item: any): AppointmentItem {
   const client = firstRelation(item.clients);
   const service = firstRelation(item.services);
@@ -122,6 +152,8 @@ export default async function DashboardPage() {
   }
 
   const today = getLocalDateISO();
+  const weekStart = getWeekStartISO();
+  const { start: monthStart, end: monthEnd } = getMonthBoundsISO();
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -143,6 +175,9 @@ export default async function DashboardPage() {
     clientsResult,
     servicesResult,
     paymentsResult,
+    monthApptsResult,
+    monthPaymentsResult,
+    newClientsResult,
   ] = await Promise.all([
     dataClient
       .from("barbershops")
@@ -223,6 +258,26 @@ export default async function DashboardPage() {
       .eq("barbershop_id", barbershopId)
       .gte("created_at", `${today}T00:00:00`)
       .lte("created_at", `${today}T23:59:59`),
+
+    dataClient
+      .from("appointments")
+      .select("appointment_date, start_time, status, services(name), barbers(name)")
+      .eq("barbershop_id", barbershopId)
+      .gte("appointment_date", monthStart)
+      .lte("appointment_date", monthEnd),
+
+    dataClient
+      .from("payments")
+      .select("amount")
+      .eq("barbershop_id", barbershopId)
+      .gte("created_at", `${monthStart}T00:00:00`)
+      .lte("created_at", `${monthEnd}T23:59:59`),
+
+    dataClient
+      .from("clients")
+      .select("id", { count: "exact" })
+      .eq("barbershop_id", barbershopId)
+      .gte("created_at", `${monthStart}T00:00:00`),
   ]);
 
   const barbershop = barbershopResult.data;
@@ -243,15 +298,55 @@ export default async function DashboardPage() {
 
   const publicBookingUrl = `/r/${barbershop?.slug ?? "demo-barber"}`;
 
+  // ── Stats derivadas del mes ──
+  const monthAppts = (monthApptsResult.data as any[]) ?? [];
+  const weekApptsCount = monthAppts.filter(
+    (a: any) => a.appointment_date >= weekStart
+  ).length;
+  const monthApptsCount = monthAppts.length;
+  const cancelledCount = monthAppts.filter(
+    (a: any) => a.status === "cancelled" || a.status === "no_show"
+  ).length;
+
+  const monthRevenue = ((monthPaymentsResult.data as any[]) ?? []).reduce(
+    (sum: number, p: any) => sum + Number(p.amount ?? 0),
+    0
+  );
+  const newClientsCount = newClientsResult.count ?? 0;
+
+  const serviceCount: Record<string, number> = {};
+  for (const a of monthAppts) {
+    if (a.status !== "cancelled" && a.status !== "no_show") {
+      const svc = Array.isArray(a.services) ? a.services[0] : a.services;
+      const name: string = svc?.name ?? "Sin servicio";
+      serviceCount[name] = (serviceCount[name] ?? 0) + 1;
+    }
+  }
+  const topServiceEntry = Object.entries(serviceCount).sort((x, y) => y[1] - x[1])[0];
+  const topServiceName = topServiceEntry?.[0] ?? "—";
+  const topServiceCount = topServiceEntry?.[1] ?? 0;
+
+  const barberCount: Record<string, number> = {};
+  for (const a of monthAppts) {
+    if (a.status !== "cancelled" && a.status !== "no_show") {
+      const brb = Array.isArray(a.barbers) ? a.barbers[0] : a.barbers;
+      const name: string = brb?.name ?? "Sin barbero";
+      barberCount[name] = (barberCount[name] ?? 0) + 1;
+    }
+  }
+  const topBarberEntry = Object.entries(barberCount).sort((x, y) => y[1] - x[1])[0];
+  const topBarberName = topBarberEntry?.[0] ?? "—";
+  const topBarberCount = topBarberEntry?.[1] ?? 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
 
       {/* ── Hero ── */}
-      <section className="overflow-hidden rounded-3xl bg-neutral-950 text-white shadow-lg">
-        <div className="h-1 w-full bg-gradient-to-r from-[#8E1F2D] via-[#6B1622] to-[#C6A969]" />
+      <section className="overflow-hidden rounded-3xl bg-[#0D0D0D] text-white shadow-lg">
+        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
         <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C6A969]">Panel principal</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Panel principal</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
@@ -259,23 +354,23 @@ export default async function DashboardPage() {
               Gestiona citas, clientes, servicios, barberos y pagos — todo desde aquí.
             </p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl bg-[#8E1F2D] px-5 py-3 text-center text-sm font-bold text-white hover:bg-[#6B1622]"
+              className="rounded-2xl bg-[#00C2A8] px-5 py-3 text-center text-sm font-bold text-[#0D0D0D] transition-colors hover:bg-[#009e88]"
             >
               Ver agenda hoy
             </Link>
             <Link
               href="/dashboard/qr"
-              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white hover:bg-white/10"
+              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-white/10"
             >
               Ver QR de reservas
             </Link>
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white hover:bg-white/10"
+              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-white/10"
             >
               Página pública ↗
             </Link>
@@ -283,90 +378,130 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── Métricas ── */}
+      {/* ── KPI Cards ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          title="Citas hoy"
+          value={String(todayAppointments.length)}
+          hint={`${weekApptsCount} esta semana`}
+          icon={CalendarCheck}
+          iconBg="bg-[#00C2A8]/10"
+          iconColor="text-[#00C2A8]"
+        />
+        <StatCard
+          title="Ingresos hoy"
+          value={`${todayRevenue.toFixed(0)} €`}
+          hint={`${monthRevenue.toFixed(0)} € este mes`}
+          icon={TrendingUp}
+          iconBg="bg-[#C89B3C]/10"
+          iconColor="text-[#C89B3C]"
+        />
+        <StatCard
+          title="Clientes"
+          value={String(totalClients)}
+          hint={`+${newClientsCount} nuevos este mes`}
+          icon={Users}
+          iconBg="bg-blue-50"
+          iconColor="text-blue-500"
+        />
+        <StatCard
+          title="No shows · Canceladas"
+          value={String(cancelledCount)}
+          hint="Este mes"
+          icon={AlertCircle}
+          iconBg={cancelledCount > 0 ? "bg-red-50" : "bg-neutral-100"}
+          iconColor={cancelledCount > 0 ? "text-[#E5484D]" : "text-neutral-400"}
+        />
+      </section>
+
+      {/* ── Stats del mes ── */}
+      <section className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas hoy</p>
-          <p className="mt-3 text-4xl font-black text-neutral-950">{todayAppointments.length}</p>
-          <p className="mt-1 text-xs text-neutral-400">{today}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas este mes</p>
+          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{monthApptsCount}</p>
+          <p className="mt-1.5 text-xs text-neutral-400">
+            {monthApptsCount - cancelledCount} completadas · {cancelledCount} canceladas
+          </p>
         </div>
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos hoy</p>
-          <p className="mt-3 text-4xl font-black text-neutral-950">{todayRevenue.toFixed(0)} €</p>
-          <p className="mt-1 text-xs text-neutral-400">Pagos registrados</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicio top</p>
+          <p className="mt-3 truncate text-xl font-black leading-tight text-[#0D0D0D]">{topServiceName}</p>
+          <p className="mt-1.5 text-xs text-neutral-400">
+            {topServiceCount > 0 ? `${topServiceCount} citas este mes` : "Sin datos aún"}
+          </p>
         </div>
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Clientes</p>
-          <p className="mt-3 text-4xl font-black text-neutral-950">{totalClients}</p>
-          <p className="mt-1 text-xs text-neutral-400">Total en CRM</p>
-        </div>
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicios</p>
-          <p className="mt-3 text-4xl font-black text-neutral-950">{totalServices}</p>
-          <p className="mt-1 text-xs text-neutral-400">Disponibles online</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Barbero top</p>
+          <p className="mt-3 truncate text-xl font-black leading-tight text-[#0D0D0D]">{topBarberName}</p>
+          <p className="mt-1.5 text-xs text-neutral-400">
+            {topBarberCount > 0 ? `${topBarberCount} citas este mes` : "Sin datos aún"}
+          </p>
         </div>
       </section>
 
-      {/* ── Próximas citas + Link ── */}
-      <section className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+      {/* ── Próximas citas + Panel lateral ── */}
+      <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
 
         {/* Próximas citas */}
         <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-black text-neutral-950">Próximas citas</h2>
+              <h2 className="text-lg font-black text-[#0D0D0D]">Próximas citas</h2>
               <p className="text-sm text-neutral-500">Reservas activas desde hoy.</p>
             </div>
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl border border-neutral-200 px-4 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
+              className="flex items-center gap-1.5 rounded-2xl border border-[#E5E2D9] px-4 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
             >
-              Abrir agenda →
+              Abrir agenda <ArrowRight size={14} />
             </Link>
           </div>
 
           {upcomingAppointments.length === 0 ? (
-            <div className="mt-6 rounded-3xl border border-dashed border-neutral-200 bg-neutral-50 p-8 text-center">
-              <p className="font-semibold text-neutral-600">Sin citas próximas</p>
-              <p className="mt-1 text-sm text-neutral-400">
-                Comparte tu QR o link para recibir reservas.
-              </p>
-              <Link
-                href="/dashboard/qr"
-                className="mt-4 inline-flex items-center gap-1 rounded-full bg-neutral-950 px-4 py-2 text-xs font-bold text-white hover:opacity-80"
-              >
-                Ver QR de reservas
-              </Link>
-            </div>
+            <EmptyState
+              icon={CalendarCheck}
+              title="Sin citas próximas"
+              description="Comparte tu QR o link para recibir reservas."
+              action={
+                <Link
+                  href="/dashboard/qr"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+                >
+                  <QrCode size={15} /> Ver QR de reservas
+                </Link>
+              }
+            />
           ) : (
-            <div className="mt-5 flex flex-col gap-3">
+            <div className="mt-4 flex flex-col gap-2.5">
               {upcomingAppointments.map((appointment) => (
-                <article key={appointment.id} className="rounded-2xl border border-neutral-100 bg-neutral-50 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex gap-3">
-                      <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-white text-center shadow-sm">
-                        <span className="text-[9px] font-bold uppercase text-neutral-400">
-                          {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
-                        </span>
-                        <span className="text-base font-black text-neutral-950">
-                          {new Date(appointment.appointment_date + "T00:00:00").getDate()}
-                        </span>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-neutral-950 leading-tight">
-                          {appointment.clients?.name ?? "Cliente sin nombre"}
-                        </p>
-                        <p className="mt-0.5 text-xs text-neutral-500">
-                          {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}
-                        </p>
-                        {appointment.clients?.phone && (
-                          <p className="mt-0.5 text-xs text-neutral-400">{appointment.clients.phone}</p>
-                        )}
-                      </div>
-                    </div>
-                    <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(appointment.status)}`}>
-                      {statusLabel(appointment.status)}
+                <article
+                  key={appointment.id}
+                  className="flex items-start gap-3 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA]/50 p-4"
+                >
+                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#0D0D0D] text-center">
+                    <span className="text-[9px] font-bold uppercase text-[#C89B3C]">
+                      {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
                     </span>
+                    <span className="text-base font-black text-white">
+                      {new Date(appointment.appointment_date + "T00:00:00").getDate()}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold leading-tight text-[#0D0D0D]">
+                        {appointment.clients?.name ?? "Cliente sin nombre"}
+                      </p>
+                      <span className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusClass(appointment.status)}`}>
+                        {statusLabel(appointment.status)}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-xs text-neutral-500">
+                      {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}
+                    </p>
+                    {appointment.clients?.phone && (
+                      <p className="mt-0.5 text-xs text-neutral-400">{appointment.clients.phone}</p>
+                    )}
                   </div>
                 </article>
               ))}
@@ -374,14 +509,16 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {/* Link de reservas */}
+        {/* Panel lateral */}
         <div className="flex flex-col gap-4">
+
+          {/* Link de reservas */}
           <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Tu link de reservas</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Tu link de reservas</p>
             <p className="mt-2 text-sm text-neutral-600">
               Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
             </p>
-            <div className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3">
+            <div className="mt-4 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] px-4 py-3">
               <p className="break-all font-mono text-xs font-semibold text-neutral-700">
                 {typeof window !== "undefined" ? window.location.origin : "https://barberiaos.com"}{publicBookingUrl}
               </p>
@@ -389,40 +526,43 @@ export default async function DashboardPage() {
             <div className="mt-4 grid gap-2">
               <Link
                 href="/dashboard/qr"
-                className="flex items-center justify-center gap-2 rounded-2xl bg-neutral-950 px-5 py-3 text-sm font-bold text-white hover:opacity-80"
+                className="flex items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
               >
-                Ver y descargar QR
+                <QrCode size={15} /> Ver y descargar QR
               </Link>
               <Link
                 href={publicBookingUrl}
                 target="_blank"
-                className="flex items-center justify-center gap-2 rounded-2xl border border-neutral-200 px-5 py-3 text-sm font-bold text-neutral-700 hover:bg-neutral-50"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-[#E5E2D9] px-5 py-3 text-sm font-bold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
               >
-                Abrir página pública ↗
+                Abrir página pública <ArrowRight size={15} />
               </Link>
             </div>
           </div>
 
           {/* Acciones rápidas */}
           <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Acciones rápidas</p>
-            <div className="mt-3 grid gap-2">
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Acciones rápidas</p>
+            <div className="mt-3 grid gap-1">
               {[
-                { href: "/dashboard/clientes",  label: "Clientes"  },
-                { href: "/dashboard/servicios", label: "Servicios" },
-                { href: "/dashboard/pagos",     label: "Pagos"     },
-                { href: "/dashboard/barberos",  label: "Barberos"  },
-              ].map(({ href, label }) => (
+                { href: "/dashboard/clientes",  label: "Clientes",  icon: Users      },
+                { href: "/dashboard/servicios", label: "Servicios", icon: Scissors   },
+                { href: "/dashboard/pagos",     label: "Pagos",     icon: CreditCard },
+                { href: "/dashboard/barberos",  label: "Barberos",  icon: User       },
+              ].map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
                 >
-                  {label} <span className="text-neutral-300">→</span>
+                  <Icon size={15} className="shrink-0 text-neutral-400" />
+                  {label}
+                  <span className="ml-auto text-neutral-300">→</span>
                 </Link>
               ))}
             </div>
           </div>
+
         </div>
       </section>
     </div>
