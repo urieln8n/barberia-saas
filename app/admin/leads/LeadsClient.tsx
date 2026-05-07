@@ -70,27 +70,32 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
   const [editing,   setEditing]   = useState<Lead | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(l: Lead) { setEditing(l); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setFormError(null); setShowModal(true); }
+  function openEdit(l: Lead) { setEditing(l); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este lead?")) return;
     setDeleting(id);
-    await deleteLead(id);
+    const result = await deleteLead(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateLead(formData);
+      result = await updateLead(formData);
     } else {
-      await createLead(formData);
+      result = await createLead(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -396,6 +401,12 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                     className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
                   />
                 </div>
+
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
 
                 {/* Botones */}
                 <div className="flex gap-3 pt-2">

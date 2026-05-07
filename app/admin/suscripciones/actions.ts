@@ -1,93 +1,127 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
+export type ActionResult = { success: true } | { success: false; error: string };
+
 const PATH = "/admin/suscripciones";
 
-export async function createSubscription(formData: FormData) {
-  await requirePlatformAdmin();
-  const supabase = createServiceRoleClient();
-
-  const status    = formData.get("status") as string;
-  const startedAt = formData.get("started_at") as string;
-  const trialEnds = formData.get("trial_ends_at") as string;
-  const periodStart = formData.get("current_period_start") as string;
-  const periodEnd   = formData.get("current_period_end")   as string;
-
-  await supabase.from("subscriptions").insert({
-    barbershop_id:        formData.get("barbershop_id") as string,
-    plan_name:            formData.get("plan_name")     as string || "starter",
-    amount_monthly:       parseFloat(formData.get("amount_monthly") as string) || 0,
-    currency:             (formData.get("currency") as string)?.trim() || "EUR",
-    billing_cycle:        formData.get("billing_cycle") as string || "monthly",
-    status,
-    started_at:           startedAt   || null,
-    trial_ends_at:        trialEnds   || null,
-    current_period_start: periodStart || null,
-    current_period_end:   periodEnd   || null,
-    notes:                (formData.get("notes") as string)?.trim() || null,
-  });
-
-  revalidatePath(PATH);
-  revalidatePath("/admin");
+function strOrNull(v: unknown): string | null {
+  return typeof v === "string" && v.trim() ? v.trim() : null;
 }
 
-export async function updateSubscription(formData: FormData) {
-  await requirePlatformAdmin();
-  const supabase = createServiceRoleClient();
-  const id = formData.get("id") as string;
+const PLAN_NAMES    = ["starter", "growth", "premium", "custom"] as const;
+const SUB_STATUSES  = ["trial", "active", "paused", "cancelled"] as const;
+const BILLING_CYCLES = ["monthly", "annual"] as const;
 
-  const status    = formData.get("status") as string;
-  const startedAt = formData.get("started_at") as string;
-  const trialEnds = formData.get("trial_ends_at") as string;
-  const periodStart = formData.get("current_period_start") as string;
-  const periodEnd   = formData.get("current_period_end")   as string;
+const SubscriptionSchema = z.object({
+  barbershop_id:        z.string().uuid("ID de barbería no válido"),
+  plan_name:            z.enum(PLAN_NAMES, { errorMap: () => ({ message: "Plan no válido" }) }),
+  amount_monthly:       z.preprocess(
+    v => (v === "" || v == null) ? 0 : Number(v),
+    z.number({ invalid_type_error: "El importe debe ser un número" }).min(0, "El importe debe ser ≥ 0"),
+  ),
+  currency:             z.string().trim().min(1, "La moneda es obligatoria").default("EUR"),
+  billing_cycle:        z.enum(BILLING_CYCLES, { errorMap: () => ({ message: "Ciclo de facturación no válido" }) }).default("monthly"),
+  status:               z.enum(SUB_STATUSES, { errorMap: () => ({ message: "Estado no válido" }) }).default("trial"),
+  started_at:           z.preprocess(strOrNull, z.string().nullable()),
+  trial_ends_at:        z.preprocess(strOrNull, z.string().nullable()),
+  current_period_start: z.preprocess(strOrNull, z.string().nullable()),
+  current_period_end:   z.preprocess(strOrNull, z.string().nullable()),
+  notes:                z.preprocess(strOrNull, z.string().nullable()),
+});
 
-  const cancelled_at = status === "cancelled"
-    ? new Date().toISOString()
-    : null;
+const StatusSchema = z.enum(SUB_STATUSES, { errorMap: () => ({ message: "Estado no válido" }) });
 
-  await supabase.from("subscriptions").update({
-    plan_name:            formData.get("plan_name")    as string || "starter",
-    amount_monthly:       parseFloat(formData.get("amount_monthly") as string) || 0,
-    currency:             (formData.get("currency") as string)?.trim() || "EUR",
-    billing_cycle:        formData.get("billing_cycle") as string || "monthly",
-    status,
-    started_at:           startedAt   || null,
-    trial_ends_at:        trialEnds   || null,
-    current_period_start: periodStart || null,
-    current_period_end:   periodEnd   || null,
-    cancelled_at,
-    notes:                (formData.get("notes") as string)?.trim() || null,
-    updated_at:           new Date().toISOString(),
-  }).eq("id", id);
-
-  revalidatePath(PATH);
-  revalidatePath("/admin");
+function fromFormData(formData: FormData) {
+  return Object.fromEntries(formData.entries());
 }
 
-export async function updateSubscriptionStatus(id: string, status: string) {
+export async function createSubscription(formData: FormData): Promise<ActionResult> {
   await requirePlatformAdmin();
-  const supabase = createServiceRoleClient();
+  try {
+    const parsed = SubscriptionSchema.safeParse(fromFormData(formData));
+    if (!parsed.success) return { success: false, error: parsed.error.errors[0].message };
 
-  const cancelled_at = status === "cancelled" ? new Date().toISOString() : null;
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase.from("subscriptions").insert(parsed.data);
+    if (error) return { success: false, error: error.message };
 
-  await supabase.from("subscriptions").update({
-    status,
-    cancelled_at,
-    updated_at: new Date().toISOString(),
-  }).eq("id", id);
-
-  revalidatePath(PATH);
-  revalidatePath("/admin");
+    revalidatePath(PATH);
+    revalidatePath("/admin");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Error inesperado al crear la suscripción" };
+  }
 }
 
-export async function deleteSubscription(id: string) {
+export async function updateSubscription(formData: FormData): Promise<ActionResult> {
   await requirePlatformAdmin();
-  const supabase = createServiceRoleClient();
-  await supabase.from("subscriptions").delete().eq("id", id);
-  revalidatePath(PATH);
-  revalidatePath("/admin");
+  try {
+    const id = (formData.get("id") as string)?.trim();
+    if (!id) return { success: false, error: "ID de suscripción no válido" };
+
+    const parsed = SubscriptionSchema.safeParse(fromFormData(formData));
+    if (!parsed.success) return { success: false, error: parsed.error.errors[0].message };
+
+    const cancelled_at = parsed.data.status === "cancelled" ? new Date().toISOString() : null;
+
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase
+      .from("subscriptions")
+      .update({ ...parsed.data, cancelled_at, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) return { success: false, error: error.message };
+
+    revalidatePath(PATH);
+    revalidatePath("/admin");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Error inesperado al actualizar la suscripción" };
+  }
+}
+
+export async function updateSubscriptionStatus(id: string, status: string): Promise<ActionResult> {
+  await requirePlatformAdmin();
+  try {
+    if (!id?.trim()) return { success: false, error: "ID no válido" };
+
+    const parsed = StatusSchema.safeParse(status);
+    if (!parsed.success) return { success: false, error: parsed.error.errors[0].message };
+
+    const cancelled_at = parsed.data === "cancelled" ? new Date().toISOString() : null;
+
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase
+      .from("subscriptions")
+      .update({ status: parsed.data, cancelled_at, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) return { success: false, error: error.message };
+
+    revalidatePath(PATH);
+    revalidatePath("/admin");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Error al actualizar el estado" };
+  }
+}
+
+export async function deleteSubscription(id: string): Promise<ActionResult> {
+  await requirePlatformAdmin();
+  try {
+    if (!id?.trim()) return { success: false, error: "ID no válido" };
+
+    const supabase = createServiceRoleClient();
+    const { error } = await supabase.from("subscriptions").delete().eq("id", id);
+    if (error) return { success: false, error: error.message };
+
+    revalidatePath(PATH);
+    revalidatePath("/admin");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Error al eliminar la suscripción" };
+  }
 }

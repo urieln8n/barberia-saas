@@ -58,33 +58,39 @@ export function TareasClient({ tasks, leads, deals }: { tasks: Task[]; leads: Le
   const [toggling,  setToggling]  = useState<string | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(t: Task) { setEditing(t); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setFormError(null); setShowModal(true); }
+  function openEdit(t: Task) { setEditing(t); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleToggle(id: string, status: string) {
     setToggling(id);
-    await toggleTaskStatus(id, status);
+    const result = await toggleTaskStatus(id, status);
     setToggling(null);
+    if (!result.success) alert(`Error: ${result.error}`);
   }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar esta tarea?")) return;
     setDeleting(id);
-    await deleteTask(id);
+    const result = await deleteTask(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateTask(formData);
+      result = await updateTask(formData);
     } else {
-      await createTask(formData);
+      result = await createTask(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -349,6 +355,12 @@ export function TareasClient({ tasks, leads, deals }: { tasks: Task[]; leads: Le
                     </div>
                   </div>
                 </div>
+
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
 
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={closeModal}

@@ -97,33 +97,39 @@ export function SuscripcionesClient({
   const [updating,  setUpdating]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
   const [planAmount, setPlanAmount] = useState<number>(49);
+  const [formError, setFormError]  = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setPlanAmount(49); setShowModal(true); }
-  function openEdit(s: Subscription) { setEditing(s); setPlanAmount(s.amount_monthly); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setPlanAmount(49); setFormError(null); setShowModal(true); }
+  function openEdit(s: Subscription) { setEditing(s); setPlanAmount(s.amount_monthly); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar esta suscripción?")) return;
     setDeleting(id);
-    await deleteSubscription(id);
+    const result = await deleteSubscription(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleStatusChange(id: string, status: string) {
     setUpdating(id);
-    await updateSubscriptionStatus(id, status);
+    const result = await updateSubscriptionStatus(id, status);
     setUpdating(null);
+    if (!result.success) alert(`Error al cambiar estado: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateSubscription(formData);
+      result = await updateSubscription(formData);
     } else {
-      await createSubscription(formData);
+      result = await createSubscription(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -483,6 +489,12 @@ export function SuscripcionesClient({
                     className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
                   />
                 </div>
+
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
 
                 {/* Botones */}
                 <div className="flex gap-3 pt-2">

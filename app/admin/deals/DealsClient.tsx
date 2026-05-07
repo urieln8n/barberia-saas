@@ -50,27 +50,32 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
   const [editing,   setEditing]   = useState<Deal | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(d: Deal) { setEditing(d); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setFormError(null); setShowModal(true); }
+  function openEdit(d: Deal) { setEditing(d); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este deal?")) return;
     setDeleting(id);
-    await deleteDeal(id);
+    const result = await deleteDeal(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateDeal(formData);
+      result = await updateDeal(formData);
     } else {
-      await createDeal(formData);
+      result = await createDeal(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -326,6 +331,12 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
                   />
                 </div>
+
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
 
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={closeModal}
