@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { createClient } from "@/src/lib/supabase/server";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 export type ActionResult = { success: true } | { success: false; error: string };
@@ -71,7 +71,7 @@ export async function createDeal(formData: FormData): Promise<ActionResult> {
     const parsed = DealSchema.safeParse(fromFormData(formData));
     if (!parsed.success) return { success: false, error: firstError(parsed.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase.from("crm_deals").insert(parsed.data).select("id").single();
     if (error) return { success: false, error: dbErrorMessage(error, "No se pudo crear el deal") };
 
@@ -91,7 +91,7 @@ export async function updateDeal(formData: FormData): Promise<ActionResult> {
     const parsed = DealSchema.safeParse(fromFormData(formData));
     if (!parsed.success) return { success: false, error: firstError(parsed.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("crm_deals")
       .update({ ...parsed.data, updated_at: new Date().toISOString() })
@@ -113,7 +113,7 @@ export async function deleteDeal(id: string): Promise<ActionResult> {
     const parsedId = DealIdSchema.safeParse(id);
     if (!parsedId.success) return { success: false, error: firstError(parsedId.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("crm_deals")
       .delete()

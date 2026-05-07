@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { createClient } from "@/src/lib/supabase/server";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 export type ActionResult = { success: true } | { success: false; error: string };
@@ -63,7 +63,7 @@ export async function createTask(formData: FormData): Promise<ActionResult> {
     const parsed = TaskSchema.safeParse(fromFormData(formData));
     if (!parsed.success) return { success: false, error: firstError(parsed.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase.from("crm_tasks").insert(parsed.data).select("id").single();
     if (error) return { success: false, error: dbErrorMessage(error, "No se pudo crear la tarea") };
 
@@ -83,7 +83,7 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
     const parsed = TaskSchema.safeParse(fromFormData(formData));
     if (!parsed.success) return { success: false, error: firstError(parsed.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("crm_tasks")
       .update({ ...parsed.data, updated_at: new Date().toISOString() })
@@ -105,7 +105,7 @@ export async function deleteTask(id: string): Promise<ActionResult> {
     const parsedId = TaskIdSchema.safeParse(id);
     if (!parsedId.success) return { success: false, error: firstError(parsedId.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("crm_tasks")
       .delete()
@@ -131,7 +131,7 @@ export async function toggleTaskStatus(id: string, currentStatus: string): Promi
     const parsed = StatusSchema.safeParse(newStatusRaw);
     if (!parsed.success) return { success: false, error: parsed.error.errors[0].message };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("crm_tasks")
       .update({ status: parsed.data, updated_at: new Date().toISOString() })

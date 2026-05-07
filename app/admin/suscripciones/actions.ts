@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { createClient } from "@/src/lib/supabase/server";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 export type ActionResult = { success: true } | { success: false; error: string };
@@ -65,7 +65,7 @@ export async function createSubscription(formData: FormData): Promise<ActionResu
     const parsed = SubscriptionSchema.safeParse(fromFormData(formData));
     if (!parsed.success) return { success: false, error: firstError(parsed.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase.from("subscriptions").insert(parsed.data).select("id").single();
     if (error) return { success: false, error: dbErrorMessage(error, "No se pudo crear la suscripción") };
 
@@ -88,7 +88,7 @@ export async function updateSubscription(formData: FormData): Promise<ActionResu
 
     const cancelled_at = parsed.data.status === "cancelled" ? new Date().toISOString() : null;
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("subscriptions")
       .update({ ...parsed.data, cancelled_at, updated_at: new Date().toISOString() })
@@ -116,7 +116,7 @@ export async function updateSubscriptionStatus(id: string, status: string): Prom
 
     const cancelled_at = parsed.data === "cancelled" ? new Date().toISOString() : null;
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("subscriptions")
       .update({ status: parsed.data, cancelled_at, updated_at: new Date().toISOString() })
@@ -139,7 +139,7 @@ export async function deleteSubscription(id: string): Promise<ActionResult> {
     const parsedId = SubscriptionIdSchema.safeParse(id);
     if (!parsedId.success) return { success: false, error: firstError(parsedId.error) };
 
-    const supabase = createServiceRoleClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from("subscriptions")
       .delete()

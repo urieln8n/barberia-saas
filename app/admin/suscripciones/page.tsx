@@ -1,5 +1,6 @@
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { AdminDataError } from "../_components/AdminDataError";
 import { SuscripcionesClient } from "./SuscripcionesClient";
 
 export default async function SuscripcionesPage() {
@@ -7,7 +8,10 @@ export default async function SuscripcionesPage() {
 
   const supabase = createServiceRoleClient();
 
-  const [{ data: rawSubs }, { data: barbershops }] = await Promise.all([
+  const [
+    { data: rawSubs, error: subscriptionsError },
+    { data: barbershops, error: barbershopsError },
+  ] = await Promise.all([
     supabase
       .from("subscriptions")
       .select("*, barbershops(name)")
@@ -17,6 +21,11 @@ export default async function SuscripcionesPage() {
       .select("id, name")
       .order("name"),
   ]);
+
+  const error = subscriptionsError ?? barbershopsError;
+  if (error) {
+    return <AdminDataError message={error.message} />;
+  }
 
   // Flatten the barbershop join
   const subscriptions = (rawSubs ?? []).map((s) => {

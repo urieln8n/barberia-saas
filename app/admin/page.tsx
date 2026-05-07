@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
+import { AdminDataError } from "./_components/AdminDataError";
 import {
   AlertTriangle, TrendingUp, Store, Users, Target,
   CheckSquare, Clock, DollarSign, Calendar, ChevronRight, Zap,
@@ -47,16 +48,16 @@ async function getMetrics() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   const [
-    { count: totalBarbershops },
-    { count: totalBarbers },
-    { count: totalAppointments },
-    { data: allLeads },
-    { data: allTasks },
-    { data: activeSubs },
-    { data: recentLeads },
-    { data: overdueTasks },
-    { data: topOpenDeals },
-    { data: monthPayments },
+    { count: totalBarbershops, error: totalBarbershopsError },
+    { count: totalBarbers, error: totalBarbersError },
+    { count: totalAppointments, error: totalAppointmentsError },
+    { data: allLeads, error: allLeadsError },
+    { data: allTasks, error: allTasksError },
+    { data: activeSubs, error: activeSubsError },
+    { data: recentLeads, error: recentLeadsError },
+    { data: overdueTasks, error: overdueTasksError },
+    { data: topOpenDeals, error: topOpenDealsError },
+    { data: monthPayments, error: monthPaymentsError },
   ] = await Promise.all([
     supabase.from("barbershops").select("*", { count: "exact", head: true }),
     supabase.from("barbers").select("*",     { count: "exact", head: true }),
@@ -85,6 +86,19 @@ async function getMetrics() {
       .eq("status", "paid")
       .gte("created_at", startOfMonth),
   ]);
+
+  const dataErrors = [
+    totalBarbershopsError,
+    totalBarbersError,
+    totalAppointmentsError,
+    allLeadsError,
+    allTasksError,
+    activeSubsError,
+    recentLeadsError,
+    overdueTasksError,
+    topOpenDealsError,
+    monthPaymentsError,
+  ].filter(Boolean);
 
   const leads  = allLeads  ?? [];
   const tasks  = allTasks  ?? [];
@@ -133,6 +147,7 @@ async function getMetrics() {
     recentLeads:   (recentLeads  ?? []) as RecentLead[],
     overdueTasks:  (overdueTasks ?? []) as OverdueTask[],
     topOpenDeals:  (topOpenDeals ?? []) as OpenDeal[],
+    dataError: dataErrors[0]?.message ?? null,
   };
 }
 
@@ -202,6 +217,12 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-7">
+      {m.dataError && (
+        <AdminDataError
+          title="Algunas métricas no se pudieron cargar"
+          message={m.dataError}
+        />
+      )}
 
       {/* Alerts ─────────────────────────────────────────────────────────────── */}
       {hasAlerts && (
