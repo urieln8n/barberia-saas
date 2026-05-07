@@ -82,7 +82,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
           <button
             type="button"
             onClick={() => { setFormError(""); setShowModal(true); }}
-            className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+            className="flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
           >
             <Plus size={16} /> Registrar pago
           </button>
@@ -91,36 +91,36 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Total cobrado hoy</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#00C2A8]/10">
-              <TrendingUp size={15} className="text-[#00C2A8]" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+              <TrendingUp size={15} className="text-[#2F6FEB]" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{total.toFixed(2)} €</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{total.toFixed(2)} €</p>
           <p className="mt-1.5 text-xs text-neutral-400">Pagos con estado cobrado</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Nº de cobros</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#C89B3C]/10">
-              <CreditCard size={15} className="text-[#C89B3C]" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+              <CreditCard size={15} className="text-[#2F6FEB]" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{payments.length}</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{payments.length}</p>
           <p className="mt-1.5 text-xs text-neutral-400">Registros del día</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ticket medio</p>
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50">
               <Banknote size={15} className="text-blue-500" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{ticketMedio} €</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{ticketMedio} €</p>
           <p className="mt-1.5 text-xs text-neutral-400">Importe medio por cobro</p>
         </div>
       </div>
@@ -135,21 +135,21 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
             >
               <Plus size={15} /> Registrar primer cobro
             </button>
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
-          <div className="border-b border-[#E5E2D9] px-6 py-4">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Hoy</p>
-            <h2 className="mt-0.5 font-black text-[#0D0D0D]">Pagos registrados</h2>
+        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+          <div className="border-b border-[#E5E7EB] px-6 py-4">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Hoy</p>
+            <h2 className="mt-0.5 font-black text-[#111827]">Pagos registrados</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#E5E2D9] bg-[#F5F2EA]/50">
+              <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]/50">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Hora</th>
                   <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Cliente</th>
@@ -159,13 +159,13 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                   <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-400"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5E2D9]">
+              <tbody className="divide-y divide-[#E5E7EB]">
                 {payments.map((p) => (
-                  <tr key={p.id} className="transition-colors hover:bg-[#F5F2EA]/50">
+                  <tr key={p.id} className="transition-colors hover:bg-[#F8FAFC]/50">
                     <td className="px-6 py-4 text-sm text-neutral-500">
                       {new Date(p.created_at).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
                     </td>
-                    <td className="px-6 py-4 font-medium text-[#0D0D0D]">
+                    <td className="px-6 py-4 font-medium text-[#111827]">
                       {p.clients?.name ?? <span className="text-neutral-300">—</span>}
                     </td>
                     <td className="px-6 py-4">
@@ -174,7 +174,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-neutral-400">{p.notes ?? "—"}</td>
-                    <td className="px-6 py-4 text-right font-black text-[#0D0D0D]">{p.amount.toFixed(2)} €</td>
+                    <td className="px-6 py-4 text-right font-black text-[#111827]">{p.amount.toFixed(2)} €</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         type="button"
@@ -196,18 +196,18 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+            <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Pagos</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Registrar pago</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Pagos</p>
+                  <h2 className="mt-0.5 text-xl font-black text-[#111827]">Registrar pago</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />
                 </button>
@@ -223,7 +223,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                     step="0.01"
                     required
                     placeholder="Ej: 18.00"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
@@ -232,7 +232,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                   <select
                     name="method"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   >
                     <option value="cash">Efectivo</option>
                     <option value="card">Tarjeta</option>
@@ -246,7 +246,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                   <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Cliente (opcional)</label>
                   <select
                     name="client_id"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   >
                     <option value="">Sin vincular</option>
                     {clients.map((c) => (
@@ -260,7 +260,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                   <input
                     name="notes"
                     placeholder="Ej: Corte + barba"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
@@ -272,14 +272,14 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    className="flex-1 rounded-2xl border border-[#E5E7EB] py-3 text-sm font-semibold transition-colors hover:bg-[#F8FAFC]"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    className="flex-1 rounded-2xl bg-[#111827] py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A] disabled:opacity-50"
                   >
                     {saving ? "Guardando..." : "Registrar"}
                   </button>

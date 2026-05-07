@@ -36,7 +36,7 @@ const STATUS_COLORS: Record<string, string> = {
   contactado:        "bg-blue-50 text-blue-700 border border-blue-200",
   demo_agendada:     "bg-purple-50 text-purple-700 border border-purple-200",
   propuesta_enviada: "bg-amber-50 text-amber-700 border border-amber-200",
-  trial_activo:      "bg-[#00C2A8]/10 text-[#009e88] border border-[#00C2A8]/30",
+  trial_activo:      "bg-[#2F6FEB]/10 text-[#2459bd] border border-[#2F6FEB]/30",
   ganado:            "bg-green-50 text-green-700 border border-green-200",
   perdido:           "bg-red-50 text-red-500 border border-red-200",
 };
@@ -110,14 +110,14 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">CRM</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#0D0D0D]">Leads</h1>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">CRM</p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#111827]">Leads</h1>
           <p className="mt-1 text-sm text-neutral-500">{leads.length} lead{leads.length !== 1 ? "s" : ""} en el sistema</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+          className="btn-primary"
         >
           <Plus size={16} /> Nuevo lead
         </button>
@@ -129,7 +129,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
           type="button"
           onClick={() => setFilter("all")}
           className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-            filter === "all" ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+            filter === "all" ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
           }`}
         >
           Todos ({counts.all})
@@ -140,7 +140,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
             type="button"
             onClick={() => setFilter(s)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-              filter === s ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+              filter === s ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
             }`}
           >
             {STATUS_LABELS[s]} {counts[s] > 0 && `(${counts[s]})`}
@@ -150,7 +150,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
 
       {/* Tabla */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-[#F5F2EA] py-16">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] py-16">
           <p className="font-bold text-neutral-500">
             {filter === "all" ? "Sin leads todavía" : `Sin leads en "${STATUS_LABELS[filter]}"`}
           </p>
@@ -158,17 +158,17 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
             <button
               type="button"
               onClick={openCreate}
-              className="mt-4 flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-4 py-2 text-sm font-bold text-white"
+              className="btn-primary mt-4"
             >
               <Plus size={14} /> Añadir primer lead
             </button>
           )}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <div className="table-shell">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E2D9] bg-[#F5F2EA]">
+              <tr className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Barbería</th>
                 <th className="hidden px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400 md:table-cell">Contacto</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Estado</th>
@@ -177,11 +177,11 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E2D9]">
+            <tbody className="divide-y divide-[#E5E7EB]">
               {filtered.map(lead => (
-                <tr key={lead.id} className="transition-colors hover:bg-[#F5F2EA]/50">
+                <tr key={lead.id} className="transition-colors hover:bg-[#F8FAFC]/70">
                   <td className="px-4 py-3">
-                    <p className="font-bold text-[#0D0D0D]">{lead.business_name}</p>
+                    <p className="font-bold text-[#111827]">{lead.business_name}</p>
                     {lead.city && (
                       <p className="flex items-center gap-1 text-xs text-neutral-400">
                         <MapPin size={10} /> {lead.city}
@@ -208,7 +208,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       {STATUS_LABELS[lead.status] ?? lead.status}
                     </span>
                   </td>
-                  <td className="hidden px-4 py-3 text-right font-mono text-sm font-semibold text-[#0D0D0D] lg:table-cell">
+                  <td className="hidden px-4 py-3 text-right font-mono text-sm font-semibold text-[#111827] lg:table-cell">
                     {lead.potential_mrr ? `${lead.potential_mrr} €` : "—"}
                   </td>
                   <td className="hidden px-4 py-3 text-xs text-neutral-500 lg:table-cell">
@@ -219,7 +219,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       <button
                         type="button"
                         onClick={() => openEdit(lead)}
-                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
                       >
                         <Pencil size={14} />
                       </button>
@@ -243,17 +243,17 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
             <div className="max-h-[90vh] overflow-y-auto p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">CRM</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">CRM</p>
+                  <h2 className="mt-0.5 text-xl font-black text-[#111827]">
                     {editing ? "Editar lead" : "Nuevo lead"}
                   </h2>
                 </div>
-                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]">
+                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]">
                   <X size={18} />
                 </button>
               </div>
@@ -269,7 +269,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       required
                       defaultValue={editing?.business_name ?? ""}
                       placeholder="Barbería El Maestro"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -278,7 +278,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       name="contact_name"
                       defaultValue={editing?.contact_name ?? ""}
                       placeholder="Juan García"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       type="tel"
                       defaultValue={editing?.phone ?? ""}
                       placeholder="+34 600 000 000"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -302,7 +302,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       type="email"
                       defaultValue={editing?.email ?? ""}
                       placeholder="juan@barberia.com"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       name="city"
                       defaultValue={editing?.city ?? ""}
                       placeholder="Madrid"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -324,7 +324,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       name="country"
                       defaultValue={editing?.country ?? "ES"}
                       placeholder="ES"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -335,7 +335,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       step="0.01"
                       min="0"
                       defaultValue={editing?.potential_mrr ?? 0}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -347,7 +347,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                     <select
                       name="source"
                       defaultValue={editing?.source ?? "directo"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       {ALL_SOURCES.map(s => (
                         <option key={s} value={s}>{SOURCE_LABELS[s]}</option>
@@ -359,7 +359,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                     <select
                       name="status"
                       defaultValue={editing?.status ?? "nuevo"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       {ALL_STATUSES.map(s => (
                         <option key={s} value={s}>{STATUS_LABELS[s]}</option>
@@ -376,7 +376,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       name="last_contacted_at"
                       type="datetime-local"
                       defaultValue={toDatetimeLocal(editing?.last_contacted_at ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -385,7 +385,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                       name="next_action_at"
                       type="datetime-local"
                       defaultValue={toDatetimeLocal(editing?.next_action_at ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -398,7 +398,7 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                     rows={3}
                     defaultValue={editing?.notes ?? ""}
                     placeholder="Contexto, observaciones, próximos pasos..."
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
@@ -413,14 +413,14 @@ export function LeadsClient({ leads }: { leads: Lead[] }) {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    className="flex-1 rounded-xl border border-[#E5E7EB] py-3 text-sm font-semibold transition-colors hover:bg-[#F8FAFC]"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    className="flex-1 rounded-xl bg-[#2F6FEB] py-3 text-sm font-bold text-white transition-colors hover:bg-[#2459bd] disabled:opacity-50"
                   >
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear lead"}
                   </button>

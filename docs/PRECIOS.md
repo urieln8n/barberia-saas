@@ -1,49 +1,42 @@
-# Precios sugeridos
+# Precios BarberiaOS
 
-## Starter
+## Básico
 
-Setup: 149 €
-Mensualidad: 49 €/mes
+Mensualidad: 39 €/mes
 
 Incluye:
 
 - App de reservas.
-- QR personalizado.
+- QR de reservas.
 - Página pública de reservas.
 - Servicios, barberos y agenda.
-- Dashboard básico.
-- Soporte inicial.
+- Clientes y dashboard básico.
+- Configuración inicial asistida.
 
-## Growth
+## Pro
 
-Setup: 249 €
+Mensualidad: 79 €/mes
+
+Incluye:
+
+- Todo Básico.
+- Revisión de Google Business.
+- Instagram con enlace de reservas.
+- Seguimiento mensual de citas y clientes.
+- Acciones comerciales recomendadas.
+- Soporte mensual.
+
+## Premium
+
 Mensualidad: 149 €/mes
 
 Incluye:
 
-- Todo Starter.
-- Google Business optimizado.
-- Instagram optimizado.
-- 8 diseños al mes.
-- 4 reels al mes.
-- Reporte mensual.
-- Recordatorios básicos cuando estén disponibles.
-
-Publicidad aparte: 100 € - 300 €/mes.
-
-## Premium
-
-Setup: 499 €
-Mensualidad: 299 €/mes
-
-Incluye:
-
-- Todo Growth.
-- Gestión de campañas Meta/TikTok.
-- 12-16 piezas de contenido.
-- Campañas de recuperación.
-- Sistema VIP.
-- Reportes avanzados.
+- Todo Pro.
+- Plan de captación local.
+- Seguimiento de clientes inactivos.
+- Revisión avanzada de métricas.
+- Acompañamiento gestionado.
 - Soporte prioritario.
 
-Publicidad aparte: 300 € - 1.000 €/mes.
+Publicidad aparte si se activan campañas de pago.

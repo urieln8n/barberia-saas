@@ -98,12 +98,12 @@ function AppointmentCard({
   onStatusChange: (id: string, status: string) => void;
 }) {
   return (
-    <div className="rounded-3xl border border-[#E5E2D9] bg-white p-5 shadow-sm">
+    <div className="panel">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           {showDate ? (
-            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl bg-[#0D0D0D]">
-              <span className="text-[9px] font-bold uppercase text-[#C89B3C]">
+            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111827]">
+              <span className="text-[9px] font-bold uppercase text-[#7AA2FF]">
                 {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
               </span>
               <span className="text-sm font-black text-white">
@@ -111,13 +111,13 @@ function AppointmentCard({
               </span>
             </div>
           ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F5F2EA] text-sm font-black text-[#0D0D0D]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black text-[#111827]">
               {formatTime(appointment.start_time)}
             </div>
           )}
 
           <div className="min-w-0">
-            <p className="font-bold text-[#0D0D0D]">
+            <p className="font-bold text-[#111827]">
               {appointment.clients?.name ?? "Cliente sin nombre"}
             </p>
 
@@ -165,7 +165,7 @@ function AppointmentCard({
               key={action.status}
               onClick={() => onStatusChange(appointment.id, action.status)}
               disabled={updating === appointment.id}
-              className="rounded-full border border-[#E5E2D9] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D] disabled:opacity-40"
+              className="rounded-xl border border-[#E5E7EB] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[#F8FAFC] hover:text-[#111827] disabled:opacity-40"
             >
               {action.label}
             </button>
@@ -233,12 +233,12 @@ export function AgendaClient({
               type="date"
               value={fecha}
               onChange={(e) => handleDateChange(e.target.value)}
-              className="rounded-2xl border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+              className="input"
             />
             <button
               type="button"
               onClick={() => { setFormError(""); setShowModal(true); }}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+              className="btn-dark"
             >
               <Plus size={16} /> Nueva cita
             </button>
@@ -260,9 +260,9 @@ export function AgendaClient({
           { title: "Total registradas",  value: allAppointments.length      },
           { title: "Pendientes",         value: pendingCount                },
         ].map(({ title, value }) => (
-          <div key={title} className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div key={title} className="metric-card">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">{title}</p>
-            <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{value}</p>
+            <p className="mt-3 text-4xl font-black text-[#111827]">{value}</p>
           </div>
         ))}
       </div>
@@ -270,8 +270,8 @@ export function AgendaClient({
       {/* Citas de la fecha seleccionada */}
       <section>
         <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Fecha seleccionada</p>
-          <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Citas del {fecha}</h2>
+          <p className="label-section">Fecha seleccionada</p>
+          <h2 className="section-heading mt-0.5">Citas del {fecha}</h2>
         </div>
         {appointments.length === 0 ? (
           <EmptyState
@@ -296,8 +296,8 @@ export function AgendaClient({
       {/* Próximas citas */}
       <section>
         <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Agenda futura</p>
-          <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Próximas citas</h2>
+          <p className="label-section">Agenda futura</p>
+          <h2 className="section-heading mt-0.5">Próximas citas</h2>
           <p className="text-sm text-neutral-500">
             Se muestran siempre, aunque haya citas en la fecha seleccionada.
           </p>
@@ -326,18 +326,17 @@ export function AgendaClient({
       {/* Modal nueva cita */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Agenda</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Nueva cita</h2>
+                  <p className="label-section">Agenda</p>
+                  <h2 className="section-heading mt-0.5">Nueva cita</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />
                 </button>
@@ -347,11 +346,11 @@ export function AgendaClient({
                 <input type="hidden" name="barbershop_id" value={barbershopId} />
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Cliente *</label>
+                  <label className="form-label">Cliente *</label>
                   <select
                     name="client_id"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Seleccionar cliente...</option>
                     {clients.map((c) => (
@@ -363,11 +362,11 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Servicio *</label>
+                  <label className="form-label">Servicio *</label>
                   <select
                     name="service_id"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Seleccionar servicio...</option>
                     {services.map((s) => (
@@ -379,10 +378,10 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Barbero</label>
+                  <label className="form-label">Barbero</label>
                   <select
                     name="barber_id"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Cualquiera / Sin asignar</option>
                     {barbers.map((b) => (
@@ -393,21 +392,21 @@ export function AgendaClient({
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Fecha *</label>
+                    <label className="form-label">Fecha *</label>
                     <input
                       name="appointment_date"
                       type="date"
                       defaultValue={fecha}
                       required
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Hora *</label>
+                    <label className="form-label">Hora *</label>
                     <select
                       name="start_time"
                       required
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     >
                       <option value="">Hora...</option>
                       {slots.map((s) => (
@@ -418,11 +417,11 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Notas</label>
+                  <label className="form-label">Notas</label>
                   <input
                     name="notes"
                     placeholder="Ej: Trae referencia de foto"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
@@ -434,14 +433,14 @@ export function AgendaClient({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    className="btn-outline flex-1"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    className="btn-dark flex-1"
                   >
                     {saving ? "Guardando..." : "Crear cita"}
                   </button>

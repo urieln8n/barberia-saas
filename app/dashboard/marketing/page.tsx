@@ -8,29 +8,29 @@ export default function MarketingPage() {
 
       <PageHeader
         section="Marketing"
-        title="Marketing digital"
-        description="Herramientas para que tu barbería aparezca en Google, Instagram y WhatsApp — y convierta visitas en reservas reales."
+        title="Marketing asistido"
+        description="Acciones comerciales que se preparan contigo cuando el flujo de reservas ya esta funcionando."
         action={
-          <span className="rounded-full border border-[#00C2A8]/30 bg-[#00C2A8]/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#009e88]">
-            Growth · Próximamente
+          <span className="rounded-full border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#2459bd]">
+            Servicio gestionado
           </span>
         }
       />
 
       {/* Banner plan */}
-      <div className="overflow-hidden rounded-3xl bg-[#0D0D0D] text-white shadow-lg">
-        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+      <div className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-white shadow-sm">
+        <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
         <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Plan Growth y Premium</p>
-            <p className="mt-1 font-black text-white">Marketing digital local incluido</p>
-            <p className="mt-1 text-sm text-white/60">
-              Sin contratar agencias externas. Incluido en tu suscripción mensual.
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Plan Pro y Premium</p>
+            <p className="mt-1 font-black text-[#111827]">Marketing local con acompanamiento</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Primero validamos reservas, agenda y clientes. Despues priorizamos las acciones que pueden traer citas.
             </p>
           </div>
           <Link
             href="/#precios"
-            className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#00C2A8] px-5 py-2.5 text-sm font-bold text-[#0D0D0D] transition-colors hover:bg-[#009e88]"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#2F6FEB] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#2459bd]"
           >
             Ver planes <ArrowRight size={15} />
           </Link>
@@ -40,52 +40,52 @@ export default function MarketingPage() {
       {/* Módulos de marketing */}
       <div>
         <div className="mb-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Incluido en Growth</p>
-          <h2 className="mt-0.5 text-lg font-black text-[#0D0D0D]">Módulos disponibles</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Servicio asistido</p>
+          <h2 className="mt-0.5 text-lg font-black text-[#111827]">Acciones recomendadas</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { icon: Globe,      plan: "Growth",   title: "Google Business optimizado",  text: "Configuramos tu perfil de Google para que aparezcas cuando busquen 'barbería en [tu ciudad]'. Fotos, horarios, reseñas." },
-            { icon: Instagram,  plan: "Growth",   title: "Instagram optimizado",         text: "Bio con link de reserva, highlights, estética de perfil y primeros posts con tu identidad de marca." },
-            { icon: FileImage,  plan: "Growth",   title: "8 posts al mes",               text: "Diseños con tu logo y colores para publicar cada semana. Sin que tengas que pensar en qué publicar." },
-            { icon: Star,       plan: "Growth",   title: "Reporte mensual",              text: "Resumen de reservas, ingresos, clientes nuevos y rendimiento de marketing. En menos de 1 página." },
-            { icon: Megaphone,  plan: "Premium",  title: "Campañas de anuncios locales", text: "Anuncios en Meta e Instagram segmentados a personas cerca de tu barbería. Presupuesto de anuncios aparte." },
-            { icon: BarChart3,  plan: "Premium",  title: "Análisis avanzado",            text: "Qué canales traen más clientes, qué servicios funcionan mejor, cuándo llenar la agenda." },
+            { icon: Globe,      plan: "Asistido", title: "Google Business",              text: "Revisamos que tu perfil tenga telefono, horario, direccion y enlace de reservas correcto." },
+            { icon: Instagram,  plan: "Asistido", title: "Instagram con reservas",       text: "Preparamos la bio y el enlace para que los seguidores puedan reservar sin escribir por privado." },
+            { icon: FileImage,  plan: "Asistido", title: "Material basico",              text: "Creamos piezas simples para comunicar el QR o link de reservas en el local y redes." },
+            { icon: Star,       plan: "Asistido", title: "Seguimiento mensual",          text: "Revisamos citas, clientes nuevos e ingresos para decidir que accion comercial hacer despues." },
+            { icon: Megaphone,  plan: "Gestionado", title: "Campanas locales",           text: "Si el flujo base esta validado, se pueden preparar campanas locales con presupuesto aparte." },
+            { icon: BarChart3,  plan: "Gestionado", title: "Analisis de crecimiento",    text: "Usamos los datos de reservas y pagos para detectar oportunidades de agenda y servicios." },
           ].map(({ icon: Icon, plan, title, text }) => (
             <div key={title} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
               <div className="mb-3 flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#C89B3C]/10">
-                  <Icon size={18} className="text-[#C89B3C]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+                  <Icon size={18} className="text-[#2F6FEB]" />
                 </div>
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                  plan === "Growth"
-                    ? "border border-[#00C2A8]/30 bg-[#00C2A8]/10 text-[#009e88]"
-                    : "bg-[#0D0D0D] text-white"
+                  plan === "Asistido"
+                    ? "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]"
+                    : "border border-slate-200 bg-slate-100 text-slate-700"
                 }`}>
                   {plan}
                 </span>
               </div>
-              <h3 className="font-bold text-[#0D0D0D]">{title}</h3>
+              <h3 className="font-bold text-[#111827]">{title}</h3>
               <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Planes */}
-      <div className="rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Precios</p>
-        <p className="mt-1 text-sm font-bold text-neutral-700">Incluido en</p>
+      {/* Servicio */}
+      <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">MVP asistido</p>
+        <p className="mt-1 text-sm font-bold text-neutral-700">Se activa segun necesidad</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full border border-[#00C2A8]/30 bg-[#00C2A8]/10 px-3 py-1 text-xs font-semibold text-[#009e88]">
-            Growth — 149 €/mes
+          <span className="rounded-full border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 px-3 py-1 text-xs font-semibold text-[#2459bd]">
+            Configuracion inicial
           </span>
           <span className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700">
-            Premium — 299 €/mes
+            Gestion mensual opcional
           </span>
         </div>
         <p className="mt-3 text-xs text-neutral-400">
-          El presupuesto de anuncios (Google Ads, Meta Ads) se factura aparte y lo decides tú.
+          Las acciones de marketing no se activan solas: se preparan y validan contigo para no prometer resultados sin datos.
         </p>
       </div>
 

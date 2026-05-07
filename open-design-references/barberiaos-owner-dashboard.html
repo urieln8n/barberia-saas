@@ -1,0 +1,348 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BarberiaOS — Dashboard del dueño</title>
+  <style>
+    :root {
+      --bg: oklch(18% 0 0);
+      --surface: oklch(99% 0 0);
+      --fg: oklch(99% 0 0);
+      --muted: oklch(54% 0 0);
+      --border: oklch(92% 0 0);
+      --accent: oklch(58% 0.18 255);
+      --success: #17A34A;
+      --warn: #EAB308;
+      --danger: #DC2626;
+      --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      background:
+        repeating-linear-gradient(90deg, rgba(229,229,229,0.07) 0 1px, transparent 1px 80px),
+        var(--bg);
+      color: var(--fg);
+      font: 400 14px/1.5 var(--font-body);
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .app { min-height: 100svh; display: grid; grid-template-columns: 1fr; }
+    .sidebar { display: none; border-inline-end: 1px solid rgba(229,229,229,0.16); background: rgba(17,17,17,0.96); }
+    .brand { height: 72px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid rgba(229,229,229,0.16); font-weight: 600; letter-spacing: -0.01em; }
+    .mark { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid rgba(250,250,250,0.8); background: var(--accent); font: 700 13px/1 var(--font-mono); }
+    .side-nav { display: grid; gap: 4px; padding: 16px 10px; }
+    .nav-item { min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border: 1px solid transparent; color: rgba(250,250,250,0.64); border-radius: 8px; font-weight: 500; }
+    .nav-item.active { border-color: rgba(229,229,229,0.22); background: rgba(250,250,250,0.06); color: var(--fg); }
+    .nav-item code { color: rgba(250,250,250,0.46); font: 600 11px/1 var(--font-mono); }
+    .main { min-width: 0; }
+
+    .topbar { position: sticky; top: 0; z-index: 10; display: grid; gap: 14px; padding: 14px 14px 16px; border-bottom: 1px solid rgba(229,229,229,0.16); background: rgba(17,17,17,0.92); backdrop-filter: blur(10px); }
+    .top-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .mobile-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+    .date { color: rgba(250,250,250,0.58); font: 600 12px/1 var(--font-mono); text-transform: uppercase; }
+    .owner { display: none; align-items: center; gap: 10px; color: rgba(250,250,250,0.72); }
+    .avatar { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid rgba(229,229,229,0.22); background: rgba(250,250,250,0.08); border-radius: 999px; font: 700 12px/1 var(--font-mono); }
+    .header-copy h1 { margin: 0; font: 600 clamp(30px, 8vw, 56px)/1 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+    .header-copy p { margin: 8px 0 0; max-width: 720px; color: rgba(250,250,250,0.66); font-size: 15px; }
+
+    .content { width: min(100%, 1440px); margin: 0 auto; padding: 16px 14px 92px; display: grid; gap: 14px; }
+    .kpi-grid { display: grid; gap: 1px; border: 1px solid rgba(229,229,229,0.18); background: rgba(229,229,229,0.18); }
+    .kpi { min-height: 132px; padding: 16px; background: var(--surface); color: #111111; display: grid; align-content: space-between; }
+    .label { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font: 600 12px/1.2 var(--font-mono); text-transform: uppercase; }
+    .label .delta { color: var(--success); text-transform: none; }
+    .kpi strong { display: block; margin-top: 18px; font: 600 clamp(34px, 11vw, 54px)/0.92 var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .kpi span { display: block; margin-top: 10px; color: var(--muted); }
+
+    .grid { display: grid; gap: 14px; }
+    .panel { min-width: 0; border: 1px solid rgba(229,229,229,0.18); background: rgba(17,17,17,0.94); border-radius: 12px; overflow: hidden; }
+    .panel.light { background: var(--surface); color: #111111; }
+    .panel-head { min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border-bottom: 1px solid rgba(229,229,229,0.16); }
+    .light .panel-head { border-color: var(--border); }
+    .panel-title { margin: 0; font: 600 18px/1.1 var(--font-display); letter-spacing: -0.01em; }
+    .panel-note { color: rgba(250,250,250,0.54); font: 600 12px/1 var(--font-mono); }
+    .light .panel-note { color: var(--muted); }
+
+    .appointment-list { display: grid; }
+    .appointment { display: grid; grid-template-columns: 58px 1fr; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(229,229,229,0.14); }
+    .appointment:last-child { border-bottom: 0; }
+    .time { font: 700 13px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+    .appointment-main { min-width: 0; display: grid; gap: 8px; }
+    .appointment-main strong { font-size: 15px; letter-spacing: -0.01em; }
+    .meta { display: flex; flex-wrap: wrap; gap: 6px; color: rgba(250,250,250,0.56); font-size: 12px; }
+    .light .meta { color: var(--muted); }
+    .pill { width: fit-content; padding: 5px 7px; border: 1px solid rgba(229,229,229,0.2); border-radius: 999px; color: rgba(250,250,250,0.72); font: 700 11px/1 var(--font-mono); text-transform: uppercase; }
+    .pill.ok { border-color: rgba(23,163,74,0.34); background: rgba(23,163,74,0.1); color: var(--success); }
+    .pill.warn { border-color: rgba(234,179,8,0.34); background: rgba(234,179,8,0.12); color: var(--warn); }
+
+    .barber-list, .service-list, .client-list, .alert-list { display: grid; gap: 12px; padding: 16px; }
+    .barber { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; }
+    .initials { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--border); background: #FAFAFA; border-radius: 8px; color: #111111; font: 700 13px/1 var(--font-mono); }
+    .bar-track { height: 8px; margin-top: 8px; background: #E5E5E5; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); border-radius: inherit; }
+    .barber strong, .service strong, .client strong, .alert strong { display: block; font-size: 14px; }
+    .barber span, .service span, .client span, .alert span { display: block; color: var(--muted); font-size: 12px; }
+    .percent { font: 700 18px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+
+    .service { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .service:last-child { border-bottom: 0; padding-bottom: 0; }
+    .service em { font-style: normal; font: 700 18px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+    .client { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #FAFAFA; }
+    .client code { color: var(--success); font: 700 12px/1 var(--font-mono); }
+
+    .alert { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding: 12px; border: 1px solid rgba(229,229,229,0.16); border-radius: 8px; }
+    .alert-marker { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid currentColor; border-radius: 8px; font: 700 11px/1 var(--font-mono); }
+    .alert.high { color: var(--warn); }
+    .alert.info { color: rgba(250,250,250,0.72); }
+    .alert.good { color: var(--success); }
+    .alert span { color: rgba(250,250,250,0.6); margin-top: 4px; }
+
+    .wide-chart { min-height: 220px; display: grid; align-items: end; grid-template-columns: repeat(12, 1fr); gap: 8px; padding: 18px 16px; border-top: 1px solid rgba(229,229,229,0.12); }
+    .col { display: grid; gap: 8px; align-items: end; justify-items: center; color: rgba(250,250,250,0.5); font: 700 10px/1 var(--font-mono); }
+    .col i { width: 100%; min-height: 18px; display: block; background: rgba(250,250,250,0.18); border: 1px solid rgba(229,229,229,0.16); border-radius: 4px 4px 0 0; }
+    .col.active i { background: var(--accent); border-color: var(--accent); }
+
+    .mobile-tabs { position: sticky; bottom: 0; z-index: 12; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(229,229,229,0.16); background: rgba(17,17,17,0.94); backdrop-filter: blur(10px); }
+    .mobile-tabs a { min-height: 58px; display: grid; place-items: center; color: rgba(250,250,250,0.56); font: 700 11px/1 var(--font-mono); text-transform: uppercase; }
+    .mobile-tabs a:first-child { color: var(--fg); background: rgba(250,250,250,0.06); }
+
+    @media (min-width: 760px) {
+      .topbar { padding: 20px 24px; }
+      .content { padding: 20px 24px 36px; }
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+      .grid { grid-template-columns: repeat(12, 1fr); }
+      .span-4 { grid-column: span 4; }
+      .span-5 { grid-column: span 5; }
+      .span-6 { grid-column: span 6; }
+      .span-7 { grid-column: span 7; }
+      .span-8 { grid-column: span 8; }
+      .span-12 { grid-column: span 12; }
+      .owner { display: inline-flex; }
+      .mobile-tabs { display: none; }
+    }
+
+    @media (min-width: 1120px) {
+      .app { grid-template-columns: 230px 1fr; }
+      .sidebar { position: sticky; top: 0; height: 100svh; display: block; }
+      .mobile-brand { display: none; }
+      .topbar { align-items: stretch; }
+      .header-copy p { font-size: 16px; }
+      .content { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Navegación">
+      <div class="brand">
+        <span class="mark">B</span>
+        <span>BarberiaOS</span>
+      </div>
+      <nav class="side-nav">
+        <a class="nav-item active" href="#"><span>Dashboard</span><code>01</code></a>
+        <a class="nav-item" href="#"><span>Agenda</span><code>24</code></a>
+        <a class="nav-item" href="#"><span>Clientes</span><code>812</code></a>
+        <a class="nav-item" href="#"><span>Barberos</span><code>04</code></a>
+        <a class="nav-item" href="#"><span>Servicios</span><code>18</code></a>
+        <a class="nav-item" href="#"><span>WhatsApp</span><code>OK</code></a>
+        <a class="nav-item" href="#"><span>Caja</span><code>MES</code></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="top-row">
+          <div class="mobile-brand">
+            <span class="mark">B</span>
+            <span>BarberiaOS</span>
+          </div>
+          <span class="date">Miércoles 14 · 09:42</span>
+          <div class="owner">
+            <span>La Navaja Club</span>
+            <span class="avatar">DN</span>
+          </div>
+        </div>
+        <div class="header-copy">
+          <h1 data-od-id="headline">Panel del dueño</h1>
+          <p>Lectura directa de agenda, caja, ocupación y retención. Lo que necesita decisión aparece arriba; lo operativo baja a módulos.</p>
+        </div>
+      </header>
+
+      <section class="content" aria-label="Dashboard principal">
+        <div class="kpi-grid" data-od-id="monthly-kpis">
+          <article class="kpi">
+            <div class="label"><span>Ingresos del mes</span><span class="delta">+12%</span></div>
+            <div><strong>€18.420</strong><span>Objetivo mensual: €22.000</span></div>
+          </article>
+          <article class="kpi">
+            <div class="label"><span>Citas hoy</span><span class="delta">18/24</span></div>
+            <div><strong>75%</strong><span>6 huecos libres antes de las 19:00</span></div>
+          </article>
+          <article class="kpi">
+            <div class="label"><span>Recurrentes</span><span class="delta">+31</span></div>
+            <div><strong>46%</strong><span>Clientes que vuelven en 45 días</span></div>
+          </article>
+          <article class="kpi">
+            <div class="label"><span>No-show previsto</span><span class="delta">2 citas</span></div>
+            <div><strong>8%</strong><span>WhatsApp pendiente en dos reservas</span></div>
+          </article>
+        </div>
+
+        <div class="grid">
+          <section class="panel span-7" data-od-id="today-appointments">
+            <div class="panel-head">
+              <h2 class="panel-title">Citas de hoy</h2>
+              <span class="panel-note">18 confirmadas · 6 libres</span>
+            </div>
+            <div class="appointment-list">
+              <article class="appointment">
+                <time class="time">10:30</time>
+                <div class="appointment-main">
+                  <strong>Corte + barba · Mario Vidal</strong>
+                  <div class="meta"><span>Nico</span><span>45 min</span><span>€32</span></div>
+                  <span class="pill ok">WhatsApp confirmado</span>
+                </div>
+              </article>
+              <article class="appointment">
+                <time class="time">11:15</time>
+                <div class="appointment-main">
+                  <strong>Fade premium · Leo Martín</strong>
+                  <div class="meta"><span>Alex</span><span>40 min</span><span>€28</span></div>
+                  <span class="pill ok">Pagado online</span>
+                </div>
+              </article>
+              <article class="appointment">
+                <time class="time">12:00</time>
+                <div class="appointment-main">
+                  <strong>Arreglo de barba · Carlos R.</strong>
+                  <div class="meta"><span>Samu</span><span>30 min</span><span>€18</span></div>
+                  <span class="pill warn">Confirmación pendiente</span>
+                </div>
+              </article>
+              <article class="appointment">
+                <time class="time">13:20</time>
+                <div class="appointment-main">
+                  <strong>Corte niño · Izan Ortega</strong>
+                  <div class="meta"><span>Nico</span><span>25 min</span><span>€16</span></div>
+                  <span class="pill ok">Cliente recurrente</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel light span-5" data-od-id="barber-occupancy">
+            <div class="panel-head">
+              <h2 class="panel-title">Ocupación por barbero</h2>
+              <span class="panel-note">Hoy</span>
+            </div>
+            <div class="barber-list">
+              <article class="barber">
+                <span class="initials">NC</span>
+                <div><strong>Nico Cruz</strong><span>7 citas · 1 hueco</span><div class="bar-track"><i class="bar-fill" style="width: 88%"></i></div></div>
+                <b class="percent">88%</b>
+              </article>
+              <article class="barber">
+                <span class="initials">AM</span>
+                <div><strong>Alex Mora</strong><span>5 citas · 2 huecos</span><div class="bar-track"><i class="bar-fill" style="width: 74%"></i></div></div>
+                <b class="percent">74%</b>
+              </article>
+              <article class="barber">
+                <span class="initials">SR</span>
+                <div><strong>Samu Ríos</strong><span>4 citas · 3 huecos</span><div class="bar-track"><i class="bar-fill" style="width: 61%"></i></div></div>
+                <b class="percent">61%</b>
+              </article>
+              <article class="barber">
+                <span class="initials">IV</span>
+                <div><strong>Iker Vega</strong><span>2 citas · tarde libre</span><div class="bar-track"><i class="bar-fill" style="width: 34%"></i></div></div>
+                <b class="percent">34%</b>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel span-8" data-od-id="income-chart">
+            <div class="panel-head">
+              <h2 class="panel-title">Ritmo de ingresos</h2>
+              <span class="panel-note">Últimos 12 días</span>
+            </div>
+            <div class="wide-chart" aria-label="Gráfico de ingresos por día">
+              <div class="col"><i style="height: 42px"></i><span>03</span></div>
+              <div class="col"><i style="height: 66px"></i><span>04</span></div>
+              <div class="col"><i style="height: 54px"></i><span>05</span></div>
+              <div class="col"><i style="height: 90px"></i><span>06</span></div>
+              <div class="col"><i style="height: 118px"></i><span>07</span></div>
+              <div class="col"><i style="height: 74px"></i><span>08</span></div>
+              <div class="col"><i style="height: 130px"></i><span>09</span></div>
+              <div class="col"><i style="height: 156px"></i><span>10</span></div>
+              <div class="col"><i style="height: 104px"></i><span>11</span></div>
+              <div class="col"><i style="height: 146px"></i><span>12</span></div>
+              <div class="col"><i style="height: 138px"></i><span>13</span></div>
+              <div class="col active"><i style="height: 168px"></i><span>14</span></div>
+            </div>
+          </section>
+
+          <section class="panel light span-4" data-od-id="top-services">
+            <div class="panel-head">
+              <h2 class="panel-title">Servicios más vendidos</h2>
+              <span class="panel-note">Mes</span>
+            </div>
+            <div class="service-list">
+              <article class="service"><div><strong>Corte + barba</strong><span>Ticket medio €32</span></div><em>184</em></article>
+              <article class="service"><div><strong>Fade premium</strong><span>Ticket medio €28</span></div><em>143</em></article>
+              <article class="service"><div><strong>Barba completa</strong><span>Ticket medio €18</span></div><em>96</em></article>
+              <article class="service"><div><strong>Corte niño</strong><span>Ticket medio €16</span></div><em>52</em></article>
+            </div>
+          </section>
+
+          <section class="panel light span-6" data-od-id="recurring-clients">
+            <div class="panel-head">
+              <h2 class="panel-title">Clientes recurrentes</h2>
+              <span class="panel-note">Listos para reactivar</span>
+            </div>
+            <div class="client-list">
+              <article class="client"><div><strong>Javi Lozano</strong><span>Última visita hace 36 días · Nico</span></div><code>Enviar WA</code></article>
+              <article class="client"><div><strong>Rafa Pons</strong><span>Compra barba cada 4 semanas · Samu</span></div><code>Oferta barba</code></article>
+              <article class="client"><div><strong>Mateo Ruiz</strong><span>3 visitas seguidas en sábado · Alex</span></div><code>Reservar hueco</code></article>
+            </div>
+          </section>
+
+          <section class="panel span-6" data-od-id="automatic-alerts">
+            <div class="panel-head">
+              <h2 class="panel-title">Alertas automáticas</h2>
+              <span class="panel-note">3 requieren acción</span>
+            </div>
+            <div class="alert-list">
+              <article class="alert high">
+                <span class="alert-marker">!</span>
+                <div><strong>Dos citas sin confirmar antes de mediodía</strong><span>Enviar recordatorio por WhatsApp a Carlos R. y Bruno F.</span></div>
+              </article>
+              <article class="alert info">
+                <span class="alert-marker">WA</span>
+                <div><strong>Hueco libre de 16:20 a 17:10 con Iker</strong><span>Segmento sugerido: clientes de fade premium de los últimos 30 días.</span></div>
+              </article>
+              <article class="alert good">
+                <span class="alert-marker">€</span>
+                <div><strong>Corte + barba supera el objetivo semanal</strong><span>Mantener precio actual; ocupa el 38% de las ventas del mes.</span></div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-tabs" aria-label="Navegación móvil">
+    <a href="#">Hoy</a>
+    <a href="#">Caja</a>
+    <a href="#">Equipo</a>
+    <a href="#">Alertas</a>
+  </nav>
+</body>
+</html>

@@ -65,7 +65,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
           <button
             type="button"
             onClick={openCreate}
-            className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+            className="btn-dark"
           >
             <Plus size={16} /> Añadir barbero
           </button>
@@ -81,7 +81,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
             <button
               type="button"
               onClick={openCreate}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+              className="btn-dark"
             >
               <Plus size={16} /> Añadir primer barbero
             </button>
@@ -92,19 +92,19 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
           {barbers.map((b) => (
             <div
               key={b.id}
-              className={`rounded-3xl border bg-white p-6 shadow-sm transition-opacity ${
-                !b.active ? "opacity-50 border-neutral-200" : "border-[#E5E2D9]"
+              className={`rounded-2xl border bg-white p-6 shadow-sm transition-opacity ${
+                !b.active ? "border-neutral-200 opacity-50" : "border-[#E5E7EB]"
               }`}
             >
               <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0D0D0D] text-xl font-black uppercase text-[#C89B3C]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#111827] text-xl font-black uppercase text-[#7AA2FF]">
                   {b.name.charAt(0)}
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => openEdit(b)}
-                    className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+                    className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
                   >
                     <Pencil size={15} />
                   </button>
@@ -119,7 +119,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                 </div>
               </div>
 
-              <p className="mt-4 text-lg font-black text-[#0D0D0D]">{b.name}</p>
+              <p className="mt-4 text-lg font-black text-[#111827]">{b.name}</p>
               {b.phone && (
                 <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500">
                   <Phone size={13} /> {b.phone}
@@ -130,7 +130,7 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                 type="button"
                 onClick={() => handleToggle(b.id, b.active)}
                 disabled={toggling === b.id}
-                className="mt-4 flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-[#0D0D0D] disabled:opacity-40"
+                className="mt-4 flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-[#111827] disabled:opacity-40"
               >
                 {b.active
                   ? <><ToggleRight size={18} className="text-green-600" /> Activo</>
@@ -145,20 +145,19 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-md rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Barberos</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">
+                  <p className="label-section">Barberos</p>
+                  <h2 className="section-heading mt-0.5">
                     {editing ? "Editar barbero" : "Nuevo barbero"}
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />
                 </button>
@@ -166,24 +165,24 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Nombre *</label>
+                  <label className="form-label">Nombre *</label>
                   <input
                     name="name"
                     required
                     defaultValue={editing?.name ?? ""}
                     placeholder="Ej: Miguel"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Teléfono (opcional)</label>
+                  <label className="form-label">Teléfono (opcional)</label>
                   <input
                     name="phone"
                     type="tel"
                     defaultValue={editing?.phone ?? ""}
                     placeholder="+34 600 000 000"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
@@ -191,14 +190,14 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    className="btn-outline flex-1"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    className="btn-dark flex-1"
                   >
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Añadir barbero"}
                   </button>

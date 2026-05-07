@@ -60,29 +60,29 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
+    <main className="premium-grid-bg flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-950 text-red-700">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-[#2F6FEB] text-white">
             <Scissors size={20} />
           </div>
           <span className="text-xl font-bold text-white">BarberíaOS</span>
         </div>
 
-        <div className="rounded-3xl bg-white p-8 shadow-2xl">
-          <div className="mb-6 flex rounded-2xl bg-neutral-100 p-1">
+        <div className="rounded-2xl border border-[#E6E6E2] bg-white p-8 shadow-2xl">
+          <div className="mb-6 flex rounded-xl bg-[#FAFAF8] p-1">
             <button
               type="button"
               onClick={() => { setMode("login"); setError(""); }}
-              className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${mode === "login" ? "bg-white text-ink shadow-sm" : "text-neutral-500"}`}
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${mode === "login" ? "bg-white text-[#111111] shadow-sm" : "text-neutral-500"}`}
             >
               Iniciar sesión
             </button>
             <button
               type="button"
               onClick={() => { setMode("register"); setError(""); }}
-              className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${mode === "register" ? "bg-white text-ink shadow-sm" : "text-neutral-500"}`}
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${mode === "register" ? "bg-white text-[#111111] shadow-sm" : "text-neutral-500"}`}
             >
               Crear cuenta
             </button>
@@ -91,7 +91,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {mode === "register" && (
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label className="form-label">
                   Nombre completo
                 </label>
                 <input
@@ -100,13 +100,13 @@ export default function LoginPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Tu nombre"
                   required
-                  className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                  className="input py-3"
                 />
               </div>
             )}
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
+              <label className="form-label">
                 Email
               </label>
               <input
@@ -115,12 +115,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 required
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                className="input py-3"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
+              <label className="form-label">
                 Contraseña
               </label>
               <input
@@ -130,7 +130,7 @@ export default function LoginPage() {
                 placeholder="Mínimo 6 caracteres"
                 required
                 minLength={6}
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                className="input py-3"
               />
             </div>
 
@@ -143,7 +143,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-2xl bg-red-700 py-3 font-semibold text-white transition-colors hover:bg-red-800 disabled:opacity-50"
+              className="btn-primary mt-2 w-full py-3"
             >
               {loading
                 ? "Cargando..."

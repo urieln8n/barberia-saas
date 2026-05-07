@@ -75,7 +75,7 @@ export default async function PublicBookingPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-8 text-white sm:px-6 sm:py-10">
+    <main className="premium-grid-bg min-h-screen px-4 py-6 text-slate-950 sm:px-6 sm:py-10">
       <div className="mx-auto w-full max-w-2xl">
         <BookingForm
           barbershopId={barbershop.id}

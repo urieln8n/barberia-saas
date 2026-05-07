@@ -342,35 +342,34 @@ export default async function DashboardPage() {
     <div className="space-y-5">
 
       {/* ── Hero ── */}
-      <section className="overflow-hidden rounded-3xl bg-[#0D0D0D] text-white shadow-lg">
-        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
-        <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
+      <section className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Panel principal</p>
-            <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
+            <p className="label-section">Panel principal</p>
+            <h1 className="mt-2 text-3xl font-black md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-slate-500">
               Gestiona citas, clientes, servicios, barberos y pagos — todo desde aquí.
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <Link
               href="/dashboard/agenda"
-              className="rounded-2xl bg-[#00C2A8] px-5 py-3 text-center text-sm font-bold text-[#0D0D0D] transition-colors hover:bg-[#009e88]"
+              className="btn-primary"
             >
               Ver agenda hoy
             </Link>
             <Link
               href="/dashboard/qr"
-              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-white/10"
+              className="btn-outline"
             >
               Ver QR de reservas
             </Link>
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="rounded-2xl border border-white/15 px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-white/10"
+              className="btn-outline"
             >
               Página pública ↗
             </Link>
@@ -385,16 +384,16 @@ export default async function DashboardPage() {
           value={String(todayAppointments.length)}
           hint={`${weekApptsCount} esta semana`}
           icon={CalendarCheck}
-          iconBg="bg-[#00C2A8]/10"
-          iconColor="text-[#00C2A8]"
+          iconBg="bg-[#2F6FEB]/10"
+          iconColor="text-[#2F6FEB]"
         />
         <StatCard
           title="Ingresos hoy"
           value={`${todayRevenue.toFixed(0)} €`}
           hint={`${monthRevenue.toFixed(0)} € este mes`}
           icon={TrendingUp}
-          iconBg="bg-[#C89B3C]/10"
-          iconColor="text-[#C89B3C]"
+          iconBg="bg-[#2F6FEB]/10"
+          iconColor="text-[#2F6FEB]"
         />
         <StatCard
           title="Clientes"
@@ -416,23 +415,23 @@ export default async function DashboardPage() {
 
       {/* ── Stats del mes ── */}
       <section className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="metric-card">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas este mes</p>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{monthApptsCount}</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{monthApptsCount}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
             {monthApptsCount - cancelledCount} completadas · {cancelledCount} canceladas
           </p>
         </div>
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="metric-card">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicio top</p>
-          <p className="mt-3 truncate text-xl font-black leading-tight text-[#0D0D0D]">{topServiceName}</p>
+          <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topServiceName}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
             {topServiceCount > 0 ? `${topServiceCount} citas este mes` : "Sin datos aún"}
           </p>
         </div>
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="metric-card">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Barbero top</p>
-          <p className="mt-3 truncate text-xl font-black leading-tight text-[#0D0D0D]">{topBarberName}</p>
+          <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topBarberName}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
             {topBarberCount > 0 ? `${topBarberCount} citas este mes` : "Sin datos aún"}
           </p>
@@ -443,15 +442,15 @@ export default async function DashboardPage() {
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
 
         {/* Próximas citas */}
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="panel">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-black text-[#0D0D0D]">Próximas citas</h2>
+              <h2 className="section-heading">Próximas citas</h2>
               <p className="text-sm text-neutral-500">Reservas activas desde hoy.</p>
             </div>
             <Link
               href="/dashboard/agenda"
-              className="flex items-center gap-1.5 rounded-2xl border border-[#E5E2D9] px-4 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
+              className="btn-outline"
             >
               Abrir agenda <ArrowRight size={14} />
             </Link>
@@ -465,7 +464,7 @@ export default async function DashboardPage() {
               action={
                 <Link
                   href="/dashboard/qr"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+                  className="btn-dark"
                 >
                   <QrCode size={15} /> Ver QR de reservas
                 </Link>
@@ -476,10 +475,10 @@ export default async function DashboardPage() {
               {upcomingAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="flex items-start gap-3 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA]/50 p-4"
+                  className="flex items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-4"
                 >
-                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#0D0D0D] text-center">
-                    <span className="text-[9px] font-bold uppercase text-[#C89B3C]">
+                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#2F6FEB] text-center">
+                    <span className="text-[9px] font-bold uppercase text-blue-100">
                       {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
                     </span>
                     <span className="text-base font-black text-white">
@@ -489,7 +488,7 @@ export default async function DashboardPage() {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold leading-tight text-[#0D0D0D]">
+                      <p className="font-bold leading-tight text-[#111827]">
                         {appointment.clients?.name ?? "Cliente sin nombre"}
                       </p>
                       <span className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusClass(appointment.status)}`}>
@@ -513,12 +512,12 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4">
 
           {/* Link de reservas */}
-          <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="panel">
             <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Tu link de reservas</p>
             <p className="mt-2 text-sm text-neutral-600">
               Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
             </p>
-            <div className="mt-4 rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] px-4 py-3">
+            <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
               <p className="break-all font-mono text-xs font-semibold text-neutral-700">
                 {typeof window !== "undefined" ? window.location.origin : "https://barberiaos.com"}{publicBookingUrl}
               </p>
@@ -526,14 +525,14 @@ export default async function DashboardPage() {
             <div className="mt-4 grid gap-2">
               <Link
                 href="/dashboard/qr"
-                className="flex items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+                className="btn-dark"
               >
                 <QrCode size={15} /> Ver y descargar QR
               </Link>
               <Link
                 href={publicBookingUrl}
                 target="_blank"
-                className="flex items-center justify-center gap-2 rounded-2xl border border-[#E5E2D9] px-5 py-3 text-sm font-bold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
+                className="btn-outline"
               >
                 Abrir página pública <ArrowRight size={15} />
               </Link>
@@ -541,7 +540,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Acciones rápidas */}
-          <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="panel">
             <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Acciones rápidas</p>
             <div className="mt-3 grid gap-1">
               {[
@@ -553,7 +552,7 @@ export default async function DashboardPage() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
                 >
                   <Icon size={15} className="shrink-0 text-neutral-400" />
                   {label}

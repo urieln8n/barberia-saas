@@ -98,10 +98,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
           className="flex cursor-not-allowed items-center gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 px-5 py-3 text-sm font-semibold text-neutral-400"
         >
           <Download size={16} />
-          Exportar para gestor
-          <span className="rounded-full bg-neutral-200 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-neutral-500">
-            Próximamente
-          </span>
+          Resumen orientativo
         </button>
       </div>
 
@@ -144,7 +141,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
 
       {/* ── KPI cards ── */}
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos</p>
           <p className="mt-3 text-3xl font-black text-neutral-950">{fmt(d.ingresos)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-emerald-600">
@@ -152,7 +149,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Gastos</p>
           <p className="mt-3 text-3xl font-black text-neutral-950">{fmt(d.gastos)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-amber-600">
@@ -160,7 +157,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
           </p>
         </div>
 
-        <div className={`rounded-3xl border p-5 shadow-sm ${
+        <div className={`rounded-2xl border p-5 shadow-sm ${
           d.beneficio >= 0 ? "border-emerald-100 bg-emerald-50" : "border-red-100 bg-red-50"
         }`}>
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Beneficio est.</p>
@@ -172,7 +169,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-orange-100 bg-orange-50 p-5 shadow-sm">
+        <div className="rounded-2xl border border-orange-100 bg-orange-50 p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">IVA neto est.</p>
           <p className="mt-3 text-3xl font-black text-orange-700">{fmt(d.ivaNeto)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-orange-600">
@@ -182,7 +179,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
       </div>
 
       {/* ── Desglose fiscal ── */}
-      <div className="mt-4 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
         <div className="border-b border-neutral-100 px-6 py-4">
           <h2 className="font-black text-neutral-900">Estimación fiscal del trimestre</h2>
           <p className="mt-0.5 text-xs text-neutral-400">
@@ -211,7 +208,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
       </div>
 
       {/* ── Recordatorio de modelos ── */}
-      <div className="mt-4 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
         <div className="flex items-center gap-2 border-b border-neutral-100 px-6 py-4">
           <Clock size={16} className="text-neutral-400" />
           <div>
@@ -260,19 +257,19 @@ export function FiscalClient({ payments, expenses, year }: Props) {
         </div>
       </div>
 
-      {/* ── Export CTA deshabilitado ── */}
-      <div className="mt-4 rounded-3xl border border-dashed border-neutral-300 bg-neutral-50 p-6 text-center">
+      {/* ── Resumen gestor ── */}
+      <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-6 text-center">
         <Download size={22} className="mx-auto text-neutral-300" />
-        <p className="mt-2 font-black text-neutral-500">Exportar resumen para tu gestor</p>
+        <p className="mt-2 font-black text-neutral-500">Resumen para tu gestor</p>
         <p className="mt-1 text-sm text-neutral-400">
-          Descarga un PDF con el desglose del trimestre para compartir con tu asesor fiscal.
+          Usa el desglose de esta pantalla como base para revisar el trimestre con tu asesor fiscal.
         </p>
         <button
           disabled
           className="mt-4 inline-flex cursor-not-allowed items-center gap-2 rounded-2xl bg-neutral-200 px-5 py-2.5 text-sm font-semibold text-neutral-400"
         >
           <Download size={14} />
-          Exportar PDF · Próximamente
+          Exportacion asistida
         </button>
       </div>
 

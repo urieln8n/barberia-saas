@@ -94,15 +94,15 @@ export function FinanzasClient({
       {/* ── Header ── */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Finanzas / Caja</p>
-          <h1 className="mt-1.5 text-3xl font-black tracking-tight text-[#0D0D0D] md:text-4xl">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Finanzas / Caja</p>
+          <h1 className="mt-1.5 text-3xl font-black tracking-tight text-[#111827] md:text-4xl">
             Resumen del mes
           </h1>
         </div>
         <button
           type="button"
           onClick={() => { setShowForm(!showForm); setError(null); }}
-          className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+          className="flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
         >
           {showForm ? <X size={16} /> : <Plus size={16} />}
           {showForm ? "Cancelar" : "Registrar gasto"}
@@ -112,40 +112,40 @@ export function FinanzasClient({
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos hoy</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#00C2A8]/10">
-              <TrendingUp size={15} className="text-[#00C2A8]" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+              <TrendingUp size={15} className="text-[#2F6FEB]" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{ingresosHoy.toFixed(0)} €</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{ingresosHoy.toFixed(0)} €</p>
           <p className="mt-1.5 text-xs text-neutral-400">Pagos cobrados</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos mes</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#C89B3C]/10">
-              <TrendingUp size={15} className="text-[#C89B3C]" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+              <TrendingUp size={15} className="text-[#2F6FEB]" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{ingresosMes.toFixed(0)} €</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{ingresosMes.toFixed(0)} €</p>
           <p className="mt-1.5 text-xs text-neutral-400">Pagos registrados</p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-start justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Gastos mes</p>
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-50">
               <TrendingDown size={15} className="text-amber-600" />
             </div>
           </div>
-          <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{gastosMes.toFixed(0)} €</p>
+          <p className="mt-3 text-4xl font-black text-[#111827]">{gastosMes.toFixed(0)} €</p>
           <p className="mt-1.5 text-xs text-neutral-400">Gastos registrados</p>
         </div>
 
-        <div className={`rounded-3xl border p-5 shadow-sm ${
+        <div className={`rounded-2xl border p-5 shadow-sm ${
           beneficio >= 0
             ? "border-emerald-100 bg-emerald-50"
             : "border-red-100 bg-red-50"
@@ -170,11 +170,11 @@ export function FinanzasClient({
 
       {/* ── Formulario ── */}
       {showForm && (
-        <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
-          <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+          <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
           <div className="p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Nuevo gasto</p>
-            <h2 className="mt-1 text-lg font-black text-[#0D0D0D]">Registrar gasto</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Nuevo gasto</p>
+            <h2 className="mt-1 text-lg font-black text-[#111827]">Registrar gasto</h2>
 
             <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:grid-cols-2">
               <div>
@@ -188,7 +188,7 @@ export function FinanzasClient({
                     min="0.01"
                     required
                     placeholder="0.00"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-8 pr-4 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 bg-white py-3 pl-8 pr-4 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export function FinanzasClient({
                   name="category"
                   required
                   defaultValue=""
-                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                 >
                   <option value="" disabled>Selecciona categoría</option>
                   {CATEGORIES.map((c) => (
@@ -214,7 +214,7 @@ export function FinanzasClient({
                   name="description"
                   type="text"
                   placeholder="Ej: Alquiler junio"
-                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export function FinanzasClient({
                   type="date"
                   required
                   defaultValue={today}
-                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                  className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                 />
               </div>
 
@@ -237,14 +237,14 @@ export function FinanzasClient({
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#111827] py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A] disabled:opacity-50"
                 >
                   {saving ? "Guardando..." : "Guardar gasto"}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setShowForm(false); setError(null); }}
-                  className="rounded-2xl border border-[#E5E2D9] px-5 py-3 text-sm font-semibold text-neutral-600 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-2xl border border-[#E5E7EB] px-5 py-3 text-sm font-semibold text-neutral-600 transition-colors hover:bg-[#F8FAFC]"
                 >
                   Cancelar
                 </button>
@@ -255,13 +255,13 @@ export function FinanzasClient({
       )}
 
       {/* ── Lista de gastos ── */}
-      <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-[#E5E2D9] px-6 py-4">
+      <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Este mes</p>
-            <h2 className="mt-0.5 font-black text-[#0D0D0D]">Gastos registrados</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Este mes</p>
+            <h2 className="mt-0.5 font-black text-[#111827]">Gastos registrados</h2>
           </div>
-          <span className="rounded-full border border-neutral-200 bg-[#F5F2EA] px-3 py-1 text-xs font-semibold text-neutral-500">
+          <span className="rounded-full border border-neutral-200 bg-[#F8FAFC] px-3 py-1 text-xs font-semibold text-neutral-500">
             {expenses.length} registros
           </span>
         </div>
@@ -276,7 +276,7 @@ export function FinanzasClient({
                 <button
                   type="button"
                   onClick={() => setShowForm(true)}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
                 >
                   <Plus size={15} /> Registrar primer gasto
                 </button>
@@ -284,21 +284,21 @@ export function FinanzasClient({
             />
           </div>
         ) : (
-          <div className="divide-y divide-[#E5E2D9]">
+          <div className="divide-y divide-[#E5E7EB]">
             {expenses.map((expense) => {
               const cat  = getCat(expense.category);
               const Icon = cat.icon;
               return (
                 <div
                   key={expense.id}
-                  className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-[#F5F2EA]/50"
+                  className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-[#F8FAFC]/50"
                 >
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${cat.color}`}>
                     <Icon size={16} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-[#0D0D0D]">{cat.label}</p>
+                    <p className="text-sm font-bold text-[#111827]">{cat.label}</p>
                     {expense.description && (
                       <p className="truncate text-xs text-neutral-500">{expense.description}</p>
                     )}
@@ -312,7 +312,7 @@ export function FinanzasClient({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-base font-black text-[#0D0D0D]">
+                    <span className="text-base font-black text-[#111827]">
                       {Number(expense.amount).toFixed(2)} €
                     </span>
                     <button

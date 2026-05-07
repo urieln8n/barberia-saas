@@ -60,7 +60,7 @@ export function ServiciosClient({ services, barbershopId }: Props) {
           <button
             type="button"
             onClick={openCreate}
-            className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+            className="btn-dark"
           >
             <Plus size={16} /> Añadir servicio
           </button>
@@ -76,29 +76,29 @@ export function ServiciosClient({ services, barbershopId }: Props) {
             <button
               type="button"
               onClick={openCreate}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+              className="btn-dark"
             >
               <Plus size={16} /> Crear primer servicio
             </button>
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+        <div className="table-shell">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#E5E2D9] bg-[#F5F2EA]/50">
+              <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Servicio</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Duración</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Precio</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-400">Acciones</th>
+                  <th className="table-header-cell">Servicio</th>
+                  <th className="table-header-cell">Duración</th>
+                  <th className="table-header-cell">Precio</th>
+                  <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5E2D9]">
+              <tbody className="divide-y divide-[#E5E7EB]">
                 {services.map((s) => (
-                  <tr key={s.id} className="transition-colors hover:bg-[#F5F2EA]/50">
+                  <tr key={s.id} className="transition-colors hover:bg-[#F8FAFC]">
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-[#0D0D0D]">{s.name}</p>
+                      <p className="font-semibold text-[#111827]">{s.name}</p>
                       {s.description && <p className="mt-0.5 text-xs text-neutral-400">{s.description}</p>}
                     </td>
                     <td className="px-6 py-4 text-neutral-600">
@@ -106,13 +106,13 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                         <Clock size={13} className="text-neutral-400" /> {s.duration_minutes} min
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-black text-[#0D0D0D]">{s.price} €</td>
+                    <td className="px-6 py-4 font-black text-[#111827]">{s.price} €</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button
                           type="button"
                           onClick={() => openEdit(s)}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
                         >
                           <Pencil size={15} />
                         </button>
@@ -137,20 +137,19 @@ export function ServiciosClient({ services, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-md rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Servicios</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">
+                  <p className="label-section">Servicios</p>
+                  <h2 className="section-heading mt-0.5">
                     {editing ? "Editar servicio" : "Nuevo servicio"}
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />
                 </button>
@@ -158,19 +157,19 @@ export function ServiciosClient({ services, barbershopId }: Props) {
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Nombre *</label>
+                  <label className="form-label">Nombre *</label>
                   <input
                     name="name"
                     required
                     defaultValue={editing?.name ?? ""}
                     placeholder="Ej: Corte clásico"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Precio (€) *</label>
+                    <label className="form-label">Precio (€) *</label>
                     <input
                       name="price"
                       type="number"
@@ -179,11 +178,11 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                       required
                       defaultValue={editing?.price ?? ""}
                       placeholder="15"
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Duración (min) *</label>
+                    <label className="form-label">Duración (min) *</label>
                     <input
                       name="duration_minutes"
                       type="number"
@@ -192,18 +191,18 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                       required
                       defaultValue={editing?.duration_minutes ?? ""}
                       placeholder="30"
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Descripción (opcional)</label>
+                  <label className="form-label">Descripción (opcional)</label>
                   <input
                     name="description"
                     defaultValue={editing?.description ?? ""}
                     placeholder="Ej: Incluye lavado y secado"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
@@ -211,14 +210,14 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    className="btn-outline flex-1"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    className="btn-dark flex-1"
                   >
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear servicio"}
                   </button>
