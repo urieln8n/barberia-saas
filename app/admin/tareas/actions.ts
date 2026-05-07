@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 const PATH = "/admin/tareas";
 
 export async function createTask(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
 
   const related_type = (formData.get("related_type") as string)?.trim() || null;
@@ -27,7 +27,7 @@ export async function createTask(formData: FormData) {
 }
 
 export async function updateTask(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   const id = formData.get("id") as string;
 
@@ -49,14 +49,14 @@ export async function updateTask(formData: FormData) {
 }
 
 export async function deleteTask(id: string) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   await supabase.from("crm_tasks").delete().eq("id", id);
   revalidatePath(PATH);
 }
 
 export async function toggleTaskStatus(id: string, currentStatus: string) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   const newStatus = currentStatus === "completada" ? "pendiente" : "completada";
   await supabase.from("crm_tasks").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", id);

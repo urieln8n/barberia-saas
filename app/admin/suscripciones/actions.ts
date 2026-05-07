@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 const PATH = "/admin/suscripciones";
 
 export async function createSubscription(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
 
   const status    = formData.get("status") as string;
@@ -35,7 +35,7 @@ export async function createSubscription(formData: FormData) {
 }
 
 export async function updateSubscription(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   const id = formData.get("id") as string;
 
@@ -69,7 +69,7 @@ export async function updateSubscription(formData: FormData) {
 }
 
 export async function updateSubscriptionStatus(id: string, status: string) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
 
   const cancelled_at = status === "cancelled" ? new Date().toISOString() : null;
@@ -85,7 +85,7 @@ export async function updateSubscriptionStatus(id: string, status: string) {
 }
 
 export async function deleteSubscription(id: string) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   await supabase.from("subscriptions").delete().eq("id", id);
   revalidatePath(PATH);

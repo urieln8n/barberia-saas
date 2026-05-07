@@ -1,9 +1,9 @@
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { LeadsClient } from "./LeadsClient";
 
 export default async function LeadsPage() {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
 
   const supabase = createServiceRoleClient();
   const { data: leads } = await supabase

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 import {
   AlertTriangle, TrendingUp, Store, Users, Target,
   CheckSquare, Clock, DollarSign, Calendar, ChevronRight, Zap,
@@ -190,7 +190,7 @@ function fmtEur(n: number) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AdminPage() {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const m = await getMetrics();
 
   const today = new Date().toLocaleDateString("es-ES", {

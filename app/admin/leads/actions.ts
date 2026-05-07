@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 const PATH = "/admin/leads";
 
 export async function createLead(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
 
   await supabase.from("crm_leads").insert({
@@ -29,7 +29,7 @@ export async function createLead(formData: FormData) {
 }
 
 export async function updateLead(formData: FormData) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   const id = formData.get("id") as string;
 
@@ -53,7 +53,7 @@ export async function updateLead(formData: FormData) {
 }
 
 export async function deleteLead(id: string) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const supabase = createServiceRoleClient();
   await supabase.from("crm_leads").delete().eq("id", id);
   revalidatePath(PATH);

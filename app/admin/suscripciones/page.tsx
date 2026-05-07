@@ -1,9 +1,9 @@
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { SuscripcionesClient } from "./SuscripcionesClient";
 
 export default async function SuscripcionesPage() {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
 
   const supabase = createServiceRoleClient();
 
@@ -21,7 +21,6 @@ export default async function SuscripcionesPage() {
   // Flatten the barbershop join
   const subscriptions = (rawSubs ?? []).map((s) => {
     const bs = s.barbershops as { name: string } | null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { barbershops: _, ...rest } = s;
     return { ...rest, barbershop_name: bs?.name ?? null };
   });
