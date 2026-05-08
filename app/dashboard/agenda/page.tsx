@@ -92,7 +92,13 @@ export default async function AgendaPage({ searchParams }: Props) {
         })
       : supabase;
 
-  const [appointmentsResult, clientsResult, servicesResult, barbersResult] =
+  const [
+    appointmentsResult,
+    upcomingAppointmentsResult,
+    clientsResult,
+    servicesResult,
+    barbersResult,
+  ] =
     await Promise.all([
       dataClient
         .from("appointments")
@@ -118,6 +124,35 @@ export default async function AgendaPage({ searchParams }: Props) {
         `
         )
         .eq("barbershop_id", barbershopId)
+        .eq("appointment_date", fecha)
+        .order("start_time", { ascending: true }),
+
+      dataClient
+        .from("appointments")
+        .select(
+          `
+          id,
+          appointment_date,
+          start_time,
+          end_time,
+          status,
+          notes,
+          clients (
+            name,
+            phone
+          ),
+          services (
+            name,
+            price
+          ),
+          barbers (
+            name
+          )
+        `
+        )
+        .eq("barbershop_id", barbershopId)
+        .gt("appointment_date", fecha)
+        .not("status", "in", "(cancelled,completed,no_show)")
         .order("appointment_date", { ascending: true })
         .order("start_time", { ascending: true })
         .limit(100),
@@ -143,24 +178,20 @@ export default async function AgendaPage({ searchParams }: Props) {
         .order("name", { ascending: true }),
     ]);
 
-  const allAppointments = ((appointmentsResult.data as any[]) ?? []).map(
-    normalizeAppointment
-  );
+  const appointmentsForSelectedDate = (
+    (appointmentsResult.data as any[]) ?? []
+  ).map(normalizeAppointment);
 
-  const appointmentsForSelectedDate = allAppointments.filter(
-    (appointment) => appointment.appointment_date === fecha
-  );
-
-  const upcomingAppointments = allAppointments
-    .filter((appointment) => {
-      const isFuture = appointment.appointment_date > fecha;
-      const isActive = !["cancelled", "completed", "no_show"].includes(
-        appointment.status
-      );
-
-      return isFuture && isActive;
-    })
+  const upcomingAppointments = (
+    (upcomingAppointmentsResult.data as any[]) ?? []
+  )
+    .map(normalizeAppointment)
     .slice(0, 10);
+
+  const allAppointments = [
+    ...appointmentsForSelectedDate,
+    ...upcomingAppointments,
+  ];
 
   return (
     <AgendaClient
@@ -170,6 +201,8 @@ export default async function AgendaPage({ searchParams }: Props) {
       services={servicesResult.data ?? []}
       barbers={barbersResult.data ?? []}
       barbershopId={barbershopId}
-      fecha={fecha} allAppointments={[]}    />
+      fecha={fecha}
+      allAppointments={allAppointments}
+    />
   );
 }
