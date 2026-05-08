@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 
 const ACTIVE_STATUSES = ["pending", "scheduled", "confirmed"];
 
@@ -312,6 +313,14 @@ export async function createPublicBooking(
   if (barbershop.public_booking_enabled === false) {
     return {
       error: "Las reservas online no están activas para esta barbería.",
+    };
+  }
+
+  const usage = await getBarbershopPlanUsage(supabase, barbershopId);
+  const limitError = assertCanCreateBooking(usage);
+  if (limitError) {
+    return {
+      error: limitError,
     };
   }
 

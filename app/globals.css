@@ -6,23 +6,23 @@
 :root {
   color-scheme: light;
 
-  --ink:     #111827;
-  --carbon:  #0F172A;
-  --ivory:   #F8FAFC;
-  --gold:    #2F6FEB;
-  --teal:    #2F6FEB;
-  --wine:    #E5484D;
-  --pole:    #2F6FEB;
-  --border:  #E5E7EB;
+  --ink:     #111111;
+  --carbon:  #171717;
+  --ivory:   #F8F5EF;
+  --gold:    #C89B3C;
+  --teal:    #2563EB;
+  --wine:    #B91C1C;
+  --pole:    #2563EB;
+  --border:  #E7E2D8;
   --success: #16A34A;
   --amber:   #D97706;
   --surface: #FFFFFF;
-  --muted:   #F6F8FB;
-  --accent:  #2F6FEB;
-  --radius-card: 16px;
+  --muted:   #F4EFE7;
+  --accent:  #2563EB;
+  --radius-card: 18px;
   --radius-control: 12px;
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(15, 23, 42, 0.06);
-  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 20px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04), 0 18px 45px rgba(23, 23, 23, 0.07);
+  --shadow-soft: 0 1px 2px rgba(17, 17, 17, 0.05), 0 10px 24px rgba(23, 23, 23, 0.05);
 }
 
 /* ─── Base layer ────────────────────────────────────────────────────────── */
@@ -36,10 +36,10 @@
   body {
     margin: 0;
     background:
-      radial-gradient(circle at top left, rgba(47, 111, 235, 0.08), transparent 320px),
-      radial-gradient(circle at top right, rgba(15, 23, 42, 0.02), transparent 420px),
-      linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 46%, #F3F6FA 100%);
-    color: #111827;
+      radial-gradient(circle at top left, rgba(200, 155, 60, 0.10), transparent 320px),
+      radial-gradient(circle at top right, rgba(37, 99, 235, 0.06), transparent 440px),
+      linear-gradient(180deg, #FFFFFF 0%, #F8F5EF 52%, #F4EFE7 100%);
+    color: #111111;
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI Variable",
       "Segoe UI", system-ui, ui-sans-serif, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -61,7 +61,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid #2F6FEB;
+    outline: 2px solid #2563EB;
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -72,25 +72,25 @@
 
   /* ── Cards ── */
   .card {
-    @apply rounded-2xl border border-[#E5E7EB] bg-white shadow-sm;
+    @apply rounded-[18px] border border-[#E7E2D8] bg-white shadow-sm;
   }
   .card-ghost {
-    @apply rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC];
+    @apply rounded-[18px] border border-[#E7E2D8] bg-[#F8F5EF];
   }
   .card-dark {
-    @apply rounded-2xl border border-white/10 bg-[#0F172A] text-white;
+    @apply rounded-[18px] border border-white/10 bg-[#171717] text-white;
   }
   .panel {
-    @apply rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm md:p-6;
+    @apply rounded-[18px] border border-[#E7E2D8] bg-white p-5 shadow-[var(--shadow-soft)] md:p-6;
   }
   .panel-compact {
-    @apply rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm;
+    @apply rounded-xl border border-[#E7E2D8] bg-white p-4 shadow-sm;
   }
   .metric-card {
-    @apply rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm transition-all duration-150 hover:border-[#CBD5E1] hover:shadow-md;
+    @apply rounded-[18px] border border-[#E7E2D8] bg-white p-5 shadow-[var(--shadow-soft)] transition-all duration-150 hover:-translate-y-0.5 hover:border-[#D8CEBE] hover:shadow-[var(--shadow-card)];
   }
   .metric-icon {
-    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.06)];
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-xl shadow-[0_1px_2px_rgba(17,17,17,0.06)];
   }
 
   /* ── Buttons ── */
@@ -101,26 +101,26 @@
   }
   .btn-primary {
     @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl
-           bg-[#2F6FEB] px-4 py-2.5 text-sm font-bold text-white shadow-sm
-           transition-all duration-150 hover:bg-[#2459bd] hover:shadow-md active:scale-[0.98]
+           bg-[#2563EB] px-4 py-2.5 text-sm font-bold text-white shadow-sm
+           transition-all duration-150 hover:bg-[#1D4ED8] hover:shadow-md active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-dark {
     @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl
-           bg-[#111827] px-4 py-2.5 text-sm font-bold text-white shadow-sm
-           transition-all duration-150 hover:bg-[#0F172A] hover:shadow-md active:scale-[0.98]
+           bg-[#111111] px-4 py-2.5 text-sm font-bold text-white shadow-sm
+           transition-all duration-150 hover:bg-[#171717] hover:shadow-md active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-gold {
     @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl
-           bg-[#111827] px-4 py-2.5 text-sm font-bold text-white shadow-sm
-           transition-all duration-150 hover:bg-[#0F172A] hover:shadow-md active:scale-[0.98]
+           bg-[#C89B3C] px-4 py-2.5 text-sm font-bold text-[#111111] shadow-sm
+           transition-all duration-150 hover:bg-[#B68B34] hover:shadow-md active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-outline {
     @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl
-           border border-[#DCE3EE] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm
-           transition-all duration-150 hover:border-[#C9D4E3] hover:bg-[#F8FAFC] active:scale-[0.98]
+           border border-[#E7E2D8] bg-white px-4 py-2.5 text-sm font-bold text-neutral-700 shadow-sm
+           transition-all duration-150 hover:border-[#D8CEBE] hover:bg-[#F8F5EF] active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-ghost {
@@ -137,10 +137,10 @@
 
   /* ── Inputs ── */
   .input {
-    @apply w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5
+    @apply w-full rounded-xl border border-[#E7E2D8] bg-white px-4 py-2.5
            text-sm text-neutral-900 placeholder:text-neutral-400 outline-none
            transition-colors duration-150
-           focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10;
+           focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10;
   }
   .form-label {
     @apply mb-1.5 block text-sm font-semibold text-neutral-700;
@@ -160,10 +160,10 @@
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }
   .badge-gold {
-    @apply inline-flex items-center gap-1 rounded-full border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 px-2.5 py-0.5 text-xs font-semibold text-[#2F6FEB];
+    @apply inline-flex items-center gap-1 rounded-full border border-[#C89B3C]/30 bg-[#C89B3C]/10 px-2.5 py-0.5 text-xs font-semibold text-[#8A641F];
   }
   .badge-teal {
-    @apply inline-flex items-center gap-1 rounded-full border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 px-2.5 py-0.5 text-xs font-semibold text-[#2F6FEB];
+    @apply inline-flex items-center gap-1 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/10 px-2.5 py-0.5 text-xs font-semibold text-[#1D4ED8];
   }
   .badge-success {
     @apply inline-flex items-center gap-1 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700;
@@ -180,28 +180,28 @@
 
   /* ── Section labels ── */
   .label-section {
-    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-[#2F6FEB];
+    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A641F];
   }
   .page-shell {
-    @apply mx-auto w-full max-w-7xl space-y-5 px-0;
+    @apply mx-auto w-full max-w-7xl space-y-6 px-0;
   }
   .page-shell-narrow {
     @apply mx-auto w-full max-w-5xl space-y-5 px-0;
   }
   .page-title {
-    @apply mt-1.5 text-[clamp(1.75rem,2vw,2.5rem)] font-black text-[#111827];
+    @apply mt-1.5 text-[clamp(1.75rem,2vw,2.5rem)] font-black text-[#111111];
   }
   .page-description {
-    @apply mt-2 max-w-3xl text-sm leading-6 text-slate-500;
+    @apply mt-2 max-w-3xl text-sm leading-6 text-neutral-500;
   }
   .section-heading {
-    @apply text-lg font-black text-[#111827];
+    @apply text-lg font-black text-[#111111];
   }
   .section-subtext {
     @apply mt-1 text-sm leading-6 text-neutral-500;
   }
   .table-shell {
-    @apply overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-sm;
+    @apply overflow-hidden rounded-[18px] border border-[#E7E2D8] bg-white shadow-[var(--shadow-soft)];
   }
   .table-header-cell {
     @apply px-5 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400;
@@ -214,16 +214,17 @@
   }
   .premium-grid-bg {
     background:
-      radial-gradient(circle at top left, rgba(47, 111, 235, 0.08), transparent 360px),
-      linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 44%, #F3F6FA 100%);
+      radial-gradient(circle at top left, rgba(200, 155, 60, 0.10), transparent 360px),
+      radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 420px),
+      linear-gradient(180deg, #FFFFFF 0%, #F8F5EF 48%, #F4EFE7 100%);
   }
   .surface-frame {
-    @apply rounded-2xl border border-[#E5E7EB] bg-white shadow-sm;
+    @apply rounded-[18px] border border-[#E7E2D8] bg-white shadow-[var(--shadow-soft)];
   }
   .section-band {
-    @apply rounded-3xl border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+    @apply rounded-[22px] border border-[#E7E2D8] bg-white shadow-[var(--shadow-soft)];
   }
   .section-band-dark {
-    @apply rounded-3xl border border-white/10 bg-[#0F172A] text-white shadow-[0_16px_40px_rgba(15,23,42,0.16)];
+    @apply rounded-[22px] border border-white/10 bg-[#171717] text-white shadow-[0_18px_48px_rgba(17,17,17,0.18)];
   }
 }

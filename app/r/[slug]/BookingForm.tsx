@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Clock,
   ChevronLeft,
@@ -21,6 +21,7 @@ import { createPublicBooking, getUnavailableSlots } from "./actions";
 type Service = {
   id: string;
   name: string;
+  description: string | null;
   price: number;
   duration_minutes: number;
 };
@@ -32,20 +33,236 @@ type Barber = {
 
 type Props = {
   barbershopId: string;
+  barbershopSlug: string;
   barbershopName: string;
   barbershopCity: string;
   services: Service[];
   barbers: Barber[];
+  initialServiceId?: string | null;
+  initialBarberId?: string | null;
 };
 
 const STEP_LABELS = ["Servicio", "Barbero", "Fecha y hora", "Tus datos"];
+const LAST_BOOKING_STORAGE_KEY = "barberiaos:last-public-booking";
+
+type LastBookingStorage = {
+  businessSlug: string;
+  serviceId: string;
+  barberId: string | null;
+};
+
+function StepProgress({ step }: { step: number }) {
+  if (step >= 5) return null;
+
+  return (
+    <div className="mt-5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
+      <div className="flex gap-1.5">
+        {[1, 2, 3, 4].map((s) => (
+          <div
+            key={s}
+            className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+              s <= step ? "bg-[#111827]" : "bg-white"
+            }`}
+          />
+        ))}
+      </div>
+
+      <div className="mt-3 flex items-center justify-between text-xs">
+        <span className="font-semibold text-neutral-500">Paso {step} de 4</span>
+        <span className="font-black text-[#111827]">{STEP_LABELS[step - 1]}</span>
+      </div>
+    </div>
+  );
+}
+
+function TrustBadges() {
+  return (
+    <div className="mt-5 grid gap-2 sm:grid-cols-3">
+      {[
+        { icon: BadgeCheck, label: "Sin cuenta necesaria", tone: "text-emerald-600" },
+        { icon: Clock, label: "Reserva en segundos", tone: "text-[#2F6FEB]" },
+        { icon: ShieldCheck, label: "Directo con la barberia", tone: "text-[#2F6FEB]" },
+      ].map(({ icon: Icon, label, tone }) => (
+        <span
+          key={label}
+          className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2 text-xs font-semibold text-neutral-600"
+        >
+          <Icon size={13} className={tone} />
+          {label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function BookingHeader({
+  barbershopName,
+  barbershopCity,
+}: {
+  barbershopName: string;
+  barbershopCity: string;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-white shadow-sm">
+        <Scissors size={22} />
+      </div>
+
+      <div className="min-w-0">
+        <p className="truncate text-sm text-neutral-500">
+          {barbershopCity ? `Reserva online · ${barbershopCity}` : "Reserva online"}
+        </p>
+        <h1 className="truncate text-2xl font-black tracking-normal text-[#111827]">
+          {barbershopName}
+        </h1>
+      </div>
+    </div>
+  );
+}
+
+function StepTitle({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div>
+      <h2 className="text-xl font-black text-[#111827]">{title}</h2>
+      <p className="mt-1 text-sm leading-6 text-neutral-500">{description}</p>
+    </div>
+  );
+}
+
+function ChoiceButton({
+  children,
+  onClick,
+  selected = false,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  selected?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] ${
+        selected
+          ? "border-[#111827] bg-[#111827] text-white shadow-lg shadow-slate-900/10"
+          : "border-[#E5E7EB] bg-white hover:border-[#111827] hover:bg-[#F8FAFC]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
+  strong = false,
+}: {
+  icon: typeof Clock;
+  label?: string;
+  value: ReactNode;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-2 text-sm text-neutral-600">
+      <Icon size={14} className="shrink-0 text-neutral-400" />
+      {label && <span className="text-neutral-400">{label}</span>}
+      <span className={strong ? "font-bold text-[#111827]" : ""}>{value}</span>
+    </div>
+  );
+}
+
+function ReservationSummary({
+  service,
+  barber,
+  date,
+  time,
+  compact = false,
+}: {
+  service: Service | null;
+  barber: Barber | null;
+  date: string;
+  time: string;
+  compact?: boolean;
+}) {
+  const formattedDate = date
+    ? new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
+        weekday: compact ? "short" : "long",
+        day: "numeric",
+        month: compact ? "short" : "long",
+      })
+    : "";
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]">
+      <div className="border-b border-[#E5E7EB] bg-white px-4 py-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
+          Resumen de reserva
+        </p>
+      </div>
+
+      <div className="space-y-3 px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <InfoRow icon={Scissors} value={service?.name ?? "Servicio"} strong />
+          <span className="shrink-0 text-base font-black text-[#111827]">
+            {service?.price} €
+          </span>
+        </div>
+        <InfoRow icon={Clock} value={`${service?.duration_minutes ?? "--"} min de duración`} />
+        <InfoRow
+          icon={User}
+          value={barber?.id === "any" ? "Primer barbero disponible" : barber?.name ?? "Barbero"}
+        />
+        <InfoRow icon={CalendarDays} value={`${formattedDate}${time ? ` · ${time}h` : ""}`} />
+
+        <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5 text-sm">
+          <CreditCard size={14} className="shrink-0 text-neutral-400" />
+          <span className="font-medium text-neutral-700">Pago en el local</span>
+          <span className="ml-auto text-xs text-neutral-400">sin pago online</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmButton({
+  saving,
+  disabled,
+  onClick,
+}: {
+  saving: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-[#0F172A] active:scale-[0.98] disabled:opacity-40"
+    >
+      <CalendarDays size={18} />
+      {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
+    </button>
+  );
+}
 
 export function BookingForm({
   barbershopId,
+  barbershopSlug,
   barbershopName,
   barbershopCity,
   services,
   barbers,
+  initialServiceId = null,
+  initialBarberId = null,
 }: Props) {
   const [step, setStep] = useState(1);
   const [service, setService] = useState<Service | null>(null);
@@ -60,6 +277,8 @@ export function BookingForm({
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
+  const [lastBooking, setLastBooking] = useState<LastBookingStorage | null>(null);
+  const [showRepeatPrompt, setShowRepeatPrompt] = useState(false);
 
   const slots = generateTimeSlots();
 
@@ -73,6 +292,56 @@ export function BookingForm({
 
   const selectedBarberId =
     barber?.id && barber.id !== "any" ? barber.id : null;
+
+  useEffect(() => {
+    const initialService = services.find((item) => item.id === initialServiceId);
+    const initialBarber =
+      initialBarberId && initialBarberId !== "any"
+        ? barbers.find((item) => item.id === initialBarberId)
+        : null;
+
+    if (!initialService && !initialBarber) return;
+
+    if (initialService) {
+      setService(initialService);
+    }
+
+    setBarber(initialBarber ?? { id: "any", name: "Cualquiera" });
+    setStep(initialService ? 3 : 1);
+  }, [barbers, initialBarberId, initialServiceId, services]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(LAST_BOOKING_STORAGE_KEY);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as Partial<LastBookingStorage> | null;
+      if (!parsed || typeof parsed !== "object") {
+        window.localStorage.removeItem(LAST_BOOKING_STORAGE_KEY);
+        return;
+      }
+
+      const serviceExists = services.some((item) => item.id === parsed.serviceId);
+      const barberExists =
+        !parsed.barberId || barbers.some((item) => item.id === parsed.barberId);
+
+      if (
+        parsed.businessSlug === barbershopSlug &&
+        typeof parsed.serviceId === "string" &&
+        serviceExists &&
+        barberExists
+      ) {
+        setLastBooking({
+          businessSlug: parsed.businessSlug,
+          serviceId: parsed.serviceId,
+          barberId: typeof parsed.barberId === "string" ? parsed.barberId : null,
+        });
+        setShowRepeatPrompt(true);
+      }
+    } catch {
+      window.localStorage.removeItem(LAST_BOOKING_STORAGE_KEY);
+    }
+  }, [barbers, barbershopSlug, services]);
 
   useEffect(() => {
     let cancelled = false;
@@ -133,6 +402,29 @@ export function BookingForm({
     setFormError(null);
   }
 
+  function repeatLastBooking() {
+    if (!lastBooking) return;
+
+    const repeatedService = services.find((item) => item.id === lastBooking.serviceId);
+    const repeatedBarber = lastBooking.barberId
+      ? barbers.find((item) => item.id === lastBooking.barberId)
+      : null;
+
+    if (!repeatedService) {
+      setShowRepeatPrompt(false);
+      return;
+    }
+
+    setService(repeatedService);
+    setBarber(repeatedBarber ?? { id: "any", name: "Cualquiera" });
+    setDate("");
+    setTime("");
+    setUnavailableSlots([]);
+    setFormError(null);
+    setShowRepeatPrompt(false);
+    setStep(3);
+  }
+
   async function handleConfirmBooking() {
     if (!service || !date || !time || !name.trim() || !phone.trim()) {
       setFormError("Completa todos los datos para confirmar la reserva.");
@@ -164,68 +456,31 @@ export function BookingForm({
       return;
     }
 
+    window.localStorage.setItem(
+      LAST_BOOKING_STORAGE_KEY,
+      JSON.stringify({
+        businessSlug: barbershopSlug,
+        serviceId: service.id,
+        barberId: selectedBarberId,
+      } satisfies LastBookingStorage)
+    );
+
     setStep(5);
   }
 
   return (
     <>
-      <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 text-[#111827] shadow-xl shadow-slate-900/10 md:p-8">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB] text-white shadow-sm">
-            <Scissors size={22} />
-          </div>
-
-          <div className="min-w-0">
-            <p className="truncate text-sm text-neutral-500">
-              {barbershopCity
-                ? `Reserva online · ${barbershopCity}`
-                : "Reserva online"}
-            </p>
-            <h1 className="truncate text-2xl font-black">{barbershopName}</h1>
-          </div>
+      <div className="overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-white text-[#111827] shadow-xl shadow-slate-900/10">
+        <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] p-5 md:p-7">
+          <BookingHeader
+            barbershopName={barbershopName}
+            barbershopCity={barbershopCity}
+          />
+          {step === 1 && <TrustBadges />}
+          <StepProgress step={step} />
         </div>
 
-        {/* Badges intro — solo step 1 */}
-        {step === 1 && (
-          <div className="mt-5 flex flex-wrap gap-3">
-            <span className="flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1.5 text-xs font-semibold text-neutral-600">
-              <BadgeCheck size={13} className="text-emerald-500" /> Sin cuenta
-              necesaria
-            </span>
-
-            <span className="flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1.5 text-xs font-semibold text-neutral-600">
-              <Clock size={13} className="text-[#2F6FEB]" /> Solo 30 segundos
-            </span>
-
-            <span className="flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1.5 text-xs font-semibold text-neutral-600">
-              <Phone size={13} className="text-[#2F6FEB]" /> Solo nombre y teléfono
-            </span>
-          </div>
-        )}
-
-        {/* Progress bar */}
-        {step < 5 && (
-          <div className="mt-5">
-            <div className="flex gap-1.5">
-              {[1, 2, 3, 4].map((s) => (
-                <div
-                  key={s}
-                  className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                    s <= step ? "bg-[#2F6FEB]" : "bg-neutral-100"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <p className="mt-2 text-xs text-neutral-400">
-              Paso {step} de 4 ·{" "}
-              <span className="font-semibold text-neutral-600">
-                {STEP_LABELS[step - 1]}
-              </span>
-            </p>
-          </div>
-        )}
+        <div className="p-5 md:p-7">
 
         {/* Volver */}
         {step > 1 && step < 5 && (
@@ -235,7 +490,7 @@ export function BookingForm({
               setFormError(null);
               setStep(step - 1);
             }}
-            className="mt-3 flex items-center gap-1 text-sm text-neutral-400 hover:text-[#111827]"
+            className="mb-5 flex items-center gap-1 text-sm font-semibold text-neutral-400 hover:text-[#111827]"
           >
             <ChevronLeft size={15} /> Volver
           </button>
@@ -243,39 +498,84 @@ export function BookingForm({
 
         {/* ── Step 1: Servicio ── */}
         {step === 1 && (
-          <section className="mt-6">
-            <h2 className="text-xl font-black">¿Qué servicio quieres?</h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              Toca el servicio para continuar.
-            </p>
+          <section>
+            <StepTitle
+              title="¿Qué servicio quieres?"
+              description="Elige el servicio y verás precio, duración y disponibilidad."
+            />
+
+            {showRepeatPrompt && lastBooking && (
+              <div className="mt-4 rounded-2xl border border-[#D9B766]/40 bg-[#FFFBEB] p-4">
+                <p className="text-sm font-black text-[#111827]">
+                  ¿Quieres repetir tu última cita?
+                </p>
+                <div className="mt-3 grid gap-2 text-sm text-neutral-700">
+                  <p>
+                    <span className="font-semibold">Mismo servicio:</span>{" "}
+                    {services.find((item) => item.id === lastBooking.serviceId)?.name}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Mismo barbero:</span>{" "}
+                    {lastBooking.barberId
+                      ? barbers.find((item) => item.id === lastBooking.barberId)?.name
+                      : "Primer barbero disponible"}
+                  </p>
+                  <p className="font-semibold text-[#8A641F]">
+                    Solo cambia fecha y hora.
+                  </p>
+                </div>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={repeatLastBooking}
+                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#111827] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0F172A] active:scale-[0.98]"
+                  >
+                    Repetir cita
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowRepeatPrompt(false)}
+                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm font-bold text-neutral-600 transition hover:bg-white"
+                  >
+                    Elegir otra cosa
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="mt-4 grid gap-3">
               {services.length === 0 && (
-                <p className="rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-6 text-center text-sm text-neutral-400">
-                  Esta barbería no tiene servicios disponibles aún.
-                </p>
+                <div className="rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-6 text-center">
+                  <Scissors size={22} className="mx-auto text-neutral-300" />
+                  <p className="mt-2 text-sm font-semibold text-neutral-500">
+                    Esta barbería no tiene servicios disponibles aún.
+                  </p>
+                </div>
               )}
 
               {services.map((s) => (
-                <button
+                <ChoiceButton
                   key={s.id}
-                  type="button"
                   onClick={() => {
                     setService(s);
                     setFormError(null);
                     setStep(2);
                   }}
-                  className="flex items-center justify-between rounded-xl border border-[#E5E7EB] p-4 text-left transition-all hover:border-[#2F6FEB] hover:bg-[#F8FAFC] active:scale-[0.98]"
                 >
                   <div>
                     <p className="font-bold">{s.name}</p>
+                    {s.description && (
+                      <p className="mt-1 text-sm leading-5 text-neutral-500">
+                        {s.description}
+                      </p>
+                    )}
                     <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
                       <Clock size={12} /> {s.duration_minutes} min
                     </p>
                   </div>
 
-                  <span className="text-xl font-black">{s.price} €</span>
-                </button>
+                  <span className="shrink-0 text-xl font-black">{s.price} €</span>
+                </ChoiceButton>
               ))}
             </div>
           </section>
@@ -283,15 +583,14 @@ export function BookingForm({
 
         {/* ── Step 2: Barbero ── */}
         {step === 2 && (
-          <section className="mt-6">
-            <h2 className="text-xl font-black">¿Con quién quieres ir?</h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              Elige tu barbero o selecciona el primero disponible.
-            </p>
+          <section>
+            <StepTitle
+              title="¿Con quién quieres ir?"
+              description="Puedes elegir un barbero concreto o dejar que la barbería asigne el primero disponible."
+            />
 
             <div className="mt-4 grid gap-3">
-              <button
-                type="button"
+              <ChoiceButton
                 onClick={() => {
                   setBarber({ id: "any", name: "Cualquiera" });
                   setDate("");
@@ -300,24 +599,25 @@ export function BookingForm({
                   setFormError(null);
                   setStep(3);
                 }}
-                className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] p-4 text-left transition-all hover:border-[#2F6FEB] hover:bg-[#F8FAFC] active:scale-[0.98]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
-                  <User size={18} className="text-neutral-400" />
-                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
+                    <User size={18} className="text-neutral-400" />
+                  </div>
 
-                <div>
-                  <p className="font-bold">Cualquiera</p>
-                  <p className="text-sm text-neutral-500">
-                    Primer barbero disponible
-                  </p>
+                  <div>
+                    <p className="font-bold">Cualquiera</p>
+                    <p className="text-sm text-neutral-500">
+                      Primer barbero disponible
+                    </p>
+                  </div>
                 </div>
-              </button>
+                <BadgeCheck size={17} className="shrink-0 text-emerald-500" />
+              </ChoiceButton>
 
               {barbers.map((b) => (
-                <button
+                <ChoiceButton
                   key={b.id}
-                  type="button"
                   onClick={() => {
                     setBarber(b);
                     setDate("");
@@ -326,14 +626,18 @@ export function BookingForm({
                     setFormError(null);
                     setStep(3);
                   }}
-                  className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] p-4 text-left transition-all hover:border-[#2F6FEB] hover:bg-[#F8FAFC] active:scale-[0.98]"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100 text-sm font-black uppercase">
-                    {b.name.charAt(0)}
-                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black uppercase text-[#111827]">
+                      {b.name.charAt(0)}
+                    </div>
 
-                  <p className="font-bold">{b.name}</p>
-                </button>
+                    <div>
+                      <p className="font-bold">{b.name}</p>
+                      <p className="text-sm text-neutral-500">Barbero</p>
+                    </div>
+                  </div>
+                </ChoiceButton>
               ))}
             </div>
           </section>
@@ -341,11 +645,11 @@ export function BookingForm({
 
         {/* ── Step 3: Fecha y hora ── */}
         {step === 3 && (
-          <section className="mt-6">
-            <h2 className="text-xl font-black">¿Cuándo vienes?</h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              Elige el día y la hora que prefieras.
-            </p>
+          <section>
+            <StepTitle
+              title="¿Cuándo vienes?"
+              description="Selecciona un día y después una hora disponible."
+            />
 
             <label className="mt-4 block text-sm font-semibold text-neutral-700">
               Día
@@ -370,7 +674,7 @@ export function BookingForm({
                   <p className="text-sm font-semibold text-neutral-700">Hora</p>
 
                   {checkingAvailability && (
-                    <p className="text-xs font-medium text-neutral-400">
+                    <p className="rounded-full bg-[#F8FAFC] px-2.5 py-1 text-xs font-medium text-neutral-400">
                       Comprobando disponibilidad...
                     </p>
                   )}
@@ -382,7 +686,7 @@ export function BookingForm({
                   </p>
                 )}
 
-                <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-5">
+                <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {slots.map((slot) => {
                     const isUnavailable = unavailableSlots.includes(slot.time);
 
@@ -403,12 +707,12 @@ export function BookingForm({
                           setFormError(null);
                           setStep(4);
                         }}
-                        className={`rounded-xl border py-3 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
+                        className={`min-h-12 rounded-xl border py-2 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
-                            : time === slot.time
-                            ? "border-[#2F6FEB] bg-[#2F6FEB] text-white"
-                            : "border-neutral-200 hover:border-[#2F6FEB] hover:bg-neutral-50"
+                          : time === slot.time
+                            ? "border-[#111827] bg-[#111827] text-white"
+                            : "border-neutral-200 hover:border-[#111827] hover:bg-neutral-50"
                         }`}
                       >
                         <span>{slot.time}</span>
@@ -423,8 +727,8 @@ export function BookingForm({
                 </div>
 
                 <p className="mt-3 text-xs text-neutral-400">
-                  Las horas marcadas como ocupadas ya tienen todos los barberos
-                  disponibles reservados o el barbero elegido está ocupado.
+                  Las horas ocupadas no se pueden seleccionar. Si elegiste "Cualquiera",
+                  se comprueba la disponibilidad del equipo.
                 </p>
               </>
             )}
@@ -433,11 +737,11 @@ export function BookingForm({
 
         {/* ── Step 4: Datos personales ── */}
         {step === 4 && (
-          <section className="mt-6 pb-32 md:pb-0">
-            <h2 className="text-xl font-black">Último paso: tus datos</h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              Solo necesitamos tu nombre y teléfono. Sin contraseñas.
-            </p>
+          <section className="pb-32 md:pb-0">
+            <StepTitle
+              title="Último paso: tus datos"
+              description="Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."
+            />
 
             <div className="mt-5 grid gap-4">
               {/* Nombre */}
@@ -500,55 +804,14 @@ export function BookingForm({
               </div>
             </div>
 
-            {/* Resumen de reserva mejorado */}
-            <div className="mt-5 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]">
-              <div className="border-b border-neutral-100 px-4 py-3">
-                <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
-                  Resumen de tu reserva
-                </p>
-              </div>
-
-              <div className="space-y-3 px-4 py-4 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 font-semibold text-neutral-800">
-                    <Scissors size={13} className="shrink-0 text-neutral-400" />
-                    {service?.name}
-                  </span>
-                  <span className="font-black text-neutral-900">{service?.price} €</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-neutral-500">
-                  <Clock size={13} className="shrink-0 text-neutral-400" />
-                  {service?.duration_minutes} min de duración
-                </div>
-
-                <div className="flex items-center gap-2 text-neutral-600">
-                  <User size={13} className="shrink-0 text-neutral-400" />
-                  {barber?.id === "any" ? "Primer barbero disponible" : barber?.name}
-                </div>
-
-                <div className="flex items-center gap-2 text-neutral-600">
-                  <CalendarDays size={13} className="shrink-0 text-neutral-400" />
-                  {date
-                    ? new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                      })
-                    : date}{" "}
-                  · {time}h
-                </div>
-
-                <div className="mt-1 flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5">
-                  <CreditCard size={14} className="shrink-0 text-neutral-400" />
-                  <span className="font-medium text-neutral-700">Pago en el local</span>
-                  <span className="ml-auto text-xs text-neutral-400">efectivo · Bizum</span>
-                </div>
-
-                <p className="text-xs text-neutral-400">
-                  La barberia te indicara en el local los metodos de pago disponibles.
-                </p>
-              </div>
+            <div className="mt-5">
+              <ReservationSummary
+                service={service}
+                barber={barber}
+                date={date}
+                time={time}
+                compact
+              />
             </div>
 
             {/* Política de cancelación */}
@@ -584,15 +847,13 @@ export function BookingForm({
             )}
 
             {/* Botón confirmar — desktop */}
-            <button
-              type="button"
-              onClick={handleConfirmBooking}
-              disabled={!name.trim() || !phone.trim() || saving}
-              className="mt-5 hidden w-full items-center justify-center gap-2 rounded-xl bg-[#2F6FEB] py-4 text-base font-black text-white shadow-lg shadow-[#2F6FEB]/20 transition-all hover:bg-[#2459bd] active:scale-[0.98] disabled:opacity-40 md:flex"
-            >
-              <CalendarDays size={18} />
-              {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
-            </button>
+            <div className="mt-5 hidden md:block">
+              <ConfirmButton
+                saving={saving}
+                disabled={!name.trim() || !phone.trim() || saving}
+                onClick={handleConfirmBooking}
+              />
+            </div>
 
             {/* Mensaje de confianza — desktop */}
             <p className="mt-3 hidden text-center text-xs text-neutral-400 md:block">
@@ -604,9 +865,9 @@ export function BookingForm({
 
         {/* ── Step 5: Confirmación ── */}
         {step === 5 && (
-          <section className="mt-8">
+          <section>
             <div className="text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
                 <CheckCircle size={36} className="text-green-600" />
               </div>
 
@@ -619,62 +880,16 @@ export function BookingForm({
               </p>
             </div>
 
-            {/* Detalle de la cita */}
-            <div className="mt-6 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]">
-              <div className="border-b border-neutral-100 px-5 py-3">
-                <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
-                  Detalle de tu cita
-                </p>
-              </div>
-
-              <div className="space-y-3 px-5 py-4 text-sm text-neutral-700">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 font-bold">
-                    <Scissors size={14} className="shrink-0 text-neutral-400" />
-                    {service?.name}
-                  </span>
-                  <span className="font-black">{service?.price} €</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-neutral-500">
-                  <Clock size={14} className="shrink-0 text-neutral-400" />
-                  {service?.duration_minutes} min de duración
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <User size={14} className="shrink-0 text-neutral-400" />
-                  <span>
-                    {barber?.id === "any"
-                      ? "Primer barbero disponible"
-                      : barber?.name}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <CalendarDays size={14} className="shrink-0 text-neutral-400" />
-                  <span>
-                    {date
-                      ? new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
-                          weekday: "long",
-                          day: "numeric",
-                          month: "long",
-                        })
-                      : date}{" "}
-                    a las <span className="font-bold">{time}h</span>
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Phone size={14} className="shrink-0 text-neutral-400" />
-                  <span>
-                    {name} · {phone}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5">
-                  <CreditCard size={14} className="shrink-0 text-neutral-400" />
-                  <span className="font-medium">Pago en el local</span>
-                </div>
+            <div className="mt-6">
+              <ReservationSummary
+                service={service}
+                barber={barber}
+                date={date}
+                time={time}
+              />
+              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-neutral-600">
+                <Phone size={14} className="shrink-0 text-neutral-400" />
+                <span>{name} · {phone}</span>
               </div>
             </div>
 
@@ -719,20 +934,17 @@ export function BookingForm({
             </button>
           </section>
         )}
+        </div>
       </div>
 
       {/* ── Botón fijo inferior — solo móvil, solo Step 4 ── */}
       {step === 4 && (
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#E5E7EB] bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.10)] md:hidden">
-          <button
-            type="button"
-            onClick={handleConfirmBooking}
+          <ConfirmButton
+            saving={saving}
             disabled={!name.trim() || !phone.trim() || saving}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2F6FEB] py-4 text-base font-black text-white shadow-lg shadow-[#2F6FEB]/20 transition-all hover:bg-[#2459bd] active:scale-[0.98] disabled:opacity-40"
-          >
-            <CalendarDays size={18} />
-            {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
-          </button>
+            onClick={handleConfirmBooking}
+          />
           <p className="mt-2 text-center text-xs text-neutral-400">
             <ShieldCheck size={11} className="mr-1 inline-block" />
             Reserva segura · Sin comisiones · Directo con {barbershopName}

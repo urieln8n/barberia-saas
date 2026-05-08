@@ -1,42 +1,139 @@
 # Precios BarberiaOS
 
-## Básico
+BarberiaOS se posiciona como el sistema operativo para barberias modernas:
+reservas, agenda, clientes, finanzas, WhatsApp, resenas y crecimiento en un
+solo lugar.
 
-Mensualidad: 39 €/mes
+No es marketplace y no cobra comision por cita. Cada barberia conserva su link,
+QR, clientes y sistema.
+
+## Free
+
+Precio: 0 EUR durante 5 dias.
+
+Objetivo: probar BarberiaOS sin riesgo.
 
 Incluye:
 
-- App de reservas.
+- Pagina publica de reservas.
 - QR de reservas.
-- Página pública de reservas.
-- Servicios, barberos y agenda.
-- Clientes y dashboard básico.
-- Configuración inicial asistida.
+- Agenda basica.
+- Servicios basicos.
+- 1 barbero.
+- Clientes basicos.
+- Reservas publicas limitadas.
+- Dashboard basico.
+- Sin comisiones por cita.
+
+Limitaciones:
+
+- Maximo 1 barbero.
+- Maximo 5 servicios.
+- Maximo 20 reservas durante la prueba.
+- Sin finanzas avanzadas.
+- Sin WhatsApp Assistant.
+- Sin resenas.
+- Sin recuperacion.
+- Sin soporte prioritario.
+
+CTA: Probar gratis 5 dias.
+
+## Starter
+
+Precio: 39 EUR/mes.
+
+Objetivo: para barbero independiente o barberia pequena que quiere digitalizar
+reservas.
+
+Incluye:
+
+- Reservas online ilimitadas.
+- Link publico /r/[slug].
+- QR de reservas.
+- Agenda.
+- Servicios.
+- Hasta 2 barberos.
+- Clientes.
+- Dashboard basico.
+- Pagos manuales.
+- Horas ocupadas.
+- Anti doble reserva.
+- Sin comision por cita.
+- Soporte basico.
+
+CTA: Empezar con Starter.
 
 ## Pro
 
-Mensualidad: 79 €/mes
+Precio: 79 EUR/mes.
 
-Incluye:
+Objetivo: para barberias con equipo que quieren controlar mejor el negocio.
 
-- Todo Básico.
-- Revisión de Google Business.
-- Instagram con enlace de reservas.
-- Seguimiento mensual de citas y clientes.
-- Acciones comerciales recomendadas.
-- Soporte mensual.
+Incluye todo Starter, mas:
 
-## Premium
-
-Mensualidad: 149 €/mes
-
-Incluye:
-
-- Todo Pro.
-- Plan de captación local.
-- Seguimiento de clientes inactivos.
-- Revisión avanzada de métricas.
-- Acompañamiento gestionado.
+- Hasta 6 barberos.
+- Finanzas/caja.
+- Ingresos y gastos.
+- Beneficio estimado.
+- Clientes avanzados.
+- QR profesional.
+- Pagina publica mas completa.
+- Reportes basicos.
+- Politicas de cancelacion.
 - Soporte prioritario.
+- Configuracion avanzada de barberia.
+- Modulo de resenas visual/MVP.
 
-Publicidad aparte si se activan campañas de pago.
+Nota honesta: asistente de resenas con mensajes y flujo preparado. Integracion
+Google proximamente.
+
+CTA: Elegir Pro.
+
+## Growth
+
+Precio: 149 EUR/mes.
+
+Objetivo: para barberias que quieren crecer, automatizar y recuperar clientes.
+
+Incluye todo Pro, mas:
+
+- Asistente WhatsApp visual/MVP.
+- Asistente de Resenas visual/MVP.
+- Recuperacion de clientes.
+- Plantillas WhatsApp.
+- Campanas basicas.
+- Clientes inactivos.
+- Solicitud de resenas.
+- Automatizaciones futuras.
+- Metricas de crecimiento.
+- Soporte premium.
+- Mejoras personalizadas ligeras.
+- Preparacion para WhatsApp Business API.
+
+Nota honesta: asistente WhatsApp preparado con enlaces y plantillas incluidos.
+API oficial proximamente.
+
+CTA: Escalar con Growth.
+
+## Premium / Scale
+
+Precio: desde 299 EUR/mes.
+
+Objetivo: para barberias premium o con alto volumen que quieren un sistema
+completo.
+
+Incluye todo Growth, mas:
+
+- Automatizaciones avanzadas.
+- Depositos anti no-show futuros.
+- Stripe futuro.
+- Analitica avanzada.
+- Comisiones por barbero futuras.
+- Multiusuario/roles futuros.
+- Onboarding asistido.
+- Revision mensual.
+- Soporte premium.
+- Personalizacion avanzada.
+- Consultoria de crecimiento.
+
+CTA: Solicitar Premium.

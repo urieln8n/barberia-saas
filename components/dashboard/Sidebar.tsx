@@ -14,6 +14,10 @@ import {
   Wallet,
   Calculator,
   QrCode,
+  MessageCircle,
+  Star,
+  RotateCcw,
+  Workflow,
   Settings,
   LogOut,
   type LucideIcon,
@@ -24,13 +28,18 @@ type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
   {
-    label: "Core",
+    label: "Operación",
     items: [
       { href: "/dashboard",                  label: "Dashboard",        icon: Home          },
       { href: "/dashboard/agenda",           label: "Agenda",           icon: CalendarDays  },
       { href: "/dashboard/clientes",         label: "Clientes",         icon: Users         },
       { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
       { href: "/dashboard/barberos",         label: "Barberos",         icon: User          },
+    ],
+  },
+  {
+    label: "Negocio",
+    items: [
       { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
       { href: "/dashboard/finanzas",         label: "Finanzas",         icon: Wallet        },
       { href: "/dashboard/fiscalidad",       label: "Fiscalidad",       icon: Calculator    },
@@ -39,7 +48,11 @@ const navGroups: NavGroup[] = [
   {
     label: "Crecimiento",
     items: [
+      { href: "/dashboard/automatizaciones", label: "Automatizaciones",  icon: Workflow      },
       { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
+      { href: "/dashboard/whatsapp",         label: "Asistente WhatsApp", icon: MessageCircle },
+      { href: "/dashboard/resenas",          label: "Reseñas",           icon: Star          },
+      { href: "/dashboard/recuperacion",     label: "Recuperación",      icon: RotateCcw     },
     ],
   },
   {
@@ -66,13 +79,13 @@ function NavLink({
       onClick={onClick}
       className={`nav-link ${
         active
-          ? "border border-[#2F6FEB]/20 bg-[#2F6FEB]/10 font-bold text-[#1D4ED8] shadow-sm"
-          : "font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+          ? "border border-[#C89B3C]/25 bg-[#F8F5EF] font-bold text-[#111111] shadow-sm"
+          : "font-semibold text-neutral-600 hover:bg-[#F8F5EF] hover:text-neutral-950"
       }`}
     >
       <Icon
         size={16}
-        className={`shrink-0 transition-colors ${active ? "text-[#2F6FEB]" : "text-slate-400"}`}
+        className={`shrink-0 transition-colors ${active ? "text-[#8A641F]" : "text-neutral-400"}`}
       />
       {item.label}
     </Link>
@@ -90,7 +103,7 @@ function NavGroupSection({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <p className="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+      <p className="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-neutral-400">
         {group.label}
       </p>
       {group.items.map((item) => (
@@ -107,13 +120,13 @@ function NavGroupSection({
 
 function BrandLogo({ onClick }: { onClick?: () => void }) {
   return (
-    <Link href="/dashboard" onClick={onClick} className="flex items-center gap-2.5">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#2F6FEB]/20 bg-[#2F6FEB] shadow-sm">
+    <Link href="/dashboard" onClick={onClick} className="flex items-center gap-3 rounded-2xl">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#111111] shadow-sm">
         <Scissors size={15} className="text-white" />
       </div>
       <div className="min-w-0">
-        <span className="block text-lg font-black leading-none text-slate-950">BarberiaOS</span>
-        <span className="mt-1 block text-[11px] font-medium text-slate-500">Barbería SaaS</span>
+        <span className="block text-lg font-black leading-none text-neutral-950">BarberiaOS</span>
+        <span className="mt-1 block text-[11px] font-medium text-neutral-500">Gestión premium</span>
       </div>
     </Link>
   );
@@ -124,7 +137,7 @@ function LogoutBtn({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="nav-link w-full border border-[#E5E7EB] bg-white font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-950"
+      className="nav-link w-full border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
     >
       <LogOut size={16} className="shrink-0" />
       Cerrar sesión
@@ -150,15 +163,15 @@ export default function Sidebar() {
   return (
     <>
       {/* ── Mobile header ── */}
-      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E5E7EB] bg-white/95 px-4 backdrop-blur md:hidden">
+      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E7E2D8] bg-white/90 px-4 shadow-sm backdrop-blur md:hidden">
         <BrandLogo />
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="btn-outline"
+          className="btn-outline min-h-0 px-3 py-2"
         >
           <span className="inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#2F6FEB]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#C89B3C]" />
             Menu
           </span>
         </button>
@@ -174,10 +187,10 @@ export default function Sidebar() {
           type="button"
           aria-label="Cerrar menú"
           onClick={() => setOpen(false)}
-          className="absolute inset-0 bg-slate-950/35"
+          className="absolute inset-0 bg-neutral-950/40 backdrop-blur-[2px]"
         />
         <aside
-          className={`absolute left-0 top-0 flex h-full w-72 flex-col border-r border-[#E5E7EB] bg-white p-5 shadow-2xl transition-transform duration-200 ${
+          className={`absolute left-0 top-0 flex h-full w-72 flex-col border-r border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -188,7 +201,7 @@ export default function Sidebar() {
               onClick={() => setOpen(false)}
               className="btn-outline min-h-0 px-3 py-1.5"
             >
-              ✕
+              Cerrar
             </button>
           </div>
 
@@ -210,8 +223,8 @@ export default function Sidebar() {
       </div>
 
       {/* ── Desktop sidebar ── */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-[#E5E7EB] bg-white/95 p-5 shadow-sm backdrop-blur md:flex">
-        <div className="mb-8">
+      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-[#E7E2D8] bg-white/90 p-5 shadow-[0_18px_50px_rgba(17,17,17,0.05)] backdrop-blur md:flex">
+        <div className="mb-8 rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-3">
           <BrandLogo />
         </div>
 

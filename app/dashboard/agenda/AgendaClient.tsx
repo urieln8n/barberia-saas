@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import { Plus, X, CalendarDays, Clock, User, Scissors } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 import { createAppointment, updateAppointmentStatus } from "./actions";
-import { PageHeader }  from "@/components/dashboard/PageHeader";
-import { EmptyState }  from "@/components/dashboard/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { StatCard } from "@/components/ui/StatCard";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 export type Appointment = {
   id: string;
@@ -43,15 +47,6 @@ const STATUS_LABEL: Record<string, string> = {
   completed: "Completada",
   cancelled: "Cancelada",
   no_show:   "No apareció",
-};
-
-const STATUS_COLOR: Record<string, string> = {
-  pending:   "bg-amber-50 text-amber-700 border border-amber-100",
-  scheduled: "bg-amber-50 text-amber-700 border border-amber-100",
-  confirmed: "bg-blue-50  text-blue-700  border border-blue-100",
-  completed: "bg-green-50 text-green-700 border border-green-100",
-  cancelled: "bg-red-50   text-red-700   border border-red-100",
-  no_show:   "bg-red-50   text-red-700   border border-red-100",
 };
 
 const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
@@ -98,7 +93,7 @@ function AppointmentCard({
   onStatusChange: (id: string, status: string) => void;
 }) {
   return (
-    <div className="panel">
+    <article className="panel">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           {showDate ? (
@@ -154,11 +149,9 @@ function AppointmentCard({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            STATUS_COLOR[appointment.status] ?? "bg-neutral-100 text-neutral-600 border border-neutral-200"
-          }`}>
+          <StatusBadge status={appointment.status}>
             {STATUS_LABEL[appointment.status] ?? appointment.status}
-          </span>
+          </StatusBadge>
 
           {NEXT_ACTIONS[appointment.status]?.map((action) => (
             <button
@@ -172,7 +165,7 @@ function AppointmentCard({
           ))}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -235,13 +228,13 @@ export function AgendaClient({
               onChange={(e) => handleDateChange(e.target.value)}
               className="input"
             />
-            <button
+            <PrimaryButton
               type="button"
               onClick={() => { setFormError(""); setShowModal(true); }}
-              className="btn-dark"
+              variant="primary"
             >
               <Plus size={16} /> Nueva cita
-            </button>
+            </PrimaryButton>
           </div>
         }
       />
@@ -254,25 +247,17 @@ export function AgendaClient({
 
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { title: "Citas hoy",          value: appointments.length         },
-          { title: "Próximas citas",     value: upcomingAppointments.length },
-          { title: "Total registradas",  value: allAppointments.length      },
-          { title: "Pendientes",         value: pendingCount                },
-        ].map(({ title, value }) => (
-          <div key={title} className="metric-card">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">{title}</p>
-            <p className="mt-3 text-4xl font-black text-[#111827]">{value}</p>
-          </div>
-        ))}
+        <StatCard label="Citas hoy" value={appointments.length} description="Fecha seleccionada" icon={CalendarDays} />
+        <StatCard label="Próximas citas" value={upcomingAppointments.length} description="Desde hoy en adelante" icon={Clock} />
+        <StatCard label="Total registradas" value={allAppointments.length} description="Histórico cargado" icon={Scissors} />
+        <StatCard label="Pendientes" value={pendingCount} description="Por confirmar" icon={User} />
       </div>
 
       {/* Citas de la fecha seleccionada */}
-      <section>
-        <div className="mb-3">
-          <p className="label-section">Fecha seleccionada</p>
-          <h2 className="section-heading mt-0.5">Citas del {fecha}</h2>
-        </div>
+      <SectionCard
+        title={`Citas del ${fecha}`}
+        description="Reservas y citas manuales para la fecha seleccionada."
+      >
         {appointments.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
@@ -291,17 +276,13 @@ export function AgendaClient({
             ))}
           </div>
         )}
-      </section>
+      </SectionCard>
 
       {/* Próximas citas */}
-      <section>
-        <div className="mb-3">
-          <p className="label-section">Agenda futura</p>
-          <h2 className="section-heading mt-0.5">Próximas citas</h2>
-          <p className="text-sm text-neutral-500">
-            Se muestran siempre, aunque haya citas en la fecha seleccionada.
-          </p>
-        </div>
+      <SectionCard
+        title="Próximas citas"
+        description="Se muestran siempre, aunque haya citas en la fecha seleccionada."
+      >
         {upcomingAppointments.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
@@ -321,7 +302,7 @@ export function AgendaClient({
             ))}
           </div>
         )}
-      </section>
+      </SectionCard>
 
       {/* Modal nueva cita */}
       {showModal && (
@@ -430,20 +411,22 @@ export function AgendaClient({
                 )}
 
                 <div className="flex gap-3 pt-2">
-                  <button
+                  <PrimaryButton
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="btn-outline flex-1"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </PrimaryButton>
+                  <PrimaryButton
                     type="submit"
                     disabled={saving}
-                    className="btn-dark flex-1"
+                    variant="primary"
+                    className="flex-1"
                   >
                     {saving ? "Guardando..." : "Crear cita"}
-                  </button>
+                  </PrimaryButton>
                 </div>
               </form>
             </div>

@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2, X, Clock, Scissors } from "lucide-react";
 import { createService, updateService, deleteService } from "./actions";
-import { PageHeader } from "@/components/dashboard/PageHeader";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import type { PlanUsage } from "@/src/lib/plans/limits";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 type Service = {
   id: string;
@@ -18,17 +22,26 @@ type Service = {
 type Props = {
   services: Service[];
   barbershopId: string;
+  planUsage: PlanUsage;
 };
 
-export function ServiciosClient({ services, barbershopId }: Props) {
+function formatLimit(limit: number | null) {
+  return limit === null ? "Ilimitado" : String(limit);
+}
+
+export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [editing,   setEditing]   = useState<Service | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState("");
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(s: Service) { setEditing(s); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  const serviceLimit = planUsage.limits.maxServices;
+  const isAtServiceLimit = serviceLimit !== null && services.length >= serviceLimit;
+
+  function openCreate() { setEditing(null); setFormError(""); setShowModal(true); }
+  function openEdit(s: Service) { setEditing(s); setFormError(""); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(""); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este servicio?")) return;
@@ -42,9 +55,19 @@ export function ServiciosClient({ services, barbershopId }: Props) {
     formData.append("barbershop_id", barbershopId);
     if (editing) {
       formData.append("id", editing.id);
-      await updateService(formData);
+      const result = await updateService(formData);
+      if (result?.error) {
+        setFormError(result.error);
+        setSaving(false);
+        return;
+      }
     } else {
-      await createService(formData);
+      const result = await createService(formData);
+      if (result?.error) {
+        setFormError(result.error);
+        setSaving(false);
+        return;
+      }
     }
     setSaving(false);
     closeModal();
@@ -56,16 +79,28 @@ export function ServiciosClient({ services, barbershopId }: Props) {
       <PageHeader
         section="Servicios"
         title="Gestión de servicios"
+        description="Define precios, duración y servicios disponibles para reservas."
         action={
-          <button
+          <PrimaryButton
             type="button"
             onClick={openCreate}
-            className="btn-dark"
+            disabled={isAtServiceLimit}
+            variant="primary"
           >
             <Plus size={16} /> Añadir servicio
-          </button>
+          </PrimaryButton>
         }
       />
+
+      <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] px-4 py-3 text-sm text-neutral-600">
+        Plan <span className="font-black text-[#111827]">{planUsage.label}</span> · Servicios usados{" "}
+        <span className="font-black text-[#111827]">{services.length}</span> / {formatLimit(serviceLimit)}
+        {isAtServiceLimit && (
+          <span className="ml-2 font-semibold text-amber-700">
+            Límite alcanzado. Sube de plan para añadir más servicios.
+          </span>
+        )}
+      </div>
 
       {services.length === 0 ? (
         <EmptyState
@@ -73,17 +108,22 @@ export function ServiciosClient({ services, barbershopId }: Props) {
           title="Sin servicios todavía"
           description="Añade el primero para empezar a recibir reservas."
           action={
-            <button
+            <PrimaryButton
               type="button"
               onClick={openCreate}
-              className="btn-dark"
+              disabled={isAtServiceLimit}
+              variant="primary"
             >
               <Plus size={16} /> Crear primer servicio
-            </button>
+            </PrimaryButton>
           }
         />
       ) : (
-        <div className="table-shell">
+        <SectionCard
+          title="Catálogo de servicios"
+          description={`${services.length} servicios configurados.`}
+          bodyClassName="p-0"
+        >
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
@@ -91,6 +131,7 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                   <th className="table-header-cell">Servicio</th>
                   <th className="table-header-cell">Duración</th>
                   <th className="table-header-cell">Precio</th>
+                  <th className="table-header-cell">Estado</th>
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
@@ -107,6 +148,9 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-black text-[#111827]">{s.price} €</td>
+                    <td className="px-6 py-4">
+                      <StatusBadge status={s.active ? "active" : "inactive"} />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button
@@ -131,7 +175,7 @@ export function ServiciosClient({ services, barbershopId }: Props) {
               </tbody>
             </table>
           </div>
-        </div>
+        </SectionCard>
       )}
 
       {/* Modal */}
@@ -207,21 +251,28 @@ export function ServiciosClient({ services, barbershopId }: Props) {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button
+                  <PrimaryButton
                     type="button"
                     onClick={closeModal}
-                    className="btn-outline flex-1"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </PrimaryButton>
+                  <PrimaryButton
                     type="submit"
                     disabled={saving}
-                    className="btn-dark flex-1"
+                    variant="primary"
+                    className="flex-1"
                   >
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear servicio"}
-                  </button>
+                  </PrimaryButton>
                 </div>
+                {formError && (
+                  <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {formError}
+                  </p>
+                )}
               </form>
             </div>
           </div>

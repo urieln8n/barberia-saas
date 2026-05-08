@@ -31,7 +31,7 @@ function dbErrorMessage(error: { code?: string; message: string }, fallback: str
   return error.message || fallback;
 }
 
-const PLAN_NAMES    = ["starter", "growth", "premium", "custom"] as const;
+const PLAN_NAMES    = ["free", "starter", "pro", "growth", "premium"] as const;
 const SUB_STATUSES  = ["trial", "active", "paused", "cancelled"] as const;
 const BILLING_CYCLES = ["monthly", "annual"] as const;
 

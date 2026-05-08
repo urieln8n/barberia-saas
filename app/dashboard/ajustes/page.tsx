@@ -3,6 +3,9 @@ import { Store, Clock, QrCode, Globe, ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getBarbershopPlanUsage } from "@/src/lib/plans/limits";
+import { BILLING_PLANS } from "@/src/lib/stripe/plans";
+import { BillingActions } from "@/components/dashboard/BillingActions";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 
 export default async function AjustesPage() {
@@ -19,9 +22,27 @@ export default async function AjustesPage() {
     .eq("id", barbershopId)
     .single();
 
+  const [{ data: subscription }, planUsage] = await Promise.all([
+    supabase
+      .from("subscriptions")
+      .select("stripe_customer_id")
+      .eq("barbershop_id", barbershopId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    getBarbershopPlanUsage(supabase, barbershopId),
+  ]);
+
   const publicUrl = barbershop?.slug
     ? `${process.env.NEXT_PUBLIC_APP_URL ?? "https://barberiaos.com"}/r/${barbershop.slug}`
     : null;
+
+  const billingPlans = Object.values(BILLING_PLANS).map((plan) => ({
+    name: plan.name,
+    label: plan.label,
+    amountMonthly: plan.amountMonthly,
+    checkoutEnabled: plan.checkoutEnabled,
+  }));
 
   return (
     <div className="space-y-5">
@@ -83,6 +104,12 @@ export default async function AjustesPage() {
         )}
       </div>
 
+      <BillingActions
+        currentPlan={planUsage.label}
+        hasStripeCustomer={Boolean(subscription?.stripe_customer_id)}
+        plans={billingPlans}
+      />
+
       {/* Próximas configuraciones */}
       <div>
         <div className="mb-4">
@@ -91,10 +118,10 @@ export default async function AjustesPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { icon: Store,  plan: "Básico", title: "Logo y foto del local",   text: "Sube el logo y una foto de tu barbería para que aparezcan en tu página pública de reservas." },
-            { icon: Clock,  plan: "Básico", title: "Horario de apertura",     text: "Define tus días y horas de trabajo para que los clientes solo vean slots disponibles reales." },
-            { icon: QrCode, plan: "Básico", title: "Personalizar QR",         text: "Ajusta el color y el logo del QR de reservas para que encaje con la identidad de tu barbería." },
-            { icon: Globe,  plan: "Pro",    title: "Web propia de tu barbería", text: "Landing profesional en tu propio dominio o subdominio. Incluye página de reservas integrada." },
+            { icon: Store,  plan: "Incluido", title: "Logo y foto del local",   text: "Sube el logo y una foto de tu barbería para que aparezcan en tu página pública de reservas." },
+            { icon: Clock,  plan: "Starter",  title: "Horario de apertura",     text: "Define tus días y horas de trabajo para que los clientes solo vean slots disponibles reales." },
+            { icon: QrCode, plan: "Pro",      title: "QR profesional",          text: "Ajusta el color y el logo del QR de reservas para que encaje con la identidad de tu barbería." },
+            { icon: Globe,  plan: "Premium",  title: "Web propia de tu barbería", text: "Landing profesional en tu propio dominio o subdominio. Incluye página de reservas integrada." },
           ].map(({ icon: Icon, plan, title, text }) => (
             <div key={title} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
               <div className="mb-3 flex items-start justify-between">
@@ -102,7 +129,9 @@ export default async function AjustesPage() {
                   <Icon size={18} className="text-[#2F6FEB]" />
                 </div>
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                  plan === "Pro"
+                  plan === "Premium"
+                    ? "bg-[#0F172A] text-white"
+                    : plan === "Pro"
                     ? "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]"
                     : "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2F6FEB]"
                 }`}>

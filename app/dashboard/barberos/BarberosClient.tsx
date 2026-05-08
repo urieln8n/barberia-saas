@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2, X, Phone, ToggleLeft, ToggleRight, User } from "lucide-react";
 import { createBarber, updateBarber, deleteBarber, toggleBarber } from "./actions";
-import { PageHeader } from "@/components/dashboard/PageHeader";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import type { PlanUsage } from "@/src/lib/plans/limits";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 type Barber = {
   id: string;
@@ -16,18 +20,35 @@ type Barber = {
 type Props = {
   barbers: Barber[];
   barbershopId: string;
+  planUsage: PlanUsage;
 };
 
-export function BarberosClient({ barbers, barbershopId }: Props) {
+function formatLimit(limit: number | null) {
+  return limit === null ? "Ilimitado" : String(limit);
+}
+
+export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [editing,   setEditing]   = useState<Barber | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [toggling,  setToggling]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState("");
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(b: Barber) { setEditing(b); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  const barberLimit = planUsage.limits.maxBarbers;
+  const isAtBarberLimit = barberLimit !== null && barbers.length >= barberLimit;
+
+  function openCreate() {
+    setEditing(null);
+    setFormError("");
+    setShowModal(true);
+  }
+  function openEdit(b: Barber) {
+    setEditing(b);
+    setFormError("");
+    setShowModal(true);
+  }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(""); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este barbero?")) return;
@@ -47,9 +68,19 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
     formData.append("barbershop_id", barbershopId);
     if (editing) {
       formData.append("id", editing.id);
-      await updateBarber(formData);
+      const result = await updateBarber(formData);
+      if (result?.error) {
+        setFormError(result.error);
+        setSaving(false);
+        return;
+      }
     } else {
-      await createBarber(formData);
+      const result = await createBarber(formData);
+      if (result?.error) {
+        setFormError(result.error);
+        setSaving(false);
+        return;
+      }
     }
     setSaving(false);
     closeModal();
@@ -61,16 +92,28 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
       <PageHeader
         section="Barberos"
         title="Tu equipo"
+        description="Gestiona disponibilidad operativa del equipo sin cambiar la lógica de reservas."
         action={
-          <button
+          <PrimaryButton
             type="button"
             onClick={openCreate}
-            className="btn-dark"
+            disabled={isAtBarberLimit}
+            variant="primary"
           >
             <Plus size={16} /> Añadir barbero
-          </button>
+          </PrimaryButton>
         }
       />
+
+      <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] px-4 py-3 text-sm text-neutral-600">
+        Plan <span className="font-black text-[#111827]">{planUsage.label}</span> · Barberos usados{" "}
+        <span className="font-black text-[#111827]">{barbers.length}</span> / {formatLimit(barberLimit)}
+        {isAtBarberLimit && (
+          <span className="ml-2 font-semibold text-amber-700">
+            Límite alcanzado. Sube de plan para añadir más equipo.
+          </span>
+        )}
+      </div>
 
       {barbers.length === 0 ? (
         <EmptyState
@@ -78,68 +121,79 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
           title="Sin barberos todavía"
           description="Añade tu equipo para asignarles citas."
           action={
-            <button
+            <PrimaryButton
               type="button"
               onClick={openCreate}
-              className="btn-dark"
+              disabled={isAtBarberLimit}
+              variant="primary"
             >
               <Plus size={16} /> Añadir primer barbero
-            </button>
+            </PrimaryButton>
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {barbers.map((b) => (
-            <div
-              key={b.id}
-              className={`rounded-2xl border bg-white p-6 shadow-sm transition-opacity ${
-                !b.active ? "border-neutral-200 opacity-50" : "border-[#E5E7EB]"
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#111827] text-xl font-black uppercase text-[#7AA2FF]">
-                  {b.name.charAt(0)}
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => openEdit(b)}
-                    className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
-                  >
-                    <Pencil size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(b.id)}
-                    disabled={deleting === b.id}
-                    className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </div>
-              </div>
-
-              <p className="mt-4 text-lg font-black text-[#111827]">{b.name}</p>
-              {b.phone && (
-                <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500">
-                  <Phone size={13} /> {b.phone}
-                </p>
-              )}
-
-              <button
-                type="button"
-                onClick={() => handleToggle(b.id, b.active)}
-                disabled={toggling === b.id}
-                className="mt-4 flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-[#111827] disabled:opacity-40"
+        <SectionCard
+          title="Equipo"
+          description={`${barbers.length} barberos configurados.`}
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {barbers.map((b) => (
+              <article
+                key={b.id}
+                className={`rounded-[18px] border bg-white p-5 shadow-sm transition-opacity ${
+                  !b.active ? "border-neutral-200 opacity-60" : "border-[#E7E2D8]"
+                }`}
               >
-                {b.active
-                  ? <><ToggleRight size={18} className="text-green-600" /> Activo</>
-                  : <><ToggleLeft size={18} /> Inactivo</>
-                }
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#111111] text-xl font-black uppercase text-[#D9B766]">
+                    {b.name.charAt(0)}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => openEdit(b)}
+                      className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(b.id)}
+                      disabled={deleting === b.id}
+                      className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-lg font-black text-[#111827]">{b.name}</p>
+                    {b.phone && (
+                      <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500">
+                        <Phone size={13} /> {b.phone}
+                      </p>
+                    )}
+                  </div>
+                  <StatusBadge status={b.active ? "active" : "inactive"} />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleToggle(b.id, b.active)}
+                  disabled={toggling === b.id}
+                  className="mt-4 flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-[#111827] disabled:opacity-40"
+                >
+                  {b.active
+                    ? <><ToggleRight size={18} className="text-green-600" /> Activo</>
+                    : <><ToggleLeft size={18} /> Inactivo</>
+                  }
+                </button>
+              </article>
+            ))}
+          </div>
+        </SectionCard>
       )}
 
       {/* Modal */}
@@ -187,21 +241,28 @@ export function BarberosClient({ barbers, barbershopId }: Props) {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button
+                  <PrimaryButton
                     type="button"
                     onClick={closeModal}
-                    className="btn-outline flex-1"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </PrimaryButton>
+                  <PrimaryButton
                     type="submit"
                     disabled={saving}
-                    className="btn-dark flex-1"
+                    variant="primary"
+                    className="flex-1"
                   >
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Añadir barbero"}
-                  </button>
+                  </PrimaryButton>
                 </div>
+                {formError && (
+                  <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {formError}
+                  </p>
+                )}
               </form>
             </div>
           </div>

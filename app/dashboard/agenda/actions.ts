@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 
 type BarberRow = {
   id: string;
@@ -131,6 +132,10 @@ export async function createAppointment(formData: FormData) {
   }
 
   const supabase = createServiceRoleClient();
+
+  const usage = await getBarbershopPlanUsage(supabase, barbershopId);
+  const limitError = assertCanCreateBooking(usage);
+  if (limitError) return { error: limitError };
 
   const clientId = String(formData.get("client_id") ?? "").trim();
   const serviceId = String(formData.get("service_id") ?? "").trim();

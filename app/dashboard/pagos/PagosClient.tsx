@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { Plus, X, Trash2, Banknote, TrendingUp, CreditCard } from "lucide-react";
 import { createPayment, deletePayment } from "./actions";
-import { PageHeader } from "@/components/dashboard/PageHeader";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { StatCard } from "@/components/ui/StatCard";
 
 type Payment = {
   id: string;
@@ -78,51 +81,23 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
       <PageHeader
         section="Pagos"
         title="Cobros del día"
+        description="Registra cobros manuales y revisa la caja diaria."
         action={
-          <button
+          <PrimaryButton
             type="button"
             onClick={() => { setFormError(""); setShowModal(true); }}
-            className="flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
+            variant="primary"
           >
             <Plus size={16} /> Registrar pago
-          </button>
+          </PrimaryButton>
         }
       />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Total cobrado hoy</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
-              <TrendingUp size={15} className="text-[#2F6FEB]" />
-            </div>
-          </div>
-          <p className="mt-3 text-4xl font-black text-[#111827]">{total.toFixed(2)} €</p>
-          <p className="mt-1.5 text-xs text-neutral-400">Pagos con estado cobrado</p>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Nº de cobros</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
-              <CreditCard size={15} className="text-[#2F6FEB]" />
-            </div>
-          </div>
-          <p className="mt-3 text-4xl font-black text-[#111827]">{payments.length}</p>
-          <p className="mt-1.5 text-xs text-neutral-400">Registros del día</p>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ticket medio</p>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-              <Banknote size={15} className="text-blue-500" />
-            </div>
-          </div>
-          <p className="mt-3 text-4xl font-black text-[#111827]">{ticketMedio} €</p>
-          <p className="mt-1.5 text-xs text-neutral-400">Importe medio por cobro</p>
-        </div>
+        <StatCard label="Total cobrado hoy" value={`${total.toFixed(2)} €`} description="Pagos con estado cobrado" icon={TrendingUp} />
+        <StatCard label="Nº de cobros" value={payments.length} description="Registros del día" icon={CreditCard} />
+        <StatCard label="Ticket medio" value={`${ticketMedio} €`} description="Importe medio por cobro" icon={Banknote} />
       </div>
 
       {/* Lista de pagos */}
@@ -132,21 +107,21 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
           title="Sin pagos registrados hoy"
           description="Registra cobros manuales aquí para llevar el control diario."
           action={
-            <button
+            <PrimaryButton
               type="button"
               onClick={() => setShowModal(true)}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#111827] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
+              variant="primary"
             >
               <Plus size={15} /> Registrar primer cobro
-            </button>
+            </PrimaryButton>
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-          <div className="border-b border-[#E5E7EB] px-6 py-4">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Hoy</p>
-            <h2 className="mt-0.5 font-black text-[#111827]">Pagos registrados</h2>
-          </div>
+        <SectionCard
+          title="Pagos registrados"
+          description="Cobros creados hoy."
+          bodyClassName="p-0"
+        >
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]/50">
@@ -190,7 +165,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
               </tbody>
             </table>
           </div>
-        </div>
+        </SectionCard>
       )}
 
       {/* Modal */}
@@ -215,7 +190,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Importe (€) *</label>
+                  <label className="form-label">Importe (€) *</label>
                   <input
                     name="amount"
                     type="number"
@@ -223,16 +198,16 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                     step="0.01"
                     required
                     placeholder="Ej: 18.00"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
+                    className="input py-3"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Método de pago *</label>
+                  <label className="form-label">Método de pago *</label>
                   <select
                     name="method"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
+                    className="input py-3"
                   >
                     <option value="cash">Efectivo</option>
                     <option value="card">Tarjeta</option>
@@ -243,10 +218,10 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Cliente (opcional)</label>
+                  <label className="form-label">Cliente (opcional)</label>
                   <select
                     name="client_id"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
+                    className="input py-3"
                   >
                     <option value="">Sin vincular</option>
                     {clients.map((c) => (
@@ -256,11 +231,11 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Notas (opcional)</label>
+                  <label className="form-label">Notas (opcional)</label>
                   <input
                     name="notes"
                     placeholder="Ej: Corte + barba"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
+                    className="input py-3"
                   />
                 </div>
 
@@ -269,20 +244,22 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 )}
 
                 <div className="flex gap-3 pt-2">
-                  <button
+                  <PrimaryButton
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 rounded-2xl border border-[#E5E7EB] py-3 text-sm font-semibold transition-colors hover:bg-[#F8FAFC]"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </PrimaryButton>
+                  <PrimaryButton
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#111827] py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A] disabled:opacity-50"
+                    variant="primary"
+                    className="flex-1"
                   >
                     {saving ? "Guardando..." : "Registrar"}
-                  </button>
+                  </PrimaryButton>
                 </div>
               </form>
             </div>

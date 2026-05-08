@@ -1,9 +1,12 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { Mail, Phone, StickyNote } from "lucide-react";
+import { RetentionActions } from "./RetentionActions";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +28,11 @@ type AppointmentRow = {
   start_time: string;
   status: string;
   client_id: string | null;
+  service_id: string | null;
+  barber_id: string | null;
   clients: ClientRow | ClientRow[] | null;
-  services: { name: string } | { name: string }[] | null;
-  barbers: { name: string } | { name: string }[] | null;
+  services: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
+  barbers: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
 };
 
 type ClientWithStats = ClientRow & {
@@ -35,7 +40,11 @@ type ClientWithStats = ClientRow & {
   lastAppointmentDate: string | null;
   lastAppointmentTime: string | null;
   lastServiceName: string | null;
+  lastServiceId: string | null;
+  lastServiceActive: boolean;
   lastBarberName: string | null;
+  lastBarberId: string | null;
+  lastBarberActive: boolean;
   lastStatus: string | null;
 };
 
@@ -91,6 +100,43 @@ function statusBadgeClass(status?: string | null): string {
     no_show:   "bg-red-50   text-red-700   border-red-100",
   };
   return classes[status ?? ""] ?? "bg-neutral-100 text-neutral-600 border-neutral-200";
+}
+
+function getPublicBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/$/, "");
+  }
+
+  const requestHeaders = headers();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
+
+  return host ? `${protocol}://${host}` : "http://localhost:3000";
+}
+
+function buildRepeatBookingUrl({
+  baseUrl,
+  slug,
+  serviceId,
+  barberId,
+}: {
+  baseUrl: string;
+  slug: string;
+  serviceId: string | null;
+  barberId: string | null;
+}) {
+  const url = new URL(`/r/${slug}`, baseUrl);
+
+  if (serviceId) {
+    url.searchParams.set("service", serviceId);
+  }
+
+  if (barberId) {
+    url.searchParams.set("barber", barberId);
+  }
+
+  return url.toString();
 }
 
 async function getDataClient() {
@@ -204,6 +250,8 @@ export default async function ClientesPage() {
           start_time,
           status,
           client_id,
+          service_id,
+          barber_id,
           clients (
             id,
             name,
@@ -214,10 +262,12 @@ export default async function ClientesPage() {
             barbershop_id
           ),
           services (
-            name
+            name,
+            active
           ),
           barbers (
-            name
+            name,
+            active
           )
         `
         )
@@ -258,7 +308,11 @@ export default async function ClientesPage() {
       lastAppointmentDate: string | null;
       lastAppointmentTime: string | null;
       lastServiceName: string | null;
+      lastServiceId: string | null;
+      lastServiceActive: boolean;
       lastBarberName: string | null;
+      lastBarberId: string | null;
+      lastBarberActive: boolean;
       lastStatus: string | null;
     }
   >();
@@ -280,7 +334,11 @@ export default async function ClientesPage() {
         lastAppointmentDate: appointment.appointment_date,
         lastAppointmentTime: appointment.start_time,
         lastServiceName: service?.name ?? null,
+        lastServiceId: appointment.service_id ?? null,
+        lastServiceActive: service?.active !== false,
         lastBarberName: barber?.name ?? null,
+        lastBarberId: appointment.barber_id ?? null,
+        lastBarberActive: barber?.active !== false,
         lastStatus: appointment.status ?? null,
       });
     } else {
@@ -298,7 +356,11 @@ export default async function ClientesPage() {
         lastAppointmentDate: stats?.lastAppointmentDate ?? null,
         lastAppointmentTime: stats?.lastAppointmentTime ?? null,
         lastServiceName: stats?.lastServiceName ?? null,
+        lastServiceId: stats?.lastServiceId ?? null,
+        lastServiceActive: stats?.lastServiceActive ?? false,
         lastBarberName: stats?.lastBarberName ?? null,
+        lastBarberId: stats?.lastBarberId ?? null,
+        lastBarberActive: stats?.lastBarberActive ?? false,
         lastStatus: stats?.lastStatus ?? null,
       };
     })
@@ -318,6 +380,8 @@ export default async function ClientesPage() {
   const recurringClients = clients.filter(
     (client) => client.totalAppointments > 1
   ).length;
+  const publicBaseUrl = getPublicBaseUrl();
+  const barbershopSlug = barbershopResult.data?.slug ?? null;
 
   const errorMessage =
     clientsResult.error?.message ??
@@ -498,6 +562,7 @@ export default async function ClientesPage() {
                       <th className="px-4 py-3">Servicio</th>
                       <th className="px-4 py-3">Citas</th>
                       <th className="px-4 py-3">Estado</th>
+                      <th className="px-4 py-3 text-right">Retención</th>
                     </tr>
                   </thead>
 
@@ -505,9 +570,12 @@ export default async function ClientesPage() {
                     {clients.map((client) => (
                       <tr key={client.id} className="hover:bg-neutral-50">
                         <td className="px-4 py-4">
-                          <p className="font-bold text-neutral-950">
+                          <Link
+                            href={`/dashboard/clientes/${client.id}`}
+                            className="font-bold text-neutral-950 transition hover:text-[#2F6FEB]"
+                          >
                             {client.name}
-                          </p>
+                          </Link>
                           {client.email && (
                             <p className="text-xs text-neutral-400">
                               {client.email}
@@ -540,6 +608,29 @@ export default async function ClientesPage() {
                           <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(client.lastStatus)}`}>
                             {statusLabel(client.lastStatus)}
                           </span>
+                        </td>
+
+                        <td className="px-4 py-4">
+                          {barbershopSlug ? (
+                            <RetentionActions
+                              clientName={client.name}
+                              bookingUrl={buildRepeatBookingUrl({
+                                baseUrl: publicBaseUrl,
+                                slug: barbershopSlug,
+                                serviceId: client.lastServiceId,
+                                barberId: client.lastBarberActive
+                                  ? client.lastBarberId
+                                  : null,
+                              })}
+                              canReserveAgain={Boolean(
+                                client.lastServiceId && client.lastServiceActive
+                              )}
+                            />
+                          ) : (
+                            <span className="text-xs text-neutral-400">
+                              Sin enlace público
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -603,6 +694,34 @@ export default async function ClientesPage() {
                         {client.notes}
                       </p>
                     )}
+
+                    {barbershopSlug && (
+                      <div className="mt-4 border-t border-neutral-100 pt-4">
+                        <RetentionActions
+                          clientName={client.name}
+                          bookingUrl={buildRepeatBookingUrl({
+                            baseUrl: publicBaseUrl,
+                            slug: barbershopSlug,
+                            serviceId: client.lastServiceId,
+                            barberId: client.lastBarberActive
+                              ? client.lastBarberId
+                              : null,
+                          })}
+                          canReserveAgain={Boolean(
+                            client.lastServiceId && client.lastServiceActive
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    <div className="mt-3">
+                      <Link
+                        href={`/dashboard/clientes/${client.id}`}
+                        className="inline-flex min-h-10 items-center justify-center rounded-xl border border-neutral-200 px-3 py-2 text-xs font-bold text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-950"
+                      >
+                        Ver ficha
+                      </Link>
+                    </div>
                   </article>
                 ))}
               </div>

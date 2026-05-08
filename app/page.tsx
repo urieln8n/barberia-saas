@@ -575,62 +575,156 @@ export default function LandingPage() {
           <div className="max-w-3xl">
             <p className="label-section">Pricing</p>
             <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-              39 €, 79 € y 149 €.
+              Planes para cada etapa de tu barbería.
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-600">
-              Tres niveles claros para empezar simple o añadir más acompañamiento
-              comercial.
+              Empieza gratis 5 días. Luego elige el plan que mejor se adapta a
+              tu barbería. Sin comisiones por cita.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-8 inline-flex rounded-full border border-[#DDE7FB] bg-[#F8FAFC] px-4 py-2 text-sm font-black text-[#2F6FEB]">
+            0% comisión por cita · link propio · QR · reservas desde Instagram, WhatsApp y Google
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <PricingCard
-              name="Básico"
-              price="39 €/mes"
-              setup="Puesta en marcha asistida"
-              description="Para barberías que quieren reservas online, agenda clara y un panel básico desde el primer día."
+              name="Free"
+              eyebrow="Prueba 5 días"
+              price="0 €"
+              setup="Durante 5 días"
+              cta="Probar gratis 5 días"
+              description="Prueba BarberíaOS durante 5 días y comprueba si tus clientes reservan mejor."
               features={[
-                "Agenda online",
+                "Página pública de reservas",
                 "QR de reservas",
-                "Página pública personalizada",
+                "Agenda básica",
+                "1 barbero",
+                "Hasta 5 servicios",
+                "Hasta 20 reservas durante la prueba",
+                "Clientes básicos",
+                "Sin comisiones por cita",
+              ]}
+              note="No incluye finanzas avanzadas, WhatsApp Assistant, reseñas, recuperación ni soporte prioritario."
+            />
+            <PricingCard
+              name="Starter"
+              eyebrow="Para empezar"
+              price="39 €/mes"
+              setup="Reservas online"
+              cta="Empezar con Starter"
+              description="Todo lo necesario para recibir reservas online sin depender de WhatsApp todo el día."
+              features={[
+                "Reservas online ilimitadas",
+                "Link público /r/[slug]",
+                "QR de reservas",
+                "Agenda, servicios y clientes",
+                "Hasta 2 barberos",
+                "Pagos manuales",
+                "Horas ocupadas y anti doble reserva",
                 "Dashboard básico",
-                "Clientes y servicios",
-                "Configuración inicial incluida",
+                "Soporte básico",
               ]}
             />
             <PricingCard
               name="Pro"
+              eyebrow="Gestión"
+              badge="Más recomendado"
               price="79 €/mes"
-              setup="Puesta en marcha asistida"
+              setup="Control del negocio"
+              cta="Elegir Pro"
               highlighted
-              description="Para barberías que quieren una operación más ordenada y un mejor seguimiento comercial."
+              description="Controla agenda, clientes, caja y equipo desde un panel profesional."
               features={[
-                "Todo Básico",
-                "Revisión de Google Business",
-                "Instagram con link de reservas",
-                "Seguimiento mensual de citas",
-                "Acciones comerciales recomendadas",
-                "Soporte mensual",
-              ]}
-            />
-            <PricingCard
-              name="Premium"
-              price="149 €/mes"
-              setup="Puesta en marcha asistida"
-              description="Para barberías que quieren más acompañamiento y control del crecimiento del negocio."
-              features={[
-                "Todo Pro",
-                "Plan de captación local",
-                "Seguimiento de clientes inactivos",
-                "Revisión avanzada de métricas",
-                "Acompañamiento gestionado",
+                "Todo Starter",
+                "Hasta 6 barberos",
+                "Finanzas/caja",
+                "Ingresos, gastos y beneficio estimado",
+                "Clientes avanzados",
+                "QR profesional",
+                "Página pública más completa",
+                "Reportes básicos",
+                "Políticas de cancelación",
+                { label: "Módulo de reseñas visual", status: "MVP" },
                 "Soporte prioritario",
               ]}
+              note="Asistente de reseñas con mensajes y flujo preparado. Integración Google próximamente."
+            />
+            <PricingCard
+              name="Growth"
+              eyebrow="Para crecer"
+              price="149 €/mes"
+              setup="Automatización y crecimiento"
+              cta="Escalar con Growth"
+              description="Automatiza WhatsApp, reseñas y recuperación para llenar más la agenda."
+              features={[
+                "Todo Pro",
+                { label: "Asistente WhatsApp preparado", status: "MVP" },
+                { label: "Asistente de Reseñas", status: "MVP" },
+                { label: "Recuperación de clientes", status: "Growth" },
+                "Plantillas WhatsApp",
+                "Campañas básicas",
+                "Clientes inactivos",
+                "Solicitud de reseñas",
+                { label: "Automatizaciones futuras", status: "Próximamente" },
+                "Métricas de crecimiento",
+                "Soporte premium",
+              ]}
+              note="Asistente WhatsApp preparado con enlaces y plantillas incluidos. API oficial próximamente."
             />
           </div>
 
+          <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-[#0F172A]/10 bg-[#0F172A] text-white shadow-[0_18px_60px_rgba(15,23,42,0.16)]">
+            <div className="grid gap-6 p-6 lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
+              <div>
+                <div className="mb-3 inline-flex rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-[#9BBCFF]">
+                  Premium / Scale
+                </div>
+                <h3 className="text-3xl font-black tracking-tight">
+                  Sistema completo para barberías premium o con alto volumen.
+                </h3>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/65">
+                  Desde 299 €/mes. Incluye todo Growth, onboarding asistido,
+                  revisión mensual, soporte premium, personalización avanzada y
+                  consultoría de crecimiento.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {[
+                    "Automatizaciones avanzadas",
+                    "Depósitos anti no-show futuros",
+                    "Stripe futuro",
+                    "Analítica avanzada",
+                    "Comisiones por barbero futuras",
+                    "Multiusuario/roles futuros",
+                  ].map((item) => (
+                    <span key={item} className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-white/75">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <a href="#contacto" className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-black text-[#0F172A] transition hover:bg-[#F8FAFC]">
+                Solicitar Premium
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-3 text-sm text-slate-500 sm:grid-cols-3">
+            {[
+              "No somos marketplace.",
+              "Cada barbería conserva su link, QR, clientes y sistema.",
+              "Sin Stripe ni billing automático conectado todavía.",
+            ].map((item) => (
+              <div key={item} className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 font-semibold">
+                {item}
+              </div>
+            ))}
+          </div>
+
           <p className="mt-6 text-center text-sm text-neutral-500">
-            * El presupuesto de anuncios se factura aparte y lo decides tú.
+            Los módulos marcados como MVP o Próximamente se muestran de forma
+            honesta: están preparados visualmente o en roadmap, no como
+            integraciones finales conectadas.
           </p>
         </div>
       </section>

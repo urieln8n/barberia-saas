@@ -32,18 +32,23 @@ type Subscription = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const PLAN_DEFAULTS: Record<string, number> = {
-  starter: 39, growth: 79, premium: 149, custom: 0,
+  free: 0, starter: 39, pro: 79, growth: 149, premium: 299,
 };
 
 const PLAN_LABELS: Record<string, string> = {
-  starter: "Básico", growth: "Pro", premium: "Premium", custom: "Custom",
+  free: "Free 5 días",
+  starter: "Starter",
+  pro: "Pro",
+  growth: "Growth",
+  premium: "Premium / Scale",
 };
 
 const PLAN_COLORS: Record<string, string> = {
+  free: "border border-emerald-200 bg-emerald-50 text-emerald-700",
   starter: "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2F6FEB]",
-  growth:  "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]",
+  pro: "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]",
+  growth: "border border-sky-200 bg-sky-50 text-sky-700",
   premium: "bg-[#0F172A] text-white",
-  custom:  "border border-neutral-300 bg-neutral-100 text-neutral-600",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -61,7 +66,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const ALL_STATUSES = ["trial","active","paused","cancelled"];
-const ALL_PLANS    = ["starter","growth","premium","custom"];
+const ALL_PLANS    = ["free","starter","pro","growth","premium"];
 
 function toLocal(iso: string | null) {
   if (!iso) return "";
@@ -96,10 +101,10 @@ export function SuscripcionesClient({
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [updating,  setUpdating]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
-  const [planAmount, setPlanAmount] = useState<number>(39);
+  const [planAmount, setPlanAmount] = useState<number>(0);
   const [formError, setFormError]  = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setPlanAmount(39); setFormError(null); setShowModal(true); }
+  function openCreate() { setEditing(null); setPlanAmount(0); setFormError(null); setShowModal(true); }
   function openEdit(s: Subscription) { setEditing(s); setPlanAmount(s.amount_monthly); setFormError(null); setShowModal(true); }
   function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
@@ -245,7 +250,7 @@ export function SuscripcionesClient({
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${PLAN_COLORS[sub.plan_name] ?? PLAN_COLORS.custom}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${PLAN_COLORS[sub.plan_name] ?? PLAN_COLORS.free}`}>
                       {PLAN_LABELS[sub.plan_name] ?? sub.plan_name}
                     </span>
                   </td>
@@ -376,7 +381,7 @@ export function SuscripcionesClient({
                     <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Plan *</label>
                     <select
                       name="plan_name"
-                      defaultValue={editing?.plan_name ?? "starter"}
+                      defaultValue={editing?.plan_name ?? "free"}
                       onChange={e => setPlanAmount(PLAN_DEFAULTS[e.target.value] ?? 0)}
                       className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >

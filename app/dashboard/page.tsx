@@ -339,24 +339,27 @@ export default async function DashboardPage() {
   const topBarberCount = topBarberEntry?.[1] ?? 0;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
 
       {/* ── Hero ── */}
-      <section className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="label-section">Panel principal</p>
-            <h1 className="mt-2 text-3xl font-black md:text-4xl">
+      <section className="section-band overflow-hidden">
+        <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#C89B3C]/20 bg-[#C89B3C]/10 px-3 py-1 text-xs font-bold text-[#8A641F]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A]" />
+              Panel principal
+            </div>
+            <h1 className="mt-3 text-3xl font-black tracking-tight text-[#111111] md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
-              Gestiona citas, clientes, servicios, barberos y pagos — todo desde aquí.
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-500">
+              Controla la agenda de hoy, próximos clientes, cobros y canales de reserva desde una vista clara para operar rápido.
             </p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px]">
             <Link
               href="/dashboard/agenda"
-              className="btn-primary"
+              className="btn-dark"
             >
               Ver agenda hoy
             </Link>
@@ -371,7 +374,7 @@ export default async function DashboardPage() {
               target="_blank"
               className="btn-outline"
             >
-              Página pública ↗
+              Página pública <ArrowRight size={15} />
             </Link>
           </div>
         </div>
@@ -384,24 +387,24 @@ export default async function DashboardPage() {
           value={String(todayAppointments.length)}
           hint={`${weekApptsCount} esta semana`}
           icon={CalendarCheck}
-          iconBg="bg-[#2F6FEB]/10"
-          iconColor="text-[#2F6FEB]"
+          iconBg="bg-[#2563EB]/10"
+          iconColor="text-[#2563EB]"
         />
         <StatCard
           title="Ingresos hoy"
           value={`${todayRevenue.toFixed(0)} €`}
           hint={`${monthRevenue.toFixed(0)} € este mes`}
           icon={TrendingUp}
-          iconBg="bg-[#2F6FEB]/10"
-          iconColor="text-[#2F6FEB]"
+          iconBg="bg-[#16A34A]/10"
+          iconColor="text-[#16A34A]"
         />
         <StatCard
           title="Clientes"
           value={String(totalClients)}
           hint={`+${newClientsCount} nuevos este mes`}
           icon={Users}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-500"
+          iconBg="bg-[#C89B3C]/10"
+          iconColor="text-[#8A641F]"
         />
         <StatCard
           title="No shows · Canceladas"
@@ -415,21 +418,21 @@ export default async function DashboardPage() {
 
       {/* ── Stats del mes ── */}
       <section className="grid gap-4 sm:grid-cols-3">
-        <div className="metric-card">
+        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas este mes</p>
           <p className="mt-3 text-4xl font-black text-[#111827]">{monthApptsCount}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
             {monthApptsCount - cancelledCount} completadas · {cancelledCount} canceladas
           </p>
         </div>
-        <div className="metric-card">
+        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicio top</p>
           <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topServiceName}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
             {topServiceCount > 0 ? `${topServiceCount} citas este mes` : "Sin datos aún"}
           </p>
         </div>
-        <div className="metric-card">
+        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Barbero top</p>
           <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topBarberName}</p>
           <p className="mt-1.5 text-xs text-neutral-400">
@@ -442,25 +445,28 @@ export default async function DashboardPage() {
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
 
         {/* Próximas citas */}
-        <div className="panel">
+        <div className="panel overflow-hidden p-0">
+          <div className="border-b border-[#E7E2D8] bg-[#FDFBF7] px-5 py-4 md:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="section-heading">Próximas citas</h2>
-              <p className="text-sm text-neutral-500">Reservas activas desde hoy.</p>
+              <p className="text-sm text-neutral-500">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
             </div>
             <Link
               href="/dashboard/agenda"
-              className="btn-outline"
+              className="btn-outline min-h-0 px-3 py-2"
             >
               Abrir agenda <ArrowRight size={14} />
             </Link>
           </div>
+          </div>
 
           {upcomingAppointments.length === 0 ? (
+            <div className="px-5 pb-5 md:px-6">
             <EmptyState
               icon={CalendarCheck}
               title="Sin citas próximas"
-              description="Comparte tu QR o link para recibir reservas."
+              description="Comparte tu QR o link público para empezar a llenar la agenda desde Instagram, WhatsApp o Google."
               action={
                 <Link
                   href="/dashboard/qr"
@@ -470,15 +476,16 @@ export default async function DashboardPage() {
                 </Link>
               }
             />
+            </div>
           ) : (
-            <div className="mt-4 flex flex-col gap-2.5">
+            <div className="flex flex-col divide-y divide-[#E7E2D8]">
               {upcomingAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="flex items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-4"
+                  className="flex items-start gap-3 bg-white p-4 transition-colors hover:bg-[#FDFBF7] md:px-6"
                 >
-                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#2F6FEB] text-center">
-                    <span className="text-[9px] font-bold uppercase text-blue-100">
+                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111111] text-center">
+                    <span className="text-[9px] font-bold uppercase text-[#D9B766]">
                       {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
                     </span>
                     <span className="text-base font-black text-white">
@@ -512,27 +519,34 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4">
 
           {/* Link de reservas */}
-          <div className="panel">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Tu link de reservas</p>
-            <p className="mt-2 text-sm text-neutral-600">
+          <div className="section-band-dark p-5 md:p-6">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#D9B766]">
+                <QrCode size={18} />
+              </div>
+              <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Tu link de reservas</p>
+            <p className="mt-2 text-sm leading-6 text-white/65">
               Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
             </p>
-            <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
-              <p className="break-all font-mono text-xs font-semibold text-neutral-700">
+              </div>
+            </div>
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3">
+              <p className="break-all font-mono text-xs font-semibold text-white/75">
                 {typeof window !== "undefined" ? window.location.origin : "https://barberiaos.com"}{publicBookingUrl}
               </p>
             </div>
             <div className="mt-4 grid gap-2">
               <Link
                 href="/dashboard/qr"
-                className="btn-dark"
+                className="btn-gold"
               >
                 <QrCode size={15} /> Ver y descargar QR
               </Link>
               <Link
                 href={publicBookingUrl}
                 target="_blank"
-                className="btn-outline"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-4 py-2.5 text-sm font-bold text-white transition-all duration-150 hover:bg-white/10 active:scale-[0.98]"
               >
                 Abrir página pública <ArrowRight size={15} />
               </Link>
@@ -542,7 +556,7 @@ export default async function DashboardPage() {
           {/* Acciones rápidas */}
           <div className="panel">
             <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Acciones rápidas</p>
-            <div className="mt-3 grid gap-1">
+            <div className="mt-3 grid gap-1.5">
               {[
                 { href: "/dashboard/clientes",  label: "Clientes",  icon: Users      },
                 { href: "/dashboard/servicios", label: "Servicios", icon: Scissors   },
@@ -552,7 +566,7 @@ export default async function DashboardPage() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:border-[#E7E2D8] hover:bg-[#F8F5EF] hover:text-[#111827]"
                 >
                   <Icon size={15} className="shrink-0 text-neutral-400" />
                   {label}

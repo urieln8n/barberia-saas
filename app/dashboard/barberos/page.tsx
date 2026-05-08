@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { BarberosClient } from "./BarberosClient";
 
 export default async function BarberosPage() {
@@ -18,10 +19,13 @@ export default async function BarberosPage() {
     .eq("barbershop_id", barbershopId)
     .order("created_at", { ascending: true });
 
+  const planUsage = await getBarbershopPlanUsage(supabase, barbershopId);
+
   return (
     <BarberosClient
       barbers={barbers ?? []}
       barbershopId={barbershopId}
+      planUsage={planUsage}
     />
   );
 }
