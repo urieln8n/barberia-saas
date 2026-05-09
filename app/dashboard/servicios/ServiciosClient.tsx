@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Clock, Scissors } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
 import { createService, updateService, deleteService } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { StatCard } from "@/components/ui/StatCard";
 
 type Service = {
   id: string;
@@ -38,6 +39,9 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
 
   const serviceLimit = planUsage.limits.maxServices;
   const isAtServiceLimit = serviceLimit !== null && services.length >= serviceLimit;
+  const activeServices = services.filter((service) => service.active).length;
+  const topService = services[0];
+  const bestMarginService = [...services].sort((a, b) => Number(b.price) - Number(a.price))[0];
 
   function openCreate() { setEditing(null); setFormError(""); setShowModal(true); }
   function openEdit(s: Service) { setEditing(s); setFormError(""); setShowModal(true); }
@@ -102,6 +106,13 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
         )}
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Servicios activos" value={activeServices} description="Disponibles para reservar" icon={Scissors} />
+        <StatCard label="Más vendido" value={topService?.name ?? "--"} description="Basado en el catálogo actual" icon={TrendingUp} />
+        <StatCard label="Mejor margen" value={bestMarginService?.name ?? "--"} description={bestMarginService ? `${bestMarginService.price} EUR` : "Sin servicios"} icon={BadgeEuro} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
+        <StatCard label="Barberos asignados" value="Todos" description="Asignación global actual" icon={Users} iconBg="bg-[#D5A84C]/10" iconColor="text-[#8A641F]" />
+      </div>
+
       {services.length === 0 ? (
         <EmptyState
           icon={Scissors}
@@ -131,6 +142,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                   <th className="table-header-cell">Servicio</th>
                   <th className="table-header-cell">Duración</th>
                   <th className="table-header-cell">Precio</th>
+                  <th className="table-header-cell">Barberos</th>
                   <th className="table-header-cell">Estado</th>
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
@@ -148,6 +160,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-black text-[#111827]">{s.price} €</td>
+                    <td className="px-6 py-4 text-neutral-600">Todos los activos</td>
                     <td className="px-6 py-4">
                       <StatusBadge status={s.active ? "active" : "inactive"} />
                     </td>

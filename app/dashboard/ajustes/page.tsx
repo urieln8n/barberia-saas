@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { Store, Clock, QrCode, Globe, ArrowRight } from "lucide-react";
+import { Store, Clock, QrCode, Globe, ArrowRight, CreditCard, Palette, Scissors, Users, ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { BILLING_PLANS } from "@/src/lib/stripe/plans";
 import { BillingActions } from "@/components/dashboard/BillingActions";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 export default async function AjustesPage() {
   const supabase = await createClient();
@@ -48,9 +49,9 @@ export default async function AjustesPage() {
     <div className="space-y-5">
 
       <PageHeader
-        section="Sistema"
+        eyebrow="Sistema"
         title="Ajustes"
-        description="Configuración de tu barbería y tu cuenta."
+        description="Configuración clara de datos, horarios, equipo, servicios, pagos, enlace público, marca visual y estado de cuenta."
       />
 
       {/* Info de la barbería */}
@@ -109,6 +110,30 @@ export default async function AjustesPage() {
         hasStripeCustomer={Boolean(subscription?.stripe_customer_id)}
         plans={billingPlans}
       />
+
+      <SectionCard
+        title="Configuración operativa"
+        description="Accesos rápidos a las áreas que sostienen la operación diaria."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { icon: Clock, title: "Horarios", text: "Define franjas de apertura y cierre.", href: "/onboarding" },
+            { icon: Users, title: "Barberos", text: "Gestiona equipo activo e inactivo.", href: "/dashboard/barberos" },
+            { icon: Scissors, title: "Servicios", text: "Precios, duración y catálogo.", href: "/dashboard/servicios" },
+            { icon: CreditCard, title: "Métodos de pago", text: "Efectivo, tarjeta, Bizum y otros.", href: "/dashboard/caja" },
+            { icon: Globe, title: "Enlace público", text: "Página de reservas de clientes.", href: "/dashboard/qr" },
+            { icon: Palette, title: "Marca visual", text: "Logo, colores y presencia pública.", href: "/onboarding" },
+            { icon: ShieldCheck, title: "Estado de cuenta", text: `Plan actual: ${planUsage.label}.`, href: "/dashboard/pagos" },
+            { icon: Store, title: "Datos de barbería", text: "Nombre, ciudad y URL pública.", href: "/onboarding" },
+          ].map(({ icon: Icon, title, text, href }) => (
+            <Link key={title} href={href} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]">
+              <Icon size={18} className="text-[#2563EB]" />
+              <h3 className="mt-4 font-black text-[#080A0F]">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+            </Link>
+          ))}
+        </div>
+      </SectionCard>
 
       {/* Próximas configuraciones */}
       <div>

@@ -189,7 +189,15 @@ export function CajaClient({
         section="Caja"
         title="Asistente de Caja"
         description="Abre caja, registra cobros y controla el cierre del día con desglose por método de pago."
-      />
+      >
+        {session && (
+          <div className="rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
+            Hoy empezaste con <span className="font-black text-[#080A0F]">{formatCurrency(Number(session.opening_amount))}</span> en caja.
+            Has cobrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.totalSold)}</span>.
+            Cierre estimado: <span className="font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</span>.
+          </div>
+        )}
+      </PageHeader>
 
       {errorMessage && (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">

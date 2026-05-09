@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Phone, Mail, StickyNote, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Phone, Mail, StickyNote, Users, MessageCircle, RotateCcw, Star, Sparkles } from "lucide-react";
 import { createClient_, updateClient_, deleteClient_ } from "./actions";
-import { PageHeader }  from "@/components/dashboard/PageHeader";
-import { EmptyState }  from "@/components/dashboard/empty-state";
+import { PageHeader }  from "@/components/ui/PageHeader";
+import { EmptyState }  from "@/components/ui/EmptyState";
+import { StatCard } from "@/components/ui/StatCard";
 
 type Client = {
   id: string;
@@ -56,13 +57,25 @@ export function ClientesClient({ clients, barbershopId }: Props) {
     c.phone?.includes(search) ||
     c.email?.toLowerCase().includes(search.toLowerCase())
   );
+  const frequentClients = clients.filter((client) => client.last_visit_at).length;
+  const lostClients = clients.filter((client) => {
+    if (!client.last_visit_at) return false;
+    const days = Math.floor((Date.now() - new Date(client.last_visit_at).getTime()) / 86400000);
+    return days >= 42;
+  }).length;
+  const insightClient = clients.find((client) => {
+    if (!client.last_visit_at) return false;
+    const days = Math.floor((Date.now() - new Date(client.last_visit_at).getTime()) / 86400000);
+    return days >= 42;
+  });
 
   return (
     <div className="space-y-5">
 
       <PageHeader
-        section="Clientes"
+        eyebrow="Clientes"
         title="Gestión de clientes"
+        description="Segmenta clientes frecuentes, detecta clientes perdidos y activa acciones rápidas."
         action={
           <button
             type="button"
@@ -73,6 +86,20 @@ export function ClientesClient({ clients, barbershopId }: Props) {
           </button>
         }
       />
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Clientes frecuentes" value={frequentClients} description="Con visitas registradas" icon={Users} />
+        <StatCard label="Clientes perdidos" value={lostClients} description="Más de 42 días sin venir" icon={RotateCcw} iconBg="bg-amber-50" iconColor="text-amber-700" />
+        <StatCard label="Total gastado" value="--" description="Disponible al vincular ventas" icon={Sparkles} />
+        <StatCard label="Servicio favorito" value="Corte" description="Estimación del catálogo" icon={Star} iconBg="bg-[#D5A84C]/10" iconColor="text-[#8A641F]" />
+      </div>
+
+      {insightClient && (
+        <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-5 py-4 text-sm font-semibold leading-6 text-[#8A641F]">
+          Este cliente no viene desde hace 42 días. Puedes enviarle una promoción para volver:{" "}
+          <span className="font-black">{insightClient.name}</span>.
+        </div>
+      )}
 
       {clients.length > 0 && (
         <input
@@ -107,6 +134,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
                   <th className="table-header-cell">Última visita</th>
+                  <th className="table-header-cell">Valor</th>
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
@@ -144,7 +172,38 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         : <span className="text-neutral-300">—</span>}
                     </td>
                     <td className="px-6 py-4">
+                      <div className="text-sm">
+                        <p className="font-black text-[#080A0F]">-- EUR</p>
+                        <p className="text-xs text-neutral-400">Favorito: Corte</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
+                        {c.phone && (
+                          <a
+                            href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-green-50 hover:text-green-700"
+                            title="Enviar WhatsApp"
+                          >
+                            <MessageCircle size={15} />
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                          title="Pedir reseña"
+                        >
+                          <Star size={15} />
+                        </button>
+                        <button
+                          type="button"
+                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-amber-50 hover:text-amber-700"
+                          title="Reactivar cliente"
+                        >
+                          <RotateCcw size={15} />
+                        </button>
                         <button
                           type="button"
                           onClick={() => openEdit(c)}

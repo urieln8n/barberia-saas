@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Check,
   Copy,
+  Download,
   ExternalLink,
   Globe,
   Instagram,
@@ -13,7 +14,8 @@ import {
   QrCode,
   Scissors,
 } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 type Props = { name: string; slug: string };
 
@@ -73,13 +75,13 @@ export function QRClient({ name, slug }: Props) {
   return (
     <div className="space-y-5">
       <PageHeader
-        section="Canales de reserva"
+        eyebrow="Canales de reserva"
         title="Reservas online"
         description="Comparte tu link público, QR y mensajes listos para captar citas desde Instagram, WhatsApp, Google y tu web."
       />
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col items-center gap-5 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:w-80 lg:shrink-0">
+        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-neutral-200 bg-white p-6 shadow-[var(--shadow-card)] lg:w-96 lg:shrink-0">
           <div className="flex w-full items-start justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">QR</p>
@@ -104,13 +106,18 @@ export function QRClient({ name, slug }: Props) {
             <p className="mt-0.5 text-xs text-neutral-400">Escanear para reservar</p>
           </div>
 
-          <a
-            href={qrUrl}
-            download={`qr-reservas-${slug}.png`}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0F172A]"
-          >
-            <Printer size={15} /> Descargar QR
-          </a>
+          <div className="grid w-full gap-2">
+            <a
+              href={qrUrl}
+              download={`qr-reservas-${slug}.png`}
+              className="btn-dark"
+            >
+              <Download size={15} /> Descargar QR
+            </a>
+            <button type="button" onClick={() => window.print()} className="btn-outline">
+              <Printer size={15} /> Imprimir cartel
+            </button>
+          </div>
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
@@ -232,6 +239,19 @@ export function QRClient({ name, slug }: Props) {
               }
             />
           </div>
+
+          <SectionCard
+            title="Dónde colocar el QR"
+            description="Consejos rápidos para convertir tráfico del local y canales sociales en reservas."
+          >
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {["Recepción", "Espejo", "Instagram", "WhatsApp", "Google"].map((place) => (
+                <div key={place} className="rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 p-4 text-sm font-black text-[#080A0F]">
+                  Pon este QR en {place}.
+                </div>
+              ))}
+            </div>
+          </SectionCard>
         </div>
       </div>
     </div>

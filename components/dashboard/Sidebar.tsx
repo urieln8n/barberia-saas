@@ -12,6 +12,7 @@ import {
   User,
   CreditCard,
   Banknote,
+  CalendarClock,
   Wallet,
   Calculator,
   QrCode,
@@ -33,6 +34,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/dashboard",                  label: "Dashboard",        icon: Home          },
       { href: "/dashboard/agenda",           label: "Agenda",           icon: CalendarDays  },
+      { href: "/dashboard/huecos",           label: "Huecos libres",    icon: CalendarClock },
       { href: "/dashboard/clientes",         label: "Clientes",         icon: Users         },
       { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
       { href: "/dashboard/barberos",         label: "Barberos",         icon: User          },

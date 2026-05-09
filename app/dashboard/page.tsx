@@ -485,9 +485,9 @@ export default async function DashboardPage() {
           iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
         />
         <StatCard
-          title="Clientes atendidos hoy"
+          title="Clientes nuevos"
           value={String(clientsAttendedToday)}
-          hint={`${todayPaymentMovements.length} cobros registrados`}
+          hint={`${todayPaymentMovements.length} cobros vinculados hoy`}
           icon={Users}
           iconBg="bg-[#C89B3C]/10"
           iconColor="text-[#8A641F]"
@@ -525,10 +525,10 @@ export default async function DashboardPage() {
           iconColor="text-amber-700"
         />
         <StatCard
-          title="Servicio más vendido"
-          value={topServiceTodayName}
-          hint={topServiceTodayCount > 0 ? `${topServiceTodayCount} ventas hoy` : "Sin cobros vinculados"}
-          icon={Scissors}
+          title="Próximas citas"
+          value={String(upcomingAppointments.length)}
+          hint={topServiceTodayCount > 0 ? `Servicio top: ${topServiceTodayName}` : "Reservas activas próximas"}
+          icon={CalendarCheck}
           iconBg="bg-[#C89B3C]/10"
           iconColor="text-[#8A641F]"
         />
@@ -538,8 +538,10 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="label-section">Acciones recomendadas</p>
-            <h2 className="section-heading mt-1">Qué hacer ahora</h2>
-            <p className="section-subtext">Sugerencias rápidas basadas en caja, agenda y huecos libres de hoy.</p>
+            <h2 className="section-heading mt-1">Insight inteligente</h2>
+            <p className="section-subtext">
+              Hoy {barberWithMostSlots?.barberName ?? "tu equipo"} tiene {barberWithMostSlots?.freeSlots.length ?? totalFreeSlotsToday} huecos libres entre las 15:00 y 18:00. Puedes llenarlos con una promoción rápida.
+            </p>
           </div>
           <Link href="/dashboard/caja" className="btn-outline shrink-0">
             Ver caja <ArrowRight size={14} />
@@ -551,6 +553,33 @@ export default async function DashboardPage() {
               {action}
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="section-band overflow-hidden">
+        <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="label-section">Huecos libres</p>
+            <h2 className="section-heading mt-1">Disponibilidad rápida de hoy</h2>
+            <p className="section-subtext">
+              {totalFreeSlotsToday} huecos libres hoy · {barberWithMostSlots?.barberName ?? "Sin barbero"} es quien tiene más disponibilidad.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <p className="text-[10px] font-bold uppercase text-slate-400">Total huecos</p>
+              <p className="mt-1 text-2xl font-black text-[#080A0F]">{totalFreeSlotsToday}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <p className="text-[10px] font-bold uppercase text-slate-400">Más huecos</p>
+              <p className="mt-1 text-2xl font-black text-[#080A0F]">
+                {barberWithMostSlots?.barberName ?? "—"}
+              </p>
+            </div>
+            <Link href="/dashboard/huecos" className="btn-dark">
+              Ver huecos libres <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </section>
 

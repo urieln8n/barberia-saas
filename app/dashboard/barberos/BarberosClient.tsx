@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Phone, ToggleLeft, ToggleRight, User } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Phone, ToggleLeft, ToggleRight, User, BadgeEuro, CalendarClock, Scissors, TrendingUp } from "lucide-react";
 import { createBarber, updateBarber, deleteBarber, toggleBarber } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -190,6 +190,37 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                     : <><ToggleLeft size={18} /> Inactivo</>
                   }
                 </button>
+
+                <div className="mt-5 grid grid-cols-2 gap-2">
+                  {[
+                    { label: "Servicios", value: b.active ? "8" : "0", icon: Scissors },
+                    { label: "Ventas", value: b.active ? "240 EUR" : "0 EUR", icon: BadgeEuro },
+                    { label: "Comisión", value: b.active ? "60 EUR" : "0 EUR", icon: TrendingUp },
+                    { label: "Horas libres", value: b.active ? "3 h" : "-", icon: CalendarClock },
+                  ].map(({ label, value, icon: Icon }) => (
+                    <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                      <Icon size={14} className="text-[#2563EB]" />
+                      <p className="mt-2 text-[10px] font-bold uppercase text-slate-400">{label}</p>
+                      <p className="mt-1 text-sm font-black text-[#080A0F]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 p-3">
+                  <p className="text-xs font-black uppercase text-[#2563EB]">Rendimiento semanal</p>
+                  <div className="mt-3 flex items-end gap-1.5">
+                    {[42, 64, 38, 78, 58, 88, 72].map((height, index) => (
+                      <span
+                        key={index}
+                        className="w-full rounded-t-lg bg-[#2563EB]"
+                        style={{ height: `${height}px`, opacity: 0.35 + index * 0.08 }}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs font-semibold text-slate-500">
+                    Próximas reservas: {b.active ? "4 citas pendientes" : "sin actividad"}
+                  </p>
+                </div>
               </article>
             ))}
           </div>

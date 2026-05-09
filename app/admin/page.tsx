@@ -256,8 +256,10 @@ export default async function AdminPage() {
       <div className="flex items-end justify-between">
         <div>
           <p className="label-section">BarberiaOS</p>
-          <h1 className="mt-1 text-3xl font-black text-[#111827]">Panel del Fundador</h1>
-          <p className="mt-1 capitalize text-sm text-neutral-400">{today}</p>
+          <h1 className="mt-1 text-3xl font-black text-[#111827]">Admin creador</h1>
+          <p className="mt-1 capitalize text-sm text-neutral-400">
+            Barberías registradas, MRR estimado, pruebas activas, leads y actividad reciente · {today}
+          </p>
         </div>
         <Link
           href="/admin/leads"
@@ -314,6 +316,26 @@ export default async function AdminPage() {
             { label: "Trials activos",    value: m.leadsByStatus.trial_activo,   icon: Target,      color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Clientes ganados",  value: m.leadsByStatus.ganado,         icon: CheckSquare, color: "text-green-600",  bg: "bg-green-50"      },
             { label: "En riesgo",         value: m.atRiskLeads.length,           icon: AlertTriangle, color: m.atRiskLeads.length > 0 ? "text-red-500" : "text-neutral-400", bg: m.atRiskLeads.length > 0 ? "bg-red-50" : "bg-neutral-100" },
+          ].map(({ label, value, icon: Icon, color, bg }) => (
+            <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+              <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
+                <Icon size={14} className={color} />
+              </div>
+              <p className="text-xl font-black text-[#111827]">{value}</p>
+              <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Producto SaaS</p>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { label: "Plan activo", value: "Fundador", icon: Zap, color: "text-[#8A641F]", bg: "bg-[#D5A84C]/10" },
+            { label: "Pruebas activas", value: m.leadsByStatus.trial_activo, icon: Clock, color: "text-[#2F6FEB]", bg: "bg-[#2F6FEB]/10" },
+            { label: "Reservas totales", value: m.totalAppointments, icon: Calendar, color: "text-green-600", bg: "bg-green-50" },
+            { label: "Estado de pago", value: m.mrrEstimado > 0 ? "Activo" : "Pendiente", icon: DollarSign, color: m.mrrEstimado > 0 ? "text-green-600" : "text-amber-600", bg: m.mrrEstimado > 0 ? "bg-green-50" : "bg-amber-50" },
           ].map(({ label, value, icon: Icon, color, bg }) => (
             <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>

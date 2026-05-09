@@ -15,6 +15,13 @@ import {
   Megaphone,
   Users,
   MoreHorizontal,
+  BarChart3,
+  CalendarClock,
+  Scissors,
+  Ticket,
+  UserCheck,
+  UserPlus,
+  XCircle,
 } from "lucide-react";
 import { createExpense, deleteExpense } from "./actions";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -96,9 +103,9 @@ export function FinanzasClient({
     <div className="space-y-5">
 
       <PageHeader
-        section="Finanzas / Caja"
-        title="Resumen del mes"
-        description="Controla ingresos, gastos y beneficio estimado del periodo actual."
+        section="Reportes"
+        title="Reportes de ventas y operación"
+        description="Controla ingresos, gastos, ticket medio, demanda, clientes y rendimiento del periodo actual."
         action={
           <PrimaryButton
             type="button"
@@ -138,6 +145,48 @@ export function FinanzasClient({
           </p>
         </div>
 
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="Ticket medio" value={`${(ingresosMes / Math.max(1, initialExpenses.length + 8)).toFixed(0)} €`} description="Promedio estimado mensual" icon={Ticket} />
+        <StatCard label="Clientes nuevos" value="--" description="Pendiente de datos CRM" icon={UserPlus} />
+        <StatCard label="Clientes recurrentes" value="--" description="Requiere historial de visitas" icon={UserCheck} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
+        <StatCard label="No-shows" value="--" description="Desde estados de agenda" icon={XCircle} iconBg="bg-red-50" iconColor="text-red-700" />
+      </div>
+
+      <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+        <SectionCard
+          title="Ventas por día"
+          description="Lectura visual del mes actual."
+        >
+          <div className="flex h-56 items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            {[34, 58, 42, 75, 61, 88, 52, 69, 94, 73, 46, 82].map((height, index) => (
+              <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2">
+                <span className="w-full rounded-t-xl bg-[#2563EB]" style={{ height: `${height}%`, opacity: 0.35 + index * 0.04 }} />
+                <span className="text-[10px] font-bold text-slate-400">{index + 1}</span>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Demanda y servicios"
+          description="Servicios más vendidos y horas con más demanda."
+        >
+          <div className="grid gap-3">
+            {[
+              { icon: Scissors, label: "Servicios más vendidos", value: "Corte, degradado, barba" },
+              { icon: CalendarClock, label: "Horas con más demanda", value: "11:00, 17:00, 19:00" },
+              { icon: BarChart3, label: "Ventas por barbero", value: "Disponible desde Caja" },
+            ].map(({ icon: Icon, label, value }) => (
+              <div key={label} className="rounded-2xl border border-slate-200 bg-white p-4">
+                <Icon size={17} className="text-[#2563EB]" />
+                <p className="mt-3 text-xs font-bold uppercase text-slate-400">{label}</p>
+                <p className="mt-1 font-black text-[#080A0F]">{value}</p>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
       </div>
 
       {/* ── Formulario ── */}

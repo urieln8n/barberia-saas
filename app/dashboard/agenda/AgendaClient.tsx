@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, CalendarDays, Clock, User, Scissors } from "lucide-react";
+import { Plus, X, CalendarDays, Clock, User, Scissors, UserPlus } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 import { createAppointment, updateAppointmentStatus } from "./actions";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -212,6 +212,20 @@ export function AgendaClient({
   const pendingCount = allAppointments.filter(
     (a) => a.status === "pending" || a.status === "scheduled"
   ).length;
+  const appointmentsByBarber = barbers.map((barber) => {
+    const barberAppointments = appointments.filter((appointment) => appointment.barbers?.name === barber.name);
+    const busyTimes = new Set(barberAppointments.map((appointment) => formatTime(appointment.start_time)));
+    const freeSlots = slots
+      .filter((slot) => !busyTimes.has(slot.time))
+      .slice(0, 5)
+      .map((slot) => slot.time);
+
+    return {
+      barber,
+      appointments: barberAppointments,
+      freeSlots,
+    };
+  });
 
   return (
     <div className="space-y-5">
@@ -235,6 +249,13 @@ export function AgendaClient({
             >
               <Plus size={16} /> Nueva cita
             </PrimaryButton>
+            <PrimaryButton
+              type="button"
+              onClick={() => { setFormError(""); setShowModal(true); }}
+              variant="secondary"
+            >
+              <UserPlus size={16} /> Walk-in
+            </PrimaryButton>
           </div>
         }
       />
@@ -252,6 +273,75 @@ export function AgendaClient({
         <StatCard label="Total registradas" value={allAppointments.length} description="Histórico cargado" icon={Scissors} />
         <StatCard label="Pendientes" value={pendingCount} description="Por confirmar" icon={User} />
       </div>
+
+      <SectionCard
+        title="Vista por barbero"
+        description="Agenda operativa para dueño o recepcionista, con huecos libres destacados."
+      >
+        {barbers.length === 0 ? (
+          <EmptyState
+            icon={User}
+            title="Sin barberos activos"
+            description="Activa o crea barberos para poder ver columnas de disponibilidad."
+          />
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-3">
+            {appointmentsByBarber.map(({ barber, appointments: barberAppointments, freeSlots }) => (
+              <article key={barber.id} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black uppercase text-white">
+                      {barber.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-black text-[#080A0F]">{barber.name}</h3>
+                      <p className="text-xs font-semibold text-slate-400">
+                        {barberAppointments.length} citas · {freeSlots.length} huecos visibles
+                      </p>
+                    </div>
+                  </div>
+                  <StatusBadge status={freeSlots.length > 0 ? "confirmed" : "completed"}>
+                    {freeSlots.length > 0 ? "Con huecos" : "Completo"}
+                  </StatusBadge>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {barberAppointments.slice(0, 4).map((appointment) => (
+                    <div key={appointment.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-xs font-black text-[#2563EB]">
+                          {formatTime(appointment.start_time)}
+                        </span>
+                        <StatusBadge status={appointment.status} className="px-2 py-0.5 text-[10px]">
+                          {STATUS_LABEL[appointment.status] ?? appointment.status}
+                        </StatusBadge>
+                      </div>
+                      <p className="mt-1 truncate text-sm font-bold text-slate-800">
+                        {appointment.clients?.name ?? "Cliente sin nombre"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {appointment.services?.name ?? "Servicio no definido"}
+                      </p>
+                    </div>
+                  ))}
+
+                  {freeSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      onClick={() => { setFormError(""); setShowModal(true); }}
+                      className="flex w-full items-center justify-between rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-2 text-left text-sm font-black text-[#8A641F] transition hover:bg-[#D5A84C]/15"
+                    >
+                      <span>{slot} libre</span>
+                      <Plus size={14} />
+                    </button>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </SectionCard>
 
       {/* Citas de la fecha seleccionada */}
       <SectionCard
