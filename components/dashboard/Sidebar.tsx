@@ -11,6 +11,7 @@ import {
   Scissors,
   User,
   CreditCard,
+  Banknote,
   Wallet,
   Calculator,
   QrCode,
@@ -41,6 +42,7 @@ const navGroups: NavGroup[] = [
     label: "Negocio",
     items: [
       { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
+      { href: "/dashboard/caja",             label: "Caja",             icon: Banknote      },
       { href: "/dashboard/finanzas",         label: "Finanzas",         icon: Wallet        },
       { href: "/dashboard/fiscalidad",       label: "Fiscalidad",       icon: Calculator    },
     ],

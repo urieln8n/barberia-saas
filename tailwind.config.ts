@@ -9,13 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink:    "#0D0D0D",
-        carbon: "#1A1A1A",
-        ivory:  "#F5F2EA",
-        gold:   "#C89B3C",
-        teal:   "#00C2A8",
-        wine:   "#E5484D",
-        border: "#E5E2D9",
+        ink: "#080A0F",
+        carbon: "#10131B",
+        graphite: "#1D2433",
+        ice: "#F6F8FB",
+        ivory: "#FAFBFF",
+        gold: "#D5A84C",
+        teal: "#06B6D4",
+        success: "#10B981",
+        wine: "#E5484D",
+        accent: "#2563EB",
+        border: "#E2E8F0",
       },
       fontFamily: {
         sans: [
@@ -34,11 +38,12 @@ const config: Config = {
         "5xl": "2.5rem",
       },
       boxShadow: {
-        card:      "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
-        "card-md": "0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06)",
-        "card-lg": "0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05)",
-        gold:      "0 0 0 3px rgb(200 155 60 / 0.15)",
-        teal:      "0 0 0 3px rgb(0 194 168 / 0.15)",
+        card: "0 1px 2px rgb(8 10 15 / 0.04), 0 18px 50px rgb(15 23 42 / 0.08)",
+        "card-md": "0 1px 2px rgb(8 10 15 / 0.05), 0 24px 70px rgb(15 23 42 / 0.10)",
+        "card-lg": "0 1px 2px rgb(8 10 15 / 0.05), 0 34px 100px rgb(15 23 42 / 0.14)",
+        glow: "0 18px 60px rgb(37 99 235 / 0.14)",
+        gold: "0 0 0 3px rgb(213 168 76 / 0.15)",
+        teal: "0 0 0 3px rgb(6 182 212 / 0.15)",
       },
     }
   },

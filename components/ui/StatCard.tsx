@@ -11,6 +11,8 @@ type StatCardProps = {
   icon?: LucideIcon;
   iconBg?: string;
   iconColor?: string;
+  variant?: "default" | "dark" | "highlight";
+  className?: string;
 };
 
 export function StatCard({
@@ -23,15 +25,23 @@ export function StatCard({
   icon: Icon,
   iconBg = "bg-[#2563EB]/10",
   iconColor = "text-[#2563EB]",
+  variant = "default",
+  className = "",
 }: StatCardProps) {
   const textLabel = label ?? title;
   const supportingText = description ?? hint;
+  const wrapperClass =
+    variant === "dark"
+      ? "metric-card premium-dark"
+      : variant === "highlight"
+        ? "metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#F3F7FF_100%)] ring-1 ring-[#2563EB]/10"
+        : "metric-card";
 
   return (
-    <article className="metric-card">
+    <article className={`${wrapperClass} ${className}`}>
       <div className="flex items-start justify-between gap-3">
         {textLabel && (
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400">
+          <p className={variant === "dark" ? "text-[11px] font-bold uppercase text-white/40" : "text-[11px] font-bold uppercase text-slate-400"}>
             {textLabel}
           </p>
         )}
@@ -41,11 +51,11 @@ export function StatCard({
           </div>
         )}
       </div>
-      <p className="mt-3 text-[clamp(1.8rem,2.8vw,2.6rem)] font-black leading-none tracking-normal text-[#111827]">
+      <p className={variant === "dark" ? "mt-3 text-[clamp(1.8rem,2.8vw,2.6rem)] font-black leading-none text-white" : "mt-3 text-[clamp(1.8rem,2.8vw,2.6rem)] font-black leading-none tracking-normal text-[#080A0F]"}>
         {value}
       </p>
       {(supportingText || trend) && (
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs leading-5 text-neutral-500">
+        <div className={variant === "dark" ? "mt-2 flex flex-wrap items-center gap-2 text-xs leading-5 text-white/55" : "mt-2 flex flex-wrap items-center gap-2 text-xs leading-5 text-slate-500"}>
           {supportingText && <span>{supportingText}</span>}
           {trend && <span className="font-bold text-emerald-700">{trend}</span>}
         </div>

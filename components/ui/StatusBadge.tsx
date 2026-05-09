@@ -6,7 +6,10 @@ type Status =
   | "cancelled"
   | "no_show"
   | "active"
-  | "inactive";
+  | "inactive"
+  | "paid"
+  | "trial"
+  | "overdue";
 
 type StatusBadgeProps = {
   status?: Status | string | null;
@@ -23,6 +26,9 @@ const labels: Record<Status, string> = {
   no_show: "No apareció",
   active: "Activo",
   inactive: "Inactivo",
+  paid: "Pagado",
+  trial: "Prueba",
+  overdue: "Pendiente de pago",
 };
 
 const classes: Record<Status, string> = {
@@ -34,6 +40,9 @@ const classes: Record<Status, string> = {
   no_show: "border-red-100 bg-red-50 text-red-700",
   active: "border-emerald-100 bg-emerald-50 text-emerald-700",
   inactive: "border-neutral-200 bg-neutral-100 text-neutral-600",
+  paid: "border-emerald-100 bg-emerald-50 text-emerald-700",
+  trial: "border-blue-100 bg-blue-50 text-blue-700",
+  overdue: "border-red-100 bg-red-50 text-red-700",
 };
 
 export function getStatusLabel(status?: string | null) {
@@ -52,7 +61,7 @@ export function StatusBadge({
       : "border-neutral-200 bg-neutral-100 text-neutral-600";
 
   return (
-    <span className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${tone} ${className}`}>
+    <span className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-1 text-xs font-bold ${tone} ${className}`}>
       {children ?? getStatusLabel(status)}
     </span>
   );

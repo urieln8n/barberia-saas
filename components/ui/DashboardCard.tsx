@@ -1,47 +1,46 @@
 import type { ReactNode } from "react";
 
-type SectionCardProps = {
-  children: ReactNode;
+type DashboardCardProps = {
   title?: string;
   description?: string;
   action?: ReactNode;
+  children: ReactNode;
   className?: string;
   bodyClassName?: string;
   variant?: "default" | "dark" | "muted" | "glass";
 };
 
-export function SectionCard({
-  children,
+export function DashboardCard({
   title,
   description,
   action,
+  children,
   className = "",
   bodyClassName = "",
   variant = "default",
-}: SectionCardProps) {
-  const hasHeader = title || description || action;
-  const variantClass =
+}: DashboardCardProps) {
+  const wrapperClass =
     variant === "dark"
-      ? "section-band-dark"
+      ? "dashboard-card premium-dark"
       : variant === "muted"
-        ? "rounded-[24px] border border-slate-200 bg-slate-50 shadow-[var(--shadow-soft)]"
+        ? "dashboard-card bg-slate-50"
         : variant === "glass"
-          ? "rounded-[24px] glass-panel"
-          : "panel";
+          ? "dashboard-card glass-panel"
+          : "dashboard-card";
 
   return (
-    <section className={`${variantClass} overflow-hidden p-0 ${className}`}>
-      {hasHeader && (
-        <div className={variant === "dark" ? "border-b border-white/10 bg-white/[0.04] px-5 py-4 md:px-6" : "border-b border-slate-200 bg-slate-50/80 px-5 py-4 md:px-6"}>
+    <section className={`${wrapperClass} overflow-hidden ${className}`}>
+      {(title || description || action) && (
+        <div className={variant === "dark" ? "border-b border-white/10 px-5 py-4 md:px-6" : "border-b border-slate-200 px-5 py-4 md:px-6"}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               {title && (
-                <h2 className={variant === "dark" ? "text-lg font-black text-white" : "section-heading"}>
+                <h2 className={variant === "dark" ? "text-lg font-black text-white" : "text-lg font-black text-[#080A0F]"}>
                   {title}
                 </h2>
               )}
               {description && (
-                <p className={variant === "dark" ? "mt-1 text-sm leading-6 text-white/55" : "section-subtext"}>
+                <p className={variant === "dark" ? "mt-1 text-sm leading-6 text-white/55" : "mt-1 text-sm leading-6 text-slate-500"}>
                   {description}
                 </p>
               )}

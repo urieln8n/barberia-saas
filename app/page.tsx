@@ -1,835 +1,711 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  BadgeEuro,
   BarChart3,
-  CalendarCheck,
+  CalendarClock,
   CheckCircle2,
-  Clock3,
-  Globe,
-  Instagram,
-  LayoutDashboard,
-  Megaphone,
+  CircleDollarSign,
+  ClipboardList,
+  CreditCard,
+  Crown,
+  Gauge,
+  LockKeyhole,
   MessageCircle,
   QrCode,
+  ReceiptText,
   Scissors,
+  ShieldCheck,
   Smartphone,
   Sparkles,
-  Star,
+  Timer,
+  TrendingUp,
   Users,
+  WalletCards,
   Zap,
 } from "lucide-react";
-import { PricingCard } from "@/components/marketing/PricingCard";
 
-const painPoints = [
+const heroBullets = [
+  "Mira cuánto vende cada barbero",
+  "Detecta huecos libres al instante",
+  "Controla pagos y caja diaria",
+  "Reservas online con QR",
+  "Todo desde un único panel",
+];
+
+const painCards = [
+  {
+    icon: BarChart3,
+    title: "No sabes cuánto factura cada barbero",
+    text: "Si todo termina en efectivo, WhatsApp y memoria, no tienes control real del rendimiento.",
+  },
+  {
+    icon: Timer,
+    title: "Pierdes citas por huecos vacíos",
+    text: "Un barbero parado media tarde es dinero que se escapa sin hacer ruido.",
+  },
+  {
+    icon: WalletCards,
+    title: "No tienes control real de caja",
+    text: "Cobros sueltos, métodos mezclados y cierre diario sin una lectura clara.",
+  },
   {
     icon: MessageCircle,
-    title: "WhatsApp se convierte en agenda",
-    text: "Reservas, cambios y cancelaciones se mezclan en chats sin trazabilidad.",
+    title: "WhatsApp te vuelve loco",
+    text: "Reservas, cambios, dudas y clientes perdidos en conversaciones infinitas.",
   },
   {
-    icon: Clock3,
-    title: "Huecos vacíos en la agenda",
-    text: "Cuando nadie confirma, el día se rompe y el tiempo facturable se pierde.",
-  },
-  {
-    icon: Smartphone,
-    title: "Todo depende del móvil",
-    text: "No tienes una vista clara del día, de los clientes ni de lo que entra en caja.",
-  },
-  {
-    icon: Instagram,
-    title: "Tu tráfico social no convierte",
-    text: "La gente te ve en Instagram o Google, pero no siempre encuentra un camino directo para reservar.",
+    icon: Crown,
+    title: "Booksy cobra mientras tú pierdes control",
+    text: "Tu barbería necesita sistema propio, datos propios y una operación más seria.",
   },
 ];
 
-const benefits = [
-  "Reservas por link y QR sin llamar.",
-  "Agenda clara por barbero, día y estado.",
-  "Clientes con historial, notas y contacto.",
-  "Servicios y precios ordenados desde un panel simple.",
+const cashRows = [
+  ["10:00", "Corte + barba", "Kevin", "Efectivo", "28 €"],
+  ["11:30", "Degradado", "Miguel", "Tarjeta", "18 €"],
+  ["12:15", "Barba premium", "Kevin", "Bizum", "14 €"],
 ];
 
-const features = [
-  {
-    icon: QrCode,
-    title: "Reservas por QR",
-    text: "Imprímelo en el local o compártelo en redes para captar reservas 24/7.",
-  },
-  {
-    icon: Globe,
-    title: "Página pública",
-    text: "Cada barbería tiene su enlace de reservas listo para usar en Instagram, Google o WhatsApp.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Panel de gestión",
-    text: "Una vista central para agenda, clientes, servicios, barberos e ingresos básicos.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "Agenda por barbero",
-    text: "Organiza citas por hora, servicio, profesional y estado sin fricción.",
-  },
-  {
-    icon: Users,
-    title: "CRM de clientes",
-    text: "Guarda teléfono, notas e historial para seguir mejor cada cliente.",
-  },
-  {
-    icon: Scissors,
-    title: "Servicios y equipo",
-    text: "Configura servicios, duración y barberos sin depender de soporte técnico.",
-  },
+const availabilityRows = [
+  { name: "Carlos", state: "Lleno", slots: ["10:00", "11:30", "16:00"], tone: "bg-emerald-400" },
+  { name: "Miguel", state: "2 huecos libres", slots: ["13:00", "15:30"], tone: "bg-amber-300" },
+  { name: "Andrés", state: "Disponible 17:00", slots: ["17:00", "18:30"], tone: "bg-blue-300" },
 ];
 
-const workflow = [
-  {
-    number: "01",
-    title: "Configuras la barbería",
-    text: "Añades servicios, barberos y datos básicos del negocio.",
-  },
-  {
-    number: "02",
-    title: "Compartes el link o el QR",
-    text: "Lo colocas en Instagram, Google, WhatsApp o en el local.",
-  },
-  {
-    number: "03",
-    title: "El cliente reserva",
-    text: "Elige fecha, hora, servicio y barbero desde su móvil.",
-  },
-  {
-    number: "04",
-    title: "Gestionas desde BarberiaOS",
-    text: "La agenda, los clientes y los ingresos quedan en un solo panel.",
-  },
+const barberSales = [
+  { name: "Kevin", sales: "214 €", tickets: "7 tickets", progress: "w-[92%]" },
+  { name: "Miguel", sales: "146 €", tickets: "5 tickets", progress: "w-[68%]" },
+  { name: "Andrés", sales: "92 €", tickets: "3 tickets", progress: "w-[42%]" },
 ];
 
-const productTiles = [
-  {
-    title: "Agenda de hoy",
-    icon: CalendarCheck,
-    items: ["10:00 Corte + barba", "11:30 Degradado", "13:00 Barba"],
-  },
-  {
-    title: "Clientes",
-    icon: Users,
-    items: ["Teléfono y notas", "Historial de visitas", "Seguimiento manual"],
-  },
-  {
-    title: "Ingresos básicos",
-    icon: BarChart3,
-    items: ["12 citas", "340 € estimados", "4 nuevos clientes"],
-  },
-  {
-    title: "Reservas activas",
-    icon: QrCode,
-    items: ["QR visible", "Link público", "Reserva sin cuenta"],
-  },
+const founderBenefits = [
+  "Acceso anticipado",
+  "Soporte prioritario",
+  "Precio fundador futuro",
+  "Acceso a nuevas funciones",
 ];
 
-const proofPoints = [
-  "Sin apps que instalar",
-  "Soporte en español",
-  "Configuración guiada",
-  "Enfocado en barberías reales",
+const footerTrust = [
+  "Pensado solo para barberías",
+  "Sin tarjeta",
+  "Configuración rápida",
+  "Acceso desde móvil",
 ];
 
-const serviceCards = [
-  {
-    icon: Instagram,
-    title: "Canal de entrada claro",
-    text: "Convierte la bio de Instagram y el perfil de Google en reservas directas.",
-  },
-  {
-    icon: Megaphone,
-    title: "Recuperación de clientes",
-    text: "Usa el historial y las notas para reactivar clientes de forma manual y ordenada.",
-  },
-  {
-    icon: Star,
-    title: "Presentación premium",
-    text: "Tu barbería se ve más seria, más organizada y más fácil de reservar.",
-  },
-  {
-    icon: Zap,
-    title: "Puesta en marcha rápida",
-    text: "Empiezas con una base funcional sin depender de una implantación larga.",
-  },
-];
+function SectionHeader({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow: string;
+  title: string;
+  text?: string;
+}) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D9B766]">
+        {eyebrow}
+      </p>
+      <h2 className="mt-4 text-4xl font-black leading-tight tracking-normal text-white md:text-5xl">
+        {title}
+      </h2>
+      {text && (
+        <p className="mt-5 text-base leading-8 text-white/60 md:text-lg">
+          {text}
+        </p>
+      )}
+    </div>
+  );
+}
 
-const faqs = [
-  {
-    q: "¿Necesito instalar algo?",
-    a: "No. BarberiaOS funciona desde el navegador en móvil y en ordenador.",
-  },
-  {
-    q: "¿Mis clientes crean cuenta?",
-    a: "No. Reservan con su nombre y datos básicos, sin registro.",
-  },
-  {
-    q: "¿Puedo usar un QR en el local?",
-    a: "Sí. El sistema está pensado para que el QR y el enlace público sean parte de la captación.",
-  },
-  {
-    q: "¿Esto sustituye todo el trabajo de la barbería?",
-    a: "No. Ordena reservas, clientes, barberos, servicios e ingresos básicos para que el negocio fluya mejor.",
-  },
-];
+function GlassCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`rounded-[24px] border border-white/10 bg-white/[0.055] shadow-[0_24px_90px_rgba(0,0,0,0.24)] backdrop-blur-xl ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MetricPill({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">
+        {label}
+      </p>
+      <p className="mt-2 text-2xl font-black text-white">{value}</p>
+    </div>
+  );
+}
+
+function DashboardMockup() {
+  return (
+    <GlassCard className="relative overflow-hidden p-4 landing-fade landing-delay-2">
+      <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#D9B766] to-transparent" />
+      <div className="rounded-[20px] border border-white/10 bg-[#090B10] p-4">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#D9B766] text-[#080A0F]">
+              <Scissors size={18} />
+            </div>
+            <div>
+              <p className="text-sm font-black text-white">BarberíaOS</p>
+              <p className="text-xs text-white/40">Control diario</p>
+            </div>
+          </div>
+          <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-300">
+            Caja abierta
+          </span>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-4">
+          <MetricPill label="Ventas hoy" value="452 €" />
+          <MetricPill label="Reservas" value="18" />
+          <MetricPill label="Huecos" value="7" />
+          <MetricPill label="Top" value="Kevin" />
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-black text-white">Agenda de hoy</p>
+              <CalendarClock size={16} className="text-[#D9B766]" />
+            </div>
+            <div className="mt-4 space-y-3">
+              {[
+                ["10:00", "Corte + barba", "Kevin", "Confirmada"],
+                ["11:30", "Degradado", "Miguel", "En local"],
+                ["13:00", "Barba premium", "Andrés", "Pendiente"],
+              ].map(([time, service, barber, status]) => (
+                <div
+                  key={`${time}-${barber}`}
+                  className="grid grid-cols-[58px_1fr_auto] items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-3"
+                >
+                  <span className="font-mono text-sm font-black text-[#D9B766]">
+                    {time}
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold text-white">{service}</p>
+                    <p className="text-xs text-white/40">{barber}</p>
+                  </div>
+                  <span className="hidden rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold text-white/60 sm:inline-flex">
+                    {status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-black text-white">Ventas por barbero</p>
+              <TrendingUp size={16} className="text-emerald-300" />
+            </div>
+            <div className="mt-4 space-y-4">
+              {barberSales.map((barber) => (
+                <div key={barber.name}>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-sm font-bold text-white">{barber.name}</span>
+                    <span className="text-sm font-black text-[#D9B766]">{barber.sales}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className={`h-full rounded-full bg-[#D9B766] ${barber.progress}`} />
+                  </div>
+                  <p className="mt-1 text-xs text-white/40">{barber.tickets}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
+
+function CashAssistantMockup() {
+  return (
+    <GlassCard className="overflow-hidden p-5">
+      <div className="grid gap-4 md:grid-cols-3">
+        <MetricPill label="Caja inicial" value="100 €" />
+        <MetricPill label="Ventas del día" value="452 €" />
+        <MetricPill label="Efectivo esperado" value="238 €" />
+      </div>
+      <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
+        <div className="grid grid-cols-5 bg-white/[0.06] px-4 py-3 text-[11px] font-black uppercase tracking-[0.12em] text-white/40">
+          <span>Hora</span>
+          <span>Servicio</span>
+          <span>Barbero</span>
+          <span>Método</span>
+          <span className="text-right">Total</span>
+        </div>
+        {cashRows.map(([time, service, barber, method, total]) => (
+          <div
+            key={`${time}-${barber}`}
+            className="grid grid-cols-5 border-t border-white/10 px-4 py-3 text-sm text-white/70"
+          >
+            <span className="font-mono text-[#D9B766]">{time}</span>
+            <span>{service}</span>
+            <span>{barber}</span>
+            <span>{method}</span>
+            <span className="text-right font-black text-white">{total}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-white/10 bg-emerald-400/10 p-4">
+          <p className="text-xs font-bold text-emerald-300">Total efectivo</p>
+          <p className="mt-1 text-2xl font-black text-white">138 €</p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-blue-400/10 p-4">
+          <p className="text-xs font-bold text-blue-300">Total tarjeta</p>
+          <p className="mt-1 text-2xl font-black text-white">214 €</p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-[#D9B766]/10 p-4">
+          <p className="text-xs font-bold text-[#D9B766]">Total por Kevin</p>
+          <p className="mt-1 text-2xl font-black text-white">214 €</p>
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(47,111,235,0.08),transparent_28%),linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_46%,#F3F6FA_100%)] text-[#111827]">
-      <section className="border-b border-[#DDE7FB] bg-white/80">
-        <div className="mx-auto max-w-7xl px-6 py-5 lg:px-8">
-          <nav className="flex items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#2F6FEB]/20 bg-[#2F6FEB] text-white shadow-sm">
-                <Scissors size={20} />
-              </div>
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2F6FEB]">
-                  BarberiaOS
-                </p>
-                <p className="text-sm text-neutral-500">
-                  Sistema para barberías
-                </p>
-              </div>
-            </Link>
+    <main className="min-h-screen overflow-hidden bg-[#07080C] text-white">
+      <style>{`
+        @keyframes landingFade {
+          from { opacity: 0; transform: translateY(18px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .landing-fade { animation: landingFade .75s ease-out both; }
+        .landing-delay-1 { animation-delay: .08s; }
+        .landing-delay-2 { animation-delay: .16s; }
+        .landing-delay-3 { animation-delay: .24s; }
+      `}</style>
 
-            <div className="flex items-center gap-3">
-              <a
-                href="#precios"
-                className="hidden rounded-xl border border-[#DCE3EE] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#C9D4E3] hover:bg-[#F8FAFC] sm:inline-flex"
-              >
-                Planes
-              </a>
-              <Link
-                href="/login"
-                className="btn-dark"
-              >
-                Entrar
-              </Link>
+      <div className="pointer-events-none fixed inset-0 opacity-70">
+        <div className="absolute left-[-10%] top-[-12%] h-[420px] w-[420px] rounded-full bg-[#D9B766]/20 blur-[120px]" />
+        <div className="absolute right-[-12%] top-[8%] h-[500px] w-[500px] rounded-full bg-[#2563EB]/20 blur-[140px]" />
+        <div className="absolute bottom-[4%] left-[20%] h-[420px] w-[420px] rounded-full bg-emerald-500/10 blur-[140px]" />
+      </div>
+
+      <header className="relative z-10 border-b border-white/10 bg-[#07080C]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 lg:px-8">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D9B766]/30 bg-[#D9B766] text-[#080A0F] shadow-[0_0_36px_rgba(217,183,102,0.28)]">
+              <Scissors size={20} />
             </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.2em] text-white">
+                BarberíaOS
+              </p>
+              <p className="text-xs font-semibold text-white/45">
+                Sistema operativo para barberías
+              </p>
+            </div>
+          </Link>
+
+          <nav className="hidden items-center gap-6 text-sm font-bold text-white/55 lg:flex">
+            <a href="#caja" className="transition hover:text-white">Caja</a>
+            <a href="#barberos" className="transition hover:text-white">Barberos</a>
+            <a href="#reservas" className="transition hover:text-white">Reservas</a>
+            <a href="#fundadores" className="transition hover:text-white">Fundadores</a>
           </nav>
+
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="hidden text-sm font-bold text-white/60 transition hover:text-white sm:inline-flex">
+              Entrar
+            </Link>
+            <a href="#registro" className="rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#07080C] transition hover:-translate-y-0.5 hover:shadow-[0_0_38px_rgba(255,255,255,0.18)]">
+              Probar gratis
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section className="relative z-10">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 pb-20 pt-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:px-8 lg:pb-28 lg:pt-20">
+          <div className="landing-fade landing-delay-1">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#D9B766]/20 bg-[#D9B766]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#D9B766]">
+              <Sparkles size={14} />
+              Reservas, caja y control de barberos en un solo panel
+            </div>
+
+            <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[0.92] tracking-normal text-white sm:text-6xl lg:text-7xl">
+              Deja de perder dinero por culpa de una agenda desordenada.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-white/64 sm:text-xl">
+              Reservas, caja, control de barberos y clientes en un solo sistema pensado SOLO para barberías.
+            </p>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-white/48">
+              Mira quién reservó, quién cobró, qué servicio se hizo y cuánto genera cada barbero.
+            </p>
+
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              {heroBullets.map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm font-bold text-white/78 backdrop-blur">
+                  <CheckCircle2 size={17} className="shrink-0 text-[#D9B766]" />
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#registro" className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-7 py-4 text-sm font-black text-[#07080C] shadow-[0_0_48px_rgba(217,183,102,0.28)] transition hover:-translate-y-0.5 hover:bg-[#F1CD77]">
+                Probar BarberíaOS gratis
+                <ArrowRight size={18} className="transition group-hover:translate-x-0.5" />
+              </a>
+              <a href="#demo-producto" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/14 bg-white/[0.055] px-7 py-4 text-sm font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-white/24 hover:bg-white/[0.085]">
+                Ver demo de caja y agenda
+              </a>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold text-white/45">
+              <span>Sin tarjeta.</span>
+              <span>Sin compromiso.</span>
+              <span>Solo para barberías.</span>
+            </div>
+          </div>
+
+          <DashboardMockup />
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:px-8 lg:py-16">
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#2F6FEB]/20 bg-[#2F6FEB]/8 px-4 py-2 text-sm font-semibold text-[#2F6FEB]">
-              <Sparkles size={15} />
-              Reservas + agenda + clientes + ingresos básicos
+      <section className="relative z-10 border-y border-white/10 bg-white/[0.03]">
+        <div className="mx-auto grid max-w-7xl gap-4 px-5 py-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+          {footerTrust.map((item) => (
+            <div key={item} className="flex items-center gap-3 text-sm font-black text-white/65">
+              <ShieldCheck size={17} className="text-[#D9B766]" />
+              {item}
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="space-y-5">
-              <h1 className="max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-[#111827] sm:text-6xl lg:text-7xl">
-                Organiza tu barbería y convierte visitas en reservas reales.
-              </h1>
-              <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-                BarberiaOS es el sistema para barberías que ordena reservas por
-                link y QR, agenda, clientes, barberos, servicios y ingresos
-                básicos en un solo lugar.
-              </p>
-            </div>
+      <section className="relative z-10 px-5 py-24 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="El problema real"
+            title="Tu barbería no necesita otra agenda. Necesita control."
+            text="Si no sabes dónde se escapa el dinero, cada día lleno puede seguir siendo un caos."
+          />
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a href="#contacto" className="btn-primary px-7 py-4">
-                Pedir demo / piloto <ArrowRight size={18} />
-              </a>
-              <Link
-                href="/r/demo-barber"
-                className="btn-outline px-7 py-4"
-              >
-                Ver demo de reservas
-              </Link>
-            </div>
+          <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            {painCards.map(({ icon: Icon, title, text }) => (
+              <GlassCard key={title} className="group p-5 transition duration-300 hover:-translate-y-2 hover:border-[#D9B766]/30 hover:bg-white/[0.075]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] text-[#D9B766] transition group-hover:scale-105">
+                  <Icon size={19} />
+                </div>
+                <h3 className="mt-5 text-lg font-black text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-7 text-white/55">{text}</p>
+              </GlassCard>
+            ))}
+          </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              {benefits.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-[#C9D4E3] hover:shadow-md"
-                >
+          <p className="mt-10 text-center text-2xl font-black text-white">
+            BarberíaOS nació para solucionar eso.
+          </p>
+        </div>
+      </section>
+
+      <section id="caja" className="relative z-10 border-y border-white/10 bg-white/[0.025] px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D9B766]">
+              Asistente de caja
+            </p>
+            <h2 className="mt-4 text-4xl font-black leading-tight text-white md:text-5xl">
+              Abre caja, controla cobros y cierra el día sin perder dinero.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-white/60">
+              Controla importe inicial, servicios cobrados, quién cobró, métodos de pago y cierre diario desde el mismo panel.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {["Apertura de caja", "Importe inicial", "Métodos de pago", "Cierre diario"].map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm font-bold text-white/72">
                   {item}
                 </div>
               ))}
             </div>
           </div>
+          <CashAssistantMockup />
+        </div>
+      </section>
 
-          <div className="relative">
-            <div className="absolute -inset-3 rounded-[2rem] bg-[linear-gradient(135deg,rgba(47,111,235,0.10),rgba(255,255,255,0))] blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-[#DDE7FB] bg-[#0F172A] p-4 shadow-[0_24px_80px_rgba(15,23,42,0.22)]">
-              <div className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5 text-white">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm text-white/50">Dashboard de hoy</p>
-                    <h2 className="mt-1 text-2xl font-black tracking-tight">
-                      12 citas · 340 €
-                    </h2>
-                  </div>
-                  <div className="rounded-full border border-[#2F6FEB]/25 bg-[#2F6FEB]/12 px-3 py-1 text-xs font-bold text-[#9BBCFF]">
-                    Agenda activa
-                  </div>
-                </div>
+      <section id="demo-producto" className="relative z-10 px-5 py-24 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Huecos disponibles"
+            title="Llena mejor la agenda sin adivinar quién está libre."
+            text="Si un barbero está lleno, BarberíaOS te muestra quién tiene huecos disponibles para vender mejor el día."
+          />
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {productTiles.map(({ title, icon: Icon, items }) => (
-                    <div
-                      key={title}
-                      className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-[#2F6FEB]/30 hover:bg-white/[0.06]"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/15 text-[#8EB4FF]">
-                          <Icon size={18} />
-                        </div>
-                        <p className="text-sm font-bold text-white">{title}</p>
-                      </div>
-                      <ul className="mt-4 space-y-2 text-sm text-white/60">
-                        {items.map((item) => (
-                          <li key={item} className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#2F6FEB]" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 grid gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="mt-12 grid gap-4 lg:grid-cols-3">
+            {availabilityRows.map((row) => (
+              <GlassCard key={row.name} className="p-5 transition hover:-translate-y-2 hover:border-white/20">
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2F6FEB]/15 text-[#8EB4FF]">
-                      <QrCode size={20} />
-                    </div>
+                    <span className={`h-3 w-3 rounded-full ${row.tone}`} />
                     <div>
-                      <p className="text-sm font-bold text-white">
-                        QR de reservas listo
-                      </p>
-                      <p className="text-xs text-white/50">
-                        Un acceso simple para imprimir o compartir.
-                      </p>
+                      <p className="text-xl font-black text-white">{row.name}</p>
+                      <p className="text-sm font-bold text-white/45">{row.state}</p>
                     </div>
                   </div>
-                  <div className="rounded-xl border border-[#2F6FEB]/20 bg-[#2F6FEB]/10 px-4 py-3 text-center text-sm font-bold text-[#9BBCFF]">
-                    Reservas 24/7
-                  </div>
+                  <CalendarClock size={20} className="text-[#D9B766]" />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-[#E5E7EB] bg-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-6 py-5 text-sm font-semibold text-slate-500 lg:px-8">
-          {proofPoints.map((item) => (
-            <span key={item} className="flex items-center gap-2">
-              <CheckCircle2 size={15} className="text-[#2F6FEB]" />
-              {item}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-[#F8FAFC] py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-            <div className="max-w-2xl">
-              <p className="label-section">El problema</p>
-              <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-                La barbería pierde dinero cuando la agenda vive en chats.
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-slate-600">
-                El negocio se vuelve más lento cuando no hay una vista clara de
-                reservas, clientes, barberos y servicios.
-              </p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {painPoints.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="panel transition hover:-translate-y-1 hover:border-[#C9D4E3] hover:shadow-md">
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2F6FEB]/10 text-[#2F6FEB]">
-                    <Icon size={18} />
-                  </div>
-                  <h3 className="text-base font-black text-[#111827]">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#0F172A] py-20 text-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <div>
-              <p className="label-section">La solución</p>
-              <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-                BarberiaOS ordena la operación y hace visible el negocio.
-              </h2>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-white/65">
-                Diseñado para barberías que quieren una experiencia más premium
-                para el cliente y más control para el equipo.
-              </p>
-
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {[
-                  "Reservas por link y QR",
-                  "Clientes con historial",
-                  "Servicios y barberos",
-                  "Ingresos básicos y panel",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/85 transition hover:border-[#2F6FEB]/35 hover:bg-white/[0.06]"
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="#precios" className="btn-primary px-7 py-4">
-                  Ver planes <ArrowRight size={18} />
-                </a>
-                <Link href="/r/demo-barber" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-7 py-4 text-sm font-bold text-white transition hover:border-white/20 hover:bg-white/10 active:scale-[0.98]">
-                  Probar reservas
-                </Link>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {features.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="card-dark p-5 transition hover:-translate-y-1 hover:border-white/20">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/15 text-[#8EB4FF]">
-                    <Icon size={18} />
-                  </div>
-                  <h3 className="text-base font-black">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/60">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="label-section">Cómo funciona</p>
-            <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-              Cuatro pasos para pasar de la llamada al sistema.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-slate-600">
-              Sin apps nuevas, sin procesos pesados y sin prometer más de lo que
-              el negocio necesita hoy.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-4 lg:grid-cols-2">
-            {workflow.map((step) => (
-              <div key={step.number} className="panel transition hover:-translate-y-1 hover:border-[#C9D4E3] hover:shadow-md">
-                <div className="flex gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#2F6FEB] font-mono text-sm font-black text-white">
-                    {step.number}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-[#111827]">{step.title}</h3>
-                    <p className="mt-1 text-sm leading-7 text-slate-600">{step.text}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#F8FAFC] py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="label-section">Vista del producto</p>
-              <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-                El producto se ve claro desde el primer scroll.
-              </h2>
-            </div>
-            <p className="max-w-2xl text-lg leading-8 text-slate-600">
-              La landing enseña la interfaz y el valor de negocio, no solo
-              promesas vacías.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                title: "Dashboard",
-                icon: BarChart3,
-                text: "Citas, ingresos estimados y actividad del día.",
-              },
-              {
-                title: "Agenda",
-                icon: CalendarCheck,
-                text: "Vista operativa para mover la barbería sin fricción.",
-              },
-              {
-                title: "Clientes",
-                icon: Users,
-                text: "Notas, historial y contacto en una sola ficha.",
-              },
-              {
-                title: "Reservas",
-                icon: QrCode,
-                text: "Link público y QR para captar reservas sin conversación manual.",
-              },
-            ].map(({ title, icon: Icon, text }) => (
-              <div key={title} className="panel transition hover:-translate-y-1 hover:border-[#C9D4E3] hover:shadow-md">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2F6FEB]/10 text-[#2F6FEB]">
-                    <Icon size={18} />
-                  </div>
-                  <h3 className="text-base font-black text-[#111827]">{title}</h3>
-                </div>
-                <p className="mt-4 text-sm leading-6 text-slate-600">{text}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#DDE7FB] bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
-            <div className="border-b border-[#E5E7EB] bg-[#F8FAFC] px-5 py-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">
-                    Mockup del panel
-                  </p>
-                  <h3 className="mt-1 text-lg font-black text-[#111827]">
-                    Agenda, clientes y reservas activas
-                  </h3>
-                </div>
-                <div className="hidden items-center gap-2 rounded-full border border-[#DCE3EE] bg-white px-3 py-1.5 text-xs font-bold text-slate-600 sm:inline-flex">
-                  <span className="h-2 w-2 rounded-full bg-[#2F6FEB]" />
-                  Vista premium
-                </div>
-              </div>
-            </div>
-            <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="border-b border-[#E5E7EB] bg-[#0F172A] p-5 text-white lg:border-b-0 lg:border-r">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                  <p className="text-sm text-white/50">Hoy</p>
-                  <p className="mt-1 text-3xl font-black">12 citas</p>
-                  <p className="mt-1 text-sm text-white/55">340 € estimados</p>
-                </div>
-
-                <div className="mt-4 grid gap-3">
-                  {[
-                    { time: "10:00", name: "Carlos", service: "Corte + barba" },
-                    { time: "11:30", name: "Miguel", service: "Degradado" },
-                    { time: "13:00", name: "Andrés", service: "Barba" },
-                  ].map((item) => (
-                    <div key={item.time} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
-                      <div>
-                        <p className="font-bold text-white">{item.name}</p>
-                        <p className="text-sm text-white/50">{item.service}</p>
-                      </div>
-                      <p className="font-mono text-sm font-bold text-[#8EB4FF]">{item.time}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid gap-4 p-5 sm:grid-cols-2">
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
-                  <p className="text-sm font-bold text-[#111827]">Reservas por QR</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    El cliente entra, elige y reserva sin fricción.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
-                  <p className="text-sm font-bold text-[#111827]">Clientes</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Guardas el historial para dar un seguimiento mejor.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
-                  <p className="text-sm font-bold text-[#111827]">Servicios</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Precios, duración y orden visibles para todo el equipo.
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
-                  <p className="text-sm font-bold text-[#111827]">Ingresos básicos</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Una lectura rápida del negocio sin complicar el panel.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="precios" className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="label-section">Pricing</p>
-            <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-              Planes para cada etapa de tu barbería.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-slate-600">
-              Empieza gratis 5 días. Luego elige el plan que mejor se adapta a
-              tu barbería. Sin comisiones por cita.
-            </p>
-          </div>
-
-          <div className="mt-8 inline-flex rounded-full border border-[#DDE7FB] bg-[#F8FAFC] px-4 py-2 text-sm font-black text-[#2F6FEB]">
-            0% comisión por cita · link propio · QR · reservas desde Instagram, WhatsApp y Google
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            <PricingCard
-              name="Free"
-              eyebrow="Prueba 5 días"
-              price="0 €"
-              setup="Durante 5 días"
-              cta="Probar gratis 5 días"
-              description="Prueba BarberíaOS durante 5 días y comprueba si tus clientes reservan mejor."
-              features={[
-                "Página pública de reservas",
-                "QR de reservas",
-                "Agenda básica",
-                "1 barbero",
-                "Hasta 5 servicios",
-                "Hasta 20 reservas durante la prueba",
-                "Clientes básicos",
-                "Sin comisiones por cita",
-              ]}
-              note="No incluye finanzas avanzadas, WhatsApp Assistant, reseñas, recuperación ni soporte prioritario."
-            />
-            <PricingCard
-              name="Starter"
-              eyebrow="Para empezar"
-              price="39 €/mes"
-              setup="Reservas online"
-              cta="Empezar con Starter"
-              description="Todo lo necesario para recibir reservas online sin depender de WhatsApp todo el día."
-              features={[
-                "Reservas online ilimitadas",
-                "Link público /r/[slug]",
-                "QR de reservas",
-                "Agenda, servicios y clientes",
-                "Hasta 2 barberos",
-                "Pagos manuales",
-                "Horas ocupadas y anti doble reserva",
-                "Dashboard básico",
-                "Soporte básico",
-              ]}
-            />
-            <PricingCard
-              name="Pro"
-              eyebrow="Gestión"
-              badge="Más recomendado"
-              price="79 €/mes"
-              setup="Control del negocio"
-              cta="Elegir Pro"
-              highlighted
-              description="Controla agenda, clientes, caja y equipo desde un panel profesional."
-              features={[
-                "Todo Starter",
-                "Hasta 6 barberos",
-                "Finanzas/caja",
-                "Ingresos, gastos y beneficio estimado",
-                "Clientes avanzados",
-                "QR profesional",
-                "Página pública más completa",
-                "Reportes básicos",
-                "Políticas de cancelación",
-                { label: "Módulo de reseñas visual", status: "MVP" },
-                "Soporte prioritario",
-              ]}
-              note="Asistente de reseñas con mensajes y flujo preparado. Integración Google próximamente."
-            />
-            <PricingCard
-              name="Growth"
-              eyebrow="Para crecer"
-              price="149 €/mes"
-              setup="Automatización y crecimiento"
-              cta="Escalar con Growth"
-              description="Automatiza WhatsApp, reseñas y recuperación para llenar más la agenda."
-              features={[
-                "Todo Pro",
-                { label: "Asistente WhatsApp preparado", status: "MVP" },
-                { label: "Asistente de Reseñas", status: "MVP" },
-                { label: "Recuperación de clientes", status: "Growth" },
-                "Plantillas WhatsApp",
-                "Campañas básicas",
-                "Clientes inactivos",
-                "Solicitud de reseñas",
-                { label: "Automatizaciones futuras", status: "Próximamente" },
-                "Métricas de crecimiento",
-                "Soporte premium",
-              ]}
-              note="Asistente WhatsApp preparado con enlaces y plantillas incluidos. API oficial próximamente."
-            />
-          </div>
-
-          <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-[#0F172A]/10 bg-[#0F172A] text-white shadow-[0_18px_60px_rgba(15,23,42,0.16)]">
-            <div className="grid gap-6 p-6 lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
-              <div>
-                <div className="mb-3 inline-flex rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-[#9BBCFF]">
-                  Premium / Scale
-                </div>
-                <h3 className="text-3xl font-black tracking-tight">
-                  Sistema completo para barberías premium o con alto volumen.
-                </h3>
-                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/65">
-                  Desde 299 €/mes. Incluye todo Growth, onboarding asistido,
-                  revisión mensual, soporte premium, personalización avanzada y
-                  consultoría de crecimiento.
-                </p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {[
-                    "Automatizaciones avanzadas",
-                    "Depósitos anti no-show futuros",
-                    "Stripe futuro",
-                    "Analítica avanzada",
-                    "Comisiones por barbero futuras",
-                    "Multiusuario/roles futuros",
-                  ].map((item) => (
-                    <span key={item} className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-white/75">
-                      {item}
+                  {row.slots.map((slot) => (
+                    <span key={slot} className="rounded-full border border-[#D9B766]/25 bg-[#D9B766]/10 px-3 py-1.5 text-sm font-black text-[#D9B766]">
+                      {slot}
                     </span>
                   ))}
                 </div>
-              </div>
-              <a href="#contacto" className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-sm font-black text-[#0F172A] transition hover:bg-[#F8FAFC]">
-                Solicitar Premium
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-3 text-sm text-slate-500 sm:grid-cols-3">
-            {[
-              "No somos marketplace.",
-              "Cada barbería conserva su link, QR, clientes y sistema.",
-              "Sin Stripe ni billing automático conectado todavía.",
-            ].map((item) => (
-              <div key={item} className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 font-semibold">
-                {item}
-              </div>
+                <p className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-white/60">
+                  Hoy tenemos huecos disponibles con {row.name} a las {row.slots.slice(0, 2).join(", ")}. Reserva tu corte ahora.
+                </p>
+              </GlassCard>
             ))}
           </div>
-
-          <p className="mt-6 text-center text-sm text-neutral-500">
-            Los módulos marcados como MVP o Próximamente se muestran de forma
-            honesta: están preparados visualmente o en roadmap, no como
-            integraciones finales conectadas.
-          </p>
         </div>
       </section>
 
-      <section className="bg-[#0F172A] py-20 text-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <div>
-              <p className="label-section">Demo / piloto</p>
-              <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-                Pide una demo y vemos si encaja con tu barbería.
-              </h2>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-white/65">
-                Te enseñamos el sistema, configuramos la base y dejamos una
-                propuesta simple para empezar con tus reservas.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="https://wa.me/34600000000?text=Hola,%20quiero%20una%20demo%20de%20BarberiaOS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary px-7 py-4"
-                >
-                  Solicitar demo gratuita <ArrowRight size={18} />
-                </a>
-                <Link
-                  href="/login"
-                  className="btn-outline border-white/15 bg-white/[0.04] px-7 py-4 text-white hover:border-white/20 hover:bg-white/10"
-                >
-                  Entrar al panel
-                </Link>
-              </div>
-            </div>
+      <section id="barberos" className="relative z-10 border-y border-white/10 bg-white/[0.025] px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D9B766]">
+              Ventas por barbero
+            </p>
+            <h2 className="mt-4 text-4xl font-black leading-tight text-white md:text-5xl">
+              Mira quién produce más, qué servicios generan más dinero y cómo crece tu barbería.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-white/60">
+              Ranking diario de barberos, tickets realizados, ventas y servicios top. Para dirigir el negocio con datos, no con intuición.
+            </p>
+          </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {serviceCards.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="card-dark p-5 transition hover:-translate-y-1 hover:border-white/20">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/15 text-[#8EB4FF]">
-                    <Icon size={18} />
+          <GlassCard className="p-5">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-black text-white">Ranking de hoy</p>
+                <p className="text-xs text-white/40">Ventas, tickets y servicios</p>
+              </div>
+              <BarChart3 size={21} className="text-[#D9B766]" />
+            </div>
+            <div className="space-y-4">
+              {barberSales.map((barber, index) => (
+                <div key={barber.name} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#D9B766] text-sm font-black text-[#07080C]">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p className="font-black text-white">{barber.name}</p>
+                        <p className="text-xs text-white/40">{barber.tickets}</p>
+                      </div>
+                    </div>
+                    <p className="text-xl font-black text-[#D9B766]">{barber.sales}</p>
                   </div>
-                  <h3 className="text-base font-black">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/60">{text}</p>
+                  <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className={`h-full rounded-full bg-[#D9B766] ${barber.progress}`} />
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
         </div>
       </section>
 
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-3xl px-6 lg:px-8">
-          <div className="text-center">
-            <p className="label-section">FAQ</p>
-            <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-              Preguntas frecuentes
+      <section id="reservas" className="relative z-10 px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D9B766]">
+              QR y reservas online
+            </p>
+            <h2 className="mt-4 text-4xl font-black leading-tight text-white md:text-5xl">
+              Tus clientes reservan solos desde Instagram, Google o WhatsApp.
             </h2>
+            <p className="mt-5 text-lg leading-8 text-white/60">
+              Comparte un link, imprime el QR o ponlo en la bio. El cliente elige servicio, barbero y hora sin perseguirte por chat.
+            </p>
           </div>
 
-          <div className="mt-12 divide-y divide-[#E5E7EB] rounded-[1.75rem] border border-[#E5E7EB] bg-white px-6 shadow-sm">
-            {faqs.map(({ q, a }) => (
-              <details key={q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-[#111827]">
-                  {q}
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-lg font-black transition group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 leading-7 text-slate-600">{a}</p>
-              </details>
+          <GlassCard className="grid gap-5 p-5 md:grid-cols-[0.75fr_1fr] md:items-center">
+            <div className="rounded-[24px] border border-white/10 bg-white p-6 text-[#07080C]">
+              <div className="grid aspect-square grid-cols-5 gap-2">
+                {Array.from({ length: 25 }).map((_, index) => (
+                  <span
+                    key={index}
+                    className={`rounded-md ${index % 3 === 0 || index % 7 === 0 ? "bg-[#07080C]" : "bg-[#D9B766]/25"}`}
+                  />
+                ))}
+              </div>
+              <p className="mt-4 text-center text-sm font-black">barberiaos.com/r/tu-barberia</p>
+            </div>
+            <div>
+              <div className="rounded-[28px] border border-white/10 bg-[#090B10] p-4">
+                <div className="rounded-2xl bg-white p-4 text-[#07080C]">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-400">
+                    Reserva móvil
+                  </p>
+                  <p className="mt-2 text-2xl font-black">Corte + barba</p>
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    {["13:00", "15:30", "17:00"].map((slot) => (
+                      <span key={slot} className="rounded-xl bg-[#07080C] px-3 py-2 text-center text-sm font-black text-white">
+                        {slot}
+                      </span>
+                    ))}
+                  </div>
+                  <button className="mt-4 w-full rounded-xl bg-[#D9B766] px-4 py-3 text-sm font-black text-[#07080C]">
+                    Confirmar reserva
+                  </button>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      </section>
+
+      <section id="fundadores" className="relative z-10 border-y border-[#D9B766]/20 bg-[#D9B766]/10 px-5 py-24 lg:px-8">
+        <div className="mx-auto max-w-5xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D9B766]/30 bg-[#D9B766]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#D9B766]">
+            <Crown size={15} />
+            Oferta fundadores
+          </div>
+          <h2 className="mt-5 text-5xl font-black leading-tight text-white md:text-6xl">
+            Primeras 50 barberías gratis
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/65">
+            Queremos ayudar a las barberías a crecer antes de subir precios.
+          </p>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {founderBenefits.map((benefit) => (
+              <GlassCard key={benefit} className="p-5">
+                <CheckCircle2 size={20} className="mx-auto text-[#D9B766]" />
+                <p className="mt-3 text-sm font-black text-white">{benefit}</p>
+              </GlassCard>
+            ))}
+          </div>
+
+          <a href="#registro" className="mt-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-8 py-4 text-sm font-black text-[#07080C] shadow-[0_0_58px_rgba(217,183,102,0.3)] transition hover:-translate-y-0.5 hover:bg-[#F1CD77]">
+            Entrar como barbería fundadora <ArrowRight size={18} />
+          </a>
+        </div>
+      </section>
+
+      <section id="registro" className="relative z-10 px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D9B766]">
+              Registro
+            </p>
+            <h2 className="mt-4 text-4xl font-black leading-tight text-white md:text-5xl">
+              Entra antes de que BarberíaOS sea de pago.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-white/60">
+              Déjanos tus datos y te damos acceso al panel para probar reservas, caja y control de barberos.
+            </p>
+            <div className="mt-8 grid gap-3">
+              {[
+                ["Sin tarjeta", LockKeyhole],
+                ["Configuración rápida", Zap],
+                ["Acceso desde móvil", Smartphone],
+              ].map(([label, Icon]) => {
+                const TypedIcon = Icon as typeof LockKeyhole;
+                return (
+                  <div key={label as string} className="flex items-center gap-3 text-sm font-bold text-white/65">
+                    <TypedIcon size={17} className="text-[#D9B766]" />
+                    {label as string}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <GlassCard className="p-5 md:p-7">
+            <form className="grid gap-5">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-white/70">
+                  Nombre barbería
+                </label>
+                <input
+                  name="barbershop_name"
+                  placeholder="Ej: Black Crown Barbers"
+                  className="w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm font-bold text-white outline-none transition placeholder:text-white/25 focus:border-[#D9B766]/60 focus:ring-4 focus:ring-[#D9B766]/10"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-white/70">
+                  Email
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="tu@email.com"
+                  className="w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm font-bold text-white outline-none transition placeholder:text-white/25 focus:border-[#D9B766]/60 focus:ring-4 focus:ring-[#D9B766]/10"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-white/70">
+                  WhatsApp
+                </label>
+                <input
+                  name="whatsapp"
+                  placeholder="+34 600 000 000"
+                  className="w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm font-bold text-white outline-none transition placeholder:text-white/25 focus:border-[#D9B766]/60 focus:ring-4 focus:ring-[#D9B766]/10"
+                />
+              </div>
+              <button
+                type="submit"
+                className="mt-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-7 py-4 text-sm font-black text-[#07080C] shadow-[0_0_48px_rgba(217,183,102,0.22)] transition hover:-translate-y-0.5 hover:bg-[#F1CD77]"
+              >
+                Quiero probar BarberíaOS <ArrowRight size={18} />
+              </button>
+              <p className="text-center text-xs font-semibold text-white/38">
+                Sin tarjeta. Sin compromiso. Acceso limitado para barberías seleccionadas.
+              </p>
+            </form>
+          </GlassCard>
+        </div>
+      </section>
+
+      <footer className="relative z-10 border-t border-white/10 px-5 py-10 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#D9B766] text-[#07080C]">
+              <Scissors size={18} />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-white">
+                BarberíaOS
+              </p>
+              <p className="text-xs text-white/40">
+                Reservas, caja y control de barberos.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.12em] text-white/38">
+            {footerTrust.map((item) => (
+              <span key={item}>{item}</span>
             ))}
           </div>
         </div>
-      </section>
-
-      <section
-        id="contacto"
-        className="border-t border-[#DDE7FB] bg-[#0F172A] px-6 py-24 text-center text-white"
-      >
-        <div className="mx-auto max-w-4xl">
-          <p className="label-section">Empieza hoy</p>
-          <h2 className="mt-4 text-4xl font-black tracking-tight md:text-6xl">
-            Convierte tu QR en reservas y tu agenda en un sistema.
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/65">
-            BarberiaOS te deja una base clara para vender mejor, atender mejor y
-            controlar mejor tu barbería.
-          </p>
-          <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
-              href="https://wa.me/34600000000?text=Hola,%20quiero%20una%20demo%20de%20BarberiaOS"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary px-8 py-4"
-            >
-              Solicitar demo gratuita <ArrowRight size={18} />
-            </a>
-            <Link
-              href="/r/demo-barber"
-              className="btn-outline border-white/15 bg-white/[0.04] px-8 py-4 text-white hover:border-white/20 hover:bg-white/10"
-            >
-              Ver demo de reservas
-            </Link>
-          </div>
-        </div>
-      </section>
+      </footer>
     </main>
   );
 }

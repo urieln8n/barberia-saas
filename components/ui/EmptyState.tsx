@@ -7,6 +7,7 @@ type EmptyStateProps = {
   description: string;
   action?: ReactNode;
   className?: string;
+  tone?: "default" | "dark" | "success";
 };
 
 export function EmptyState({
@@ -15,16 +16,29 @@ export function EmptyState({
   description,
   action,
   className = "",
+  tone = "default",
 }: EmptyStateProps) {
+  const dark = tone === "dark";
+  const iconClass =
+    tone === "success"
+      ? "metric-icon bg-emerald-500/10"
+      : dark
+        ? "metric-icon bg-white/10"
+        : "metric-icon bg-[#2563EB]/10";
+
   return (
-    <div className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[#D8CEBE] bg-[#F8F5EF]/70 px-6 py-10 text-center ${className}`}>
+    <div className={`flex flex-col items-center justify-center rounded-[24px] border border-dashed px-6 py-10 text-center ${
+      dark
+        ? "border-white/15 bg-white/[0.04] text-white"
+        : "border-slate-300 bg-slate-50/80 text-slate-950"
+    } ${className}`}>
       {Icon && (
-        <div className="metric-icon bg-[#2563EB]/10">
-          <Icon size={22} className="text-[#2563EB]" />
+        <div className={iconClass}>
+          <Icon size={22} className={tone === "success" ? "text-emerald-600" : dark ? "text-white" : "text-[#2563EB]"} />
         </div>
       )}
-      <p className="mt-4 font-bold text-neutral-800">{title}</p>
-      <p className="mt-1 max-w-md text-sm leading-6 text-neutral-500">
+      <p className={dark ? "mt-4 font-bold text-white" : "mt-4 font-bold text-slate-800"}>{title}</p>
+      <p className={dark ? "mt-1 max-w-md text-sm leading-6 text-white/55" : "mt-1 max-w-md text-sm leading-6 text-slate-500"}>
         {description}
       </p>
       {action && <div className="mt-5">{action}</div>}

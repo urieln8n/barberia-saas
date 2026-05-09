@@ -3,11 +3,15 @@ import { redirect } from "next/navigation";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
+import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
 import {
   CalendarCheck,
   TrendingUp,
   Users,
   AlertCircle,
+  Clock,
+  Wallet,
   QrCode,
   ArrowRight,
   Scissors,
@@ -16,6 +20,8 @@ import {
 } from "lucide-react";
 import { StatCard }   from "@/components/dashboard/StatCard";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
+import { TodayAvailability } from "@/components/dashboard/TodayAvailability";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +36,25 @@ type AppointmentItem = {
   clients: { name: string; phone: string | null } | null;
   services: { name: string; price: number | null } | null;
   barbers: { name: string } | null;
+};
+
+type CashMovementPerformanceRow = {
+  amount: number | string | null;
+  discount_amount: number | string | null;
+  tip_amount: number | string | null;
+  payment_method: string | null;
+  movement_type: string | null;
+  barber_id: string | null;
+  client_id: string | null;
+  service_id: string | null;
+  services?: Relation<{ name: string | null }>;
+};
+
+type TodayAvailabilityAppointmentRow = {
+  barber_id: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  status: string | null;
 };
 
 function firstRelation<T>(value: Relation<T>): T | null {
@@ -102,6 +127,23 @@ function getMonthBoundsISO(): { start: string; end: string } {
   return { start, end };
 }
 
+function formatCurrency(value: number) {
+  return `${value.toFixed(0)} €`;
+}
+
+function cashMovementTotal(movement: CashMovementPerformanceRow) {
+  const amount = Number(movement.amount ?? 0);
+  const discount = Number(movement.discount_amount ?? 0);
+  const tip = Number(movement.tip_amount ?? 0);
+  const total = amount - discount + tip;
+
+  if (movement.movement_type === "refund" || movement.movement_type === "expense") {
+    return -total;
+  }
+
+  return total;
+}
+
 function normalizeAppointment(item: any): AppointmentItem {
   const client = firstRelation(item.clients);
   const service = firstRelation(item.services);
@@ -172,12 +214,11 @@ export default async function DashboardPage() {
     barbershopResult,
     todayAppointmentsResult,
     upcomingAppointmentsResult,
-    clientsResult,
-    servicesResult,
     paymentsResult,
     monthApptsResult,
-    monthPaymentsResult,
-    newClientsResult,
+    activeBarbersResult,
+    todayCashMovementsResult,
+    activeCashSessionResult,
   ] = await Promise.all([
     dataClient
       .from("barbershops")
@@ -190,6 +231,7 @@ export default async function DashboardPage() {
       .select(
         `
         id,
+        barber_id,
         appointment_date,
         start_time,
         end_time,
@@ -242,17 +284,6 @@ export default async function DashboardPage() {
       .limit(6),
 
     dataClient
-      .from("clients")
-      .select("id", { count: "exact" })
-      .eq("barbershop_id", barbershopId),
-
-    dataClient
-      .from("services")
-      .select("id", { count: "exact" })
-      .eq("barbershop_id", barbershopId)
-      .eq("active", true),
-
-    dataClient
       .from("payments")
       .select("amount")
       .eq("barbershop_id", barbershopId)
@@ -267,17 +298,29 @@ export default async function DashboardPage() {
       .lte("appointment_date", monthEnd),
 
     dataClient
-      .from("payments")
-      .select("amount")
+      .from("barbers")
+      .select("id, name")
       .eq("barbershop_id", barbershopId)
-      .gte("created_at", `${monthStart}T00:00:00`)
-      .lte("created_at", `${monthEnd}T23:59:59`),
+      .eq("active", true)
+      .order("name", { ascending: true }),
 
     dataClient
-      .from("clients")
-      .select("id", { count: "exact" })
+      .from("cash_movements")
+      .select(
+        "amount, discount_amount, tip_amount, payment_method, movement_type, barber_id, client_id, service_id, services(name)"
+      )
       .eq("barbershop_id", barbershopId)
-      .gte("created_at", `${monthStart}T00:00:00`),
+      .gte("created_at", `${today}T00:00:00`)
+      .lte("created_at", `${today}T23:59:59`),
+
+    dataClient
+      .from("cash_sessions")
+      .select("id, status, opening_amount, opened_at")
+      .eq("barbershop_id", barbershopId)
+      .eq("status", "open")
+      .order("opened_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const barbershop = barbershopResult.data;
@@ -287,9 +330,6 @@ export default async function DashboardPage() {
   const upcomingAppointments = (
     (upcomingAppointmentsResult.data as any[]) ?? []
   ).map(normalizeAppointment);
-
-  const totalClients = clientsResult.count ?? 0;
-  const totalServices = servicesResult.count ?? 0;
 
   const todayRevenue = ((paymentsResult.data as any[]) ?? []).reduce(
     (total, payment) => total + Number(payment.amount ?? 0),
@@ -303,40 +343,86 @@ export default async function DashboardPage() {
   const weekApptsCount = monthAppts.filter(
     (a: any) => a.appointment_date >= weekStart
   ).length;
-  const monthApptsCount = monthAppts.length;
-  const cancelledCount = monthAppts.filter(
-    (a: any) => a.status === "cancelled" || a.status === "no_show"
-  ).length;
-
-  const monthRevenue = ((monthPaymentsResult.data as any[]) ?? []).reduce(
-    (sum: number, p: any) => sum + Number(p.amount ?? 0),
+  const todayCashMovements = ((todayCashMovementsResult.data as CashMovementPerformanceRow[]) ?? []);
+  const todayPaymentMovements = todayCashMovements.filter(
+    (movement) => movement.movement_type === "payment"
+  );
+  const cashSalesToday = todayPaymentMovements.reduce(
+    (sum, movement) => sum + cashMovementTotal(movement),
     0
   );
-  const newClientsCount = newClientsResult.count ?? 0;
-
-  const serviceCount: Record<string, number> = {};
-  for (const a of monthAppts) {
-    if (a.status !== "cancelled" && a.status !== "no_show") {
-      const svc = Array.isArray(a.services) ? a.services[0] : a.services;
-      const name: string = svc?.name ?? "Sin servicio";
-      serviceCount[name] = (serviceCount[name] ?? 0) + 1;
-    }
+  const salesToday = cashSalesToday > 0 ? cashSalesToday : todayRevenue;
+  const attendedClientIds = new Set(
+    todayPaymentMovements
+      .map((movement) => movement.client_id)
+      .filter((clientId): clientId is string => Boolean(clientId))
+  );
+  const anonymousPayments = todayPaymentMovements.filter((movement) => !movement.client_id).length;
+  const clientsAttendedToday = attendedClientIds.size + anonymousPayments;
+  const cashPaymentsCount = todayPaymentMovements.filter(
+    (movement) => movement.payment_method === "cash"
+  ).length;
+  const barberPerformanceItems = buildBarberPerformance(
+    ((activeBarbersResult.data as { id: string; name: string }[]) ?? []).map((barber) => ({
+      id: barber.id,
+      name: barber.name,
+    })),
+    ((todayCashMovementsResult.data as CashMovementPerformanceRow[]) ?? []).map((movement) => ({
+      amount: movement.amount,
+      discount_amount: movement.discount_amount,
+      tip_amount: movement.tip_amount,
+      payment_method: movement.payment_method,
+      movement_type: movement.movement_type,
+      barber_id: movement.barber_id,
+      client_id: movement.client_id,
+      service_id: movement.service_id,
+    }))
+  );
+  const activeBarbers = ((activeBarbersResult.data as { id: string; name: string }[]) ?? []).map((barber) => ({
+    id: barber.id,
+    name: barber.name,
+  }));
+  const todayAvailabilityItems = buildTodayBarberAvailability({
+    barbers: activeBarbers,
+    appointments: ((todayAppointmentsResult.data as TodayAvailabilityAppointmentRow[]) ?? []).map((appointment) => ({
+      barber_id: appointment.barber_id,
+      start_time: appointment.start_time,
+      end_time: appointment.end_time,
+      status: appointment.status,
+    })),
+    todayIso: today,
+    startHour: 9,
+    endHour: 20,
+    intervalMinutes: 30,
+  });
+  const totalFreeSlotsToday = todayAvailabilityItems.reduce(
+    (sum, item) => sum + item.freeSlots.length,
+    0
+  );
+  const cashSessionOpen = Boolean(activeCashSessionResult.data);
+  const topDailyBarber = barberPerformanceItems.find((item) => item.totalSold > 0);
+  const barberWithMostSlots = todayAvailabilityItems.reduce(
+    (top, item) => (!top || item.freeSlots.length > top.freeSlots.length ? item : top),
+    null as (typeof todayAvailabilityItems)[number] | null
+  );
+  const serviceSalesCount: Record<string, number> = {};
+  for (const movement of todayPaymentMovements) {
+    const service = firstRelation(movement.services);
+    const name = service?.name ?? (movement.service_id ? "Servicio sin nombre" : "");
+    if (name) serviceSalesCount[name] = (serviceSalesCount[name] ?? 0) + 1;
   }
-  const topServiceEntry = Object.entries(serviceCount).sort((x, y) => y[1] - x[1])[0];
-  const topServiceName = topServiceEntry?.[0] ?? "—";
-  const topServiceCount = topServiceEntry?.[1] ?? 0;
-
-  const barberCount: Record<string, number> = {};
-  for (const a of monthAppts) {
-    if (a.status !== "cancelled" && a.status !== "no_show") {
-      const brb = Array.isArray(a.barbers) ? a.barbers[0] : a.barbers;
-      const name: string = brb?.name ?? "Sin barbero";
-      barberCount[name] = (barberCount[name] ?? 0) + 1;
-    }
-  }
-  const topBarberEntry = Object.entries(barberCount).sort((x, y) => y[1] - x[1])[0];
-  const topBarberName = topBarberEntry?.[0] ?? "—";
-  const topBarberCount = topBarberEntry?.[1] ?? 0;
+  const topServiceToday = Object.entries(serviceSalesCount).sort((a, b) => b[1] - a[1])[0];
+  const topServiceTodayName = topServiceToday?.[0] ?? "Sin ventas";
+  const topServiceTodayCount = topServiceToday?.[1] ?? 0;
+  const recommendedActions = [
+    barberWithMostSlots && barberWithMostSlots.freeSlots.length > 0
+      ? `${barberWithMostSlots.barberName} tiene ${barberWithMostSlots.freeSlots.length} huecos libres hoy. Publica una promo.`
+      : "La agenda de hoy está bastante completa. Revisa próximas citas.",
+    `${clientsAttendedToday} clientes atendidos y ${cashPaymentsCount} pagos en efectivo registrados hoy.`,
+    cashSessionOpen
+      ? "Cierra caja al final del día para evitar descuadres."
+      : "Abre caja antes de registrar cobros para controlar el efectivo.",
+  ];
 
   return (
     <div className="space-y-6">
@@ -380,10 +466,34 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* ── KPI Cards ── */}
+      {/* ── Control diario ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          title="Citas hoy"
+          title="Ventas hoy"
+          value={formatCurrency(salesToday)}
+          hint={cashSalesToday > 0 ? "Desde caja" : "Desde pagos"}
+          icon={TrendingUp}
+          iconBg="bg-[#16A34A]/10"
+          iconColor="text-[#16A34A]"
+        />
+        <StatCard
+          title="Caja"
+          value={cashSessionOpen ? "Abierta" : "Cerrada"}
+          hint={cashSessionOpen ? "Lista para registrar cobros" : "Abre caja para controlar el día"}
+          icon={Wallet}
+          iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
+          iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
+        />
+        <StatCard
+          title="Clientes atendidos hoy"
+          value={String(clientsAttendedToday)}
+          hint={`${todayPaymentMovements.length} cobros registrados`}
+          icon={Users}
+          iconBg="bg-[#C89B3C]/10"
+          iconColor="text-[#8A641F]"
+        />
+        <StatCard
+          title="Reservas de hoy"
           value={String(todayAppointments.length)}
           hint={`${weekApptsCount} esta semana`}
           icon={CalendarCheck}
@@ -391,55 +501,62 @@ export default async function DashboardPage() {
           iconColor="text-[#2563EB]"
         />
         <StatCard
-          title="Ingresos hoy"
-          value={`${todayRevenue.toFixed(0)} €`}
-          hint={`${monthRevenue.toFixed(0)} € este mes`}
-          icon={TrendingUp}
-          iconBg="bg-[#16A34A]/10"
-          iconColor="text-[#16A34A]"
+          title="Huecos libres hoy"
+          value={String(totalFreeSlotsToday)}
+          hint="Slots disponibles desde ahora"
+          icon={Clock}
+          iconBg="bg-blue-50"
+          iconColor="text-blue-700"
         />
         <StatCard
-          title="Clientes"
-          value={String(totalClients)}
-          hint={`+${newClientsCount} nuevos este mes`}
-          icon={Users}
+          title="Barbero top del día"
+          value={topDailyBarber?.barberName ?? "Sin ventas"}
+          hint={topDailyBarber ? formatCurrency(topDailyBarber.totalSold) : "Registra cobros en caja"}
+          icon={User}
+          iconBg="bg-emerald-50"
+          iconColor="text-emerald-700"
+        />
+        <StatCard
+          title="Barbero con más huecos"
+          value={barberWithMostSlots?.barberName ?? "Sin barberos"}
+          hint={barberWithMostSlots ? `${barberWithMostSlots.freeSlots.length} huecos libres` : "Crea barberos activos"}
+          icon={AlertCircle}
+          iconBg="bg-amber-50"
+          iconColor="text-amber-700"
+        />
+        <StatCard
+          title="Servicio más vendido"
+          value={topServiceTodayName}
+          hint={topServiceTodayCount > 0 ? `${topServiceTodayCount} ventas hoy` : "Sin cobros vinculados"}
+          icon={Scissors}
           iconBg="bg-[#C89B3C]/10"
           iconColor="text-[#8A641F]"
         />
-        <StatCard
-          title="No shows · Canceladas"
-          value={String(cancelledCount)}
-          hint="Este mes"
-          icon={AlertCircle}
-          iconBg={cancelledCount > 0 ? "bg-red-50" : "bg-neutral-100"}
-          iconColor={cancelledCount > 0 ? "text-[#E5484D]" : "text-neutral-400"}
-        />
       </section>
 
-      {/* ── Stats del mes ── */}
-      <section className="grid gap-4 sm:grid-cols-3">
-        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Citas este mes</p>
-          <p className="mt-3 text-4xl font-black text-[#111827]">{monthApptsCount}</p>
-          <p className="mt-1.5 text-xs text-neutral-400">
-            {monthApptsCount - cancelledCount} completadas · {cancelledCount} canceladas
-          </p>
+      <section className="panel">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="label-section">Acciones recomendadas</p>
+            <h2 className="section-heading mt-1">Qué hacer ahora</h2>
+            <p className="section-subtext">Sugerencias rápidas basadas en caja, agenda y huecos libres de hoy.</p>
+          </div>
+          <Link href="/dashboard/caja" className="btn-outline shrink-0">
+            Ver caja <ArrowRight size={14} />
+          </Link>
         </div>
-        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Servicio top</p>
-          <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topServiceName}</p>
-          <p className="mt-1.5 text-xs text-neutral-400">
-            {topServiceCount > 0 ? `${topServiceCount} citas este mes` : "Sin datos aún"}
-          </p>
-        </div>
-        <div className="metric-card bg-[linear-gradient(180deg,#FFFFFF_0%,#FDFBF7_100%)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Barbero top</p>
-          <p className="mt-3 truncate text-xl font-black leading-tight text-[#111827]">{topBarberName}</p>
-          <p className="mt-1.5 text-xs text-neutral-400">
-            {topBarberCount > 0 ? `${topBarberCount} citas este mes` : "Sin datos aún"}
-          </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {recommendedActions.map((action) => (
+            <div key={action} className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 text-sm font-semibold leading-6 text-neutral-700">
+              {action}
+            </div>
+          ))}
         </div>
       </section>
+
+      <BarberPerformance items={barberPerformanceItems} compact />
+
+      <TodayAvailability items={todayAvailabilityItems} />
 
       {/* ── Próximas citas + Panel lateral ── */}
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
