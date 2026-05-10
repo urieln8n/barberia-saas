@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { PricingCard } from "@/components/marketing/PricingCard";
+import { SITE_URL } from "@/src/lib/site-url";
 
 /* ─── datos ─────────────────────────────────────── */
 
@@ -54,7 +55,7 @@ const demoCards = [
     label: "QR de reservas",
     icon: QrCode,
     color: "red",
-    lines: ["QR activo y listo", "Compártelo en Instagram", "barberiaos.com/r/tu-barberia"],
+    lines: ["QR activo y listo", "Compártelo en Instagram", `${SITE_URL.replace(/^https?:\/\//, "")}/r/tu-barberia`],
   },
   {
     label: "Agenda del día",

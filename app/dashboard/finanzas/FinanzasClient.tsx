@@ -332,7 +332,7 @@ export function FinanzasClient({
       </div>
 
       <p className="text-center text-xs text-neutral-400">
-        Ingresos = pagos con estado "cobrado" · Beneficio = Ingresos − Gastos del mes
+        Ingresos = pagos con estado &quot;cobrado&quot; · Beneficio = Ingresos − Gastos del mes
       </p>
 
     </div>

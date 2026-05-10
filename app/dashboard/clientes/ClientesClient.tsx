@@ -169,7 +169,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
           </div>
           {filtered.length === 0 && search && (
             <p className="px-6 py-8 text-center text-sm text-neutral-400">
-              Sin resultados para "{search}"
+              Sin resultados para &quot;{search}&quot;
             </p>
           )}
         </div>

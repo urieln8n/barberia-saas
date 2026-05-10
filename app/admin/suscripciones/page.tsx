@@ -21,8 +21,8 @@ export default async function SuscripcionesPage() {
   // Flatten the barbershop join
   const subscriptions = (rawSubs ?? []).map((s) => {
     const bs = s.barbershops as { name: string } | null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { barbershops: _, ...rest } = s;
+    const rest = { ...s };
+    delete rest.barbershops;
     return { ...rest, barbershop_name: bs?.name ?? null };
   });
 
