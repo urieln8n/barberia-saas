@@ -1,231 +1,282 @@
-/**
- * BarberíaOS Booking Widget v1.0.0
- * ─────────────────────────────────
- * Renders an isolated floating "Reservar ahora" button on any external website.
+/*!
+ * BarberiaOS Booking Widget v1.0.0
  *
- * Usage:
- *   <script src="https://barberiaos.com/widget.js"
- *           data-barbershop="slug-de-tu-barberia"
- *           async></script>
+ * Installation:
+ * <script src="https://barberiaos.com/widget.js" data-barbershop="slug-barberia" async></script>
  *
  * Optional attributes:
- *   data-label        Custom button text (default: "Reservar ahora")
- *   data-position     "bottom-right" | "bottom-left"  (default: "bottom-right")
- *   data-offset-x     Horizontal offset in px  (default: 20)
- *   data-offset-y     Vertical offset in px    (default: 20)
+ * - data-theme: "dark" | "light" | "gold"
+ * - data-position: "bottom-right" | "bottom-left" | "top-right" | "top-left"
+ * - data-label: custom button text
  *
- * Security:
- *   - No cookies set.
- *   - No user data collected.
- *   - No external requests made.
- *   - Shadow DOM isolates all styles from the host page.
+ * Privacy:
+ * - No cookies.
+ * - No personal data collection.
+ * - No external dependencies.
  */
 (function () {
   "use strict";
 
-  /* ── Constants ────────────────────────────────────────────────────────── */
+  var GLOBAL_KEY = "__barberiaOSWidgetMounted";
+  var ROOT_ID = "barberiaos-widget-root";
+  var SCRIPT_FLAG = "data-barberiaos-widget-script";
+  var BOOKING_ORIGIN = "https://barberiaos.com";
+  var DEFAULT_LABEL = "Reservar ahora";
+  var VALID_THEMES = { dark: true, light: true, gold: true };
+  var VALID_POSITIONS = {
+    "bottom-right": true,
+    "bottom-left": true,
+    "top-right": true,
+    "top-left": true
+  };
 
-  var WIDGET_ID   = "barberiaos-widget-root";
-  var SLUG_RE     = /^[a-z0-9][a-z0-9-]{0,78}[a-z0-9]$|^[a-z0-9]{2}$/;
-  var FALLBACK_ORIGIN = "https://barberiaos.com";
-
-  /* ── Find our own script tag ─────────────────────────────────────────── */
-  // document.currentScript is null for async scripts, so we search by attribute.
-  var scriptEl = document.querySelector("script[data-barbershop]");
-  if (!scriptEl) return;
-
-  /* ── Read configuration from script attributes ──────────────────────── */
-
-  var slug = (scriptEl.getAttribute("data-barbershop") || "").trim().toLowerCase();
-  if (!slug || !SLUG_RE.test(slug)) {
-    if (typeof console !== "undefined") {
-      console.warn("[BarberíaOS] data-barbershop inválido o ausente. El widget no se cargará.");
+  function warn(message) {
+    if (typeof window.console !== "undefined" && typeof window.console.warn === "function") {
+      window.console.warn("[BarberiaOS Widget] " + message);
     }
-    return;
   }
 
-  var label    = (scriptEl.getAttribute("data-label") || "Reservar ahora").trim();
-  var position = scriptEl.getAttribute("data-position") === "bottom-left" ? "bottom-left" : "bottom-right";
-  var offsetX  = parseInt(scriptEl.getAttribute("data-offset-x") || "20", 10) || 20;
-  var offsetY  = parseInt(scriptEl.getAttribute("data-offset-y") || "20", 10) || 20;
-
-  /* ── Derive base URL from the script's own src ──────────────────────── */
-
-  var origin = FALLBACK_ORIGIN;
-  try {
-    var rawSrc = scriptEl.getAttribute("src") || "";
-    if (rawSrc.indexOf("http") === 0) {
-      origin = new URL(rawSrc).origin;
+  function getCurrentScript() {
+    if (document.currentScript) {
+      return document.currentScript;
     }
-  } catch (_) { /* keep fallback */ }
 
-  var bookingUrl = origin + "/r/" + slug;
+    var scripts = document.getElementsByTagName("script");
+    for (var index = scripts.length - 1; index >= 0; index -= 1) {
+      var script = scripts[index];
+      var src = script.getAttribute("src") || "";
+      if (src.indexOf("widget.js") !== -1 && !script.hasAttribute(SCRIPT_FLAG)) {
+        return script;
+      }
+    }
 
-  /* ── Prevent double-init ─────────────────────────────────────────────── */
+    return null;
+  }
 
-  if (document.getElementById(WIDGET_ID)) return;
+  function normalizeSlug(value) {
+    return (value || "").replace(/^\s+|\s+$/g, "").toLowerCase();
+  }
 
-  /* ── Build and mount the widget ─────────────────────────────────────── */
+  function isValidSlug(slug) {
+    return /^[a-z0-9](?:[a-z0-9-]{0,78}[a-z0-9])?$/.test(slug);
+  }
 
-  function mount() {
-    /* Guard: body must exist */
-    if (!document.body) return;
+  function readConfig(script) {
+    var rawSlug = script ? script.getAttribute("data-barbershop") : "";
+    var slug = normalizeSlug(rawSlug);
 
-    /* ── Host element (position: fixed, full isolation) ── */
-    var host = document.createElement("div");
-    host.id = WIDGET_ID;
+    if (!slug) {
+      warn("Falta data-barbershop. El widget no se mostrara.");
+      return null;
+    }
 
-    var hostStyle = host.style;
-    hostStyle.position = "fixed";
-    hostStyle.bottom   = offsetY + "px";
-    hostStyle.zIndex   = "2147483647";  /* max possible z-index */
-    hostStyle.display  = "block";
-    hostStyle.lineHeight = "1";
-    hostStyle.pointerEvents = "none"; /* host itself is click-through */
+    if (!isValidSlug(slug)) {
+      warn("data-barbershop no es valido. El widget no se mostrara.");
+      return null;
+    }
 
-    if (position === "bottom-left") {
-      hostStyle.left  = offsetX + "px";
-      hostStyle.right = "auto";
+    var label = (script.getAttribute("data-label") || DEFAULT_LABEL).replace(/^\s+|\s+$/g, "");
+    var theme = (script.getAttribute("data-theme") || "dark").toLowerCase();
+    var position = (script.getAttribute("data-position") || "bottom-right").toLowerCase();
+
+    return {
+      slug: slug,
+      label: label || DEFAULT_LABEL,
+      theme: VALID_THEMES[theme] ? theme : "dark",
+      position: VALID_POSITIONS[position] ? position : "bottom-right"
+    };
+  }
+
+  function alreadyMounted() {
+    return Boolean(window[GLOBAL_KEY] || document.getElementById(ROOT_ID));
+  }
+
+  function setPosition(host, position) {
+    var offset = "20px";
+
+    host.style.position = "fixed";
+    host.style.zIndex = "2147483647";
+    host.style.pointerEvents = "none";
+    host.style.lineHeight = "1";
+
+    if (position.indexOf("top") === 0) {
+      host.style.top = offset;
+      host.style.bottom = "auto";
     } else {
-      hostStyle.right = offsetX + "px";
-      hostStyle.left  = "auto";
+      host.style.bottom = offset;
+      host.style.top = "auto";
     }
 
-    /* ── Shadow DOM (full CSS isolation) ── */
-    var shadow = host.attachShadow({ mode: "open" });
+    if (position.indexOf("left") !== -1) {
+      host.style.left = offset;
+      host.style.right = "auto";
+    } else {
+      host.style.right = offset;
+      host.style.left = "auto";
+    }
+  }
 
-    /* ── Styles ── */
-    var styleEl = document.createElement("style");
-    styleEl.textContent = [
-      /* CSS custom properties — theme-ready for future dark/light overrides */
-      ":host {",
-      "  --bos-bg:          #080A0F;",
-      "  --bos-bg-hover:    #111520;",
-      "  --bos-text:        #D5A84C;",
-      "  --bos-border:      rgba(213,168,76,0.28);",
-      "  --bos-shadow:      0 4px 24px rgba(8,10,15,0.32), 0 1px 4px rgba(8,10,15,0.18);",
-      "  --bos-shadow-hover:0 8px 32px rgba(8,10,15,0.42), 0 2px 6px rgba(8,10,15,0.20);",
-      "  --bos-radius:      100px;",
-      "  --bos-font:        -apple-system,BlinkMacSystemFont,'Inter','Segoe UI',system-ui,sans-serif;",
-      "  all: initial;",
-      "}",
-
-      ".btn {",
-      "  display:         inline-flex;",
-      "  align-items:     center;",
-      "  gap:             8px;",
-      "  padding:         13px 22px;",
-      "  background:      var(--bos-bg);",
-      "  color:           var(--bos-text);",
-      "  font-family:     var(--bos-font);",
-      "  font-size:       14px;",
-      "  font-weight:     700;",
-      "  letter-spacing:  0.01em;",
-      "  line-height:     1;",
-      "  border-radius:   var(--bos-radius);",
-      "  border:          1.5px solid var(--bos-border);",
-      "  text-decoration: none;",
-      "  cursor:          pointer;",
-      "  white-space:     nowrap;",
-      "  user-select:     none;",
-      "  -webkit-user-select: none;",
-      "  pointer-events:  auto;",
-      "  box-shadow:      var(--bos-shadow);",
-      "  transition:      transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;",
-      "  animation:       bos-enter 0.38s cubic-bezier(0.34,1.56,0.64,1) both;",
-      "  animation-delay: 0.6s;",   /* slight delay so it doesn't distract on load */
-      "}",
-
-      ".btn:hover {",
-      "  background:  var(--bos-bg-hover);",
-      "  box-shadow:  var(--bos-shadow-hover);",
-      "  transform:   translateY(-2px);",
-      "}",
-
-      ".btn:active {",
-      "  transform:   translateY(0px);",
-      "  box-shadow:  var(--bos-shadow);",
-      "}",
-
-      ".btn:focus-visible {",
-      "  outline:        2px solid #2563EB;",
-      "  outline-offset: 3px;",
-      "}",
-
-      ".icon {",
-      "  flex-shrink: 0;",
-      "  width:       16px;",
-      "  height:      16px;",
-      "}",
-
-      "@keyframes bos-enter {",
-      "  from { opacity: 0; transform: translateY(10px) scale(0.95); }",
-      "  to   { opacity: 1; transform: translateY(0)    scale(1);    }",
-      "}",
-
-      "@media (prefers-reduced-motion: reduce) {",
-      "  .btn { animation: none; transition: none; }",
-      "}",
-
-      "@media (max-width: 480px) {",
-      "  .btn { padding: 12px 18px; font-size: 13px; }",
-      "}",
-    ].join("\n");
-
-    /* ── Calendar-check SVG icon (inline, no external request) ── */
-    var NS   = "http://www.w3.org/2000/svg";
-    var svg  = document.createElementNS(NS, "svg");
-    svg.setAttribute("class",           "icon");
-    svg.setAttribute("viewBox",         "0 0 24 24");
-    svg.setAttribute("fill",            "none");
-    svg.setAttribute("stroke",          "currentColor");
-    svg.setAttribute("stroke-width",    "2");
-    svg.setAttribute("stroke-linecap",  "round");
-    svg.setAttribute("stroke-linejoin", "round");
-    svg.setAttribute("aria-hidden",     "true");
-
-    /* calendar-check paths from Lucide */
+  function createIcon() {
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
     var paths = [
-      ["rect", { x:"3", y:"4", width:"18", height:"18", rx:"2", ry:"2" }],
-      ["line", { x1:"16", y1:"2",  x2:"16", y2:"6"  }],
-      ["line", { x1:"8",  y1:"2",  x2:"8",  y2:"6"  }],
-      ["line", { x1:"3",  y1:"10", x2:"21", y2:"10" }],
-      ["path", { d:"m9 16 2 2 4-4" }],
+      ["path", { d: "M8 2v4" }],
+      ["path", { d: "M16 2v4" }],
+      ["rect", { x: "3", y: "4", width: "18", height: "18", rx: "3" }],
+      ["path", { d: "M3 10h18" }],
+      ["path", { d: "m9 16 2 2 4-4" }]
     ];
 
-    paths.forEach(function (def) {
-      var el = document.createElementNS(NS, def[0]);
-      var attrs = def[1];
-      Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
-      svg.appendChild(el);
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    svg.setAttribute("class", "bos-icon");
+
+    paths.forEach(function (item) {
+      var element = document.createElementNS(ns, item[0]);
+      var attrs = item[1];
+      Object.keys(attrs).forEach(function (key) {
+        element.setAttribute(key, attrs[key]);
+      });
+      svg.appendChild(element);
     });
 
-    /* ── Anchor element ── */
+    return svg;
+  }
+
+  function mount(config) {
+    if (!document.body || alreadyMounted()) {
+      return;
+    }
+
+    window[GLOBAL_KEY] = true;
+
+    var host = document.createElement("div");
+    host.id = ROOT_ID;
+    host.setAttribute("data-theme", config.theme);
+    setPosition(host, config.position);
+
+    var shadow = host.attachShadow ? host.attachShadow({ mode: "closed" }) : host;
+    var style = document.createElement("style");
     var link = document.createElement("a");
-    link.className  = "btn";
-    link.href       = bookingUrl;
-    link.target     = "_blank";
-    link.rel        = "noopener noreferrer";
-    link.setAttribute("aria-label", label + " — BarberíaOS");
+    var label = document.createElement("span");
 
-    var labelSpan = document.createElement("span");
-    labelSpan.textContent = label;
+    style.textContent = [
+      ":host{all:initial;}",
+      ".bos-theme-dark{",
+      "  --bos-bg:#080a0f;",
+      "  --bos-bg-hover:#121720;",
+      "  --bos-text:#f6d17a;",
+      "  --bos-border:rgba(246,209,122,.35);",
+      "  --bos-shadow:0 18px 45px rgba(0,0,0,.24),0 4px 14px rgba(0,0,0,.16);",
+      "}",
+      ".bos-theme-light{",
+      "  --bos-bg:#ffffff;",
+      "  --bos-bg-hover:#f6f1e8;",
+      "  --bos-text:#111827;",
+      "  --bos-border:rgba(17,24,39,.16);",
+      "  --bos-shadow:0 18px 45px rgba(17,24,39,.18),0 4px 14px rgba(17,24,39,.10);",
+      "}",
+      ".bos-theme-gold{",
+      "  --bos-bg:#b8872f;",
+      "  --bos-bg-hover:#a6792b;",
+      "  --bos-text:#ffffff;",
+      "  --bos-border:rgba(255,255,255,.32);",
+      "  --bos-shadow:0 18px 45px rgba(184,135,47,.28),0 4px 14px rgba(0,0,0,.14);",
+      "}",
+      ".bos-button{",
+      "  box-sizing:border-box;",
+      "  display:inline-flex;",
+      "  align-items:center;",
+      "  justify-content:center;",
+      "  gap:10px;",
+      "  min-height:48px;",
+      "  max-width:calc(100vw - 32px);",
+      "  padding:0 20px;",
+      "  border:1px solid var(--bos-border);",
+      "  border-radius:999px;",
+      "  background:var(--bos-bg);",
+      "  color:var(--bos-text);",
+      "  box-shadow:var(--bos-shadow);",
+      "  font:700 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;",
+      "  letter-spacing:0;",
+      "  text-decoration:none;",
+      "  white-space:nowrap;",
+      "  cursor:pointer;",
+      "  pointer-events:auto;",
+      "  user-select:none;",
+      "  -webkit-tap-highlight-color:transparent;",
+      "  transform:translateZ(0);",
+      "  transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease;",
+      "}",
+      ".bos-button:hover{",
+      "  background:var(--bos-bg-hover);",
+      "  transform:translateY(-2px);",
+      "}",
+      ".bos-button:active{",
+      "  transform:translateY(0);",
+      "}",
+      ".bos-button:focus-visible{",
+      "  outline:3px solid rgba(37,99,235,.55);",
+      "  outline-offset:3px;",
+      "}",
+      ".bos-icon{",
+      "  width:18px;",
+      "  height:18px;",
+      "  flex:0 0 18px;",
+      "  fill:none;",
+      "  stroke:currentColor;",
+      "  stroke-width:2;",
+      "  stroke-linecap:round;",
+      "  stroke-linejoin:round;",
+      "}",
+      ".bos-label{",
+      "  overflow:hidden;",
+      "  text-overflow:ellipsis;",
+      "}",
+      "@media (max-width:480px){",
+      "  .bos-button{min-height:46px;padding:0 18px;font-size:14px;}",
+      "}",
+      "@media (prefers-reduced-motion:reduce){",
+      "  .bos-button{transition:none;}",
+      "}"
+    ].join("\n");
 
-    link.appendChild(svg);
-    link.appendChild(labelSpan);
+    link.className = "bos-button bos-theme-" + config.theme;
+    link.href = BOOKING_ORIGIN + "/r/" + encodeURIComponent(config.slug);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.setAttribute("aria-label", config.label);
 
-    /* ── Assemble ── */
-    shadow.appendChild(styleEl);
+    label.className = "bos-label";
+    label.textContent = config.label;
+
+    link.appendChild(createIcon());
+    link.appendChild(label);
+    shadow.appendChild(style);
     shadow.appendChild(link);
     document.body.appendChild(host);
   }
 
-  /* ── Init: wait for DOM if needed ─────────────────────────────────────── */
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount, { once: true });
-  } else {
-    mount();
+  if (alreadyMounted()) {
+    return;
   }
 
-})();
+  var script = getCurrentScript();
+  if (script) {
+    script.setAttribute(SCRIPT_FLAG, "true");
+  }
+
+  var config = readConfig(script);
+  if (!config) {
+    return;
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      mount(config);
+    }, { once: true });
+  } else {
+    mount(config);
+  }
+}());
