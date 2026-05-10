@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, X, CalendarDays, Clock, User, Scissors } from "lucide-react";
+import { Plus, X, CalendarDays, Clock, User, Scissors, UserPlus } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 import { createAppointment, updateAppointmentStatus } from "./actions";
-import { PageHeader }  from "@/components/dashboard/PageHeader";
-import { EmptyState }  from "@/components/dashboard/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { StatCard } from "@/components/ui/StatCard";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 export type Appointment = {
   id: string;
@@ -43,15 +47,6 @@ const STATUS_LABEL: Record<string, string> = {
   completed: "Completada",
   cancelled: "Cancelada",
   no_show:   "No apareció",
-};
-
-const STATUS_COLOR: Record<string, string> = {
-  pending:   "bg-amber-50 text-amber-700 border border-amber-100",
-  scheduled: "bg-amber-50 text-amber-700 border border-amber-100",
-  confirmed: "bg-blue-50  text-blue-700  border border-blue-100",
-  completed: "bg-green-50 text-green-700 border border-green-100",
-  cancelled: "bg-red-50   text-red-700   border border-red-100",
-  no_show:   "bg-red-50   text-red-700   border border-red-100",
 };
 
 const NEXT_ACTIONS: Record<string, { label: string; status: string }[]> = {
@@ -98,12 +93,12 @@ function AppointmentCard({
   onStatusChange: (id: string, status: string) => void;
 }) {
   return (
-    <div className="rounded-3xl border border-[#E5E2D9] bg-white p-5 shadow-sm">
+    <article className="panel">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           {showDate ? (
-            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl bg-[#0D0D0D]">
-              <span className="text-[9px] font-bold uppercase text-[#C89B3C]">
+            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111827]">
+              <span className="text-[9px] font-bold uppercase text-[#7AA2FF]">
                 {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
               </span>
               <span className="text-sm font-black text-white">
@@ -111,13 +106,13 @@ function AppointmentCard({
               </span>
             </div>
           ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F5F2EA] text-sm font-black text-[#0D0D0D]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black text-[#111827]">
               {formatTime(appointment.start_time)}
             </div>
           )}
 
           <div className="min-w-0">
-            <p className="font-bold text-[#0D0D0D]">
+            <p className="font-bold text-[#111827]">
               {appointment.clients?.name ?? "Cliente sin nombre"}
             </p>
 
@@ -154,25 +149,23 @@ function AppointmentCard({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            STATUS_COLOR[appointment.status] ?? "bg-neutral-100 text-neutral-600 border border-neutral-200"
-          }`}>
+          <StatusBadge status={appointment.status}>
             {STATUS_LABEL[appointment.status] ?? appointment.status}
-          </span>
+          </StatusBadge>
 
           {NEXT_ACTIONS[appointment.status]?.map((action) => (
             <button
               key={action.status}
               onClick={() => onStatusChange(appointment.id, action.status)}
               disabled={updating === appointment.id}
-              className="rounded-full border border-[#E5E2D9] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D] disabled:opacity-40"
+              className="rounded-xl border border-[#E5E7EB] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[#F8FAFC] hover:text-[#111827] disabled:opacity-40"
             >
               {action.label}
             </button>
           ))}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -219,29 +212,50 @@ export function AgendaClient({
   const pendingCount = allAppointments.filter(
     (a) => a.status === "pending" || a.status === "scheduled"
   ).length;
+  const appointmentsByBarber = barbers.map((barber) => {
+    const barberAppointments = appointments.filter((appointment) => appointment.barbers?.name === barber.name);
+    const busyTimes = new Set(barberAppointments.map((appointment) => formatTime(appointment.start_time)));
+    const freeSlots = slots
+      .filter((slot) => !busyTimes.has(slot.time))
+      .slice(0, 5)
+      .map((slot) => slot.time);
+
+    return {
+      barber,
+      appointments: barberAppointments,
+      freeSlots,
+    };
+  });
 
   return (
     <div className="space-y-5">
 
       <PageHeader
-        section="Agenda"
-        title="Citas del día"
-        description={`${allAppointments.length} citas registradas en total.`}
+        section="Reservas"
+        title="Agenda y reservas"
+        description="Gestiona las citas de tu barbería desde un solo lugar. Aquí puedes ver próximas reservas, horarios, disponibilidad y huecos por barbero."
         action={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
               type="date"
               value={fecha}
               onChange={(e) => handleDateChange(e.target.value)}
-              className="rounded-2xl border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+              className="input"
             />
-            <button
+            <PrimaryButton
               type="button"
               onClick={() => { setFormError(""); setShowModal(true); }}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+              variant="primary"
             >
               <Plus size={16} /> Nueva cita
-            </button>
+            </PrimaryButton>
+            <PrimaryButton
+              type="button"
+              onClick={() => { setFormError(""); setShowModal(true); }}
+              variant="secondary"
+            >
+              <UserPlus size={16} /> Walk-in
+            </PrimaryButton>
           </div>
         }
       />
@@ -254,30 +268,105 @@ export function AgendaClient({
 
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { title: "Citas hoy",          value: appointments.length         },
-          { title: "Próximas citas",     value: upcomingAppointments.length },
-          { title: "Total registradas",  value: allAppointments.length      },
-          { title: "Pendientes",         value: pendingCount                },
-        ].map(({ title, value }) => (
-          <div key={title} className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">{title}</p>
-            <p className="mt-3 text-4xl font-black text-[#0D0D0D]">{value}</p>
-          </div>
-        ))}
+        <StatCard label="Citas hoy" value={appointments.length} description="Fecha seleccionada" icon={CalendarDays} />
+        <StatCard label="Próximas citas" value={upcomingAppointments.length} description="Desde hoy en adelante" icon={Clock} />
+        <StatCard label="Total registradas" value={allAppointments.length} description="Histórico cargado" icon={Scissors} />
+        <StatCard label="Pendientes" value={pendingCount} description="Por confirmar" icon={User} />
       </div>
 
+      <SectionCard
+        title="Vista por barbero"
+        description="Agenda operativa para dueño o recepcionista, con huecos libres destacados."
+      >
+        {barbers.length === 0 ? (
+          <EmptyState
+            icon={User}
+            title="Sin barberos activos"
+            description="Añade tu equipo para ver columnas de disponibilidad y asignar citas a cada barbero. Ejemplo: Carlos, Miguel o Andrés con sus huecos del día."
+            action={
+              <PrimaryButton href="/dashboard/barberos" variant="primary">
+                Crear barbero
+              </PrimaryButton>
+            }
+          />
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-3">
+            {appointmentsByBarber.map(({ barber, appointments: barberAppointments, freeSlots }) => (
+              <article key={barber.id} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black uppercase text-white">
+                      {barber.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-black text-[#080A0F]">{barber.name}</h3>
+                      <p className="text-xs font-semibold text-slate-400">
+                        {barberAppointments.length} citas · {freeSlots.length} huecos visibles
+                      </p>
+                    </div>
+                  </div>
+                  <StatusBadge status={freeSlots.length > 0 ? "confirmed" : "completed"}>
+                    {freeSlots.length > 0 ? "Con huecos" : "Completo"}
+                  </StatusBadge>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {barberAppointments.slice(0, 4).map((appointment) => (
+                    <div key={appointment.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-xs font-black text-[#2563EB]">
+                          {formatTime(appointment.start_time)}
+                        </span>
+                        <StatusBadge status={appointment.status} className="px-2 py-0.5 text-[10px]">
+                          {STATUS_LABEL[appointment.status] ?? appointment.status}
+                        </StatusBadge>
+                      </div>
+                      <p className="mt-1 truncate text-sm font-bold text-slate-800">
+                        {appointment.clients?.name ?? "Cliente sin nombre"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {appointment.services?.name ?? "Servicio no definido"}
+                      </p>
+                    </div>
+                  ))}
+
+                  {freeSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      onClick={() => { setFormError(""); setShowModal(true); }}
+                      className="flex w-full items-center justify-between rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-2 text-left text-sm font-black text-[#8A641F] transition hover:bg-[#D5A84C]/15"
+                    >
+                      <span>{slot} libre</span>
+                      <Plus size={14} />
+                    </button>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+
       {/* Citas de la fecha seleccionada */}
-      <section>
-        <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Fecha seleccionada</p>
-          <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Citas del {fecha}</h2>
-        </div>
+      <SectionCard
+        title={`Citas del ${fecha}`}
+        description="Reservas y citas manuales para la fecha seleccionada."
+      >
         {appointments.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
-            title="Sin citas para este día"
-            description="Crea una nueva cita o selecciona otra fecha."
+            title="Todavía no tienes reservas para este día"
+            description="Cuando tus clientes reserven desde tu link o QR, aparecerán aquí. También puedes crear una cita manual de prueba."
+            action={
+              <PrimaryButton
+                type="button"
+                onClick={() => { setFormError(""); setShowModal(true); }}
+                variant="primary"
+              >
+                <Plus size={16} /> Crear reserva de prueba
+              </PrimaryButton>
+            }
           />
         ) : (
           <div className="flex flex-col gap-3">
@@ -291,22 +380,23 @@ export function AgendaClient({
             ))}
           </div>
         )}
-      </section>
+      </SectionCard>
 
       {/* Próximas citas */}
-      <section>
-        <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Agenda futura</p>
-          <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Próximas citas</h2>
-          <p className="text-sm text-neutral-500">
-            Se muestran siempre, aunque haya citas en la fecha seleccionada.
-          </p>
-        </div>
+      <SectionCard
+        title="Próximas citas"
+        description="Se muestran siempre, aunque haya citas en la fecha seleccionada."
+      >
         {upcomingAppointments.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
             title="No hay próximas citas"
-            description="Cuando entren nuevas reservas futuras, aparecerán aquí."
+            description="Las reservas futuras aparecerán aquí con cliente, servicio, barbero, hora y estado. Comparte tu QR para empezar a recibirlas."
+            action={
+              <PrimaryButton href="/dashboard/qr" variant="primary">
+                Ver QR de reservas
+              </PrimaryButton>
+            }
           />
         ) : (
           <div className="flex flex-col gap-3">
@@ -321,23 +411,22 @@ export function AgendaClient({
             ))}
           </div>
         )}
-      </section>
+      </SectionCard>
 
       {/* Modal nueva cita */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Agenda</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">Nueva cita</h2>
+                  <p className="label-section">Agenda</p>
+                  <h2 className="section-heading mt-0.5">Nueva cita</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />
                 </button>
@@ -347,11 +436,11 @@ export function AgendaClient({
                 <input type="hidden" name="barbershop_id" value={barbershopId} />
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Cliente *</label>
+                  <label className="form-label">Cliente *</label>
                   <select
                     name="client_id"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Seleccionar cliente...</option>
                     {clients.map((c) => (
@@ -363,11 +452,11 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Servicio *</label>
+                  <label className="form-label">Servicio *</label>
                   <select
                     name="service_id"
                     required
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Seleccionar servicio...</option>
                     {services.map((s) => (
@@ -379,10 +468,10 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Barbero</label>
+                  <label className="form-label">Barbero</label>
                   <select
                     name="barber_id"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   >
                     <option value="">Cualquiera / Sin asignar</option>
                     {barbers.map((b) => (
@@ -393,21 +482,21 @@ export function AgendaClient({
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Fecha *</label>
+                    <label className="form-label">Fecha *</label>
                     <input
                       name="appointment_date"
                       type="date"
                       defaultValue={fecha}
                       required
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Hora *</label>
+                    <label className="form-label">Hora *</label>
                     <select
                       name="start_time"
                       required
-                      className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="input py-3"
                     >
                       <option value="">Hora...</option>
                       {slots.map((s) => (
@@ -418,11 +507,11 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Notas</label>
+                  <label className="form-label">Notas</label>
                   <input
                     name="notes"
                     placeholder="Ej: Trae referencia de foto"
-                    className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="input py-3"
                   />
                 </div>
 
@@ -431,20 +520,22 @@ export function AgendaClient({
                 )}
 
                 <div className="flex gap-3 pt-2">
-                  <button
+                  <PrimaryButton
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]"
+                    variant="secondary"
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </PrimaryButton>
+                  <PrimaryButton
                     type="submit"
                     disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50"
+                    variant="primary"
+                    className="flex-1"
                   >
                     {saving ? "Guardando..." : "Crear cita"}
-                  </button>
+                  </PrimaryButton>
                 </div>
               </form>
             </div>

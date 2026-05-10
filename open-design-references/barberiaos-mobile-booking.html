@@ -1,0 +1,672 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BarberiaOS — Reserva móvil</title>
+  <style>
+    :root {
+      --bg: oklch(18% 0 0);
+      --surface: oklch(99% 0 0);
+      --fg: oklch(99% 0 0);
+      --muted: oklch(54% 0 0);
+      --border: oklch(92% 0 0);
+      --accent: oklch(58% 0.18 255);
+      --success: #17A34A;
+      --warn: #EAB308;
+      --danger: #DC2626;
+      --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      background:
+        repeating-linear-gradient(90deg, rgba(229,229,229,0.07) 0 1px, transparent 1px 72px),
+        var(--bg);
+      color: var(--fg);
+      font: 400 14px/1.5 var(--font-body);
+      text-rendering: optimizeLegibility;
+    }
+    button { font: inherit; color: inherit; }
+
+    .stage {
+      width: min(100%, 430px);
+      min-height: 100svh;
+      background: #111111;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      color: rgba(250,250,250,0.78);
+      font: 700 12px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .status-icons {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .signal {
+      width: 18px;
+      height: 10px;
+      display: inline-grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      align-items: end;
+    }
+    .signal i {
+      display: block;
+      width: 3px;
+      background: currentColor;
+      border-radius: 2px;
+    }
+    .signal i:nth-child(1) { height: 3px; }
+    .signal i:nth-child(2) { height: 5px; }
+    .signal i:nth-child(3) { height: 7px; }
+    .signal i:nth-child(4) { height: 10px; }
+    .battery {
+      width: 22px;
+      height: 11px;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      position: relative;
+    }
+    .battery::before {
+      content: "";
+      position: absolute;
+      inset: 2px 5px 2px 2px;
+      background: currentColor;
+      border-radius: 1px;
+    }
+    .battery::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 5px;
+      inset-inline-end: -4px;
+      inset-block-start: 2px;
+      background: currentColor;
+      border-radius: 0 2px 2px 0;
+    }
+
+    .app {
+      min-height: calc(100svh - 42px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .top {
+      padding: 8px 16px 14px;
+      border-bottom: 1px solid rgba(229,229,229,0.16);
+      background: rgba(17,17,17,0.96);
+    }
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .back, .ghost {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(229,229,229,0.18);
+      border-radius: 8px;
+      background: rgba(250,250,250,0.04);
+      font: 700 20px/1 var(--font-mono);
+    }
+    .shop {
+      min-width: 0;
+      text-align: center;
+    }
+    .shop strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .shop span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(250,250,250,0.56);
+      font: 600 11px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .progress i {
+      height: 3px;
+      background: rgba(250,250,250,0.14);
+      border-radius: 999px;
+    }
+    .progress i:nth-child(-n+3) { background: var(--accent); }
+
+    .content {
+      min-height: 0;
+      overflow: auto;
+      padding: 20px 16px 116px;
+      scrollbar-width: none;
+    }
+    .content::-webkit-scrollbar { display: none; }
+    .hero {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .eyebrow {
+      width: fit-content;
+      padding: 6px 8px;
+      border: 1px solid rgba(229,229,229,0.2);
+      color: rgba(250,250,250,0.7);
+      font: 700 11px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 10ch;
+      font: 600 40px/0.96 var(--font-display);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+    .hero p {
+      margin: 0;
+      color: rgba(250,250,250,0.66);
+      font-size: 15px;
+      text-wrap: pretty;
+    }
+
+    .section {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    h2 {
+      margin: 0;
+      font: 600 17px/1.15 var(--font-display);
+      letter-spacing: -0.01em;
+    }
+    .hint {
+      color: rgba(250,250,250,0.5);
+      font: 700 11px/1 var(--font-mono);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .service-list, .barber-list, .time-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .choice {
+      min-height: 72px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid rgba(229,229,229,0.18);
+      border-radius: 12px;
+      background: rgba(250,250,250,0.04);
+      text-align: start;
+    }
+    .choice.active {
+      border-color: var(--accent);
+      background: rgba(47,111,235,0.15);
+    }
+    .choice strong {
+      display: block;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .choice span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(250,250,250,0.58);
+      font-size: 12px;
+    }
+    .choice em {
+      font-style: normal;
+      color: var(--fg);
+      font: 700 14px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .check {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(250,250,250,0.28);
+      border-radius: 999px;
+      color: transparent;
+      font: 700 12px/1 var(--font-mono);
+    }
+    .active .check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--fg);
+    }
+
+    .barber-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .barber {
+      min-height: 124px;
+      display: grid;
+      align-content: space-between;
+      justify-items: start;
+      padding: 12px;
+      border: 1px solid rgba(229,229,229,0.18);
+      border-radius: 12px;
+      background: rgba(250,250,250,0.04);
+      text-align: start;
+    }
+    .barber.active {
+      border-color: var(--accent);
+      background: rgba(47,111,235,0.15);
+    }
+    .avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(250,250,250,0.22);
+      border-radius: 8px;
+      background: rgba(250,250,250,0.08);
+      font: 700 12px/1 var(--font-mono);
+    }
+    .barber strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .barber span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(250,250,250,0.56);
+      font-size: 11px;
+    }
+
+    .date-strip {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 64px;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .date-strip::-webkit-scrollbar { display: none; }
+    .date-card {
+      min-height: 76px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(229,229,229,0.18);
+      border-radius: 12px;
+      background: rgba(250,250,250,0.04);
+      color: rgba(250,250,250,0.62);
+    }
+    .date-card.active {
+      background: var(--surface);
+      border-color: var(--surface);
+      color: #111111;
+    }
+    .date-card span {
+      font: 700 11px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    .date-card strong {
+      margin-top: 4px;
+      font: 700 22px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .slot {
+      min-height: 44px;
+      border: 1px solid rgba(229,229,229,0.18);
+      border-radius: 8px;
+      background: rgba(250,250,250,0.04);
+      color: rgba(250,250,250,0.76);
+      font: 700 13px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .slot.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--fg);
+    }
+    .slot[disabled] {
+      color: rgba(250,250,250,0.26);
+      text-decoration: line-through;
+    }
+
+    .deposit {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: #111111;
+      overflow: hidden;
+    }
+    .deposit-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .deposit-head strong {
+      display: block;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .deposit-head span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .amount {
+      font: 700 26px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      color: #111111;
+    }
+    .summary {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      background: var(--surface);
+      color: var(--muted);
+    }
+    .summary-row b {
+      color: #111111;
+      font-weight: 600;
+      text-align: end;
+    }
+
+    .checkout {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 0;
+      padding: 10px 14px 16px;
+      border-top: 1px solid rgba(229,229,229,0.18);
+      background: rgba(17,17,17,0.94);
+      backdrop-filter: blur(12px);
+    }
+    .checkout-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .checkout-row span {
+      color: rgba(250,250,250,0.58);
+      font-size: 12px;
+    }
+    .checkout-row strong {
+      display: block;
+      font: 700 22px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .pay {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--fg);
+      font-weight: 700;
+    }
+    .home-indicator {
+      width: 128px;
+      height: 4px;
+      margin: 12px auto 0;
+      border-radius: 999px;
+      background: rgba(250,250,250,0.34);
+    }
+
+    @media (min-width: 520px) {
+      .stage {
+        min-height: 900px;
+        max-height: 900px;
+        border: 1px solid rgba(250,250,250,0.26);
+        border-radius: 34px;
+        box-shadow: 0 0 0 10px rgba(250,250,250,0.04);
+      }
+      body { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" data-od-id="mobile-booking-screen">
+    <div class="status" aria-label="Estado del teléfono">
+      <span>9:41</span>
+      <span class="status-icons">
+        <span class="signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>5G</span>
+        <span class="battery" aria-hidden="true"></span>
+      </span>
+    </div>
+
+    <div class="app">
+      <header class="top">
+        <div class="top-row">
+          <button class="back" aria-label="Volver">‹</button>
+          <div class="shop">
+            <strong>La Navaja Club</strong>
+            <span>Reserva con BarberiaOS</span>
+          </div>
+          <button class="ghost" aria-label="Ayuda">?</button>
+        </div>
+        <div class="progress" aria-label="Progreso de reserva">
+          <i></i><i></i><i></i><i></i>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="hero">
+          <span class="eyebrow">Paso 3 de 4</span>
+          <h1 data-od-id="headline">Reserva tu hueco.</h1>
+          <p>Elige servicio, barbero y hora. La señal bloquea la cita y se descuenta del total al llegar.</p>
+        </div>
+
+        <section class="section" data-od-id="service-picker">
+          <div class="section-head">
+            <h2>Servicio</h2>
+            <span class="hint">4 disponibles</span>
+          </div>
+          <div class="service-list">
+            <button class="choice active" data-service="Corte + barba" data-price="32" data-duration="45 min">
+              <span><strong>Corte + barba</strong><span>45 min · lavado incluido</span></span>
+              <em>€32</em>
+            </button>
+            <button class="choice" data-service="Fade premium" data-price="28" data-duration="40 min">
+              <span><strong>Fade premium</strong><span>40 min · perfilado a navaja</span></span>
+              <em>€28</em>
+            </button>
+            <button class="choice" data-service="Barba completa" data-price="18" data-duration="30 min">
+              <span><strong>Barba completa</strong><span>30 min · ritual con toalla caliente</span></span>
+              <em>€18</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="section" data-od-id="barber-picker">
+          <div class="section-head">
+            <h2>Barbero</h2>
+            <span class="hint">Recomendado</span>
+          </div>
+          <div class="barber-list">
+            <button class="barber active" data-barber="Nico">
+              <span class="avatar">NC</span>
+              <span><strong>Nico</strong><span>Especialista en barba</span></span>
+              <span class="check">✓</span>
+            </button>
+            <button class="barber" data-barber="Alex">
+              <span class="avatar">AM</span>
+              <span><strong>Alex</strong><span>Fade y degradados</span></span>
+              <span class="check">✓</span>
+            </button>
+            <button class="barber" data-barber="Samu">
+              <span class="avatar">SR</span>
+              <span><strong>Samu</strong><span>Clásico y tijera</span></span>
+              <span class="check">✓</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="section" data-od-id="date-picker">
+          <div class="section-head">
+            <h2>Fecha</h2>
+            <span class="hint">Esta semana</span>
+          </div>
+          <div class="date-strip">
+            <button class="date-card" data-date="hoy 14"><span>Hoy</span><strong>14</strong></button>
+            <button class="date-card active" data-date="jueves 15"><span>Jue</span><strong>15</strong></button>
+            <button class="date-card" data-date="viernes 16"><span>Vie</span><strong>16</strong></button>
+            <button class="date-card" data-date="sábado 17"><span>Sáb</span><strong>17</strong></button>
+            <button class="date-card" data-date="lunes 19"><span>Lun</span><strong>19</strong></button>
+          </div>
+        </section>
+
+        <section class="section" data-od-id="time-picker">
+          <div class="section-head">
+            <h2>Hora</h2>
+            <span class="hint">6 huecos</span>
+          </div>
+          <div class="time-grid">
+            <button class="slot" disabled data-time="10:30">10:30</button>
+            <button class="slot" data-time="11:15">11:15</button>
+            <button class="slot active" data-time="12:00">12:00</button>
+            <button class="slot" data-time="13:20">13:20</button>
+            <button class="slot" data-time="16:40">16:40</button>
+            <button class="slot" data-time="18:10">18:10</button>
+          </div>
+        </section>
+
+        <section class="deposit" data-od-id="deposit-card">
+          <div class="deposit-head">
+            <span><strong>Señal para bloquear cita</strong><span>Se descuenta del precio final en caja.</span></span>
+            <b class="amount" data-bind="deposit">€10</b>
+          </div>
+          <div class="summary">
+            <div class="summary-row"><span>Servicio</span><b data-bind="service">Corte + barba</b></div>
+            <div class="summary-row"><span>Con</span><b data-bind="barberDate">Nico · jueves 15</b></div>
+            <div class="summary-row"><span>Hora</span><b data-bind="timeDuration">12:00 · 45 min</b></div>
+            <div class="summary-row"><span>Resta en barbería</span><b data-bind="remaining">€22</b></div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="checkout" data-od-id="payment-bar">
+        <div class="checkout-row">
+          <span><strong data-bind="depositInline">€10</strong> señal ahora</span>
+          <span>Pago seguro</span>
+        </div>
+        <button class="pay" data-bind="payButton">Pagar señal y confirmar</button>
+        <div class="home-indicator" aria-hidden="true"></div>
+      </footer>
+    </div>
+  </main>
+  <script>
+    const bookingState = {
+      service: "Corte + barba",
+      price: 32,
+      duration: "45 min",
+      barber: "Nico",
+      date: "jueves 15",
+      time: "12:00",
+      deposit: 10
+    };
+
+    const bind = (name) => document.querySelector(`[data-bind="${name}"]`);
+
+    function setActive(groupSelector, selected) {
+      document.querySelectorAll(groupSelector).forEach((item) => {
+        item.classList.toggle("active", item === selected);
+      });
+    }
+
+    function renderSummary() {
+      const remaining = Math.max(0, bookingState.price - bookingState.deposit);
+      bind("deposit").textContent = `€${bookingState.deposit}`;
+      bind("depositInline").textContent = `€${bookingState.deposit}`;
+      bind("service").textContent = bookingState.service;
+      bind("barberDate").textContent = `${bookingState.barber} · ${bookingState.date}`;
+      bind("timeDuration").textContent = `${bookingState.time} · ${bookingState.duration}`;
+      bind("remaining").textContent = `€${remaining}`;
+      bind("payButton").textContent = `Pagar €${bookingState.deposit} y confirmar`;
+    }
+
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.addEventListener("click", () => {
+        setActive(".choice", button);
+        bookingState.service = button.dataset.service;
+        bookingState.price = Number(button.dataset.price);
+        bookingState.duration = button.dataset.duration;
+        bookingState.deposit = bookingState.price <= 20 ? 5 : 10;
+        renderSummary();
+      });
+    });
+
+    document.querySelectorAll(".barber").forEach((button) => {
+      button.addEventListener("click", () => {
+        setActive(".barber", button);
+        bookingState.barber = button.dataset.barber;
+        renderSummary();
+      });
+    });
+
+    document.querySelectorAll(".date-card").forEach((button) => {
+      button.addEventListener("click", () => {
+        setActive(".date-card", button);
+        bookingState.date = button.dataset.date;
+        renderSummary();
+      });
+    });
+
+    document.querySelectorAll(".slot:not([disabled])").forEach((button) => {
+      button.addEventListener("click", () => {
+        setActive(".slot", button);
+        bookingState.time = button.dataset.time;
+        renderSummary();
+      });
+    });
+  </script>
+</body>
+</html>

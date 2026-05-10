@@ -1,14 +1,14 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAFAF8]">
+    <div className="flex h-screen overflow-hidden bg-[#F6F8FB]">
       <AdminSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-5xl px-6 py-8">
+        <div className="page-shell-narrow px-6 py-8">
           {children}
         </div>
       </main>

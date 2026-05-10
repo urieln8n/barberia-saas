@@ -50,27 +50,32 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
   const [editing,   setEditing]   = useState<Deal | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setShowModal(true); }
-  function openEdit(d: Deal) { setEditing(d); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setFormError(null); setShowModal(true); }
+  function openEdit(d: Deal) { setEditing(d); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este deal?")) return;
     setDeleting(id);
-    await deleteDeal(id);
+    const result = await deleteDeal(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateDeal(formData);
+      result = await updateDeal(formData);
     } else {
-      await createDeal(formData);
+      result = await createDeal(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -86,14 +91,14 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">CRM</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#0D0D0D]">Pipeline</h1>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">CRM</p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#111827]">Pipeline</h1>
           <p className="mt-1 text-sm text-neutral-500">{deals.length} deal{deals.length !== 1 ? "s" : ""}</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+          className="btn-primary"
         >
           <Plus size={16} /> Nuevo deal
         </button>
@@ -103,7 +108,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Pipeline abierto</p>
-          <p className="mt-1 text-2xl font-black text-[#0D0D0D]">{openValue.toFixed(0)} €</p>
+          <p className="mt-1 text-2xl font-black text-[#111827]">{openValue.toFixed(0)} €</p>
         </div>
         <div className="rounded-2xl border border-green-200 bg-green-50 p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-green-600">Valor ganado</p>
@@ -117,7 +122,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
           type="button"
           onClick={() => setFilter("all")}
           className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-            filter === "all" ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+            filter === "all" ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
           }`}
         >
           Todos ({deals.length})
@@ -130,7 +135,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
               type="button"
               onClick={() => setFilter(s)}
               className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                filter === s ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+                filter === s ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
               }`}
             >
               {STAGE_LABELS[s]} {count > 0 && `(${count})`}
@@ -141,7 +146,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
 
       {/* Tabla */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-[#F5F2EA] py-16">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] py-16">
           <p className="font-bold text-neutral-500">
             {filter === "all" ? "Sin deals todavía" : `Sin deals en "${STAGE_LABELS[filter]}"`}
           </p>
@@ -149,17 +154,17 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
             <button
               type="button"
               onClick={openCreate}
-              className="mt-4 flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-4 py-2 text-sm font-bold text-white"
+              className="btn-primary mt-4"
             >
               <Plus size={14} /> Añadir primer deal
             </button>
           )}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <div className="table-shell">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E2D9] bg-[#F5F2EA]">
+              <tr className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Deal</th>
                 <th className="hidden px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400 md:table-cell">Lead</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Stage</th>
@@ -169,10 +174,10 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E2D9]">
+            <tbody className="divide-y divide-[#E5E7EB]">
               {filtered.map(deal => (
-                <tr key={deal.id} className="transition-colors hover:bg-[#F5F2EA]/50">
-                  <td className="px-4 py-3 font-bold text-[#0D0D0D]">{deal.title}</td>
+                <tr key={deal.id} className="transition-colors hover:bg-[#F8FAFC]/70">
+                  <td className="px-4 py-3 font-bold text-[#111827]">{deal.title}</td>
                   <td className="hidden px-4 py-3 text-neutral-500 md:table-cell">
                     {deal.lead_id ? (leadMap[deal.lead_id] ?? "Lead eliminado") : "—"}
                   </td>
@@ -181,7 +186,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                       {STAGE_LABELS[deal.stage] ?? deal.stage}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono font-semibold text-[#0D0D0D]">
+                  <td className="px-4 py-3 text-right font-mono font-semibold text-[#111827]">
                     {deal.value ? `${deal.value} €` : "—"}
                   </td>
                   <td className="hidden px-4 py-3 text-right text-neutral-500 lg:table-cell">
@@ -193,7 +198,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <button type="button" onClick={() => openEdit(deal)}
-                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]">
+                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]">
                         <Pencil size={14} />
                       </button>
                       <button type="button" onClick={() => handleDelete(deal.id)} disabled={deleting === deal.id}
@@ -212,17 +217,17 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
             <div className="max-h-[90vh] overflow-y-auto p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Pipeline</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Pipeline</p>
+                  <h2 className="mt-0.5 text-xl font-black text-[#111827]">
                     {editing ? "Editar deal" : "Nuevo deal"}
                   </h2>
                 </div>
-                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]">
+                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]">
                   <X size={18} />
                 </button>
               </div>
@@ -235,8 +240,8 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     name="title"
                     required
                     defaultValue={editing?.title ?? ""}
-                    placeholder="Ej: Barbería El Maestro — Plan Starter"
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    placeholder="Ej: Barbería El Maestro — Plan Básico"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
@@ -245,7 +250,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                   <select
                     name="lead_id"
                     defaultValue={editing?.lead_id ?? ""}
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   >
                     <option value="">Sin lead asociado</option>
                     {leads.map(l => (
@@ -263,7 +268,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                       step="0.01"
                       min="0"
                       defaultValue={editing?.value ?? 0}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -274,7 +279,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                       min="0"
                       max="100"
                       defaultValue={editing?.probability ?? 0}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -285,7 +290,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     <select
                       name="stage"
                       defaultValue={editing?.stage ?? "prospecting"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       {ALL_STAGES.map(s => (
                         <option key={s} value={s}>{STAGE_LABELS[s]}</option>
@@ -297,7 +302,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     <select
                       name="status"
                       defaultValue={editing?.status ?? "open"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       <option value="open">Abierto</option>
                       <option value="won">Ganado</option>
@@ -312,7 +317,7 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     name="expected_close_date"
                     type="date"
                     defaultValue={editing?.expected_close_date ?? ""}
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
@@ -323,17 +328,23 @@ export function DealsClient({ deals, leads }: { deals: Deal[]; leads: Lead[] }) 
                     rows={3}
                     defaultValue={editing?.notes ?? ""}
                     placeholder="Contexto del deal..."
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
 
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
+
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={closeModal}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]">
+                    className="flex-1 rounded-xl border border-[#E5E7EB] py-3 text-sm font-semibold transition-colors hover:bg-[#F8FAFC]">
                     Cancelar
                   </button>
                   <button type="submit" disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50">
+                    className="flex-1 rounded-xl bg-[#2F6FEB] py-3 text-sm font-bold text-white transition-colors hover:bg-[#2459bd] disabled:opacity-50">
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear deal"}
                   </button>
                 </div>

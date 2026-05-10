@@ -32,18 +32,23 @@ type Subscription = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const PLAN_DEFAULTS: Record<string, number> = {
-  starter: 49, growth: 149, premium: 299, custom: 0,
+  free: 0, starter: 39, pro: 79, growth: 149, premium: 299,
 };
 
 const PLAN_LABELS: Record<string, string> = {
-  starter: "Starter", growth: "Growth", premium: "Premium", custom: "Custom",
+  free: "Free 5 días",
+  starter: "Starter",
+  pro: "Pro",
+  growth: "Growth",
+  premium: "Premium / Scale",
 };
 
 const PLAN_COLORS: Record<string, string> = {
-  starter: "border border-[#C89B3C]/30 bg-[#C89B3C]/10 text-[#C89B3C]",
-  growth:  "border border-[#00C2A8]/30 bg-[#00C2A8]/10 text-[#009e88]",
-  premium: "bg-[#0D0D0D] text-white",
-  custom:  "border border-neutral-300 bg-neutral-100 text-neutral-600",
+  free: "border border-emerald-200 bg-emerald-50 text-emerald-700",
+  starter: "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2F6FEB]",
+  pro: "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]",
+  growth: "border border-sky-200 bg-sky-50 text-sky-700",
+  premium: "bg-[#0F172A] text-white",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -61,7 +66,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const ALL_STATUSES = ["trial","active","paused","cancelled"];
-const ALL_PLANS    = ["starter","growth","premium","custom"];
+const ALL_PLANS    = ["free","starter","pro","growth","premium"];
 
 function toLocal(iso: string | null) {
   if (!iso) return "";
@@ -96,34 +101,40 @@ export function SuscripcionesClient({
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [updating,  setUpdating]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
-  const [planAmount, setPlanAmount] = useState<number>(49);
+  const [planAmount, setPlanAmount] = useState<number>(0);
+  const [formError, setFormError]  = useState<string | null>(null);
 
-  function openCreate() { setEditing(null); setPlanAmount(49); setShowModal(true); }
-  function openEdit(s: Subscription) { setEditing(s); setPlanAmount(s.amount_monthly); setShowModal(true); }
-  function closeModal() { setShowModal(false); setEditing(null); }
+  function openCreate() { setEditing(null); setPlanAmount(0); setFormError(null); setShowModal(true); }
+  function openEdit(s: Subscription) { setEditing(s); setPlanAmount(s.amount_monthly); setFormError(null); setShowModal(true); }
+  function closeModal() { setShowModal(false); setEditing(null); setFormError(null); }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar esta suscripción?")) return;
     setDeleting(id);
-    await deleteSubscription(id);
+    const result = await deleteSubscription(id);
     setDeleting(null);
+    if (!result.success) alert(`Error al eliminar: ${result.error}`);
   }
 
   async function handleStatusChange(id: string, status: string) {
     setUpdating(id);
-    await updateSubscriptionStatus(id, status);
+    const result = await updateSubscriptionStatus(id, status);
     setUpdating(null);
+    if (!result.success) alert(`Error al cambiar estado: ${result.error}`);
   }
 
   async function handleSubmit(formData: FormData) {
     setSaving(true);
+    setFormError(null);
+    let result;
     if (editing) {
       formData.append("id", editing.id);
-      await updateSubscription(formData);
+      result = await updateSubscription(formData);
     } else {
-      await createSubscription(formData);
+      result = await createSubscription(formData);
     }
     setSaving(false);
+    if (!result.success) { setFormError(result.error); return; }
     closeModal();
   }
 
@@ -139,35 +150,35 @@ export function SuscripcionesClient({
       {/* Header ──────────────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Admin</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#0D0D0D]">Suscripciones</h1>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Admin</p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#111827]">Suscripciones</h1>
           <p className="mt-1 text-sm text-neutral-500">Gestión manual de planes activos de BarberiaOS</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+          className="btn-primary"
         >
           <Plus size={16} /> Nueva suscripción
         </button>
       </div>
 
       {/* MRR total ───────────────────────────────────────────────────────────── */}
-      <div className="overflow-hidden rounded-3xl bg-[#0D0D0D]">
-        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+      <div className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-white shadow-sm">
+        <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
         <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center">
           <div className="flex-1">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">MRR Real</p>
-            <p className="mt-1 text-4xl font-black text-white">{fmtEur(mrr)}</p>
-            <p className="mt-1 text-sm text-white/50">
-              Solo suscripciones con status = <span className="font-semibold text-white/80">active</span>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">MRR Real</p>
+            <p className="mt-1 text-4xl font-black text-[#111827]">{fmtEur(mrr)}</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Solo suscripciones con status = <span className="font-semibold text-slate-700">active</span>
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             {ALL_STATUSES.map(s => (
               <div key={s} className="text-center">
-                <p className="text-xl font-black text-white">{byStatus[s] ?? 0}</p>
-                <p className="text-[11px] font-semibold text-white/50">{STATUS_LABELS[s]}</p>
+                <p className="text-xl font-black text-[#111827]">{byStatus[s] ?? 0}</p>
+                <p className="text-[11px] font-semibold text-slate-500">{STATUS_LABELS[s]}</p>
               </div>
             ))}
           </div>
@@ -180,7 +191,7 @@ export function SuscripcionesClient({
           type="button"
           onClick={() => setFilter("all")}
           className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-            filter === "all" ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+            filter === "all" ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
           }`}
         >
           Todas ({subscriptions.length})
@@ -191,7 +202,7 @@ export function SuscripcionesClient({
             type="button"
             onClick={() => setFilter(s)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-              filter === s ? "bg-[#0D0D0D] text-white" : "border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300"
+              filter === s ? "bg-[#2F6FEB] text-white" : "border border-[#E5E7EB] bg-white text-neutral-600 hover:border-[#CBD5E1]"
             }`}
           >
             {STATUS_LABELS[s]} ({byStatus[s] ?? 0})
@@ -201,23 +212,23 @@ export function SuscripcionesClient({
 
       {/* Tabla ───────────────────────────────────────────────────────────────── */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-[#F5F2EA] py-16">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] py-16">
           <p className="font-bold text-neutral-500">Sin suscripciones todavía</p>
           {filter === "all" && (
             <button
               type="button"
               onClick={openCreate}
-              className="mt-4 flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-4 py-2 text-sm font-bold text-white"
+              className="btn-primary mt-4"
             >
               <Plus size={14} /> Añadir primera suscripción
             </button>
           )}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+        <div className="table-shell">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E2D9] bg-[#F5F2EA]">
+              <tr className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Barbería</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Plan</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Estado</th>
@@ -227,11 +238,11 @@ export function SuscripcionesClient({
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E2D9]">
+            <tbody className="divide-y divide-[#E5E7EB]">
               {filtered.map(sub => (
-                <tr key={sub.id} className="transition-colors hover:bg-[#F5F2EA]/50">
+                <tr key={sub.id} className="transition-colors hover:bg-[#F8FAFC]/70">
                   <td className="px-4 py-3">
-                    <p className="font-bold text-[#0D0D0D]">
+                    <p className="font-bold text-[#111827]">
                       {sub.barbershop_name ?? barbershopMap[sub.barbershop_id] ?? sub.barbershop_id.slice(0, 8)}
                     </p>
                     {sub.stripe_subscription_id && (
@@ -239,7 +250,7 @@ export function SuscripcionesClient({
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${PLAN_COLORS[sub.plan_name] ?? PLAN_COLORS.custom}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${PLAN_COLORS[sub.plan_name] ?? PLAN_COLORS.free}`}>
                       {PLAN_LABELS[sub.plan_name] ?? sub.plan_name}
                     </span>
                   </td>
@@ -253,7 +264,7 @@ export function SuscripcionesClient({
                         <button
                           type="button"
                           disabled={updating === sub.id}
-                          className="rounded-lg p-1 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D] disabled:opacity-40"
+                          className="rounded-lg p-1 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827] disabled:opacity-40"
                           onClick={e => {
                             const el = e.currentTarget.nextElementSibling as HTMLElement;
                             el?.classList.toggle("hidden");
@@ -270,7 +281,7 @@ export function SuscripcionesClient({
                                 (e.currentTarget.closest(".relative")?.querySelector(".hidden") as HTMLElement)?.classList.add("hidden");
                                 await handleStatusChange(sub.id, s);
                               }}
-                              className="block w-full px-3 py-2 text-left text-xs font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
+                              className="block w-full px-3 py-2 text-left text-xs font-semibold text-neutral-700 transition-colors hover:bg-[#F8FAFC]"
                             >
                               → {STATUS_LABELS[s]}
                             </button>
@@ -280,7 +291,7 @@ export function SuscripcionesClient({
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`font-mono text-sm font-black ${sub.status === "active" ? "text-[#0D0D0D]" : "text-neutral-400"}`}>
+                    <span className={`font-mono text-sm font-black ${sub.status === "active" ? "text-[#111827]" : "text-neutral-400"}`}>
                       {sub.status === "active" ? fmtEur(sub.amount_monthly) : "—"}
                     </span>
                     {sub.status !== "active" && (
@@ -299,7 +310,7 @@ export function SuscripcionesClient({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <button type="button" onClick={() => openEdit(sub)}
-                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F5F2EA] hover:text-[#0D0D0D]">
+                        className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]">
                         <Pencil size={14} />
                       </button>
                       <button type="button" onClick={() => handleDelete(sub.id)} disabled={deleting === sub.id}
@@ -327,17 +338,17 @@ export function SuscripcionesClient({
       {/* Modal ───────────────────────────────────────────────────────────────── */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
             <div className="max-h-[90vh] overflow-y-auto p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Suscripciones</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#0D0D0D]">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Suscripciones</p>
+                  <h2 className="mt-0.5 text-xl font-black text-[#111827]">
                     {editing ? "Editar suscripción" : "Nueva suscripción"}
                   </h2>
                 </div>
-                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F5F2EA]">
+                <button type="button" onClick={closeModal} className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]">
                   <X size={18} />
                 </button>
               </div>
@@ -351,7 +362,7 @@ export function SuscripcionesClient({
                     <select
                       name="barbershop_id"
                       required
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       <option value="">Selecciona una barbería</option>
                       {barbershops.map(b => (
@@ -370,9 +381,9 @@ export function SuscripcionesClient({
                     <label className="mb-1.5 block text-sm font-semibold text-neutral-700">Plan *</label>
                     <select
                       name="plan_name"
-                      defaultValue={editing?.plan_name ?? "starter"}
+                      defaultValue={editing?.plan_name ?? "free"}
                       onChange={e => setPlanAmount(PLAN_DEFAULTS[e.target.value] ?? 0)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       {ALL_PLANS.map(p => (
                         <option key={p} value={p}>{PLAN_LABELS[p]} {PLAN_DEFAULTS[p] ? `(${PLAN_DEFAULTS[p]} €)` : ""}</option>
@@ -388,7 +399,7 @@ export function SuscripcionesClient({
                       min="0"
                       value={planAmount}
                       onChange={e => setPlanAmount(parseFloat(e.target.value) || 0)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -396,7 +407,7 @@ export function SuscripcionesClient({
                     <select
                       name="billing_cycle"
                       defaultValue={editing?.billing_cycle ?? "monthly"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       <option value="monthly">Mensual</option>
                       <option value="annual">Anual</option>
@@ -411,7 +422,7 @@ export function SuscripcionesClient({
                     <select
                       name="status"
                       defaultValue={editing?.status ?? "trial"}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     >
                       {ALL_STATUSES.map(s => (
                         <option key={s} value={s}>{STATUS_LABELS[s]}</option>
@@ -424,7 +435,7 @@ export function SuscripcionesClient({
                       name="currency"
                       defaultValue={editing?.currency ?? "EUR"}
                       placeholder="EUR"
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -437,7 +448,7 @@ export function SuscripcionesClient({
                       name="started_at"
                       type="date"
                       defaultValue={toLocal(editing?.started_at ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -446,7 +457,7 @@ export function SuscripcionesClient({
                       name="trial_ends_at"
                       type="date"
                       defaultValue={toLocal(editing?.trial_ends_at ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -458,7 +469,7 @@ export function SuscripcionesClient({
                       name="current_period_start"
                       type="date"
                       defaultValue={toLocal(editing?.current_period_start ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                   <div>
@@ -467,7 +478,7 @@ export function SuscripcionesClient({
                       name="current_period_end"
                       type="date"
                       defaultValue={toLocal(editing?.current_period_end ?? null)}
-                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                      className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                     />
                   </div>
                 </div>
@@ -480,18 +491,24 @@ export function SuscripcionesClient({
                     rows={2}
                     defaultValue={editing?.notes ?? ""}
                     placeholder="Condiciones especiales, descuentos, contexto..."
-                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#C89B3C] focus:ring-2 focus:ring-[#C89B3C]/10"
+                    className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#2F6FEB] focus:ring-2 focus:ring-[#2F6FEB]/10"
                   />
                 </div>
+
+                {formError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {formError}
+                  </p>
+                )}
 
                 {/* Botones */}
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={closeModal}
-                    className="flex-1 rounded-2xl border border-[#E5E2D9] py-3 text-sm font-semibold transition-colors hover:bg-[#F5F2EA]">
+                    className="flex-1 rounded-xl border border-[#E5E7EB] py-3 text-sm font-semibold transition-colors hover:bg-[#F8FAFC]">
                     Cancelar
                   </button>
                   <button type="submit" disabled={saving}
-                    className="flex-1 rounded-2xl bg-[#0D0D0D] py-3 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-50">
+                    className="flex-1 rounded-xl bg-[#2F6FEB] py-3 text-sm font-bold text-white transition-colors hover:bg-[#2459bd] disabled:opacity-50">
                     {saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear suscripción"}
                   </button>
                 </div>

@@ -1,8 +1,13 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
+import { Mail, Phone, StickyNote, UserPlus } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { RetentionActions } from "./RetentionActions";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +29,11 @@ type AppointmentRow = {
   start_time: string;
   status: string;
   client_id: string | null;
+  service_id: string | null;
+  barber_id: string | null;
   clients: ClientRow | ClientRow[] | null;
-  services: { name: string } | { name: string }[] | null;
-  barbers: { name: string } | { name: string }[] | null;
+  services: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
+  barbers: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
 };
 
 type ClientWithStats = ClientRow & {
@@ -34,7 +41,11 @@ type ClientWithStats = ClientRow & {
   lastAppointmentDate: string | null;
   lastAppointmentTime: string | null;
   lastServiceName: string | null;
+  lastServiceId: string | null;
+  lastServiceActive: boolean;
   lastBarberName: string | null;
+  lastBarberId: string | null;
+  lastBarberActive: boolean;
   lastStatus: string | null;
 };
 
@@ -90,6 +101,34 @@ function statusBadgeClass(status?: string | null): string {
     no_show:   "bg-red-50   text-red-700   border-red-100",
   };
   return classes[status ?? ""] ?? "bg-neutral-100 text-neutral-600 border-neutral-200";
+}
+
+function getPublicBaseUrl() {
+  return getConfiguredSiteUrl();
+}
+
+function buildRepeatBookingUrl({
+  baseUrl,
+  slug,
+  serviceId,
+  barberId,
+}: {
+  baseUrl: string;
+  slug: string;
+  serviceId: string | null;
+  barberId: string | null;
+}) {
+  const url = new URL(`/r/${slug}`, baseUrl);
+
+  if (serviceId) {
+    url.searchParams.set("service", serviceId);
+  }
+
+  if (barberId) {
+    url.searchParams.set("barber", barberId);
+  }
+
+  return url.toString();
 }
 
 async function getDataClient() {
@@ -203,6 +242,8 @@ export default async function ClientesPage() {
           start_time,
           status,
           client_id,
+          service_id,
+          barber_id,
           clients (
             id,
             name,
@@ -213,10 +254,12 @@ export default async function ClientesPage() {
             barbershop_id
           ),
           services (
-            name
+            name,
+            active
           ),
           barbers (
-            name
+            name,
+            active
           )
         `
         )
@@ -257,7 +300,11 @@ export default async function ClientesPage() {
       lastAppointmentDate: string | null;
       lastAppointmentTime: string | null;
       lastServiceName: string | null;
+      lastServiceId: string | null;
+      lastServiceActive: boolean;
       lastBarberName: string | null;
+      lastBarberId: string | null;
+      lastBarberActive: boolean;
       lastStatus: string | null;
     }
   >();
@@ -279,7 +326,11 @@ export default async function ClientesPage() {
         lastAppointmentDate: appointment.appointment_date,
         lastAppointmentTime: appointment.start_time,
         lastServiceName: service?.name ?? null,
+        lastServiceId: appointment.service_id ?? null,
+        lastServiceActive: service?.active !== false,
         lastBarberName: barber?.name ?? null,
+        lastBarberId: appointment.barber_id ?? null,
+        lastBarberActive: barber?.active !== false,
         lastStatus: appointment.status ?? null,
       });
     } else {
@@ -297,7 +348,11 @@ export default async function ClientesPage() {
         lastAppointmentDate: stats?.lastAppointmentDate ?? null,
         lastAppointmentTime: stats?.lastAppointmentTime ?? null,
         lastServiceName: stats?.lastServiceName ?? null,
+        lastServiceId: stats?.lastServiceId ?? null,
+        lastServiceActive: stats?.lastServiceActive ?? false,
         lastBarberName: stats?.lastBarberName ?? null,
+        lastBarberId: stats?.lastBarberId ?? null,
+        lastBarberActive: stats?.lastBarberActive ?? false,
         lastStatus: stats?.lastStatus ?? null,
       };
     })
@@ -317,6 +372,8 @@ export default async function ClientesPage() {
   const recurringClients = clients.filter(
     (client) => client.totalAppointments > 1
   ).length;
+  const publicBaseUrl = getPublicBaseUrl();
+  const barbershopSlug = barbershopResult.data?.slug ?? null;
 
   const errorMessage =
     clientsResult.error?.message ??
@@ -326,28 +383,27 @@ export default async function ClientesPage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl bg-neutral-950 p-6 text-white shadow-sm">
+      <section className="rounded-2xl border border-[#DDE7FB] bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm font-semibold text-red-400">
+            <p className="label-section">
               Clientes
             </p>
 
-            <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
+            <h1 className="mt-2 text-3xl font-black tracking-tight text-[#111827] md:text-4xl">
               Clientes de {barbershopResult.data?.name ?? "tu barbería"}
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm text-white/60">
-              Aquí aparecen los clientes creados manualmente y también los que
-              llegan desde reservas públicas.
+            <p className="mt-2 max-w-2xl text-sm text-slate-500">
+              Guarda automáticamente los clientes que reservan y detecta quién vuelve, quién no vuelve y a quién puedes recuperar.
             </p>
           </div>
 
           <a
             href="/dashboard/agenda"
-            className="rounded-2xl bg-white px-5 py-3 text-center text-sm font-bold text-neutral-950 hover:bg-neutral-100"
+            className="btn-primary"
           >
-            Ver agenda
+            Crear reserva
           </a>
         </div>
       </section>
@@ -359,28 +415,28 @@ export default async function ClientesPage() {
       )}
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Total clientes</p>
           <p className="mt-2 text-3xl font-black text-neutral-950">
             {clients.length}
           </p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Con teléfono</p>
           <p className="mt-2 text-3xl font-black text-neutral-950">
             {clientsWithPhone}
           </p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Nuevos este mes</p>
           <p className="mt-2 text-3xl font-black text-neutral-950">
             {newClientsThisMonth}
           </p>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-neutral-500">Recurrentes</p>
           <p className="mt-2 text-3xl font-black text-neutral-950">
             {recurringClients}
@@ -389,73 +445,80 @@ export default async function ClientesPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1.6fr]">
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-black text-neutral-950">
-            Crear cliente manual
-          </h2>
+        <div id="crear-cliente" className="panel overflow-hidden p-0">
+          <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,rgba(47,111,235,0.06),rgba(255,255,255,0))] px-5 py-5 md:px-6">
+            <p className="label-section">Clientes</p>
+            <h2 className="mt-2 text-xl font-black text-[#111827]">
+              Crear cliente manual
+            </h2>
+            <p className="mt-1.5 max-w-xl text-sm text-neutral-500">
+              Añade clientes que todavía no han reservado online con una ficha
+              limpia y lista para usar en agenda.
+            </p>
+          </div>
 
-          <p className="mt-1 text-sm text-neutral-500">
-            Úsalo para añadir clientes que todavía no han reservado online.
-          </p>
-
-          <form action={createClientAction} className="mt-6 space-y-4">
+          <form action={createClientAction} className="space-y-5 px-5 py-5 md:px-6">
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
+              <label className="form-label">
                 Nombre *
               </label>
               <input
                 name="name"
                 required
                 placeholder="Ej: Carlos Pérez"
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-950"
+                className="input py-3"
               />
             </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
-                Teléfono
-              </label>
-              <input
-                name="phone"
-                placeholder="Ej: 600123123"
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-950"
-              />
+            <div className="form-grid">
+              <div>
+                <label className="form-label flex items-center gap-1.5">
+                  <Phone size={13} /> Teléfono
+                </label>
+                <input
+                  name="phone"
+                  placeholder="Ej: 600123123"
+                  className="input py-3"
+                />
+              </div>
+
+              <div>
+                <label className="form-label flex items-center gap-1.5">
+                  <Mail size={13} /> Email
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="cliente@email.com"
+                  className="input py-3"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
-                Email
-              </label>
-              <input
-                name="email"
-                type="email"
-                placeholder="cliente@email.com"
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-950"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
-                Notas
+              <label className="form-label flex items-center gap-1.5">
+                <StickyNote size={13} /> Notas
               </label>
               <textarea
                 name="notes"
                 rows={4}
                 placeholder="Ej: Le gusta degradado bajo y barba marcada."
-                className="w-full resize-none rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-neutral-950"
+                className="input resize-none py-3"
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full rounded-2xl bg-red-700 px-5 py-3 text-sm font-bold text-white hover:bg-red-800"
-            >
-              Guardar cliente
-            </button>
+            <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-5 sm:flex-row">
+              <button
+                type="submit"
+                className="btn-primary flex-1"
+              >
+                Guardar cliente
+              </button>
+            </div>
           </form>
         </div>
 
-        <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-black text-neutral-950">
@@ -469,15 +532,16 @@ export default async function ClientesPage() {
           </div>
 
           {clients.length === 0 ? (
-            <div className="mt-6 rounded-3xl border border-dashed border-neutral-300 bg-neutral-50 p-8 text-center">
-              <p className="font-semibold text-neutral-700">
-                Todavía no hay clientes
-              </p>
-              <p className="mt-1 text-sm text-neutral-400">
-                Cuando alguien reserve desde el QR o link público, aparecerá
-                aquí.
-              </p>
-            </div>
+            <EmptyState
+              icon={UserPlus}
+              title="Todavía no hay clientes guardados"
+              description="Los clientes aparecerán automáticamente cuando hagan una reserva desde tu link o QR. También puedes crear un cliente de prueba manualmente."
+              action={
+                <a href="#crear-cliente" className="btn-primary">
+                  Crear cliente de prueba
+                </a>
+              }
+            />
           ) : (
             <>
               <div className="mt-6 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block">
@@ -490,6 +554,7 @@ export default async function ClientesPage() {
                       <th className="px-4 py-3">Servicio</th>
                       <th className="px-4 py-3">Citas</th>
                       <th className="px-4 py-3">Estado</th>
+                      <th className="px-4 py-3 text-right">Retención</th>
                     </tr>
                   </thead>
 
@@ -497,9 +562,12 @@ export default async function ClientesPage() {
                     {clients.map((client) => (
                       <tr key={client.id} className="hover:bg-neutral-50">
                         <td className="px-4 py-4">
-                          <p className="font-bold text-neutral-950">
+                          <Link
+                            href={`/dashboard/clientes/${client.id}`}
+                            className="font-bold text-neutral-950 transition hover:text-[#2F6FEB]"
+                          >
                             {client.name}
-                          </p>
+                          </Link>
                           {client.email && (
                             <p className="text-xs text-neutral-400">
                               {client.email}
@@ -533,6 +601,29 @@ export default async function ClientesPage() {
                             {statusLabel(client.lastStatus)}
                           </span>
                         </td>
+
+                        <td className="px-4 py-4">
+                          {barbershopSlug ? (
+                            <RetentionActions
+                              clientName={client.name}
+                              bookingUrl={buildRepeatBookingUrl({
+                                baseUrl: publicBaseUrl,
+                                slug: barbershopSlug,
+                                serviceId: client.lastServiceId,
+                                barberId: client.lastBarberActive
+                                  ? client.lastBarberId
+                                  : null,
+                              })}
+                              canReserveAgain={Boolean(
+                                client.lastServiceId && client.lastServiceActive
+                              )}
+                            />
+                          ) : (
+                            <span className="text-xs text-neutral-400">
+                              Sin enlace público
+                            </span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -543,7 +634,7 @@ export default async function ClientesPage() {
                 {clients.map((client) => (
                   <article
                     key={client.id}
-                    className="rounded-3xl border border-neutral-200 bg-white p-4"
+                    className="rounded-2xl border border-neutral-200 bg-white p-4"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -595,6 +686,34 @@ export default async function ClientesPage() {
                         {client.notes}
                       </p>
                     )}
+
+                    {barbershopSlug && (
+                      <div className="mt-4 border-t border-neutral-100 pt-4">
+                        <RetentionActions
+                          clientName={client.name}
+                          bookingUrl={buildRepeatBookingUrl({
+                            baseUrl: publicBaseUrl,
+                            slug: barbershopSlug,
+                            serviceId: client.lastServiceId,
+                            barberId: client.lastBarberActive
+                              ? client.lastBarberId
+                              : null,
+                          })}
+                          canReserveAgain={Boolean(
+                            client.lastServiceId && client.lastServiceActive
+                          )}
+                        />
+                      </div>
+                    )}
+
+                    <div className="mt-3">
+                      <Link
+                        href={`/dashboard/clientes/${client.id}`}
+                        className="inline-flex min-h-10 items-center justify-center rounded-xl border border-neutral-200 px-3 py-2 text-xs font-bold text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-950"
+                      >
+                        Ver ficha
+                      </Link>
+                    </div>
                   </article>
                 ))}
               </div>

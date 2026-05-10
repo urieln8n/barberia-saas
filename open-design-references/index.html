@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BarberiaOS — Software premium para barberías</title>
+  <style>
+    :root {
+      --bg: oklch(18% 0 0);
+      --surface: oklch(99% 0 0);
+      --fg: oklch(99% 0 0);
+      --muted: oklch(54% 0 0);
+      --border: oklch(92% 0 0);
+      --accent: oklch(58% 0.18 255);
+      --success: #17A34A;
+      --warn: #EAB308;
+      --danger: #DC2626;
+      --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 400 16px/1.5 var(--font-body);
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
+    .page {
+      min-height: 100svh;
+      overflow: hidden;
+      background:
+        linear-gradient(to bottom, rgba(250,250,250,0.08), transparent 220px),
+        repeating-linear-gradient(90deg, rgba(229,229,229,0.08) 0 1px, transparent 1px 72px),
+        var(--bg);
+    }
+
+    .shell {
+      width: min(100%, 1200px);
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(229,229,229,0.16);
+      background: rgba(17,17,17,0.92);
+      backdrop-filter: blur(10px);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(250,250,250,0.76);
+      background: var(--accent);
+      color: var(--fg);
+      font: 700 13px/1 var(--font-mono);
+    }
+    .nav-links {
+      display: none;
+      gap: 22px;
+      color: rgba(250,250,250,0.68);
+      font-size: 14px;
+    }
+    .nav-cta {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--fg);
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 48px 0 28px;
+      min-height: calc(100svh - 64px);
+      display: grid;
+      align-items: start;
+    }
+    .hero-grid {
+      display: grid;
+      gap: 30px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      margin-bottom: 18px;
+      padding: 6px 8px;
+      border: 1px solid rgba(229,229,229,0.22);
+      color: rgba(250,250,250,0.74);
+      font: 500 12px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 999px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font: 600 clamp(48px, 16vw, 104px)/0.92 var(--font-display);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+    .hero-copy {
+      margin: 20px 0 0;
+      max-width: 34rem;
+      color: rgba(250,250,250,0.76);
+      font-size: clamp(18px, 5vw, 24px);
+      line-height: 1.35;
+      text-wrap: pretty;
+    }
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .btn {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(229,229,229,0.24);
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .btn.primary { background: var(--accent); border-color: var(--accent); }
+    .btn.secondary { background: transparent; }
+    .proof {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 26px;
+      border: 1px solid rgba(229,229,229,0.18);
+      background: rgba(229,229,229,0.18);
+    }
+    .proof div {
+      min-height: 86px;
+      padding: 12px;
+      background: rgba(17,17,17,0.92);
+    }
+    .proof strong {
+      display: block;
+      font: 600 20px/1.1 var(--font-mono);
+      color: var(--fg);
+      font-variant-numeric: tabular-nums;
+    }
+    .proof span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(250,250,250,0.58);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .phone {
+      position: relative;
+      width: min(100%, 390px);
+      margin: 0 auto;
+      border: 1px solid rgba(250,250,250,0.72);
+      background: #111111;
+      border-radius: 30px;
+      padding: 12px;
+      box-shadow: 0 0 0 8px rgba(250,250,250,0.04);
+    }
+    .phone::before {
+      content: "";
+      position: absolute;
+      inset-block-start: 18px;
+      inset-inline-start: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 24px;
+      border-radius: 999px;
+      background: #111111;
+      border: 1px solid rgba(229,229,229,0.18);
+      z-index: 2;
+    }
+    .app-screen {
+      min-height: 690px;
+      overflow: hidden;
+      border: 1px solid rgba(229,229,229,0.2);
+      border-radius: 22px;
+      background: var(--surface);
+      color: #111111;
+    }
+    .app-top {
+      padding: 54px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+    }
+    .app-top small {
+      display: block;
+      color: var(--muted);
+      font: 500 12px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    .app-top strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+    .status-pill {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(23,163,74,0.12);
+      color: var(--success);
+      font: 600 12px/1 var(--font-mono);
+    }
+    .day-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 14px 16px;
+    }
+    .day {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 600 12px/1.1 var(--font-mono);
+    }
+    .day.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--fg);
+    }
+    .queue {
+      padding: 2px 16px 16px;
+      display: grid;
+      gap: 10px;
+    }
+    .booking {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #FAFAFA;
+    }
+    .booking time {
+      font: 600 13px/1 var(--font-mono);
+      color: #111111;
+    }
+    .booking strong {
+      display: block;
+      font-size: 14px;
+    }
+    .booking span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .booking em {
+      font-style: normal;
+      color: var(--success);
+      font: 600 11px/1 var(--font-mono);
+    }
+    .app-panel {
+      margin: 0 16px 16px;
+      padding: 14px;
+      border: 1px solid #111111;
+      background: #111111;
+      color: var(--fg);
+      border-radius: 12px;
+    }
+    .app-panel .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(250,250,250,0.16);
+    }
+    .app-panel .row:last-child { border-bottom: 0; }
+    .app-panel span {
+      color: rgba(250,250,250,0.58);
+      font-size: 12px;
+    }
+    .app-panel strong {
+      font: 600 18px/1 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    section { padding: 56px 0; }
+    .section-head {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .kicker {
+      color: var(--accent);
+      font: 600 12px/1 var(--font-mono);
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 0;
+      max-width: 12ch;
+      font: 600 clamp(32px, 11vw, 64px)/1 var(--font-display);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+    .section-lede {
+      margin: 0;
+      max-width: 42rem;
+      color: rgba(250,250,250,0.7);
+      font-size: 18px;
+      text-wrap: pretty;
+    }
+
+    .pain-grid, .feature-grid, .faq-grid {
+      display: grid;
+      gap: 1px;
+      border: 1px solid rgba(229,229,229,0.2);
+      background: rgba(229,229,229,0.2);
+    }
+    .pain, .feature, .faq, .price-card {
+      background: rgba(17,17,17,0.94);
+      padding: 18px;
+    }
+    .pain strong, .feature strong, .faq strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+    .pain p, .feature p, .faq p {
+      margin: 10px 0 0;
+      color: rgba(250,250,250,0.62);
+    }
+    .feature code {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 5px 7px;
+      border: 1px solid rgba(229,229,229,0.2);
+      color: rgba(250,250,250,0.68);
+      font: 600 12px/1 var(--font-mono);
+    }
+
+    .stats-band {
+      border-block: 1px solid rgba(229,229,229,0.2);
+      background: var(--surface);
+      color: #111111;
+    }
+    .stats-band .shell {
+      display: grid;
+      gap: 1px;
+      background: #111111;
+      padding-block: 1px;
+    }
+    .metric {
+      padding: 20px 18px;
+      background: var(--surface);
+    }
+    .metric strong {
+      display: block;
+      font: 600 clamp(42px, 14vw, 84px)/0.9 var(--font-mono);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    .pricing-wrap {
+      display: grid;
+      gap: 18px;
+    }
+    .price-card {
+      border: 1px solid rgba(229,229,229,0.22);
+      border-radius: 12px;
+    }
+    .price {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+    .price strong {
+      font: 600 52px/0.9 var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .price span {
+      color: rgba(250,250,250,0.56);
+      padding-bottom: 6px;
+    }
+    .checks {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      color: rgba(250,250,250,0.72);
+    }
+    .checks li {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 8px;
+    }
+    .checks li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 7px;
+      background: var(--success);
+    }
+
+    .quote {
+      padding: 24px 0;
+      border-block: 1px solid rgba(229,229,229,0.2);
+    }
+    .quote blockquote {
+      margin: 0;
+      padding-inline-start: 18px;
+      border-inline-start: 4px solid var(--accent);
+      color: var(--fg);
+      font: 600 clamp(28px, 9vw, 54px)/1.08 var(--font-display);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+    .quote cite {
+      display: block;
+      margin-top: 14px;
+      color: rgba(250,250,250,0.58);
+      font-style: normal;
+    }
+
+    .final {
+      padding-bottom: 104px;
+    }
+    .final-card {
+      padding: 26px 18px;
+      border: 1px solid rgba(229,229,229,0.22);
+      background: var(--surface);
+      color: #111111;
+      border-radius: 12px;
+    }
+    .final-card h2 { color: #111111; }
+    .final-card p {
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .final-card .btn { color: var(--fg); }
+
+    .sticky-cta {
+      position: fixed;
+      inset-inline: 12px;
+      inset-block-end: 12px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(229,229,229,0.22);
+      background: rgba(17,17,17,0.92);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(17,17,17,0.08);
+    }
+    .sticky-cta span {
+      color: rgba(250,250,250,0.7);
+      font-size: 13px;
+      padding-inline-start: 4px;
+    }
+    .sticky-cta a {
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--accent);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    @media (min-width: 720px) {
+      .shell { padding: 0 24px; }
+      .nav-links { display: flex; }
+      .hero { padding-top: 70px; }
+      .hero-grid {
+        grid-template-columns: 1.05fr 0.95fr;
+        align-items: start;
+      }
+      .hero-actions {
+        grid-template-columns: repeat(2, minmax(0, 190px));
+      }
+      .pain-grid, .feature-grid { grid-template-columns: repeat(3, 1fr); }
+      .faq-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-band .shell { grid-template-columns: repeat(3, 1fr); }
+      .pricing-wrap { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
+      .sticky-cta { display: none; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero { min-height: 860px; }
+      section { padding: 80px 0; }
+      .phone { margin-top: 10px; }
+      .pain, .feature, .faq, .price-card { padding: 24px; }
+      .final-card { padding: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="nav" aria-label="Principal">
+      <div class="shell nav-inner">
+        <a class="brand" href="#">
+          <span class="brand-mark">B</span>
+          <span>BarberiaOS</span>
+        </a>
+        <div class="nav-links">
+          <a href="#agenda">Agenda</a>
+          <a href="#control">Control</a>
+          <a href="#precio">Precio</a>
+        </div>
+        <a class="nav-cta" href="#demo">Ver demo</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <span class="eyebrow">Sistema operativo para barberías</span>
+          <h1 data-od-id="headline">Llena sillas. Reduce ausencias. Controla caja.</h1>
+          <p class="hero-copy">BarberiaOS centraliza citas, clientes, barberos, servicios, WhatsApp y métricas para dueños que quieren operar como una cadena sin perder el trato local.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#demo">Solicitar demo</a>
+            <a class="btn secondary" href="#control">Ver funciones</a>
+          </div>
+          <div class="proof" aria-label="Indicadores principales">
+            <div><strong>24/7</strong><span>reservas incluso cuando la persiana está bajada</span></div>
+            <div><strong>0</strong><span>dobles reservas entre barberos y servicios</span></div>
+            <div><strong>WA</strong><span>recordatorios antes de cada cita</span></div>
+          </div>
+        </div>
+
+        <div class="phone" data-od-id="hero">
+          <div class="app-screen" aria-label="Vista de BarberiaOS en móvil">
+            <div class="app-top">
+              <div>
+                <small>Hoy · viernes</small>
+                <strong>Agenda activa</strong>
+              </div>
+              <span class="status-pill">EN VIVO</span>
+            </div>
+            <div class="day-strip">
+              <div class="day">L<br>12</div>
+              <div class="day">M<br>13</div>
+              <div class="day active">X<br>14</div>
+              <div class="day">J<br>15</div>
+              <div class="day">V<br>16</div>
+            </div>
+            <div class="queue">
+              <div class="booking">
+                <time>10:30</time>
+                <div><strong>Corte + barba</strong><span>Mario · con Nico</span></div>
+                <em>WA OK</em>
+              </div>
+              <div class="booking">
+                <time>11:15</time>
+                <div><strong>Fade premium</strong><span>Leo · con Alex</span></div>
+                <em>Pagado</em>
+              </div>
+              <div class="booking">
+                <time>12:00</time>
+                <div><strong>Barba completa</strong><span>Carlos · con Samu</span></div>
+                <em>Nuevo</em>
+              </div>
+              <div class="booking">
+                <time>13:20</time>
+                <div><strong>Corte niño</strong><span>Izan · con Nico</span></div>
+                <em>WA OK</em>
+              </div>
+            </div>
+            <div class="app-panel">
+              <div class="row"><span>Ingresos hoy</span><strong>€842</strong></div>
+              <div class="row"><span>Ocupación</span><strong>86%</strong></div>
+              <div class="row"><span>Clientes que vuelven</span><strong>41%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="agenda">
+        <div class="shell">
+          <div class="section-head">
+            <span class="kicker">El problema real</span>
+            <h2>La barbería no falla por cortar mal.</h2>
+            <p class="section-lede">Falla por huecos muertos, clientes que olvidan la cita, barberos con agendas cruzadas y decisiones tomadas sin ver los números.</p>
+          </div>
+          <div class="pain-grid">
+            <article class="pain">
+              <strong>Ausencias que cuestan caja</strong>
+              <p>Recordatorios automáticos por WhatsApp antes de la cita para que el cliente confirme o reprograme a tiempo.</p>
+            </article>
+            <article class="pain">
+              <strong>Agenda partida entre chats</strong>
+              <p>Reserva online, mostrador y equipo trabajando sobre el mismo calendario, con duración real por servicio.</p>
+            </article>
+            <article class="pain">
+              <strong>No sabes quién vuelve</strong>
+              <p>Ficha de cliente, historial, barbero preferido y señales de retención para activar visitas recurrentes.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="control">
+        <div class="shell">
+          <div class="section-head">
+            <span class="kicker">Control operativo</span>
+            <h2>Todo lo que pasa en la barbería, en una pantalla.</h2>
+            <p class="section-lede">BarberiaOS está pensado para dueños: menos administración, más ocupación y una lectura clara de qué barbero, servicio y horario genera dinero.</p>
+          </div>
+          <div class="feature-grid" data-od-id="body">
+            <article class="feature">
+              <code>01</code>
+              <strong>Citas inteligentes</strong>
+              <p>Bloques por duración, disponibilidad por barbero, servicios combinados y cambios rápidos desde móvil.</p>
+            </article>
+            <article class="feature">
+              <code>02</code>
+              <strong>Clientes con memoria</strong>
+              <p>Historial de visitas, notas internas, preferencias y última fecha para recuperar clientes dormidos.</p>
+            </article>
+            <article class="feature">
+              <code>03</code>
+              <strong>Equipo y comisiones</strong>
+              <p>Rendimiento por barbero, ocupación diaria y lectura simple de producción por servicio.</p>
+            </article>
+            <article class="feature">
+              <code>04</code>
+              <strong>WhatsApp integrado</strong>
+              <p>Confirmaciones, recordatorios y mensajes post-visita sin perseguir clientes desde el móvil personal.</p>
+            </article>
+            <article class="feature">
+              <code>05</code>
+              <strong>Servicios rentables</strong>
+              <p>Precios, tiempos, margen operativo y demanda por franja para ajustar la carta con datos.</p>
+            </article>
+            <article class="feature">
+              <code>06</code>
+              <strong>Ingresos y retención</strong>
+              <p>Ventas del día, repetición, huecos libres, ticket medio y evolución de clientes recurrentes.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-band" aria-label="Métricas visibles en BarberiaOS">
+        <div class="shell" data-od-id="stats">
+          <div class="metric"><strong>86%</strong><span>ocupación visible por día y por barbero.</span></div>
+          <div class="metric"><strong>€28</strong><span>ticket medio separado por servicio y profesional.</span></div>
+          <div class="metric"><strong>41%</strong><span>clientes recurrentes marcados para campañas.</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell quote" data-od-id="pull-quote">
+          <blockquote>Tu barbería ya tiene talento. BarberiaOS le pone sistema.</blockquote>
+          <cite>Diseñado para dueños que quieren llenar agenda sin vivir dentro del WhatsApp.</cite>
+        </div>
+      </section>
+
+      <section id="precio">
+        <div class="shell pricing-wrap">
+          <div class="section-head">
+            <span class="kicker">Oferta de lanzamiento</span>
+            <h2>Premium, pero fácil de vender al dueño.</h2>
+            <p class="section-lede">Una propuesta simple: si recupera una cita perdida a la semana, el sistema ya se defiende solo.</p>
+          </div>
+          <article class="price-card">
+            <span class="eyebrow">Plan Barbería</span>
+            <div class="price"><strong>€49</strong><span>/ mes</span></div>
+            <a class="btn primary" href="#demo">Reservar demo privada</a>
+            <ul class="checks">
+              <li>Agenda online y gestión por barbero.</li>
+              <li>Clientes, notas, historial y recurrencia.</li>
+              <li>Recordatorios por WhatsApp.</li>
+              <li>Panel de ingresos, ocupación y retención.</li>
+              <li>Configuración inicial acompañada.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-head">
+            <span class="kicker">Preguntas de dueño</span>
+            <h2>Antes de cambiar la agenda.</h2>
+          </div>
+          <div class="faq-grid">
+            <article class="faq">
+              <strong>¿Sirve si solo tengo dos barberos?</strong>
+              <p>Sí. Está pensado para barberías pequeñas que necesitan orden sin montar un departamento administrativo.</p>
+            </article>
+            <article class="faq">
+              <strong>¿El cliente necesita instalar algo?</strong>
+              <p>No. Reserva desde un enlace y recibe confirmaciones por WhatsApp.</p>
+            </article>
+            <article class="faq">
+              <strong>¿Puedo ver qué barbero factura más?</strong>
+              <p>Sí. El panel separa ingresos, ocupación y servicios por profesional.</p>
+            </article>
+            <article class="faq">
+              <strong>¿Puedo migrar mi agenda actual?</strong>
+              <p>La configuración inicial contempla servicios, horarios, barberos y clientes base.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="final">
+        <div class="shell">
+          <div class="final-card">
+            <span class="kicker">Demo privada</span>
+            <h2>Convierte la barbería en un negocio medible.</h2>
+            <p>Agenda una demo de 20 minutos y revisamos cómo quedaría BarberiaOS con tus servicios, barberos y horarios reales.</p>
+            <a class="btn primary" href="mailto:hola@barberiaos.com">Quiero ver BarberiaOS</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="sticky-cta" aria-label="Acción fija">
+      <span>BarberiaOS para móvil</span>
+      <a href="#demo">Ver demo</a>
+    </div>
+  </div>
+</body>
+</html>

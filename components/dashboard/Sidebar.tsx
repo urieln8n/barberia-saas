@@ -7,51 +7,66 @@ import { createClient } from "@supabase/supabase-js";
 import {
   Home,
   CalendarDays,
-  CalendarCheck,
   Users,
   Scissors,
   User,
   CreditCard,
+  Banknote,
+  CalendarClock,
   Wallet,
-  Calculator,
-  Megaphone,
-  Zap,
-  QrCode,
+  MessageCircle,
+  Star,
+  RotateCcw,
+  Workflow,
   Settings,
+  ShieldCheck,
   LogOut,
+  QrCode,
+  HelpCircle,
+  ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem  = { href: string; label: string; icon: LucideIcon };
+type NavItem  = { href: string; label: string; icon: LucideIcon; badge?: string };
 type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
   {
-    label: "Core",
+    label: "Principal",
     items: [
       { href: "/dashboard",                  label: "Dashboard",        icon: Home          },
-      { href: "/dashboard/agenda",           label: "Agenda",           icon: CalendarDays  },
-      { href: "/dashboard/reservas",         label: "Reservas",         icon: CalendarCheck },
+      { href: "/dashboard/agenda",           label: "Reservas",         icon: CalendarDays  },
       { href: "/dashboard/clientes",         label: "Clientes",         icon: Users         },
-      { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
       { href: "/dashboard/barberos",         label: "Barberos",         icon: User          },
+      { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
+      { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
+    ],
+  },
+  {
+    label: "Negocio",
+    items: [
+      { href: "/dashboard/caja",             label: "Caja",             icon: Banknote      },
+      { href: "/dashboard/finanzas",         label: "Ventas",           icon: Wallet        },
       { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
-      { href: "/dashboard/finanzas",         label: "Finanzas",         icon: Wallet        },
-      { href: "/dashboard/fiscalidad",       label: "Fiscalidad",       icon: Calculator    },
+      { href: "/dashboard/huecos",           label: "Estadísticas",     icon: CalendarClock },
     ],
   },
   {
     label: "Crecimiento",
     items: [
-      { href: "/dashboard/marketing",        label: "Marketing",        icon: Megaphone     },
-      { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Zap           },
-      { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
+      { href: "/dashboard/marketplace",       label: "Marketplace",      icon: ShoppingBag   },
+      { href: "/dashboard/security-audit",   label: "Auditoría web",    icon: ShieldCheck, badge: "Beta" },
+      { href: "/dashboard/marketing",        label: "Promociones",      icon: MessageCircle, badge: "Demo" },
+      { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star          },
+      { href: "/dashboard/recuperacion",     label: "Clientes perdidos", icon: RotateCcw     },
+      { href: "/dashboard/automatizaciones", label: "Recordatorios",     icon: Workflow, badge: "Pro" },
     ],
   },
   {
-    label: "Sistema",
+    label: "Configuración",
     items: [
-      { href: "/dashboard/ajustes",          label: "Ajustes",          icon: Settings      },
+      { href: "/dashboard/ajustes",          label: "Perfil barbería",  icon: Settings      },
+      { href: "/dashboard/whatsapp",         label: "Soporte",          icon: HelpCircle, badge: "Guía" },
     ],
   },
 ];
@@ -70,17 +85,22 @@ function NavLink({
     <Link
       href={item.href}
       onClick={onClick}
-      className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition-all duration-150 ${
+      className={`nav-link ${
         active
-          ? "bg-[#0D0D0D] font-semibold text-white"
-          : "font-medium text-neutral-500 hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+          ? "border border-[#C89B3C]/25 bg-[#F8F5EF] font-bold text-[#111111] shadow-sm"
+          : "font-semibold text-neutral-600 hover:bg-[#F8F5EF] hover:text-neutral-950"
       }`}
     >
       <Icon
         size={16}
-        className={`shrink-0 transition-colors ${active ? "text-[#C89B3C]" : ""}`}
+        className={`shrink-0 transition-colors ${active ? "text-[#8A641F]" : "text-neutral-400"}`}
       />
-      {item.label}
+      <span className="min-w-0 flex-1">{item.label}</span>
+      {item.badge && (
+        <span className="rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+          {item.badge}
+        </span>
+      )}
     </Link>
   );
 }
@@ -96,7 +116,7 @@ function NavGroupSection({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <p className="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.15em] text-neutral-400">
+      <p className="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-neutral-400">
         {group.label}
       </p>
       {group.items.map((item) => (
@@ -113,11 +133,14 @@ function NavGroupSection({
 
 function BrandLogo({ onClick }: { onClick?: () => void }) {
   return (
-    <Link href="/dashboard" onClick={onClick} className="flex items-center gap-2.5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0D0D0D]">
-        <Scissors size={15} className="text-[#C89B3C]" />
+    <Link href="/dashboard" onClick={onClick} className="flex items-center gap-3 rounded-2xl">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#111111] shadow-sm">
+        <Scissors size={15} className="text-white" />
       </div>
-      <span className="text-lg font-black tracking-tight text-[#0D0D0D]">BarberíaOS</span>
+      <div className="min-w-0">
+        <span className="block text-lg font-black leading-none text-neutral-950">BarberiaOS</span>
+        <span className="mt-1 block text-[11px] font-medium text-neutral-500">Gestión premium</span>
+      </div>
     </Link>
   );
 }
@@ -127,7 +150,7 @@ function LogoutBtn({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-2xl border border-[#E5E2D9] px-3 py-2.5 text-sm font-medium text-neutral-500 transition-all duration-150 hover:bg-[#F5F2EA] hover:text-[#0D0D0D]"
+      className="nav-link w-full border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
     >
       <LogOut size={16} className="shrink-0" />
       Cerrar sesión
@@ -153,14 +176,17 @@ export default function Sidebar() {
   return (
     <>
       {/* ── Mobile header ── */}
-      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E5E2D9] bg-white px-4 md:hidden">
+      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E7E2D8] bg-white/90 px-4 shadow-sm backdrop-blur md:hidden">
         <BrandLogo />
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-xl border border-[#E5E2D9] px-4 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F5F2EA]"
+          className="btn-outline min-h-0 px-3 py-2"
         >
-          Menú
+          <span className="inline-flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#C89B3C]" />
+            Menu
+          </span>
         </button>
       </header>
 
@@ -174,10 +200,10 @@ export default function Sidebar() {
           type="button"
           aria-label="Cerrar menú"
           onClick={() => setOpen(false)}
-          className="absolute inset-0 bg-black/40"
+          className="absolute inset-0 bg-neutral-950/40 backdrop-blur-[2px]"
         />
         <aside
-          className={`absolute left-0 top-0 flex h-full w-72 flex-col bg-white p-5 shadow-2xl transition-transform duration-200 ${
+          className={`absolute left-0 top-0 flex h-full w-72 flex-col border-r border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -186,9 +212,9 @@ export default function Sidebar() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg border border-[#E5E2D9] px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-[#F5F2EA]"
+              className="btn-outline min-h-0 px-3 py-1.5"
             >
-              ✕
+              Cerrar
             </button>
           </div>
 
@@ -204,24 +230,32 @@ export default function Sidebar() {
           </nav>
 
           <div className="mt-4">
+            <Link href="/" onClick={() => setOpen(false)} className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
+              <ShieldCheck size={16} className="shrink-0" />
+              Volver a la landing
+            </Link>
             <LogoutBtn onClick={handleLogout} />
           </div>
         </aside>
       </div>
 
       {/* ── Desktop sidebar ── */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-[#E5E2D9] bg-white p-5 md:flex">
-        <div className="mb-8">
+      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-[#E7E2D8] bg-white/90 p-5 shadow-[0_18px_50px_rgba(17,17,17,0.05)] backdrop-blur md:flex">
+        <div className="mb-8 rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-3">
           <BrandLogo />
         </div>
 
         <nav className="flex flex-1 flex-col gap-5 overflow-y-auto">
           {navGroups.map((group) => (
-            <NavGroupSection key={group.label} group={group} pathname={pathname} />
+          <NavGroupSection key={group.label} group={group} pathname={pathname} />
           ))}
         </nav>
 
         <div className="mt-4">
+          <Link href="/" className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
+            <ShieldCheck size={16} className="shrink-0" />
+            Volver a la landing
+          </Link>
           <LogoutBtn onClick={handleLogout} />
         </div>
       </aside>

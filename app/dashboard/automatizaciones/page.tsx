@@ -1,99 +1,126 @@
 import Link from "next/link";
-import { Bell, MessageCircle, RefreshCw, Gift, ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  Clock3,
+  MessageCircle,
+  RefreshCw,
+  Star,
+  Workflow,
+} from "lucide-react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { StatCard } from "@/components/ui/StatCard";
+
+const modules = [
+  {
+    href: "/dashboard/whatsapp",
+    icon: MessageCircle,
+    title: "Asistente WhatsApp",
+    state: "Manual operativo",
+    text: "Plantillas, enlace wa.me y textos listos para copiar. Sin WhatsApp Cloud API todavia.",
+  },
+  {
+    href: "/dashboard/resenas",
+    icon: Star,
+    title: "Asistente de Reseñas",
+    state: "Manual operativo",
+    text: "Mensaje de reseña, link de Google Reviews guardado localmente y respuesta sugerida.",
+  },
+  {
+    href: "/dashboard/recuperacion",
+    icon: RefreshCw,
+    title: "Recuperacion de Clientes",
+    state: "Mock visual",
+    text: "Lista priorizada y campañas manuales preparadas para conectar citas reales despues.",
+  },
+];
+
+const roadmap = [
+  "Guardar configuracion por barberia",
+  "Crear eventos internos de reserva completada y no-show",
+  "Conectar WhatsApp Cloud API con opt-in y logs",
+  "Conectar Google Business Profile para reseñas",
+  "Exponer webhooks para n8n cuando el flujo base este validado",
+];
 
 export default function AutomatizacionesPage() {
   return (
-    <div className="space-y-5">
-
+    <div className="space-y-6">
       <PageHeader
-        section="Automatizaciones"
-        title="Automatizaciones"
-        description="Confirmaciones, recordatorios, recuperación de clientes y seguimientos — todo automático, sin que hagas nada."
+        section="Centro de automatizaciones"
+        title="Automatizaciones manuales listas para vender"
+        description="Primera version operativa para activar crecimiento sin APIs externas: WhatsApp asistido, reseñas y recuperacion con plantillas, enlaces y metricas visuales."
         action={
-          <span className="rounded-full bg-[#0D0D0D] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white">
-            Premium · Próximamente
-          </span>
+          <Link
+            href="/dashboard/whatsapp"
+            className="btn-dark"
+          >
+            Empezar por WhatsApp <ArrowRight size={14} />
+          </Link>
         }
       />
 
-      {/* Banner plan */}
-      <div className="overflow-hidden rounded-3xl bg-[#0D0D0D] text-white shadow-lg">
-        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/60 via-[#00C2A8] to-[#C89B3C]/60" />
-        <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Plan Premium</p>
-            <p className="mt-1 font-black text-white">Automatizaciones activas incluidas</p>
-            <p className="mt-1 text-sm text-white/60">
-              Sin configurar ni mantener nada tú. Incluido en tu suscripción.
-            </p>
-          </div>
-          <Link
-            href="/#precios"
-            className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-[#00C2A8] px-5 py-2.5 text-sm font-bold text-[#0D0D0D] transition-colors hover:bg-[#009e88]"
-          >
-            Ver planes <ArrowRight size={15} />
-          </Link>
-        </div>
+      <div className="grid gap-4 md:grid-cols-4">
+        <StatCard label="Modulos preparados" value="3" description="WhatsApp, reseñas y recuperacion" icon={Workflow} />
+        <StatCard label="APIs externas" value="0" description="fase manual segura" icon={Bot} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
+        <StatCard label="Plantillas listas" value="15" description="copiar o abrir WhatsApp" icon={MessageCircle} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
+        <StatCard label="Tiempo a activar" value="1 dia" description="operativo comercial" icon={Clock3} iconBg="bg-amber-50" iconColor="text-amber-700" />
       </div>
 
-      {/* Automatizaciones previstas */}
-      <div>
-        <div className="mb-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Roadmap</p>
-          <h2 className="mt-0.5 text-lg font-black text-[#0D0D0D]">Automatizaciones incluidas</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { icon: Bell,          plan: "Starter",  status: "En desarrollo",  title: "Email de confirmación",       text: "El cliente recibe su confirmación por email al instante cuando hace una reserva. Sin que toques nada." },
-            { icon: Bell,          plan: "Growth",   status: "Próximamente",   title: "Recordatorio 24h antes",      text: "Email automático al cliente el día antes de su cita. Reduce los no-shows sin llamar a nadie." },
-            { icon: MessageCircle, plan: "Premium",  status: "Próximamente",   title: "Recordatorio por WhatsApp",   text: "Mensaje automático por WhatsApp 24h antes de la cita. Mayor tasa de apertura que el email." },
-            { icon: RefreshCw,     plan: "Growth",   status: "Próximamente",   title: "Recuperación de inactivos",   text: "Clientes que llevan +60 días sin venir reciben un mensaje automático con incentivo para volver." },
-            { icon: MessageCircle, plan: "Premium",  status: "Próximamente",   title: "Asistente WhatsApp",          text: "Responde preguntas frecuentes y toma reservas directamente por WhatsApp, sin que estés disponible." },
-            { icon: Gift,          plan: "Premium",  status: "Próximamente",   title: "Fidelización automática",     text: "Detecta clientes frecuentes y les envía beneficios VIP. Más retención, menos trabajo manual." },
-          ].map(({ icon: Icon, plan, status, title, text }) => (
-            <div key={title} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#C89B3C]/10">
-                  <Icon size={18} className="text-[#C89B3C]" />
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                    plan === "Starter"
-                      ? "border border-[#C89B3C]/30 bg-[#C89B3C]/10 text-[#C89B3C]"
-                      : plan === "Growth"
-                      ? "border border-[#00C2A8]/30 bg-[#00C2A8]/10 text-[#009e88]"
-                      : "bg-[#0D0D0D] text-white"
-                  }`}>
-                    {plan}
-                  </span>
-                  <span className="text-[10px] font-semibold text-neutral-400">{status}</span>
-                </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {modules.map(({ href, icon: Icon, title, state, text }) => (
+          <Link key={title} href={href} className="metric-card block">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className="metric-icon bg-[#2563EB]/10">
+                <Icon size={18} className="text-[#2563EB]" />
               </div>
-              <h3 className="font-bold text-[#0D0D0D]">{title}</h3>
-              <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
+              <span className={state.includes("Mock") ? "badge-warning" : "badge-success"}>{state}</span>
             </div>
-          ))}
-        </div>
+            <h3 className="font-bold text-[#111827]">{title}</h3>
+            <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-[#2563EB]">
+              Abrir modulo <ArrowRight size={14} />
+            </span>
+          </Link>
+        ))}
       </div>
 
-      {/* Planes */}
-      <div className="rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">Precios</p>
-        <p className="mt-1 text-sm font-bold text-neutral-700">Incluido en</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700">
-            Starter — 49 €/mes (email confirmación)
-          </span>
-          <span className="rounded-full border border-[#00C2A8]/30 bg-[#00C2A8]/10 px-3 py-1 text-xs font-semibold text-[#009e88]">
-            Growth — 149 €/mes (recordatorios + inactivos)
-          </span>
-          <span className="rounded-full bg-[#0D0D0D] px-3 py-1 text-xs font-semibold text-white">
-            Premium — 299 €/mes (WhatsApp + fidelización)
-          </span>
+      <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="section-band overflow-hidden">
+          <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/30 via-[#2563EB] to-[#111111]/70" />
+          <div className="p-5 md:p-6">
+            <p className="label-section">Regla de seguridad MVP</p>
+            <h2 className="section-heading">No se envia nada automaticamente</h2>
+            <p className="mt-2 text-sm leading-6 text-neutral-500">
+              El sistema prepara mensajes y decisiones operativas, pero el equipo decide cuando copiar, abrir WhatsApp o pedir una reseña. Esto evita tocar reservas, disponibilidad, auth o datos criticos mientras se valida el producto vendible.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {["Sin WhatsApp Cloud API", "Sin Google Business API", "Sin n8n", "Sin cambios de SQL"].map((item) => (
+                <div key={item} className="rounded-[16px] border border-[#E7E2D8] bg-[#FDFBF7] p-3 text-sm font-bold text-neutral-700">
+                  <CheckCircle2 size={15} className="mb-2 text-emerald-700" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
 
+        <div className="panel">
+          <p className="label-section">Preparado para despues</p>
+          <h2 className="section-heading">Estructura futura</h2>
+          <div className="mt-4 space-y-3">
+            {roadmap.map((item, index) => (
+              <div key={item} className="flex gap-3 rounded-[16px] border border-[#E7E2D8] bg-white p-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#111111] text-xs font-black text-white">
+                  {index + 1}
+                </span>
+                <p className="text-sm font-semibold leading-6 text-neutral-600">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  isPlatformAdminProfile,
+  PLATFORM_ADMIN_PROFILE_SELECT
+} from "@/src/lib/permissions/admin";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -43,7 +47,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Zona /admin: requiere sesión + is_super_admin
+  // Zona /admin: requiere sesión + rol de plataforma
   if (pathname.startsWith("/admin")) {
     if (!user) {
       const loginUrl = request.nextUrl.clone();
@@ -53,14 +57,14 @@ export async function middleware(request: NextRequest) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_super_admin")
+      .select(PLATFORM_ADMIN_PROFILE_SELECT)
       .eq("id", user.id)
       .single();
 
-    if (!profile?.is_super_admin) {
-      const dashboardUrl = request.nextUrl.clone();
-      dashboardUrl.pathname = "/dashboard";
-      return NextResponse.redirect(dashboardUrl);
+    if (!isPlatformAdminProfile(profile)) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      return NextResponse.redirect(loginUrl);
     }
   }
 

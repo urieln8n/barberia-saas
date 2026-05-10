@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
-import { requireSuperAdmin } from "@/src/lib/permissions/admin";
+import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
+import { AdminDataError } from "./_components/AdminDataError";
 import {
   AlertTriangle, TrendingUp, Store, Users, Target,
   CheckSquare, Clock, DollarSign, Calendar, ChevronRight, Zap,
@@ -47,16 +48,16 @@ async function getMetrics() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   const [
-    { count: totalBarbershops },
-    { count: totalBarbers },
-    { count: totalAppointments },
-    { data: allLeads },
-    { data: allTasks },
-    { data: activeSubs },
-    { data: recentLeads },
-    { data: overdueTasks },
-    { data: topOpenDeals },
-    { data: monthPayments },
+    { count: totalBarbershops, error: totalBarbershopsError },
+    { count: totalBarbers, error: totalBarbersError },
+    { count: totalAppointments, error: totalAppointmentsError },
+    { data: allLeads, error: allLeadsError },
+    { data: allTasks, error: allTasksError },
+    { data: activeSubs, error: activeSubsError },
+    { data: recentLeads, error: recentLeadsError },
+    { data: overdueTasks, error: overdueTasksError },
+    { data: topOpenDeals, error: topOpenDealsError },
+    { data: monthPayments, error: monthPaymentsError },
   ] = await Promise.all([
     supabase.from("barbershops").select("*", { count: "exact", head: true }),
     supabase.from("barbers").select("*",     { count: "exact", head: true }),
@@ -85,6 +86,19 @@ async function getMetrics() {
       .eq("status", "paid")
       .gte("created_at", startOfMonth),
   ]);
+
+  const dataErrors = [
+    totalBarbershopsError,
+    totalBarbersError,
+    totalAppointmentsError,
+    allLeadsError,
+    allTasksError,
+    activeSubsError,
+    recentLeadsError,
+    overdueTasksError,
+    topOpenDealsError,
+    monthPaymentsError,
+  ].filter(Boolean);
 
   const leads  = allLeads  ?? [];
   const tasks  = allTasks  ?? [];
@@ -133,6 +147,7 @@ async function getMetrics() {
     recentLeads:   (recentLeads  ?? []) as RecentLead[],
     overdueTasks:  (overdueTasks ?? []) as OverdueTask[],
     topOpenDeals:  (topOpenDeals ?? []) as OpenDeal[],
+    dataError: dataErrors[0]?.message ?? null,
   };
 }
 
@@ -153,7 +168,7 @@ const LEAD_STATUS_COLORS: Record<string, string> = {
   contactado:        "bg-blue-50 text-blue-700",
   demo_agendada:     "bg-purple-50 text-purple-700",
   propuesta_enviada: "bg-amber-50 text-amber-700",
-  trial_activo:      "bg-[#00C2A8]/10 text-[#009e88]",
+  trial_activo:      "bg-[#2F6FEB]/10 text-[#2F6FEB]",
   ganado:            "bg-green-50 text-green-700",
   perdido:           "bg-red-50 text-red-500",
 };
@@ -163,7 +178,7 @@ const FUNNEL_BARS: { key: string; color: string }[] = [
   { key: "contactado",        color: "bg-blue-400"      },
   { key: "demo_agendada",     color: "bg-purple-500"    },
   { key: "propuesta_enviada", color: "bg-amber-400"     },
-  { key: "trial_activo",      color: "bg-[#00C2A8]"     },
+  { key: "trial_activo",      color: "bg-[#2F6FEB]"     },
   { key: "ganado",            color: "bg-green-500"     },
   { key: "perdido",           color: "bg-red-400"       },
 ];
@@ -190,7 +205,7 @@ function fmtEur(n: number) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AdminPage() {
-  await requireSuperAdmin();
+  await requirePlatformAdmin();
   const m = await getMetrics();
 
   const today = new Date().toLocaleDateString("es-ES", {
@@ -202,6 +217,12 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-7">
+      {m.dataError && (
+        <AdminDataError
+          title="Algunas métricas no se pudieron cargar"
+          message={m.dataError}
+        />
+      )}
 
       {/* Alerts ─────────────────────────────────────────────────────────────── */}
       {hasAlerts && (
@@ -234,13 +255,15 @@ export default async function AdminPage() {
       {/* Header ─────────────────────────────────────────────────────────────── */}
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">BarberiaOS</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#0D0D0D]">Panel del Fundador</h1>
-          <p className="mt-1 capitalize text-sm text-neutral-400">{today}</p>
+          <p className="label-section">BarberiaOS</p>
+          <h1 className="mt-1 text-3xl font-black text-[#111827]">Admin creador</h1>
+          <p className="mt-1 capitalize text-sm text-neutral-400">
+            Barberías registradas, MRR estimado, pruebas activas, leads y actividad reciente · {today}
+          </p>
         </div>
         <Link
           href="/admin/leads"
-          className="flex items-center gap-2 rounded-2xl bg-[#0D0D0D] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1A1A1A]"
+          className="btn-dark"
         >
           <Zap size={14} /> Nuevo lead
         </Link>
@@ -252,10 +275,10 @@ export default async function AdminPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
           <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#C89B3C]/10">
-              <DollarSign size={16} className="text-[#C89B3C]" />
+            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
+              <DollarSign size={16} className="text-[#2F6FEB]" />
             </div>
-            <p className="text-2xl font-black text-[#0D0D0D]">{fmtEur(m.mrrEstimado)}</p>
+            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.mrrEstimado)}</p>
             <p className="mt-0.5 text-xs font-semibold text-neutral-500">MRR real</p>
             <p className="mt-1 text-[11px] text-neutral-400">Suscripciones activas · sin Stripe todavía</p>
           </div>
@@ -264,7 +287,7 @@ export default async function AdminPage() {
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-green-50">
               <TrendingUp size={16} className="text-green-600" />
             </div>
-            <p className="text-2xl font-black text-[#0D0D0D]">{fmtEur(m.pipelineValue)}</p>
+            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.pipelineValue)}</p>
             <p className="mt-0.5 text-xs font-semibold text-neutral-500">Pipeline abierto (deals)</p>
             <p className="mt-1 text-[11px] text-neutral-400">
               + {fmtEur(m.pipelineLeads)} en leads activos
@@ -275,7 +298,7 @@ export default async function AdminPage() {
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
               <Calendar size={16} className="text-blue-500" />
             </div>
-            <p className="text-2xl font-black text-[#0D0D0D]">{fmtEur(m.ingresosMes)}</p>
+            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.ingresosMes)}</p>
             <p className="mt-0.5 text-xs font-semibold text-neutral-500">Actividad de pagos (mes)</p>
             <p className="mt-1 text-[11px] text-neutral-400">Pagos registrados por barberías este mes</p>
           </div>
@@ -288,9 +311,9 @@ export default async function AdminPage() {
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Estado de clientes</p>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
           {[
-            { label: "Barberías activas", value: m.totalBarbershops,            icon: Store,       color: "text-[#C89B3C]",  bg: "bg-[#C89B3C]/10"  },
+            { label: "Barberías activas", value: m.totalBarbershops,            icon: Store,       color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Demos agendadas",   value: m.leadsByStatus.demo_agendada,  icon: Calendar,    color: "text-purple-600", bg: "bg-purple-50"     },
-            { label: "Trials activos",    value: m.leadsByStatus.trial_activo,   icon: Target,      color: "text-[#00C2A8]",  bg: "bg-[#00C2A8]/10"  },
+            { label: "Trials activos",    value: m.leadsByStatus.trial_activo,   icon: Target,      color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Clientes ganados",  value: m.leadsByStatus.ganado,         icon: CheckSquare, color: "text-green-600",  bg: "bg-green-50"      },
             { label: "En riesgo",         value: m.atRiskLeads.length,           icon: AlertTriangle, color: m.atRiskLeads.length > 0 ? "text-red-500" : "text-neutral-400", bg: m.atRiskLeads.length > 0 ? "bg-red-50" : "bg-neutral-100" },
           ].map(({ label, value, icon: Icon, color, bg }) => (
@@ -298,7 +321,27 @@ export default async function AdminPage() {
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
                 <Icon size={14} className={color} />
               </div>
-              <p className="text-xl font-black text-[#0D0D0D]">{value}</p>
+              <p className="text-xl font-black text-[#111827]">{value}</p>
+              <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Producto SaaS</p>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { label: "Plan activo", value: "Fundador", icon: Zap, color: "text-[#8A641F]", bg: "bg-[#D5A84C]/10" },
+            { label: "Pruebas activas", value: m.leadsByStatus.trial_activo, icon: Clock, color: "text-[#2F6FEB]", bg: "bg-[#2F6FEB]/10" },
+            { label: "Reservas totales", value: m.totalAppointments, icon: Calendar, color: "text-green-600", bg: "bg-green-50" },
+            { label: "Estado de pago", value: m.mrrEstimado > 0 ? "Activo" : "Pendiente", icon: DollarSign, color: m.mrrEstimado > 0 ? "text-green-600" : "text-amber-600", bg: m.mrrEstimado > 0 ? "bg-green-50" : "bg-amber-50" },
+          ].map(({ label, value, icon: Icon, color, bg }) => (
+            <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+              <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
+                <Icon size={14} className={color} />
+              </div>
+              <p className="text-xl font-black text-[#111827]">{value}</p>
               <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
             </div>
           ))}
@@ -311,15 +354,15 @@ export default async function AdminPage() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { label: "Leads totales",     value: m.totalLeads,        icon: Users,       color: "text-blue-600",   bg: "bg-blue-50"       },
-            { label: "Nuevos esta semana",value: m.newThisWeek,        icon: TrendingUp,  color: "text-[#C89B3C]",  bg: "bg-[#C89B3C]/10"  },
+            { label: "Nuevos esta semana",value: m.newThisWeek,        icon: TrendingUp,  color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Tareas pendientes", value: m.pendingTasks,       icon: CheckSquare, color: "text-orange-500", bg: "bg-orange-50"     },
-            { label: "Barberos totales",  value: m.totalBarbers,       icon: Users,       color: "text-[#00C2A8]",  bg: "bg-[#00C2A8]/10"  },
+            { label: "Barberos totales",  value: m.totalBarbers,       icon: Users,       color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
           ].map(({ label, value, icon: Icon, color, bg }) => (
             <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
                 <Icon size={14} className={color} />
               </div>
-              <p className="text-xl font-black text-[#0D0D0D]">{value}</p>
+              <p className="text-xl font-black text-[#111827]">{value}</p>
               <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
             </div>
           ))}
@@ -327,19 +370,19 @@ export default async function AdminPage() {
       </div>
 
       {/* Lead funnel ────────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+      <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C89B3C]">CRM</p>
-            <h2 className="mt-0.5 font-black text-[#0D0D0D]">Embudo de leads</h2>
+            <p className="label-section">CRM</p>
+            <h2 className="mt-0.5 font-black text-[#111827]">Embudo de leads</h2>
           </div>
-          <Link href="/admin/leads" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 transition-colors hover:text-[#0D0D0D]">
+          <Link href="/admin/leads" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 transition-colors hover:text-[#111827]">
             Ver todos <ChevronRight size={13} />
           </Link>
         </div>
 
         {m.totalLeads === 0 ? (
-          <p className="text-sm text-neutral-400">Sin leads todavía. <Link href="/admin/leads" className="font-semibold text-[#0D0D0D] underline underline-offset-2">Añadir primer lead →</Link></p>
+          <p className="text-sm text-neutral-400">Sin leads todavía. <Link href="/admin/leads" className="font-semibold text-[#111827] underline underline-offset-2">Añadir primer lead →</Link></p>
         ) : (
           <div className="space-y-2.5">
             {FUNNEL_BARS.map(({ key, color }) => {
@@ -356,7 +399,7 @@ export default async function AdminPage() {
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-5 shrink-0 text-right text-sm font-black text-[#0D0D0D]">{count}</span>
+                  <span className="w-5 shrink-0 text-right text-sm font-black text-[#111827]">{count}</span>
                 </div>
               );
             })}
@@ -368,21 +411,21 @@ export default async function AdminPage() {
       <div className="grid gap-6 lg:grid-cols-2">
 
         {/* Recent leads */}
-        <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-[#E5E2D9] px-5 py-4">
-            <h2 className="font-black text-[#0D0D0D]">Leads recientes</h2>
-            <Link href="/admin/leads" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 hover:text-[#0D0D0D]">
+        <div className="table-shell">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-4">
+            <h2 className="font-black text-[#111827]">Leads recientes</h2>
+            <Link href="/admin/leads" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 hover:text-[#111827]">
               Ver todos <ChevronRight size={13} />
             </Link>
           </div>
           {m.recentLeads.length === 0 ? (
             <p className="p-5 text-sm text-neutral-400">Sin leads todavía.</p>
           ) : (
-            <ul className="divide-y divide-[#E5E2D9]">
+            <ul className="divide-y divide-[#E5E7EB]">
               {m.recentLeads.map(lead => (
-                <li key={lead.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F5F2EA]/50">
+                <li key={lead.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F8FAFC]">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-[#0D0D0D]">{lead.business_name}</p>
+                    <p className="truncate text-sm font-bold text-[#111827]">{lead.business_name}</p>
                     <p className="text-xs text-neutral-400">
                       {lead.contact_name ?? "Sin contacto"} · {fmt(lead.created_at)}
                     </p>
@@ -397,26 +440,26 @@ export default async function AdminPage() {
         </div>
 
         {/* Top open deals */}
-        <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-[#E5E2D9] px-5 py-4">
-            <h2 className="font-black text-[#0D0D0D]">Deals abiertos</h2>
-            <Link href="/admin/deals" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 hover:text-[#0D0D0D]">
+        <div className="table-shell">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-4">
+            <h2 className="font-black text-[#111827]">Deals abiertos</h2>
+            <Link href="/admin/deals" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 hover:text-[#111827]">
               Ver todos <ChevronRight size={13} />
             </Link>
           </div>
           {m.topOpenDeals.length === 0 ? (
-            <p className="p-5 text-sm text-neutral-400">Sin deals abiertos. <Link href="/admin/deals" className="font-semibold text-[#0D0D0D] underline underline-offset-2">Crear deal →</Link></p>
+            <p className="p-5 text-sm text-neutral-400">Sin deals abiertos. <Link href="/admin/deals" className="font-semibold text-[#111827] underline underline-offset-2">Crear deal →</Link></p>
           ) : (
-            <ul className="divide-y divide-[#E5E2D9]">
+            <ul className="divide-y divide-[#E5E7EB]">
               {m.topOpenDeals.map(deal => (
-                <li key={deal.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F5F2EA]/50">
+                <li key={deal.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F8FAFC]">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-[#0D0D0D]">{deal.title}</p>
+                    <p className="truncate text-sm font-bold text-[#111827]">{deal.title}</p>
                     <p className="text-xs text-neutral-400">
                       {STAGE_LABELS[deal.stage] ?? deal.stage} · cierre {fmt(deal.expected_close_date)}
                     </p>
                   </div>
-                  <span className="shrink-0 font-mono text-sm font-black text-[#0D0D0D]">
+                  <span className="shrink-0 font-mono text-sm font-black text-[#111827]">
                     {deal.value ? fmtEur(deal.value) : "—"}
                   </span>
                 </li>
@@ -439,10 +482,10 @@ export default async function AdminPage() {
               Ver todas <ChevronRight size={13} />
             </Link>
           </div>
-          <ul className="divide-y divide-[#E5E2D9]">
+          <ul className="divide-y divide-[#E5E7EB]">
             {m.overdueTasks.map(task => (
               <li key={task.id} className="flex items-center justify-between gap-3 px-5 py-3">
-                <p className="text-sm font-semibold text-[#0D0D0D]">{task.title}</p>
+                <p className="text-sm font-semibold text-[#111827]">{task.title}</p>
                 <div className="flex shrink-0 items-center gap-2">
                   <span className={`text-xs font-bold uppercase ${PRIORITY_COLORS[task.priority] ?? "text-neutral-400"}`}>
                     {task.priority}
@@ -456,7 +499,7 @@ export default async function AdminPage() {
       )}
 
       {/* Quick actions ──────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-[#E5E2D9] bg-[#F5F2EA] p-5">
+      <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-5">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Acciones rápidas</p>
         <div className="flex flex-wrap gap-2">
           {[
@@ -469,8 +512,8 @@ export default async function AdminPage() {
               href={href}
               className={`flex items-center gap-1.5 rounded-2xl px-4 py-2 text-sm font-semibold transition-colors ${
                 primary
-                  ? "bg-[#0D0D0D] text-white hover:bg-[#1A1A1A]"
-                  : "border border-[#E5E2D9] bg-white text-neutral-700 hover:bg-white/80"
+                  ? "bg-[#111827] text-white hover:bg-[#0F172A]"
+                  : "border border-[#E5E7EB] bg-white text-neutral-700 hover:bg-white/80"
               }`}
             >
               {label} <ChevronRight size={13} />
@@ -490,7 +533,7 @@ export default async function AdminPage() {
             "Coste de adquisición (CAC)",
             "Stripe Billing (facturación automática)",
           ].map(label => (
-            <span key={label} className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs text-neutral-400">
+            <span key={label} className="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs text-neutral-400">
               {label}
             </span>
           ))}

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Scissors } from "lucide-react";
+import { ArrowRight, Chrome, Scissors } from "lucide-react";
 import { supabase } from "@/src/lib/supabase/client";
 
 export default function LoginPage() {
@@ -11,8 +12,16 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("error") === "oauth") {
+      setError("No se pudo iniciar con Google. Inténtalo de nuevo.");
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,10 +48,21 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
+      if (!acceptedLegal) {
+        setError("Debes aceptar los términos y confirmar que has leído la política de privacidad.");
+        setLoading(false);
+        return;
+      }
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName } }
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo:
+            typeof window !== "undefined"
+              ? `${window.location.origin}/auth/callback`
+              : undefined,
+        },
       });
       if (error) {
         if (error.message.includes("User already registered") || error.message.includes("already been registered")) {
@@ -59,39 +79,90 @@ export default function LoginPage() {
     setLoading(false);
   }
 
+  async function handleGoogleLogin() {
+    setError("");
+    setOauthLoading(true);
+
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/auth/callback`
+        : "/auth/callback";
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+      },
+    });
+
+    if (error) {
+      setOauthLoading(false);
+      setError("No se pudo continuar con Google. Vuelve a intentarlo.");
+    }
+  }
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
+    <main className="premium-grid-bg flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-950 text-red-700">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-[#2F6FEB] text-white">
             <Scissors size={20} />
           </div>
-          <span className="text-xl font-bold text-white">BarberíaOS</span>
+          <span className="text-xl font-bold text-white">BarberiaOS</span>
         </div>
 
-        <div className="rounded-3xl bg-white p-8 shadow-2xl">
-          <div className="mb-6 flex rounded-2xl bg-neutral-100 p-1">
+        <div className="rounded-2xl border border-[#E6E6E2] bg-white p-8 shadow-2xl">
+          <div className="mb-6 rounded-2xl border border-[#DDE7FB] bg-[#F8FAFC] p-4">
+            <p className="text-xs font-black uppercase text-[#2563EB]">Acceso al producto</p>
+            <h1 className="mt-1 text-2xl font-black text-[#111827]">
+              Entra, configura tu barbería y prueba reservas online.
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Si estás explorando, empieza por la demo guiada para saber qué mirar primero.
+            </p>
+            <Link href="/demo" className="mt-3 inline-flex items-center gap-2 text-sm font-black text-[#2563EB]">
+              Ver demo guiada <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="mb-6 flex rounded-xl bg-[#FAFAF8] p-1">
             <button
               type="button"
               onClick={() => { setMode("login"); setError(""); }}
-              className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${mode === "login" ? "bg-white text-ink shadow-sm" : "text-neutral-500"}`}
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${mode === "login" ? "bg-white text-[#111111] shadow-sm" : "text-neutral-500"}`}
             >
               Iniciar sesión
             </button>
             <button
               type="button"
               onClick={() => { setMode("register"); setError(""); }}
-              className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${mode === "register" ? "bg-white text-ink shadow-sm" : "text-neutral-500"}`}
-            >
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${mode === "register" ? "bg-white text-[#111111] shadow-sm" : "text-neutral-500"}`}
+              >
               Crear cuenta
             </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading || oauthLoading}
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-bold text-[#111111] shadow-sm transition hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Chrome size={16} className="text-[#2563EB]" />
+            {oauthLoading ? "Redirigiendo..." : "Continuar con Google"}
+          </button>
+
+          <div className="my-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">
+            <span className="h-px flex-1 bg-[#E5E7EB]" />
+            o
+            <span className="h-px flex-1 bg-[#E5E7EB]" />
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {mode === "register" && (
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label className="form-label">
                   Nombre completo
                 </label>
                 <input
@@ -100,13 +171,13 @@ export default function LoginPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Tu nombre"
                   required
-                  className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                  className="input py-3"
                 />
               </div>
             )}
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
+              <label className="form-label">
                 Email
               </label>
               <input
@@ -115,12 +186,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 required
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                className="input py-3"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-neutral-700">
+              <label className="form-label">
                 Contraseña
               </label>
               <input
@@ -130,9 +201,41 @@ export default function LoginPage() {
                 placeholder="Mínimo 6 caracteres"
                 required
                 minLength={6}
-                className="w-full rounded-2xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-ink"
+                className="input py-3"
               />
+              {mode === "login" && (
+                <div className="mt-2 flex justify-end">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8]"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Link>
+                </div>
+              )}
             </div>
+
+            {mode === "register" && (
+              <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={acceptedLegal}
+                  onChange={(e) => setAcceptedLegal(e.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+                />
+                <span className="text-xs leading-5 text-slate-600">
+                  Acepto los{" "}
+                  <Link href="/legal/terminos" className="font-bold text-[#2563EB] hover:text-[#1D4ED8]">
+                    Términos y Condiciones
+                  </Link>{" "}
+                  y he leído la{" "}
+                  <Link href="/legal/privacidad" className="font-bold text-[#2563EB] hover:text-[#1D4ED8]">
+                    Política de Privacidad
+                  </Link>
+                  .
+                </span>
+              </label>
+            )}
 
             {error && (
               <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -143,17 +246,23 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-2xl bg-red-700 py-3 font-semibold text-white transition-colors hover:bg-red-800 disabled:opacity-50"
+              className="btn-primary mt-2 w-full py-3"
             >
               {loading
                 ? "Cargando..."
-                : mode === "login" ? "Entrar al panel" : "Crear cuenta"}
+                : mode === "login" ? "Entrar al dashboard" : "Crear cuenta y configurar"}
             </button>
           </form>
         </div>
 
-        <p className="mt-6 text-center text-sm text-white/40">
-          ¿Tienes una barbería? Empieza gratis.
+        <p className="mt-6 text-center text-sm text-white/55">
+          <Link href="/" className="font-semibold text-white/80 hover:text-white">
+            Volver a la landing
+          </Link>{" "}
+          ·{" "}
+          <Link href="/legal" className="font-semibold text-white/80 hover:text-white">
+            Centro legal
+          </Link>
         </p>
       </div>
     </main>
