@@ -23,6 +23,7 @@ import {
   LogOut,
   QrCode,
   HelpCircle,
+  ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
 
@@ -53,6 +54,8 @@ const navGroups: NavGroup[] = [
   {
     label: "Crecimiento",
     items: [
+      { href: "/dashboard/marketplace",       label: "Marketplace",      icon: ShoppingBag   },
+      { href: "/dashboard/security-audit",   label: "Auditoría web",    icon: ShieldCheck, badge: "Beta" },
       { href: "/dashboard/marketing",        label: "Promociones",      icon: MessageCircle, badge: "Demo" },
       { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star          },
       { href: "/dashboard/recuperacion",     label: "Clientes perdidos", icon: RotateCcw     },

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/src/lib/supabase/server";
 import { BookingForm } from "./BookingForm";
 import { SITE_URL } from "@/src/lib/site-url";
+import { Map, QrCode } from "lucide-react";
 import {
   BadgeCheck,
   CalendarCheck,
@@ -38,6 +39,13 @@ type Barbershop = {
   instagram_url: string | null;
   google_business_url: string | null;
   public_booking_enabled: boolean | null;
+};
+
+type PublicProfile = {
+  description: string | null;
+  neighborhood: string | null;
+  whatsapp: string | null;
+  logo_url: string | null;
 };
 
 type Service = {
@@ -165,22 +173,34 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
   const supabase = await createClient();
 
-  const [{ data: services, error: servicesError }, { data: barbers, error: barbersError }] =
-    await Promise.all([
-      supabase
-        .from("services")
-        .select("id, name, description, price, duration_minutes")
-        .eq("barbershop_id", barbershop.id)
-        .eq("active", true)
-        .order("created_at", { ascending: true }),
+  const [
+    { data: services, error: servicesError },
+    { data: barbers, error: barbersError },
+    { data: rawProfile },
+  ] = await Promise.all([
+    supabase
+      .from("services")
+      .select("id, name, description, price, duration_minutes")
+      .eq("barbershop_id", barbershop.id)
+      .eq("active", true)
+      .order("created_at", { ascending: true }),
 
-      supabase
-        .from("barbers")
-        .select("id, name")
-        .eq("barbershop_id", barbershop.id)
-        .eq("active", true)
-        .order("created_at", { ascending: true }),
-    ]);
+    supabase
+      .from("barbers")
+      .select("id, name")
+      .eq("barbershop_id", barbershop.id)
+      .eq("active", true)
+      .order("created_at", { ascending: true }),
+
+    supabase
+      .from("barbershop_public_profiles")
+      .select("description, neighborhood, whatsapp, logo_url")
+      .eq("barbershop_id", barbershop.id)
+      .eq("is_published", true)
+      .maybeSingle(),
+  ]);
+
+  const publicProfile = rawProfile as PublicProfile | null;
 
   if (servicesError || barbersError) {
     console.error("Error loading public booking data:", {
@@ -202,7 +222,15 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       ? searchParams?.barber ?? null
       : null;
   const location = [barbershop.address, barbershop.city].filter(Boolean).join(", ");
-  const whatsappHref = formatWhatsAppHref(barbershop.phone, barbershop.name);
+  const locationLabel = [publicProfile?.neighborhood, barbershop.city].filter(Boolean).join(", ") || location;
+  const whatsappPhone = publicProfile?.whatsapp || barbershop.phone;
+  const whatsappHref = formatWhatsAppHref(whatsappPhone, barbershop.name);
+  const mapsHref =
+    barbershop.address
+      ? `https://maps.google.com/?q=${encodeURIComponent([barbershop.address, barbershop.city].filter(Boolean).join(", "))}`
+      : null;
+  const publicUrl = `${SITE_URL}/r/${barbershop.slug}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(publicUrl)}`;
 
   return (
     <main className="premium-grid-bg min-h-screen pb-24 text-slate-950 md:pb-0">
@@ -226,14 +254,15 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
 
             <p className="max-w-2xl text-base leading-7 text-white/70">
-              Reserva tu corte, barba o servicio de barbería en pocos pasos. Sin cuenta, sin espera y directo con el equipo.
+              {publicProfile?.description ??
+                "Reserva tu corte, barba o servicio de barbería en pocos pasos. Sin cuenta, sin espera y directo con el equipo."}
             </p>
 
             <div className="mt-5 flex flex-col gap-2 text-sm text-white/70 sm:flex-row sm:flex-wrap">
-              {location && (
+              {locationLabel && (
                 <span className="inline-flex items-center gap-2">
                   <MapPin size={15} className="text-[#D9B766]" />
-                  {location}
+                  {locationLabel}
                 </span>
               )}
               {barbershop.phone && (
@@ -422,6 +451,17 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   <span>{location}</span>
                 </p>
               )}
+              {mapsHref && (
+                <a
+                  href={mapsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                >
+                  <Map size={15} className="mt-0.5 shrink-0" />
+                  Ver en Google Maps
+                </a>
+              )}
               {barbershop.phone && (
                 <p className="flex gap-2 text-neutral-600">
                   <MessageCircle size={15} className="mt-0.5 shrink-0 text-neutral-400" />
@@ -456,6 +496,32 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 </p>
               )}
             </div>
+          </section>
+
+          {/* QR de reservas */}
+          <section className="rounded-[28px] border border-[#E7E2D8] bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="label-section">Reserva rápida</p>
+                <p className="mt-0.5 font-black text-[#111827]">QR de citas</p>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#111827] text-white">
+                <QrCode size={16} />
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrUrl}
+                alt={`QR de reservas de ${barbershop.name}`}
+                width={160}
+                height={160}
+                className="rounded-2xl"
+              />
+            </div>
+            <p className="mt-3 text-center text-xs text-neutral-400">
+              Escanea para reservar desde el móvil
+            </p>
           </section>
         </aside>
       </div>
