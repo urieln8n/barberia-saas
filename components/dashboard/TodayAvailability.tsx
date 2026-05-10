@@ -21,7 +21,7 @@ const STATUS_META: Record<
   },
   available: {
     label: "Disponible",
-    className: "border-blue-100 bg-blue-50 text-blue-700",
+    className: "border-[#C9922A]/20 bg-[#C9922A]/10 text-[#7A5218]",
   },
   needs_bookings: {
     label: "Necesita reservas",
@@ -113,7 +113,7 @@ export function TodayAvailability({ items }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-2 text-right">
             <div className="rounded-2xl border border-[#E7E2D8] bg-white px-3 py-2">
-              <CalendarClock size={14} className="ml-auto text-[#2563EB]" />
+              <CalendarClock size={14} className="ml-auto text-[#C9922A]" />
               <p className="mt-1 text-sm font-black text-[#111827]">{totalFreeSlots} huecos</p>
             </div>
             <div className="rounded-2xl border border-[#E7E2D8] bg-white px-3 py-2">

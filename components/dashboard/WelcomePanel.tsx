@@ -37,13 +37,13 @@ export function WelcomePanel() {
             Primeros pasos
           </div>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-[#080A0F]">
-            Bienvenido a BarberiaOS
+            Bienvenido a BarberíaOS
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Vamos a dejar tu barbería lista para recibir reservas online. Empieza por lo básico: servicios, barberos, QR y una reserva de prueba.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <Link href="/dashboard/servicios" className="btn-primary">
+            <Link href="/dashboard/servicios" className="btn-gold">
               Empezar configuración <ArrowRight size={14} />
             </Link>
             <Link href="/demo" className="btn-outline">
@@ -61,7 +61,7 @@ export function WelcomePanel() {
                 href={card.href}
                 className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300 hover:bg-white"
               >
-                <Icon size={18} className="text-[#2563EB]" />
+                <Icon size={18} className="text-[#C9922A]" />
                 <p className="mt-3 text-sm font-black text-[#080A0F]">{card.title}</p>
                 <p className="mt-1 text-xs leading-5 text-slate-500">{card.text}</p>
               </Link>

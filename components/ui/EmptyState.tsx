@@ -24,7 +24,7 @@ export function EmptyState({
       ? "metric-icon bg-emerald-500/10"
       : dark
         ? "metric-icon bg-white/10"
-        : "metric-icon bg-[#2563EB]/10";
+        : "metric-icon bg-[#C9922A]/10";
 
   return (
     <div className={`flex flex-col items-center justify-center rounded-[24px] border border-dashed px-6 py-10 text-center ${
@@ -34,7 +34,7 @@ export function EmptyState({
     } ${className}`}>
       {Icon && (
         <div className={iconClass}>
-          <Icon size={22} className={tone === "success" ? "text-emerald-600" : dark ? "text-white" : "text-[#2563EB]"} />
+          <Icon size={22} className={tone === "success" ? "text-emerald-600" : dark ? "text-white" : "text-[#C9922A]"} />
         </div>
       )}
       <p className={dark ? "mt-4 font-bold text-white" : "mt-4 font-bold text-slate-800"}>{title}</p>

@@ -109,7 +109,7 @@ function statusClass(status: string) {
   const classes: Record<string, string> = {
     pending:   "bg-amber-50 text-amber-700 border-amber-100",
     scheduled: "bg-amber-50 text-amber-700 border-amber-100",
-    confirmed: "bg-blue-50  text-blue-700  border-blue-100",
+    confirmed: "bg-slate-100 text-slate-600 border-slate-200",
     completed: "bg-green-50 text-green-700 border-green-100",
     cancelled: "bg-red-50   text-red-700   border-red-100",
     no_show:   "bg-red-50   text-red-700   border-red-100",
@@ -753,16 +753,16 @@ export default async function DashboardPage() {
           value={String(todayAppointments.length)}
           hint={`${weekApptsCount} esta semana`}
           icon={CalendarCheck}
-          iconBg="bg-[#2563EB]/10"
-          iconColor="text-[#2563EB]"
+          iconBg="bg-[#C9922A]/10"
+          iconColor="text-[#C9922A]"
         />
         <StatCard
           title="Huecos libres hoy"
           value={String(totalFreeSlotsToday)}
           hint="Slots disponibles desde ahora"
           icon={Clock}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-700"
+          iconBg="bg-slate-100"
+          iconColor="text-slate-600"
         />
         <StatCard
           title="Barbero top del día"

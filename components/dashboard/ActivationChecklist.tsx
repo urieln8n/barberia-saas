@@ -21,7 +21,7 @@ export function ActivationChecklist({ percent, items }: ActivationChecklistProps
     <section className="section-band overflow-hidden">
       <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-3 py-1 text-xs font-black text-[#2563EB]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/10 px-3 py-1 text-xs font-black text-[#C9922A]">
             <Rocket size={14} />
             Activación
           </div>
@@ -29,7 +29,7 @@ export function ActivationChecklist({ percent, items }: ActivationChecklistProps
             Tu barbería está al {percent}% lista para vender citas online.
           </h2>
           <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100">
-            <div className="h-full rounded-full bg-[#2563EB]" style={{ width: `${percent}%` }} />
+            <div className="h-full rounded-full bg-[#C9922A]" style={{ width: `${percent}%` }} />
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-500">
             Completa los pasos básicos para lanzar reservas online con QR, servicios, equipo y primeras acciones de marketing.
@@ -57,7 +57,7 @@ export function ActivationChecklist({ percent, items }: ActivationChecklistProps
                 <div className="min-w-0">
                   <p className="text-sm font-black text-slate-800">{item.label}</p>
                   <p className="mt-1 text-xs leading-5 text-slate-500">{item.description}</p>
-                  <span className="mt-2 inline-flex text-xs font-black text-[#2563EB]">
+                  <span className="mt-2 inline-flex text-xs font-black text-[#C9922A]">
                     {item.done ? "Revisar" : item.actionLabel}
                   </span>
                 </div>

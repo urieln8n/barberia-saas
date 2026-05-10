@@ -25,7 +25,7 @@ const STATUS_META: Record<
   },
   normal: {
     label: "Normal",
-    className: "border-blue-100 bg-blue-50 text-blue-700",
+    className: "border-neutral-200 bg-neutral-100 text-neutral-600",
   },
   low: {
     label: "Bajo movimiento",
@@ -138,7 +138,7 @@ export function BarberPerformance({ items, compact = false }: Props) {
               <p className="mt-1 text-sm font-black text-[#111827]">{formatCurrency(totalSold)}</p>
             </div>
             <div className="rounded-2xl border border-[#E7E2D8] bg-white px-3 py-2">
-              <Scissors size={14} className="ml-auto text-[#2563EB]" />
+              <Scissors size={14} className="ml-auto text-[#C9922A]" />
               <p className="mt-1 text-sm font-black text-[#111827]">{totalServices}</p>
             </div>
             <div className="rounded-2xl border border-[#E7E2D8] bg-white px-3 py-2">
@@ -174,7 +174,7 @@ export function BarberPerformance({ items, compact = false }: Props) {
               </p>
             </div>
             <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-              <UserRound size={16} className="text-[#2563EB]" />
+              <UserRound size={16} className="text-[#C9922A]" />
               <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-neutral-400">Con movimiento</p>
               <p className="mt-1 text-2xl font-black text-[#111827]">{activeItems.length}</p>
             </div>

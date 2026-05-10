@@ -14,8 +14,8 @@ export function StatCard({
   value,
   hint,
   icon: Icon,
-  iconBg    = "bg-[#2F6FEB]/10",
-  iconColor = "text-[#2F6FEB]",
+  iconBg    = "bg-[#C9922A]/10",
+  iconColor = "text-[#C9922A]",
 }: Props) {
   return (
     <div className="metric-card">

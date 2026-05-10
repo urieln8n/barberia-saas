@@ -40,7 +40,7 @@ export function SmartAlerts({ alerts }: SmartAlertsProps) {
               <Icon size={18} className="text-[#8A641F]" />
               <p className="mt-3 text-sm font-black text-[#111827]">{alert.title}</p>
               <p className="mt-1 text-xs leading-5 text-neutral-500">{alert.description}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-black text-[#2563EB]">
+              <span className="mt-3 inline-flex items-center gap-1 text-xs font-black text-[#C9922A]">
                 Ver acción <ArrowRight size={12} />
               </span>
             </Link>

@@ -58,12 +58,12 @@ function StatusBanner({ profile }: { profile: PublicProfile }) {
   }
   if (!profile.marketplace_enabled) {
     return (
-      <div className="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3">
-        <Eye size={16} className="mt-0.5 shrink-0 text-blue-600" />
-        <p className="text-sm text-blue-800">
-          Perfil publicado. Tu enlace <strong>/r/{profile.slug}</strong> funciona, pero{" "}
-          <strong>no apareces en el marketplace</strong> público. Activa el marketplace para
-          que nuevos clientes te encuentren.
+      <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+        <Eye size={16} className="mt-0.5 shrink-0 text-slate-500" />
+        <p className="text-sm text-slate-700">
+          Tu enlace <strong>/r/{profile.slug}</strong> funciona y tus clientes pueden reservar.
+          El directorio público está desactivado — nadie ve competidores en tu página.{" "}
+          Actívalo si quieres aparecer en búsquedas locales para captar clientes nuevos.
         </p>
       </div>
     );
@@ -72,8 +72,9 @@ function StatusBanner({ profile }: { profile: PublicProfile }) {
     <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
       <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-600" />
       <p className="text-sm text-emerald-800">
-        Tu perfil está <strong>publicado y visible en el marketplace</strong>. Los clientes
-        pueden encontrar tu barbería y reservar online.
+        Tu enlace privado <strong>/r/{profile.slug}</strong> funciona y el directorio local
+        está activo. Los clientes de siempre usan tu enlace — el directorio ayuda a que{" "}
+        <strong>nuevos clientes te encuentren</strong> por ciudad y barrio.
       </p>
     </div>
   );
@@ -143,7 +144,7 @@ function Toggle({
         />
         <div
           className={`h-6 w-11 rounded-full transition-colors ${
-            checked ? "bg-[#2563EB]" : "bg-slate-200"
+            checked ? "bg-[#C9922A]" : "bg-slate-200"
           } ${disabled ? "opacity-50" : ""}`}
         />
         <div
@@ -233,8 +234,8 @@ export function MarketplaceClient({ profile, defaultSlug, siteUrl }: Props) {
       {profile && publicUrl && (
         <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563EB]/10">
-              <Globe size={16} className="text-[#2563EB]" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#C9922A]/10">
+              <Globe size={16} className="text-[#C9922A]" />
             </div>
             <h2 className="font-black text-[#080A0F]">Enlace público</h2>
           </div>
@@ -312,7 +313,8 @@ export function MarketplaceClient({ profile, defaultSlug, siteUrl }: Props) {
               <div>
                 <p className="font-semibold text-[#080A0F]">Visible en marketplace</p>
                 <p className="mt-0.5 text-xs leading-5 text-slate-500">
-                  Aparecerás en /barberias y los nuevos clientes te encontrarán por ciudad.
+                  Aparecerás en el directorio /barberias para que clientes nuevos te encuentren
+                  por ciudad y barrio. Tu página privada /r/{profile.slug} nunca muestra competidores.
                   Requiere perfil publicado.
                 </p>
               </div>
@@ -472,7 +474,7 @@ export function MarketplaceClient({ profile, defaultSlug, siteUrl }: Props) {
             <button
               type="submit"
               disabled={isPending}
-              className="btn-primary gap-2 disabled:opacity-60"
+              className="btn-gold gap-2 disabled:opacity-60"
             >
               {isPending && <Loader2 size={14} className="animate-spin" />}
               {profile ? "Guardar cambios" : "Crear perfil público"}

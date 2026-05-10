@@ -47,8 +47,28 @@ export default async function MarketplacePage() {
       <PageHeader
         eyebrow="Marketplace"
         title="Perfil público"
-        description="Configura cómo aparece tu barbería en el marketplace y comparte tu enlace de reservas."
+        description="Gestiona tu enlace privado de reservas y, si lo deseas, activa tu presencia en el directorio local para que nuevos clientes te encuentren."
       />
+
+      {/* Two-layer explanation */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#C9922A]">Tu página privada</p>
+          <p className="mt-2 font-black text-[#080A0F]">/r/tu-barberia</p>
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            Página exclusiva de tu barbería. Tus clientes solo ven tus servicios, barberos y botón de reserva.
+            Ningún competidor aparece aquí. Siempre activa cuando publicas tu perfil.
+          </p>
+        </div>
+        <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Directorio local · Opcional</p>
+          <p className="mt-2 font-black text-[#080A0F]">/barberias</p>
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            Aparece en búsquedas locales por ciudad y barrio para captar clientes nuevos.
+            Puedes activarlo o desactivarlo en cualquier momento — no afecta a tu enlace privado.
+          </p>
+        </div>
+      </div>
 
       {!profile && (
         <div className="rounded-[24px] border border-[#D5A84C]/30 bg-gradient-to-br from-[#D5A84C]/5 to-[#2563EB]/5 p-6 shadow-[var(--shadow-soft)]">

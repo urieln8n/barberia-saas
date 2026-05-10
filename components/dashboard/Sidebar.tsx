@@ -135,10 +135,10 @@ function BrandLogo({ onClick }: { onClick?: () => void }) {
   return (
     <Link href="/dashboard" onClick={onClick} className="flex items-center gap-3 rounded-2xl">
       <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#111111] shadow-sm">
-        <Scissors size={15} className="text-white" />
+        <Scissors size={15} className="text-[#C9922A]" />
       </div>
       <div className="min-w-0">
-        <span className="block text-lg font-black leading-none text-neutral-950">BarberiaOS</span>
+        <span className="block text-lg font-black leading-none text-neutral-950">BarberíaOS</span>
         <span className="mt-1 block text-[11px] font-medium text-neutral-500">Gestión premium</span>
       </div>
     </Link>

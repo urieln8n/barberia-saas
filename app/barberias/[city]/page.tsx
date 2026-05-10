@@ -170,18 +170,19 @@ export default async function BarberiasCityPage({ params }: Props) {
         )}
 
         {/* CTA barbershop owners */}
-        <div className="mt-16 rounded-[28px] border border-[#2563EB]/15 bg-gradient-to-br from-[#2563EB]/5 to-[#06B6D4]/5 p-8 text-center">
+        <div className="mt-16 rounded-[28px] border border-[#C9922A]/20 bg-gradient-to-br from-[#C9922A]/5 to-transparent p-8 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#080A0F]">
-            <Scissors size={20} className="text-white" />
+            <Scissors size={20} className="text-[#C9922A]" />
           </div>
           <h2 className="mt-5 text-xl font-black text-[#080A0F]">
             ¿Tienes una barbería en {city}?
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Aparece en este listado y recibe reservas online de clientes en {city}.
+            Crea tu enlace privado de reservas y activa tu presencia en {city} para captar
+            clientes nuevos. Sin comisión por cita.
           </p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Link href="/login" className="btn-primary">
+            <Link href="/login" className="btn-gold">
               Añadir mi barbería
             </Link>
             <Link href="/barberias" className="btn-outline">

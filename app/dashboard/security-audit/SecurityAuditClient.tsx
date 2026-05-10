@@ -121,13 +121,13 @@ function CheckItem({ check }: { check: AuditCheck }) {
               <button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:underline"
+                className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#C9922A] hover:underline"
               >
                 {open ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
                 {open ? "Ocultar consejo" : "Ver recomendación"}
               </button>
               {open && (
-                <p className="mt-2 border-l-2 border-[#2563EB]/30 pl-3 text-xs leading-5 text-slate-700">
+                <p className="mt-2 border-l-2 border-[#C9922A]/30 pl-3 text-xs leading-5 text-slate-700">
                   {check.recommendation}
                 </p>
               )}
@@ -261,7 +261,7 @@ function HistoryRow({
         <button
           type="button"
           onClick={handleLoad}
-          className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50"
+          className="shrink-0 rounded-xl border border-[#C9922A]/25 bg-white px-3 py-1.5 text-[11px] font-semibold text-[#7A5218] transition hover:border-[#C9922A]/45 hover:bg-[#C9922A]/5"
         >
           Ver
         </button>
@@ -296,12 +296,13 @@ function AuditResultPanel({ result }: { result: AuditResult }) {
           <ScoreGauge score={result.score} />
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
+              <p className="label-section w-full">Informe</p>
               <h2 className="font-black text-[#080A0F]">Resultado del análisis</h2>
               <a
                 href={result.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:underline"
+                className="flex items-center gap-1 text-xs font-semibold text-[#C9922A] hover:underline"
               >
                 {result.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 <ExternalLink size={11} />
@@ -406,8 +407,8 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
     <div className="space-y-5" ref={formRef}>
 
       {/* ── Disclaimer ──────────────────────────────────────────────────────── */}
-      <div className="flex items-start gap-3 rounded-2xl border border-[#2563EB]/20 bg-[#2563EB]/5 px-4 py-3">
-        <ShieldCheck size={15} className="mt-0.5 shrink-0 text-[#2563EB]" />
+      <div className="flex items-start gap-3 rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/5 px-4 py-3">
+        <ShieldCheck size={15} className="mt-0.5 shrink-0 text-[#C9922A]" />
         <p className="text-xs leading-5 text-slate-600">
           <strong className="font-semibold text-[#080A0F]">Auditoría pasiva.</strong>{" "}
           Esta herramienta solo lee información pública de tu web (cabeceras, HTML visible). No accede
@@ -418,6 +419,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
 
       {/* ── Form ────────────────────────────────────────────────────────────── */}
       <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
+        <p className="label-section mb-1">Herramienta</p>
         <h2 className="mb-5 font-black text-[#080A0F]">Analizar web</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -440,7 +442,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
               <button
                 type="submit"
                 disabled={isLoading || !confirmed || !url.trim()}
-                className="btn-primary shrink-0 gap-2 disabled:opacity-50"
+                className="btn-gold shrink-0 gap-2 disabled:opacity-50"
               >
                 {isLoading ? (
                   <><Loader2 size={14} className="animate-spin" /> Analizando…</>
@@ -458,7 +460,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-[#F6F8FB] px-4 py-3">
             <input
               type="checkbox"
-              className="mt-0.5 h-4 w-4 shrink-0 accent-[#2563EB]"
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[#C9922A]"
               checked={confirmed}
               onChange={e => setConfirmed(e.target.checked)}
               disabled={isLoading}
@@ -473,7 +475,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
         {/* Loading progress */}
         {isLoading && (
           <div className="mt-5 flex flex-col items-center gap-3 py-4">
-            <Loader2 size={28} className="animate-spin text-[#2563EB]" />
+            <Loader2 size={28} className="animate-spin text-[#C9922A]" />
             <div className="text-center">
               <p className="font-semibold text-[#080A0F]">Analizando tu web…</p>
               <p className="mt-0.5 text-xs text-slate-400">
@@ -482,7 +484,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
             </div>
             <div className="flex flex-wrap justify-center gap-2 text-[11px] text-slate-400">
               {["Conexión segura", "Cabeceras HTTP", "Contenido SEO", "Botones de contacto"].map(step => (
-                <span key={step} className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1">
+                <span key={step} className="flex items-center gap-1 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/5 px-2.5 py-1">
                   <Loader2 size={9} className="animate-spin" />
                   {step}
                 </span>
@@ -517,7 +519,8 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
       {/* ── History ─────────────────────────────────────────────────────────── */}
       {history.length > 0 && (
         <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)]">
-          <h2 className="mb-4 font-black text-[#080A0F]">Análisis anteriores</h2>
+          <p className="label-section">Historial</p>
+          <h2 className="mb-4 mt-1 font-black text-[#080A0F]">Análisis anteriores</h2>
           <div className="space-y-2">
             {history.map(entry => (
               <HistoryRow key={entry.id} entry={entry} onLoad={handleLoadHistory} />
@@ -529,11 +532,11 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
       {/* ── Empty history ────────────────────────────────────────────────────── */}
       {history.length === 0 && phase === "idle" && (
         <div className="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-slate-200 bg-white py-12 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-[#F6F8FB]">
-            <ShieldCheck size={22} className="text-slate-300" />
+          <div className="metric-icon bg-[#C9922A]/10">
+            <ShieldCheck size={22} className="text-[#C9922A]" />
           </div>
-          <p className="mt-4 font-semibold text-[#080A0F]">Sin análisis todavía</p>
-          <p className="mt-1.5 max-w-xs text-sm leading-6 text-slate-400">
+          <p className="mt-4 font-black text-[#080A0F]">Sin análisis todavía</p>
+          <p className="mt-1.5 max-w-xs text-sm leading-6 text-slate-500">
             Introduce la URL de tu web o la de un cliente y obtén un informe de mejoras en segundos.
           </p>
         </div>

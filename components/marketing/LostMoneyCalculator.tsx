@@ -63,10 +63,10 @@ export function LostMoneyCalculator() {
     <section id="calculadora" className="px-5 py-20 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-card)] md:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
-          <div className="metric-icon bg-[#2563EB]/10 text-[#2563EB]">
+          <div className="metric-icon bg-[#C9922A]/10 text-[#C9922A]">
             <Calculator size={18} />
           </div>
-          <p className="section-kicker mt-6">Calculadora</p>
+          <p className="section-kicker mt-6">Calculadora de ahorro para tu barbería</p>
           <h2 className="mt-3 text-3xl font-black leading-tight text-[#080A0F] md:text-5xl">
             ¿Cuánto dinero se escapa por huecos vacíos y citas que no aparecen?
           </h2>
@@ -88,7 +88,7 @@ export function LostMoneyCalculator() {
                     max={field.max}
                     value={field.value}
                     onChange={(event) => field.onChange(Number(event.target.value))}
-                    className="w-full accent-[#2563EB]"
+                    className="w-full accent-[#C9922A]"
                   />
                   <span className="min-w-14 rounded-xl bg-slate-100 px-3 py-2 text-center text-sm font-black text-[#080A0F]">
                     {field.value}
@@ -99,7 +99,7 @@ export function LostMoneyCalculator() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-[24px] border border-[#2563EB]/20 bg-[#080A0F] p-5 text-white">
+          <div className="mt-5 rounded-[24px] border border-[#C9922A]/20 bg-[#080A0F] p-5 text-white">
             <p className="text-xs font-black uppercase text-[#D5A84C]">Pérdida aproximada</p>
             <p className="mt-2 text-5xl font-black leading-none">{monthlyLoss.toLocaleString("es-ES")} €/mes</p>
             <p className="mt-3 text-sm leading-6 text-white/60">

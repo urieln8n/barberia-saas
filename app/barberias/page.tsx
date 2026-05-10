@@ -50,17 +50,17 @@ function getCityGroups(profiles: BarberiaProfile[]) {
 function EmptyMarketplace() {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="flex h-20 w-20 items-center justify-center rounded-[28px] border border-slate-200 bg-slate-50 shadow-sm">
-        <Scissors size={32} className="text-slate-300" />
+      <div className="flex h-20 w-20 items-center justify-center rounded-[28px] border border-[#C9922A]/20 bg-[#C9922A]/5 shadow-sm">
+        <Scissors size={32} className="text-[#C9922A]" />
       </div>
       <h2 className="mt-6 text-xl font-black text-[#080A0F]">
-        Aún no hay barberías en el marketplace
+        Aún no hay barberías en el directorio
       </h2>
       <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
-        Las primeras barberías están activando sus perfiles. Vuelve pronto o reserva
-        directamente si ya tienes el enlace de tu barbería.
+        Las primeras barberías están activando su presencia pública. Vuelve pronto o
+        reserva directamente si ya tienes el enlace de tu barbería.
       </p>
-      <Link href="/" className="btn-primary mt-8">
+      <Link href="/" className="btn-gold mt-8">
         Volver al inicio
       </Link>
     </div>
@@ -167,18 +167,19 @@ export default async function BarberiasPage() {
         )}
 
         {/* Bottom CTA — for barbershop owners */}
-        <div className="mt-16 rounded-[28px] border border-[#2563EB]/15 bg-gradient-to-br from-[#2563EB]/5 to-[#06B6D4]/5 p-8 text-center">
+        <div className="mt-16 rounded-[28px] border border-[#C9922A]/20 bg-gradient-to-br from-[#C9922A]/5 to-transparent p-8 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#080A0F]">
-            <Scissors size={20} className="text-white" />
+            <Scissors size={20} className="text-[#C9922A]" />
           </div>
           <h2 className="mt-5 text-xl font-black text-[#080A0F]">
             ¿Eres dueño de una barbería?
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Aparece en este listado, recibe reservas online y gestiona todo desde un panel.
+            Crea tu perfil, activa tu enlace privado de reservas y decide si quieres aparecer
+            en el directorio para captar nuevos clientes. Sin comisión por cita.
           </p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Link href="/login" className="btn-primary">
+            <Link href="/login" className="btn-gold">
               Crear mi cuenta gratis
             </Link>
             <Link href="/" className="btn-outline">

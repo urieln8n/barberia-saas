@@ -11,8 +11,8 @@ export function EmptyState({ icon: Icon, title, description, action }: Props) {
   return (
     <div className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] px-6 py-12 text-center">
       {Icon && (
-        <div className="metric-icon bg-[#2F6FEB]/10">
-          <Icon size={22} className="text-[#2F6FEB]" />
+        <div className="metric-icon bg-[#C9922A]/10">
+          <Icon size={22} className="text-[#C9922A]" />
         </div>
       )}
       <p className="mt-4 font-bold text-neutral-700">{title}</p>

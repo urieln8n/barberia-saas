@@ -163,7 +163,7 @@
     @apply w-full rounded-[14px] border border-slate-200 bg-white px-4 py-2.5
            text-sm text-slate-950 placeholder:text-slate-400 outline-none
            transition-all duration-200
-           focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10;
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[#C9922A]/10;
   }
   .form-label {
     @apply mb-1.5 block text-sm font-semibold text-slate-700;
@@ -201,7 +201,7 @@
   }
 
   .label-section {
-    @apply text-[11px] font-black uppercase text-[#2563EB];
+    @apply text-[11px] font-black uppercase text-[#C9922A];
   }
   .page-shell {
     @apply mx-auto w-full max-w-7xl space-y-6 px-0;
@@ -235,9 +235,8 @@
   }
   .premium-grid-bg {
     background:
-      linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 34%),
-      linear-gradient(225deg, rgba(6, 182, 212, 0.06), transparent 38%),
-      linear-gradient(180deg, #FFFFFF 0%, #F7FAFC 48%, #EEF3F8 100%);
+      linear-gradient(135deg, rgba(201, 146, 42, 0.04), transparent 34%),
+      linear-gradient(180deg, #FAFBFF 0%, #F5F6F8 50%, #EDEEF1 100%);
   }
   .surface-frame {
     @apply rounded-[24px] border border-slate-200 bg-white shadow-[var(--shadow-soft)];
@@ -249,7 +248,7 @@
     @apply rounded-[28px] border border-white/10 bg-[#080A0F] text-white shadow-[0_24px_80px_rgba(8,10,15,0.34)];
   }
   .section-kicker {
-    @apply text-xs font-black uppercase text-[#2563EB];
+    @apply text-xs font-black uppercase text-[#C9922A];
   }
   .premium-gradient-text {
     @apply bg-gradient-to-r from-[#080A0F] via-[#1D4ED8] to-[#06B6D4] bg-clip-text text-transparent;

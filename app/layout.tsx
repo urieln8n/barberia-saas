@@ -13,36 +13,48 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL("https://barberiaos.com"),
   title: {
-    default: "BarberíaOS | Reservas, caja y control para barberías",
+    default: "Software para barberías | Reservas, caja y QR — BarberíaOS",
     template: "%s | BarberíaOS",
   },
-  description: "SaaS vertical para barberías en España: reservas online, QR, agenda, caja, clientes, barberos, reportes y suscripciones.",
+  description:
+    "Software para barberías con reservas online, caja, QR, página pública y control de barberos. Sin comisión por cita. Prueba BarberíaOS sin permanencia.",
   alternates: {
-    canonical: "/",
+    canonical: "https://barberiaos.com/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: SITE_URL,
+    url: "https://barberiaos.com",
     siteName: "BarberíaOS",
-    title: "BarberíaOS | Reservas, caja y control para barberías",
-    description: "Gestiona reservas online, QR, agenda, caja, clientes y barberos desde un panel SaaS pensado para barberías.",
+    title: "Software para barberías | Reservas, caja y QR — BarberíaOS",
+    description:
+      "Software para barberías con reservas online, caja, QR y página pública. Sin comisión por cita. Sin permanencia.",
     images: [
       {
-        url: "/icon.svg",
-        width: 512,
-        height: 512,
-        alt: "BarberíaOS",
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "BarberíaOS — Software para barberías con reservas, caja y QR",
+        type: "image/png",
       },
     ],
   },
   twitter: {
-    card: "summary",
-    title: "BarberíaOS | Reservas, caja y control para barberías",
-    description: "SaaS vertical para barberías: reservas online, QR, agenda, caja y control de barberos.",
-    images: ["/icon.svg"],
+    card: "summary_large_image",
+    title: "Software para barberías | Reservas, caja y QR — BarberíaOS",
+    description:
+      "Software para barberías: reservas online, caja, QR y página pública. Sin comisión. Sin permanencia.",
+    images: ["/opengraph-image"],
   },
   appleWebApp: {
     capable: true,
