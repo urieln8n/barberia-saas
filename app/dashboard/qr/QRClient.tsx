@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Check,
   Copy,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 
 type Props = { name: string; slug: string };
 
@@ -27,17 +28,11 @@ type CopyKey =
   | "google"
   | "widget";
 
-const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+const configuredAppUrl = getConfiguredSiteUrl();
 
 export function QRClient({ name, slug }: Props) {
-  const [appUrl, setAppUrl] = useState(configuredAppUrl ?? "");
+  const [appUrl] = useState(configuredAppUrl);
   const [copied, setCopied] = useState<CopyKey | null>(null);
-
-  useEffect(() => {
-    if (!configuredAppUrl && typeof window !== "undefined") {
-      setAppUrl(window.location.origin);
-    }
-  }, []);
 
   const publicUrl = `${appUrl}/r/${slug}`;
   const instagramText = "Reserva tu cita online aquí";
@@ -76,8 +71,8 @@ export function QRClient({ name, slug }: Props) {
     <div className="space-y-5">
       <PageHeader
         eyebrow="Canales de reserva"
-        title="Reservas online"
-        description="Comparte tu link público, QR y mensajes listos para captar citas desde Instagram, WhatsApp, Google y tu web."
+        title="QR de reservas online"
+        description="Comparte este QR en Instagram, WhatsApp, Google o en el mostrador para recibir reservas sin responder mensajes manualmente."
       />
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start">

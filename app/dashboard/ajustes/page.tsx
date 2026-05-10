@@ -5,6 +5,7 @@ import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { BILLING_PLANS } from "@/src/lib/stripe/plans";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { BillingActions } from "@/components/dashboard/BillingActions";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -35,7 +36,7 @@ export default async function AjustesPage() {
   ]);
 
   const publicUrl = barbershop?.slug
-    ? `${process.env.NEXT_PUBLIC_APP_URL ?? "https://barberiaos.com"}/r/${barbershop.slug}`
+    ? `${getConfiguredSiteUrl()}/r/${barbershop.slug}`
     : null;
 
   const billingPlans = Object.values(BILLING_PLANS).map((plan) => ({
@@ -125,6 +126,27 @@ export default async function AjustesPage() {
             { icon: Palette, title: "Marca visual", text: "Logo, colores y presencia pública.", href: "/onboarding" },
             { icon: ShieldCheck, title: "Estado de cuenta", text: `Plan actual: ${planUsage.label}.`, href: "/dashboard/pagos" },
             { icon: Store, title: "Datos de barbería", text: "Nombre, ciudad y URL pública.", href: "/onboarding" },
+          ].map(({ icon: Icon, title, text, href }) => (
+            <Link key={title} href={href} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]">
+              <Icon size={18} className="text-[#2563EB]" />
+              <h3 className="mt-4 font-black text-[#080A0F]">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+            </Link>
+          ))}
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title="Legal y cumplimiento"
+        description="Documentación modelo para revisar privacidad, contrato de datos, proveedores y seguridad del servicio."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            { icon: ShieldCheck, title: "Privacidad", text: "Tratamiento de datos personales.", href: "/legal/privacidad" },
+            { icon: ShieldCheck, title: "Términos", text: "Condiciones generales del SaaS.", href: "/legal/terminos" },
+            { icon: ShieldCheck, title: "Encargo de tratamiento", text: "DPA para datos de clientes finales.", href: "/legal/encargo-tratamiento" },
+            { icon: ShieldCheck, title: "Subencargados", text: "Proveedores tecnológicos y estado.", href: "/legal/subencargados" },
+            { icon: ShieldCheck, title: "Seguridad", text: "Medidas y buenas prácticas.", href: "/legal/seguridad" },
           ].map(({ icon: Icon, title, text, href }) => (
             <Link key={title} href={href} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]">
               <Icon size={18} className="text-[#2563EB]" />

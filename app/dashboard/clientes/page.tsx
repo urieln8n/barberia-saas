@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { Mail, Phone, StickyNote } from "lucide-react";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
+import { Mail, Phone, StickyNote, UserPlus } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { RetentionActions } from "./RetentionActions";
 
 export const dynamic = "force-dynamic";
@@ -103,16 +104,7 @@ function statusBadgeClass(status?: string | null): string {
 }
 
 function getPublicBaseUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (configuredUrl) {
-    return configuredUrl.replace(/\/$/, "");
-  }
-
-  const requestHeaders = headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
-
-  return host ? `${protocol}://${host}` : "http://localhost:3000";
+  return getConfiguredSiteUrl();
 }
 
 function buildRepeatBookingUrl({
@@ -403,8 +395,7 @@ export default async function ClientesPage() {
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
-              Aquí aparecen los clientes creados manualmente y también los que
-              llegan desde reservas públicas.
+              Guarda automáticamente los clientes que reservan y detecta quién vuelve, quién no vuelve y a quién puedes recuperar.
             </p>
           </div>
 
@@ -412,7 +403,7 @@ export default async function ClientesPage() {
             href="/dashboard/agenda"
             className="btn-primary"
           >
-            Ver agenda
+            Crear reserva
           </a>
         </div>
       </section>
@@ -454,7 +445,7 @@ export default async function ClientesPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1.6fr]">
-        <div className="panel overflow-hidden p-0">
+        <div id="crear-cliente" className="panel overflow-hidden p-0">
           <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,rgba(47,111,235,0.06),rgba(255,255,255,0))] px-5 py-5 md:px-6">
             <p className="label-section">Clientes</p>
             <h2 className="mt-2 text-xl font-black text-[#111827]">
@@ -541,15 +532,16 @@ export default async function ClientesPage() {
           </div>
 
           {clients.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-8 text-center">
-              <p className="font-semibold text-neutral-700">
-                Todavía no hay clientes
-              </p>
-              <p className="mt-1 text-sm text-neutral-400">
-                Cuando alguien reserve desde el QR o link público, aparecerá
-                aquí.
-              </p>
-            </div>
+            <EmptyState
+              icon={UserPlus}
+              title="Todavía no hay clientes guardados"
+              description="Los clientes aparecerán automáticamente cuando hagan una reserva desde tu link o QR. También puedes crear un cliente de prueba manualmente."
+              action={
+                <a href="#crear-cliente" className="btn-primary">
+                  Crear cliente de prueba
+                </a>
+              }
+            />
           ) : (
             <>
               <div className="mt-6 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block">

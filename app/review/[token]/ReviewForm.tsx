@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { ExternalLink, MessageSquareText, ShieldCheck, Star } from "lucide-react";
 import { submitPublicReview } from "./actions";
@@ -155,6 +156,14 @@ export function ReviewForm({
       >
         {saving ? "Guardando..." : "Enviar valoración"}
       </button>
+
+      <p className="mt-4 text-center text-xs leading-5 text-neutral-400">
+        Al enviar tu valoración confirmas que has leído la{" "}
+        <Link href="/legal/privacidad" className="font-semibold text-[#2563EB] hover:text-[#1D4ED8]">
+          Política de Privacidad
+        </Link>
+        .
+      </p>
     </div>
   );
 }

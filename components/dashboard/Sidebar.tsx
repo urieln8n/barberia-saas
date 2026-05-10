@@ -14,55 +14,56 @@ import {
   Banknote,
   CalendarClock,
   Wallet,
-  Calculator,
-  QrCode,
   MessageCircle,
   Star,
   RotateCcw,
   Workflow,
   Settings,
+  ShieldCheck,
   LogOut,
+  QrCode,
+  HelpCircle,
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem  = { href: string; label: string; icon: LucideIcon };
+type NavItem  = { href: string; label: string; icon: LucideIcon; badge?: string };
 type NavGroup = { label: string; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
   {
-    label: "Operación",
+    label: "Principal",
     items: [
       { href: "/dashboard",                  label: "Dashboard",        icon: Home          },
-      { href: "/dashboard/agenda",           label: "Agenda",           icon: CalendarDays  },
-      { href: "/dashboard/huecos",           label: "Huecos libres",    icon: CalendarClock },
+      { href: "/dashboard/agenda",           label: "Reservas",         icon: CalendarDays  },
       { href: "/dashboard/clientes",         label: "Clientes",         icon: Users         },
-      { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
       { href: "/dashboard/barberos",         label: "Barberos",         icon: User          },
+      { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
+      { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
     ],
   },
   {
     label: "Negocio",
     items: [
-      { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
       { href: "/dashboard/caja",             label: "Caja",             icon: Banknote      },
-      { href: "/dashboard/finanzas",         label: "Finanzas",         icon: Wallet        },
-      { href: "/dashboard/fiscalidad",       label: "Fiscalidad",       icon: Calculator    },
+      { href: "/dashboard/finanzas",         label: "Ventas",           icon: Wallet        },
+      { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
+      { href: "/dashboard/huecos",           label: "Estadísticas",     icon: CalendarClock },
     ],
   },
   {
     label: "Crecimiento",
     items: [
-      { href: "/dashboard/automatizaciones", label: "Automatizaciones",  icon: Workflow      },
-      { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
-      { href: "/dashboard/whatsapp",         label: "Asistente WhatsApp", icon: MessageCircle },
-      { href: "/dashboard/resenas",          label: "Reseñas",           icon: Star          },
-      { href: "/dashboard/recuperacion",     label: "Recuperación",      icon: RotateCcw     },
+      { href: "/dashboard/marketing",        label: "Promociones",      icon: MessageCircle, badge: "Demo" },
+      { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star          },
+      { href: "/dashboard/recuperacion",     label: "Clientes perdidos", icon: RotateCcw     },
+      { href: "/dashboard/automatizaciones", label: "Recordatorios",     icon: Workflow, badge: "Pro" },
     ],
   },
   {
-    label: "Sistema",
+    label: "Configuración",
     items: [
-      { href: "/dashboard/ajustes",          label: "Ajustes",          icon: Settings      },
+      { href: "/dashboard/ajustes",          label: "Perfil barbería",  icon: Settings      },
+      { href: "/dashboard/whatsapp",         label: "Soporte",          icon: HelpCircle, badge: "Guía" },
     ],
   },
 ];
@@ -91,7 +92,12 @@ function NavLink({
         size={16}
         className={`shrink-0 transition-colors ${active ? "text-[#8A641F]" : "text-neutral-400"}`}
       />
-      {item.label}
+      <span className="min-w-0 flex-1">{item.label}</span>
+      {item.badge && (
+        <span className="rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+          {item.badge}
+        </span>
+      )}
     </Link>
   );
 }
@@ -221,6 +227,10 @@ export default function Sidebar() {
           </nav>
 
           <div className="mt-4">
+            <Link href="/" onClick={() => setOpen(false)} className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
+              <ShieldCheck size={16} className="shrink-0" />
+              Volver a la landing
+            </Link>
             <LogoutBtn onClick={handleLogout} />
           </div>
         </aside>
@@ -234,11 +244,15 @@ export default function Sidebar() {
 
         <nav className="flex flex-1 flex-col gap-5 overflow-y-auto">
           {navGroups.map((group) => (
-            <NavGroupSection key={group.label} group={group} pathname={pathname} />
+          <NavGroupSection key={group.label} group={group} pathname={pathname} />
           ))}
         </nav>
 
         <div className="mt-4">
+          <Link href="/" className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
+            <ShieldCheck size={16} className="shrink-0" />
+            Volver a la landing
+          </Link>
           <LogoutBtn onClick={handleLogout} />
         </div>
       </aside>

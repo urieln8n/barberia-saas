@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Clock,
@@ -272,6 +273,7 @@ export function BookingForm({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [privacyRead, setPrivacyRead] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
@@ -395,6 +397,7 @@ export function BookingForm({
     setName("");
     setPhone("");
     setEmail("");
+    setPrivacyRead(false);
     setMarketingConsent(false);
     setSaving(false);
     setCheckingAvailability(false);
@@ -824,6 +827,26 @@ export function BookingForm({
             </div>
 
             {/* Consentimiento marketing */}
+            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
+              <input
+                type="checkbox"
+                checked={privacyRead}
+                onChange={(e) => setPrivacyRead(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+              />
+              <span className="text-xs leading-relaxed text-neutral-500">
+                He leído la{" "}
+                <Link href="/legal/privacidad" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                  Política de Privacidad
+                </Link>{" "}
+                y las{" "}
+                <Link href="/legal/condiciones-reservas" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                  Condiciones de Reservas
+                </Link>
+                . <span className="text-neutral-400">TODO: conectar validación obligatoria cuando se formalice el flujo legal.</span>
+              </span>
+            </label>
+
             <label className="mt-4 flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"

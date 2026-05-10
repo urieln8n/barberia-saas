@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   ExternalLink,
@@ -12,6 +11,7 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import {
   createReviewLinkAction,
   saveGoogleReviewUrlAction,
@@ -57,14 +57,7 @@ function firstRelation<T>(value: T | T[] | null | undefined): T | null {
 }
 
 function getPublicBaseUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
-
-  const requestHeaders = headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
-
-  return host ? `${protocol}://${host}` : "http://localhost:3000";
+  return getConfiguredSiteUrl();
 }
 
 function formatDate(date: string) {

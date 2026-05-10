@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/src/lib/supabase/server";
 import { BookingForm } from "./BookingForm";
+import { SITE_URL } from "@/src/lib/site-url";
 import {
   BadgeCheck,
   CalendarCheck,
@@ -102,6 +103,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Reservas online | BarberiaOS",
       description: "Reserva tu cita online en una barbería con BarberiaOS.",
+      alternates: {
+        canonical: "/",
+      },
     };
   }
 
@@ -111,6 +115,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Barbería no encontrada | BarberiaOS",
       description: "Esta página de reservas no está disponible.",
+      alternates: {
+        canonical: `/r/${slug}`,
+      },
     };
   }
 
@@ -121,6 +128,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: location
       ? `Reserva cita online en ${barbershop.name}, ${location}.`
       : `Reserva cita online en ${barbershop.name}.`,
+    alternates: {
+      canonical: `/r/${barbershop.slug}`,
+    },
+    openGraph: {
+      type: "website",
+      url: `${SITE_URL}/r/${barbershop.slug}`,
+      title: `${barbershop.name} | Reservas online`,
+      description: location
+        ? `Reserva cita online en ${barbershop.name}, ${location}.`
+        : `Reserva cita online en ${barbershop.name}.`,
+      siteName: "BarberíaOS",
+    },
+    twitter: {
+      card: "summary",
+      title: `${barbershop.name} | Reservas online`,
+      description: location
+        ? `Reserva cita online en ${barbershop.name}, ${location}.`
+        : `Reserva cita online en ${barbershop.name}.`,
+    },
   };
 }
 

@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 
 let stripe: Stripe | null = null;
 
@@ -15,5 +16,5 @@ export function getStripe() {
 }
 
 export function getAppUrl() {
-  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return getConfiguredSiteUrl();
 }

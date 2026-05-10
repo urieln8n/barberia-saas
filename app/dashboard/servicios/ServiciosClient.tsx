@@ -83,7 +83,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
       <PageHeader
         section="Servicios"
         title="Gestión de servicios"
-        description="Define precios, duración y servicios disponibles para reservas."
+        description="Configura cortes, barba, combos, precios y duración para que tus clientes puedan reservar online sin escribirte por WhatsApp."
         action={
           <PrimaryButton
             type="button"
@@ -116,8 +116,8 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
       {services.length === 0 ? (
         <EmptyState
           icon={Scissors}
-          title="Sin servicios todavía"
-          description="Añade el primero para empezar a recibir reservas."
+          title="Configura tu primer servicio"
+          description="Añade cortes, barba, combos y precios para activar las reservas online. Ejemplo: Corte premium, Corte + barba o Arreglo de barba."
           action={
             <PrimaryButton
               type="button"

@@ -92,7 +92,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
       <PageHeader
         section="Barberos"
         title="Tu equipo"
-        description="Gestiona disponibilidad operativa del equipo sin cambiar la lógica de reservas."
+        description="Añade tu equipo, asigna citas y controla la agenda de cada barbero desde una vista simple."
         action={
           <PrimaryButton
             type="button"
@@ -119,7 +119,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
         <EmptyState
           icon={User}
           title="Sin barberos todavía"
-          description="Añade tu equipo para asignarles citas."
+          description="Añade tu primer barbero para poder organizar reservas por profesional. Ejemplo: Carlos atiende cortes, Miguel barba y Andrés degradados."
           action={
             <PrimaryButton
               type="button"

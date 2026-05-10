@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
 import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
 import {
@@ -17,11 +18,18 @@ import {
   Scissors,
   User,
   CreditCard,
+  Megaphone,
+  MessageCircle,
+  Star,
 } from "lucide-react";
 import { StatCard }   from "@/components/dashboard/StatCard";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import { TodayAvailability } from "@/components/dashboard/TodayAvailability";
+import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
+import { GrowthScoreCard } from "@/components/dashboard/GrowthScoreCard";
+import { SmartAlerts } from "@/components/dashboard/SmartAlerts";
+import { WelcomePanel } from "@/components/dashboard/WelcomePanel";
 
 export const dynamic = "force-dynamic";
 
@@ -219,6 +227,13 @@ export default async function DashboardPage() {
     activeBarbersResult,
     todayCashMovementsResult,
     activeCashSessionResult,
+    activeServicesResult,
+    totalClientsResult,
+    recurrentClientsResult,
+    dormantClientsResult,
+    reviewsResult,
+    noShowsMonthResult,
+    confirmedUpcomingResult,
   ] = await Promise.all([
     dataClient
       .from("barbershops")
@@ -321,6 +336,49 @@ export default async function DashboardPage() {
       .order("opened_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
+
+    dataClient
+      .from("services")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId)
+      .eq("active", true),
+
+    dataClient
+      .from("clients")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId),
+
+    dataClient
+      .from("clients")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId)
+      .gte("visit_count", 2),
+
+    dataClient
+      .from("clients")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId)
+      .lt("last_visit_at", new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()),
+
+    dataClient
+      .from("reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("business_id", barbershopId),
+
+    dataClient
+      .from("appointments")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId)
+      .gte("appointment_date", monthStart)
+      .lte("appointment_date", monthEnd)
+      .eq("status", "no_show"),
+
+    dataClient
+      .from("appointments")
+      .select("id", { count: "exact", head: true })
+      .eq("barbershop_id", barbershopId)
+      .gte("appointment_date", today)
+      .eq("status", "confirmed"),
   ]);
 
   const barbershop = barbershopResult.data;
@@ -337,6 +395,16 @@ export default async function DashboardPage() {
   );
 
   const publicBookingUrl = `/r/${barbershop?.slug ?? "demo-barber"}`;
+  const publicBookingFullUrl = `${getConfiguredSiteUrl()}${publicBookingUrl}`;
+  const activeServicesCount = activeServicesResult.count ?? 0;
+  const activeBarbersCount = ((activeBarbersResult.data as { id: string; name: string }[]) ?? []).length;
+  const totalClientsCount = totalClientsResult.count ?? 0;
+  const recurrentClientsCount = recurrentClientsResult.count ?? 0;
+  const dormantClientsCount = dormantClientsResult.count ?? 0;
+  const reviewsCount = reviewsResult.count ?? 0;
+  const noShowsMonthCount = noShowsMonthResult.count ?? 0;
+  const confirmedUpcomingCount = confirmedUpcomingResult.count ?? 0;
+  const hasPublicBooking = Boolean(barbershop?.slug);
 
   // ── Stats derivadas del mes ──
   const monthAppts = (monthApptsResult.data as any[]) ?? [];
@@ -423,6 +491,186 @@ export default async function DashboardPage() {
       ? "Cierra caja al final del día para evitar descuadres."
       : "Abre caja antes de registrar cobros para controlar el efectivo.",
   ];
+  const activationItems = [
+    {
+      label: "Añadir datos de la barbería",
+      href: "/dashboard/ajustes",
+      done: Boolean(barbershop?.name && barbershop?.slug),
+      description: "Nombre, slug, teléfono y datos visibles para tus clientes.",
+      actionLabel: "Completar perfil",
+    },
+    {
+      label: "Añadir servicios",
+      href: "/dashboard/servicios",
+      done: activeServicesCount > 0,
+      description: "Cortes, barba, combos, precios y duración.",
+      actionLabel: "Crear servicios",
+    },
+    {
+      label: "Añadir barberos",
+      href: "/dashboard/barberos",
+      done: activeBarbersCount > 0,
+      description: "Crea tu equipo para asignar reservas por profesional.",
+      actionLabel: "Añadir equipo",
+    },
+    {
+      label: "Configurar horarios",
+      href: "/dashboard/ajustes",
+      done: activeBarbersCount > 0 && activeServicesCount > 0,
+      description: "Define cuándo se puede reservar y operar la agenda.",
+      actionLabel: "Configurar horarios",
+    },
+    {
+      label: "Crear QR",
+      href: "/dashboard/qr",
+      done: hasPublicBooking,
+      description: "Genera el QR para mostrador, Instagram y WhatsApp.",
+      actionLabel: "Generar QR",
+    },
+    {
+      label: "Probar una reserva",
+      href: publicBookingUrl,
+      done: upcomingAppointments.length > 0 || todayAppointments.length > 0,
+      description: "Haz una prueba para ver el flujo como cliente.",
+      actionLabel: "Probar reserva",
+    },
+    {
+      label: "Compartir link en Instagram",
+      href: "/dashboard/qr",
+      done: Boolean(barbershop?.slug && barbershop?.name),
+      description: "Copia el link público y úsalo en bio o stories.",
+      actionLabel: "Copiar link",
+    },
+    {
+      label: "Activar recordatorios",
+      href: "/dashboard/automatizaciones",
+      done: confirmedUpcomingCount > 0,
+      description: "Reduce olvidos confirmando próximas citas.",
+      actionLabel: "Ver recordatorios",
+    },
+    {
+      label: "Lanzar primera promoción",
+      href: "/dashboard/marketing",
+      done: totalClientsCount > 0 && totalFreeSlotsToday > 0,
+      description: "Usa huecos libres o clientes dormidos para crear demanda.",
+      actionLabel: "Crear promoción",
+    },
+  ];
+  const activationPercent = Math.round(
+    (activationItems.filter((item) => item.done).length / activationItems.length) * 100
+  );
+  const growthFactors = [
+    {
+      label: "Reservas activas",
+      done: todayAppointments.length > 0 || upcomingAppointments.length > 0,
+      hint: `${todayAppointments.length + upcomingAppointments.length} reservas visibles entre hoy y próximas citas.`,
+    },
+    {
+      label: "Clientes recurrentes",
+      done: recurrentClientsCount > 0,
+      hint: `${recurrentClientsCount} clientes con dos o más visitas registradas.`,
+    },
+    {
+      label: "Clientes dormidos detectados",
+      done: dormantClientsCount > 0,
+      hint: `${dormantClientsCount} clientes llevan más de 45 días sin volver.`,
+    },
+    {
+      label: "Ocupación semanal",
+      done: weekApptsCount >= Math.max(5, activeBarbersCount * 3),
+      hint: `${weekApptsCount} citas registradas esta semana.`,
+    },
+    {
+      label: "Citas confirmadas",
+      done: confirmedUpcomingCount > 0,
+      hint: `${confirmedUpcomingCount} citas futuras están confirmadas.`,
+    },
+    {
+      label: "No-shows controlados",
+      done: noShowsMonthCount <= 2,
+      hint: `${noShowsMonthCount} no-shows registrados este mes.`,
+    },
+    {
+      label: "Reseñas activas",
+      done: reviewsCount > 0,
+      hint: `${reviewsCount} reseñas o solicitudes de reseña registradas.`,
+    },
+    {
+      label: "Uso del QR",
+      done: hasPublicBooking,
+      hint: hasPublicBooking ? "Link público listo para compartir en QR." : "Falta activar el link público de reservas.",
+    },
+    {
+      label: "Servicios configurados",
+      done: activeServicesCount > 0,
+      hint: `${activeServicesCount} servicios activos.`,
+    },
+    {
+      label: "Barberos activos",
+      done: activeBarbersCount > 0,
+      hint: `${activeBarbersCount} barberos activos.`,
+    },
+  ];
+  const growthScore = Math.round(
+    (growthFactors.filter((factor) => factor.done).length / growthFactors.length) * 100
+  );
+  const smartAlerts = [
+    {
+      title: `Tienes ${dormantClientsCount} clientes dormidos`,
+      description:
+        dormantClientsCount > 0
+          ? "Llevan más de 45 días sin volver. Puedes lanzar una campaña de recuperación."
+          : "Aún no hay clientes dormidos detectados con la información actual.",
+      href: "/dashboard/recuperacion",
+      icon: Users,
+    },
+    {
+      title: `${confirmedUpcomingCount} citas futuras confirmadas`,
+      description:
+        confirmedUpcomingCount > 0
+          ? "Mantén las confirmaciones al día para reducir olvidos y cambios de última hora."
+          : "Revisa las próximas reservas y confirma las citas pendientes.",
+      href: "/dashboard/agenda",
+      icon: CalendarCheck,
+    },
+    {
+      title: `${totalFreeSlotsToday} huecos libres hoy`,
+      description:
+        totalFreeSlotsToday > 0
+          ? "Comparte disponibilidad por WhatsApp o lanza una promoción rápida."
+          : "Hoy no hay huecos libres detectados en la disponibilidad actual.",
+      href: "/dashboard/huecos",
+      icon: Clock,
+    },
+    {
+      title: `${noShowsMonthCount} no-shows este mes`,
+      description:
+        noShowsMonthCount > 0
+          ? "Revisa patrones y refuerza recordatorios antes de las horas más críticas."
+          : "No hay no-shows registrados este mes. Buen momento para mantener el hábito de confirmar.",
+      href: "/dashboard/automatizaciones",
+      icon: MessageCircle,
+    },
+    {
+      title: topDailyBarber
+        ? `${topDailyBarber.barberName} lidera ventas hoy`
+        : "Sin barbero top todavía",
+      description: topDailyBarber
+        ? `Lleva ${formatCurrency(topDailyBarber.totalSold)} vendidos. Revisa servicios y comisiones.`
+        : "Registra cobros en caja para ver rendimiento por barbero.",
+      href: "/dashboard/caja",
+      icon: Star,
+    },
+    {
+      title: "Primera promoción",
+      description:
+        totalClientsCount > 0
+          ? "Usa tu base de clientes para empujar horas flojas sin depender solo de Instagram."
+          : "Cuando tengas clientes registrados podrás lanzar promociones más segmentadas.",
+      href: "/dashboard/marketing",
+      icon: Megaphone,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -439,7 +687,7 @@ export default async function DashboardPage() {
               {barbershop?.name ?? "Tu barbería"}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-500">
-              Controla la agenda de hoy, próximos clientes, cobros y canales de reserva desde una vista clara para operar rápido.
+              Vista general de tu barbería: reservas, clientes, actividad, huecos y próximos pasos para dejar el sistema listo.
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px]">
@@ -465,6 +713,14 @@ export default async function DashboardPage() {
           </div>
         </div>
       </section>
+
+      <WelcomePanel />
+
+      <ActivationChecklist percent={activationPercent} items={activationItems} />
+
+      <GrowthScoreCard score={growthScore} factors={growthFactors} />
+
+      <SmartAlerts alerts={smartAlerts} />
 
       {/* ── Control diario ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -679,7 +935,7 @@ export default async function DashboardPage() {
             </div>
             <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3">
               <p className="break-all font-mono text-xs font-semibold text-white/75">
-                {typeof window !== "undefined" ? window.location.origin : "https://barberiaos.com"}{publicBookingUrl}
+                {publicBookingFullUrl}
               </p>
             </div>
             <div className="mt-4 grid gap-2">

@@ -231,9 +231,9 @@ export function AgendaClient({
     <div className="space-y-5">
 
       <PageHeader
-        section="Agenda"
-        title="Citas del día"
-        description={`${allAppointments.length} citas registradas en total.`}
+        section="Reservas"
+        title="Agenda y reservas"
+        description="Gestiona las citas de tu barbería desde un solo lugar. Aquí puedes ver próximas reservas, horarios, disponibilidad y huecos por barbero."
         action={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
@@ -282,7 +282,12 @@ export function AgendaClient({
           <EmptyState
             icon={User}
             title="Sin barberos activos"
-            description="Activa o crea barberos para poder ver columnas de disponibilidad."
+            description="Añade tu equipo para ver columnas de disponibilidad y asignar citas a cada barbero. Ejemplo: Carlos, Miguel o Andrés con sus huecos del día."
+            action={
+              <PrimaryButton href="/dashboard/barberos" variant="primary">
+                Crear barbero
+              </PrimaryButton>
+            }
           />
         ) : (
           <div className="grid gap-4 lg:grid-cols-3">
@@ -351,8 +356,17 @@ export function AgendaClient({
         {appointments.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
-            title="Sin citas para este día"
-            description="Crea una nueva cita o selecciona otra fecha."
+            title="Todavía no tienes reservas para este día"
+            description="Cuando tus clientes reserven desde tu link o QR, aparecerán aquí. También puedes crear una cita manual de prueba."
+            action={
+              <PrimaryButton
+                type="button"
+                onClick={() => { setFormError(""); setShowModal(true); }}
+                variant="primary"
+              >
+                <Plus size={16} /> Crear reserva de prueba
+              </PrimaryButton>
+            }
           />
         ) : (
           <div className="flex flex-col gap-3">
@@ -377,7 +391,12 @@ export function AgendaClient({
           <EmptyState
             icon={CalendarDays}
             title="No hay próximas citas"
-            description="Cuando entren nuevas reservas futuras, aparecerán aquí."
+            description="Las reservas futuras aparecerán aquí con cliente, servicio, barbero, hora y estado. Comparte tu QR para empezar a recibirlas."
+            action={
+              <PrimaryButton href="/dashboard/qr" variant="primary">
+                Ver QR de reservas
+              </PrimaryButton>
+            }
           />
         ) : (
           <div className="flex flex-col gap-3">

@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Scissors, Store, MapPin, Phone, Link2 } from "lucide-react";
 import { createBarbershop } from "./actions";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 
 function toSlug(value: string) {
   return value
@@ -29,7 +31,7 @@ export default function OnboardingPage() {
     setSlug(toSlug(value));
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const appUrl = getConfiguredSiteUrl();
 
   return (
     <main className="premium-grid-bg flex min-h-screen items-center justify-center px-4 py-12">
@@ -119,6 +121,18 @@ export default function OnboardingPage() {
             >
               Crear mi barbería →
             </button>
+
+            <p className="text-xs leading-5 text-neutral-500">
+              Al crear tu barbería confirmas que has leído la{" "}
+              <Link href="/legal/privacidad" className="font-bold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                Política de Privacidad
+              </Link>{" "}
+              y aceptas los{" "}
+              <Link href="/legal/terminos" className="font-bold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                Términos y Condiciones
+              </Link>
+              .
+            </p>
           </form>
         </div>
 

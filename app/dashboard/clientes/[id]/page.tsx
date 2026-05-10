@@ -19,6 +19,7 @@ import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { buildRetentionMessage } from "@/src/lib/retention/messages";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { CustomerCopyMessageButton } from "./CustomerCopyMessageButton";
 import { createCustomerReviewAction, saveClientCrmAction } from "./actions";
 
@@ -96,10 +97,7 @@ function firstRelation<T>(value: T | T[] | null | undefined): T | null {
 }
 
 function getPublicBaseUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
-
-  return "http://localhost:3000";
+  return getConfiguredSiteUrl();
 }
 
 function formatDate(date?: string | null) {
