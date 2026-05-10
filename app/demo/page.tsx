@@ -4,6 +4,7 @@ import {
   BarChart3,
   CalendarDays,
   CheckCircle2,
+  LockKeyhole,
   QrCode,
   Scissors,
   Settings,
@@ -71,21 +72,35 @@ export default function DemoPage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-4 py-2 text-xs font-black uppercase text-[#2563EB]">
               <CheckCircle2 size={14} />
-              Demo guiada
+              Demo guiada segura
             </div>
             <h1 className="mt-6 text-[clamp(2.6rem,6vw,5.2rem)] font-black leading-[0.95]">
               Explora BarberiaOS sin perderte.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Esta guía te enseña qué mirar primero: dashboard, reservas, clientes, barberos, servicios, QR y configuración. Si no tienes cuenta, crea una gratis y llegarás al onboarding.
+              Esta guía te enseña qué mirar primero: dashboard, reservas, clientes, barberos, servicios, QR y configuración. Para proteger datos reales, el panel completo requiere una cuenta y una barbería propia.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <PrimaryButton href="/login" variant="primary" className="min-h-12 px-6">
-                Probar BarberiaOS gratis <ArrowRight size={16} />
+                Crear cuenta de prueba <ArrowRight size={16} />
               </PrimaryButton>
-              <PrimaryButton href="/dashboard" variant="secondary" className="min-h-12 px-6">
-                Explorar dashboard
+              <PrimaryButton href="/login" variant="secondary" className="min-h-12 px-6">
+                Entrar al panel
               </PrimaryButton>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-5 rounded-[24px] border border-[#DDE7FB] bg-[#EFF6FF] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+            <div className="metric-icon bg-white text-[#2563EB]">
+              <LockKeyhole size={17} />
+            </div>
+            <div>
+              <h2 className="font-black text-[#111827]">Cómo probar sin tocar datos reales</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Crea una cuenta, completa el onboarding con una barbería ficticia y usa servicios/barberos de prueba. Cada cuenta trabaja sobre su propia barbería.
+              </p>
             </div>
           </div>
         </section>

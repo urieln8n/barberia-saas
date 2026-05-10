@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { getConfiguredSiteUrl } from "@/src/lib/site-url";
+import { getConfiguredAppUrl } from "@/src/lib/site-url";
 
 let stripe: Stripe | null = null;
 
@@ -16,5 +16,5 @@ export function getStripe() {
 }
 
 export function getAppUrl() {
-  return getConfiguredSiteUrl();
+  return getConfiguredAppUrl();
 }

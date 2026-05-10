@@ -1,6 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { SITE_URL } from "@/src/lib/site-url";
 
 function createSupabaseClient(request: NextRequest, response: NextResponse) {
   return createServerClient(
@@ -24,13 +23,14 @@ function createSupabaseClient(request: NextRequest, response: NextResponse) {
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const errorRedirect = new URL("/login?error=oauth", SITE_URL);
+  const origin = requestUrl.origin;
+  const errorRedirect = new URL("/login?error=oauth", origin);
 
   if (!code) {
     return NextResponse.redirect(errorRedirect);
   }
 
-  const response = NextResponse.redirect(new URL("/dashboard", SITE_URL));
+  const response = NextResponse.redirect(new URL("/dashboard", origin));
   const supabase = createSupabaseClient(request, response);
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);

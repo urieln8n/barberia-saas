@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { SITE_URL } from "@/src/lib/site-url";
 // @ts-ignore
@@ -65,6 +66,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {children}
         <CookieConsentBanner />
+        <Analytics />
       </body>
     </html>
   );

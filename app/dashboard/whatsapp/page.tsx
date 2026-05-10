@@ -16,41 +16,45 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 
-const templates = [
-  {
-    title: "Precios",
-    text: "Hola, estos son nuestros servicios principales: corte, barba y combo corte + barba. Puedes reservar aqui cuando quieras: https://barberiaos.com/r/tu-barberia",
-  },
-  {
-    title: "Horarios",
-    text: "Abrimos de lunes a sabado. Dime que dia te viene bien y revisamos huecos disponibles. Tambien puedes reservar aqui: https://barberiaos.com/r/tu-barberia",
-  },
-  {
-    title: "Ubicación",
-    text: "Estamos en el centro. Te paso la ubicacion y el enlace para reservar sin esperas: https://barberiaos.com/r/tu-barberia",
-  },
-  {
-    title: "Reservar cita",
-    text: "Puedes elegir barbero, servicio y hora desde nuestro enlace de reservas.",
-  },
-  {
-    title: "Confirmar cita",
-    text: "Tu cita queda pendiente de confirmación. Te esperamos unos minutos antes para preparar el servicio.",
-  },
-  {
-    title: "Recordar cita",
-    text: "Te recordamos tu cita de barbería. Si necesitas cambiarla, avísanos con tiempo.",
-  },
-  {
-    title: "Recuperar cliente",
-    text: "Hace tiempo que no pasas por la barbería. Tenemos huecos esta semana para dejarte el corte al día.",
-  },
-];
+function buildTemplates(bookingUrl: string) {
+  return [
+    {
+      title: "Precios",
+      text: `Hola, estos son nuestros servicios principales: corte, barba y combo corte + barba. Puedes reservar aqui cuando quieras: ${bookingUrl}`,
+    },
+    {
+      title: "Horarios",
+      text: `Abrimos de lunes a sabado. Dime que dia te viene bien y revisamos huecos disponibles. Tambien puedes reservar aqui: ${bookingUrl}`,
+    },
+    {
+      title: "Ubicación",
+      text: `Estamos en el centro. Te paso la ubicacion y el enlace para reservar sin esperas: ${bookingUrl}`,
+    },
+    {
+      title: "Reservar cita",
+      text: "Puedes elegir barbero, servicio y hora desde nuestro enlace de reservas.",
+    },
+    {
+      title: "Confirmar cita",
+      text: "Tu cita queda pendiente de confirmación. Te esperamos unos minutos antes para preparar el servicio.",
+    },
+    {
+      title: "Recordar cita",
+      text: "Te recordamos tu cita de barbería. Si necesitas cambiarla, avísanos con tiempo.",
+    },
+    {
+      title: "Recuperar cliente",
+      text: "Hace tiempo que no pasas por la barbería. Tenemos huecos esta semana para dejarte el corte al día.",
+    },
+  ];
+}
 
 export default function WhatsAppAssistantPage() {
   const [copiedTemplate, setCopiedTemplate] = useState<string | null>(null);
-  const bookingUrl = "https://barberiaos.com/r/tu-barberia";
+  const bookingUrl = `${getConfiguredSiteUrl()}/r/tu-barberia`;
+  const templates = buildTemplates(bookingUrl);
   const welcomeMessage =
     "Hola, soy el asistente de la barberia. Puedo ayudarte con precios, horarios, ubicacion y reservas. Si quieres cita, te paso el enlace para elegir servicio, barbero y hora.";
   const whatsappMessage = encodeURIComponent(

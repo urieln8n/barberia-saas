@@ -25,6 +25,7 @@ import { LostMoneyCalculator } from "@/components/marketing/LostMoneyCalculator"
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ProductMockupCard } from "@/components/ui/ProductMockupCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { SITE_URL } from "@/src/lib/site-url";
 
 const ownerPains = [
   {
@@ -246,6 +247,8 @@ function SetupVisual() {
 }
 
 function QRVisual() {
+  const publicBookingExampleUrl = `${SITE_URL.replace(/^https?:\/\//, "")}/r/black-crown`;
+
   return (
     <ProductMockupCard className="mx-auto max-w-4xl">
       <div className="grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-center">
@@ -259,7 +262,7 @@ function QRVisual() {
             ))}
           </div>
           <p className="mt-4 break-all text-center font-mono text-xs font-bold text-slate-500">
-            barberiaos.com/r/black-crown
+            {publicBookingExampleUrl}
           </p>
         </div>
         <div className="mx-auto w-full max-w-[290px] rounded-[30px] border border-slate-200 bg-[#080A0F] p-3 shadow-[var(--shadow-card)]">
