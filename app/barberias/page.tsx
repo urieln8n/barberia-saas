@@ -84,6 +84,9 @@ export default async function BarberiasPage() {
       <section className="px-4 pt-6 sm:px-6 lg:px-10">
         <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[34px] border border-white bg-[linear-gradient(135deg,#FFFFFF_0%,#F7F3EA_46%,#EEF3F8_100%)] px-5 py-10 shadow-[0_24px_80px_rgba(8,10,15,0.10)] sm:px-8 md:py-14 lg:px-12">
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/40 to-transparent" />
+          {/* Decorative gold glows */}
+          <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-[#D5A84C]/6 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-72 w-72 rounded-full bg-[#D5A84C]/4 blur-3xl" />
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm">
@@ -106,8 +109,21 @@ export default async function BarberiasPage() {
                 Descubre barberías cerca de ti, consulta su ubicación y reserva en segundos con BarberíaOS.
               </p>
 
+              {/* Trust badges */}
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Sin llamadas", "Reserva online", "Mapa interactivo", "Sin comisiones"].map((label) => (
+                  <span
+                    key={label}
+                    className="flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/60 px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm backdrop-blur-sm"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#D5A84C]" />
+                    {label}
+                  </span>
+                ))}
+              </div>
+
               {/* Hero CTAs */}
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-3">
                 <a href="#directorio" className="btn-gold">
                   <CalendarCheck size={15} />
                   Reservar ahora

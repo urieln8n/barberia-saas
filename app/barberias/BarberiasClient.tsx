@@ -34,7 +34,6 @@ type FeaturedMode = "all" | "featured";
 function LocationButton({
   detecting,
   location,
-  error,
   onDetect,
   onClear,
 }: {
@@ -86,10 +85,10 @@ function LocationButton({
 // ── Filter bar ────────────────────────────────────────────────────────────
 
 const RADIUS_OPTIONS: { label: string; value: RadiusKm | null }[] = [
-  { label: "1 km",          value: 1    },
-  { label: "3 km",          value: 3    },
-  { label: "5 km",          value: 5    },
-  { label: "10 km",         value: 10   },
+  { label: "1 km",           value: 1    },
+  { label: "3 km",           value: 3    },
+  { label: "5 km",           value: 5    },
+  { label: "10 km",          value: 10   },
   { label: "Toda la ciudad", value: null },
 ];
 
@@ -135,7 +134,7 @@ function FilterBar({
             Destacadas
           </FilterPill>
         )}
-        <span className="h-4 w-px bg-slate-200" />
+        <span className="h-3.5 w-px shrink-0 rounded-full bg-slate-200" />
         <FilterPill
           active={sortMode === "default"}
           onClick={() => onSortChange("default")}
@@ -153,7 +152,7 @@ function FilterBar({
 
         {hasLocation && (
           <>
-            <span className="h-4 w-px bg-slate-200" />
+            <span className="h-3.5 w-px shrink-0 rounded-full bg-slate-200" />
             {RADIUS_OPTIONS.map((opt) => (
               <FilterPill
                 key={String(opt.value)}
@@ -167,15 +166,15 @@ function FilterBar({
         )}
 
         {showCounter && (
-          <span className="ml-auto rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500">
+          <span className="ml-auto shrink-0 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/8 px-2.5 py-1 text-[11px] font-bold text-[#8A641F]">
             {filteredCount} resultado{filteredCount !== 1 ? "s" : ""}
           </span>
         )}
       </div>
 
       {!hasLocation && (
-        <p className="text-[11px] text-slate-400">
-          <LocateFixed size={10} className="mr-1 inline" />
+        <p className="flex items-center gap-1 text-[11px] text-slate-400">
+          <LocateFixed size={10} className="shrink-0" />
           Activa tu ubicación para filtrar por radio y ordenar por distancia.
         </p>
       )}
@@ -204,7 +203,7 @@ function FilterPill({
       title={title}
       className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
         active
-          ? "border-[#C9922A] bg-[#C9922A]/10 text-[#8A641F]"
+          ? "border-[#C9922A]/60 bg-[#C9922A]/10 text-[#8A641F] shadow-sm"
           : disabled
           ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300"
           : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-[#080A0F]"
@@ -219,18 +218,20 @@ function FilterPill({
 
 function NoResults({ onClearFilters }: { onClearFilters: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 py-20 text-center">
-      <MapPin size={28} className="text-slate-300" />
-      <p className="mt-4 text-sm font-bold text-neutral-400">
-        No encontramos barberías con esos filtros.
+    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white/50 py-20 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D5A84C]/8 ring-1 ring-[#D5A84C]/15 shadow-sm">
+        <MapPin size={22} className="text-[#C9922A]" />
+      </div>
+      <p className="mt-5 text-base font-bold text-[#080A0F]">
+        Sin barberías con esos filtros
       </p>
-      <p className="mt-1 text-xs text-neutral-300">
-        Prueba ampliando el radio de búsqueda o cambia los filtros.
+      <p className="mt-1.5 text-sm leading-6 text-slate-500">
+        Prueba ampliando el radio o cambia los filtros activos.
       </p>
       <button
         type="button"
         onClick={onClearFilters}
-        className="mt-5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+        className="btn-outline mt-6 text-sm"
       >
         Ver todas las barberías
       </button>
@@ -329,8 +330,7 @@ export function BarberiasClient({
     (s) => s.latitude != null && s.longitude != null && s.map_visible !== false,
   ).length;
 
-  // ── Grid class ────────────────────────────────────────────────────────────
-  const gridClass = "grid gap-4 sm:grid-cols-2";
+  const gridClass = "grid gap-5 sm:grid-cols-2";
 
   function cardDistance(p: BarberiaProfile) {
     if (!userLocation) return null;
@@ -358,8 +358,11 @@ export function BarberiasClient({
         <>
           {featured.length > 0 && (
             <section>
-              <div className="mb-4 flex items-center gap-3">
-                <p className="section-heading">{featuredLabel}</p>
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="h-4 w-0.5 shrink-0 rounded-full bg-[#D5A84C]" />
+                  <p className="section-heading">{featuredLabel}</p>
+                </div>
                 <span className="badge-gold">★ Top</span>
               </div>
               <div className={gridClass}>{renderCards(featured)}</div>
@@ -368,10 +371,13 @@ export function BarberiasClient({
 
           {rest.length > 0 && (
             <section>
-              <div className="mb-4 flex items-center justify-between gap-4">
-                <p className="section-heading">
-                  {restLabel ?? (featured.length > 0 ? "Más barberías" : "Todas las barberías")}
-                </p>
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="h-4 w-0.5 shrink-0 rounded-full bg-slate-300" />
+                  <p className="section-heading">
+                    {restLabel ?? (featured.length > 0 ? "Más barberías" : "Todas las barberías")}
+                  </p>
+                </div>
                 <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-500">
                   {displayedShops.length}{" "}
                   {displayedShops.length === 1 ? "barbería" : "barberías"}
@@ -387,7 +393,7 @@ export function BarberiasClient({
 
   // ── Header bar ────────────────────────────────────────────────────────────
   const headerBar = (
-    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="space-y-3 rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/40 px-4 py-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
       {/* Search input */}
       <div className="relative">
         <Search
@@ -405,6 +411,7 @@ export function BarberiasClient({
           <button
             type="button"
             onClick={() => setSearchQuery("")}
+            aria-label="Limpiar búsqueda"
             className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-slate-400 hover:text-slate-600"
           >
             <X size={13} />
@@ -412,7 +419,7 @@ export function BarberiasClient({
         )}
       </div>
 
-      {/* Location + sort pills */}
+      {/* Location + error */}
       <div className="flex flex-wrap items-center gap-2">
         <LocationButton
           detecting={detectingLocation}
@@ -444,11 +451,10 @@ export function BarberiasClient({
     </div>
   );
 
-  // ── Map wrapper (shared between mobile and desktop) ───────────────────────
+  // ── Map wrapper ───────────────────────────────────────────────────────────
   function MapWrapper({ className }: { className: string }) {
     return (
       <div className="relative">
-        {/* Counter badge */}
         {visibleOnMap > 0 && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-[#080A0F]/75 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm">
             <MapPin size={11} className="text-[#D5A84C]" />
@@ -470,7 +476,7 @@ export function BarberiasClient({
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {headerBar}
 
       {/* Mobile tabs */}
@@ -497,17 +503,29 @@ export function BarberiasClient({
         {viewMode === "list" ? (
           listContent
         ) : (
-          <MapWrapper className="h-[70vh] rounded-3xl" />
+          <MapWrapper className="h-[60vh] min-h-[360px] rounded-3xl" />
         )}
       </div>
 
       {/* Desktop: 44 / 56 split */}
-      <div className="hidden lg:grid lg:grid-cols-[44%_56%] lg:gap-6 lg:items-start">
+      <div className="hidden lg:grid lg:grid-cols-[44%_56%] lg:items-start lg:gap-6">
         <div className="space-y-0">{listContent}</div>
 
-        <div className="sticky top-6">
+        <div className="sticky top-6 space-y-3">
+          {/* Map panel label */}
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-2">
+              <Map size={13} className="text-[#C9922A]" />
+              <span className="text-sm font-bold text-[#080A0F]">Mapa de barberías</span>
+            </div>
+            {visibleOnMap > 0 && (
+              <span className="text-xs font-semibold text-slate-400">
+                {visibleOnMap} {visibleOnMap === 1 ? "ubicación" : "ubicaciones"}
+              </span>
+            )}
+          </div>
           <div className="overflow-hidden rounded-3xl border border-[#D5A84C]/20 shadow-[0_4px_6px_rgba(0,0,0,0.04),0_20px_60px_rgba(0,0,0,0.10)]">
-            <MapWrapper className="h-[max(640px,calc(100vh-4.5rem))] rounded-3xl" />
+            <MapWrapper className="h-[max(600px,calc(100vh-8rem))] rounded-3xl" />
           </div>
         </div>
       </div>

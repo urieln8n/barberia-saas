@@ -166,7 +166,7 @@ export function BarberiaCard({
 
         {/* Description */}
         {profile.description && (
-          <p className="line-clamp-2 text-sm leading-6 text-slate-500">
+          <p className="line-clamp-2 text-[13px] leading-6 text-slate-500">
             {profile.description}
           </p>
         )}
