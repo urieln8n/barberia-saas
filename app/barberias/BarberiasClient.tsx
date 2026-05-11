@@ -275,13 +275,9 @@ export function BarberiasClient({
   const featured = displayedShops.filter((p) => p.featured);
   const rest      = displayedShops.filter((p) => !p.featured);
 
-  const shopsWithCoords = profiles.filter(
-    (s) => s.latitude != null && s.longitude != null && s.map_visible !== false,
-  );
-  const hasMap = shopsWithCoords.length > 0;
-
   // ── Card grid ─────────────────────────────────────────────────────────────
-  const gridClass = hasMap ? "grid gap-5 sm:grid-cols-2" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-3";
+  // Map is always shown; 2-col grid leaves room for the map sidebar.
+  const gridClass = "grid gap-5 sm:grid-cols-2";
 
   function cardDistance(p: BarberiaProfile) {
     if (!userLocation) return null;
@@ -294,7 +290,7 @@ export function BarberiasClient({
         key={p.id}
         profile={p}
         distanceKm={cardDistance(p)}
-        onSelect={hasMap ? () => setSelectedShopId((prev) => (prev === p.id ? null : p.id)) : undefined}
+        onSelect={() => setSelectedShopId((prev) => (prev === p.id ? null : p.id))}
         isSelected={selectedShopId === p.id}
       />
     ));
@@ -363,16 +359,6 @@ export function BarberiasClient({
       />
     </div>
   );
-
-  // ── No-map layout ─────────────────────────────────────────────────────────
-  if (!hasMap) {
-    return (
-      <div className="space-y-5">
-        {headerBar}
-        {listContent}
-      </div>
-    );
-  }
 
   // ── Map layout ────────────────────────────────────────────────────────────
   return (
