@@ -9,6 +9,7 @@ import type { InventoryMovementType, InventoryProductType } from "./types";
 type ActionResult = { success: true } | { error: string };
 
 const PRODUCT_TYPES: InventoryProductType[] = ["retail", "internal"];
+const PAYMENT_METHODS = ["cash", "card", "bizum", "transfer", "other"] as const;
 const MOVEMENT_TYPES: InventoryMovementType[] = [
   "in",
   "out",
@@ -189,6 +190,9 @@ export async function registerInventoryMovement(formData: FormData): Promise<Act
 
   const quantityError = validateNonNegative(quantity, "La cantidad");
   if (quantityError) return { error: quantityError };
+  if (movementType !== "adjustment" && quantity <= 0) {
+    return { error: "La cantidad debe ser mayor que cero." };
+  }
 
   const { data: product, error: productError } = await supabase
     .from("inventory_products")
@@ -233,10 +237,85 @@ export async function registerInventoryMovement(formData: FormData): Promise<Act
     new_stock: newStock,
     reason,
     created_by: userId,
+    source:
+      movementType === "adjustment"
+        ? "adjustment"
+        : movementType === "internal_use"
+          ? "internal_use"
+          : "manual",
   });
 
   if (insertError) return { error: insertError.message };
 
   revalidatePath("/dashboard/inventario");
+  return { success: true };
+}
+
+export async function sellInventoryProduct(formData: FormData): Promise<ActionResult> {
+  const { supabase, barbershopId } = await getInventoryContext();
+  if (!barbershopId) return { error: "No se encontró la barbería actual." };
+
+  const productId = readRequiredText(formData, "product_id");
+  const cashSessionId = readText(formData, "cash_session_id");
+  const clientId = readText(formData, "client_id");
+  const barberId = readText(formData, "barber_id");
+  const quantity = readRequiredNumber(formData, "quantity");
+  const unitSalePrice = readRequiredNumber(formData, "unit_sale_price");
+  const paymentMethod = readRequiredText(formData, "payment_method");
+  const note = readText(formData, "note");
+
+  if (!productId) return { error: "Selecciona un producto." };
+  if (!cashSessionId) return { error: "Abre caja antes de vender productos." };
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    return { error: "La cantidad debe ser mayor que cero." };
+  }
+  if (!Number.isFinite(unitSalePrice) || unitSalePrice < 0) {
+    return { error: "El precio unitario no puede ser negativo." };
+  }
+  if (!PAYMENT_METHODS.includes(paymentMethod as (typeof PAYMENT_METHODS)[number])) {
+    return { error: "Método de pago no válido." };
+  }
+
+  const { error } = await supabase.rpc("sell_inventory_product", {
+    p_barbershop_id: barbershopId,
+    p_product_id: productId,
+    p_cash_session_id: cashSessionId,
+    p_quantity: quantity,
+    p_unit_sale_price: unitSalePrice,
+    p_payment_method: paymentMethod,
+    p_client_id: clientId,
+    p_barber_id: barberId,
+    p_appointment_id: null,
+    p_note: note,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/inventario");
+  revalidatePath("/dashboard/caja");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function cancelInventorySaleItem(formData: FormData): Promise<ActionResult> {
+  const { supabase, barbershopId } = await getInventoryContext();
+  if (!barbershopId) return { error: "No se encontró la barbería actual." };
+
+  const saleItemId = readRequiredText(formData, "sale_item_id");
+  const reason = readText(formData, "reason");
+
+  if (!saleItemId) return { error: "No se encontró la venta a cancelar." };
+
+  const { error } = await supabase.rpc("cancel_inventory_sale_item", {
+    p_barbershop_id: barbershopId,
+    p_sale_item_id: saleItemId,
+    p_reason: reason,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/inventario");
+  revalidatePath("/dashboard/caja");
+  revalidatePath("/dashboard");
   return { success: true };
 }

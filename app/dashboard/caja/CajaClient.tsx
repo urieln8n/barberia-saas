@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Banknote,
   CreditCard,
@@ -18,6 +19,8 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { StatCard } from "@/components/ui/StatCard";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import type { BarberPerformanceItem } from "@/src/lib/cash/barber-performance";
+import { ProductSaleDialog } from "../inventario/ProductSaleDialog";
+import type { InventoryProduct } from "../inventario/types";
 import { closeCashSession, createCashMovement, openCashSession } from "./actions";
 
 type CashSession = {
@@ -51,6 +54,7 @@ type Props = {
   clients: Client[];
   barbers: Barber[];
   services: Service[];
+  inventoryProducts: InventoryProduct[];
   performanceItems: BarberPerformanceItem[];
   errorMessage?: string | null;
 };
@@ -102,14 +106,18 @@ export function CajaClient({
   clients,
   barbers,
   services,
+  inventoryProducts,
   performanceItems,
   errorMessage,
 }: Props) {
+  const router = useRouter();
   const [openingError, setOpeningError] = useState("");
   const [movementError, setMovementError] = useState("");
   const [closingError, setClosingError] = useState("");
   const [closingAmount, setClosingAmount] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [saleProduct, setSaleProduct] = useState<InventoryProduct | null>(null);
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [tip, setTip] = useState("");
@@ -118,6 +126,7 @@ export function CajaClient({
   const [isClosingPending, startClosingTransition] = useTransition();
 
   const selectedService = services.find((service) => service.id === selectedServiceId);
+  const selectedProduct = inventoryProducts.find((product) => product.id === selectedProductId) ?? null;
 
   const totals = useMemo(() => {
     const byMethod: Record<string, number> = {
@@ -385,7 +394,51 @@ export function CajaClient({
               </form>
             </SectionCard>
 
-            <SectionCard title="Cerrar caja" description="Compara el efectivo esperado con el dinero contado.">
+            <div className="space-y-5">
+              <SectionCard
+                title="Venta de productos"
+                description="Añade un producto retail a caja y descuenta stock automáticamente."
+              >
+                {inventoryProducts.length === 0 ? (
+                  <EmptyState
+                    icon={ReceiptText}
+                    title="No hay productos vendibles."
+                    description="Crea productos retail activos en Inventario para venderlos desde caja."
+                  />
+                ) : (
+                  <div className="grid gap-3">
+                    <select
+                      value={selectedProductId}
+                      onChange={(event) => {
+                        setSelectedProductId(event.target.value);
+                      }}
+                      className="input py-3"
+                    >
+                      <option value="">Seleccionar producto...</option>
+                      {inventoryProducts.map((product) => (
+                        <option
+                          key={product.id}
+                          value={product.id}
+                          disabled={product.current_stock <= 0}
+                        >
+                          {product.name} · stock {product.current_stock} · {formatCurrency(Number(product.sale_price ?? 0))}
+                        </option>
+                      ))}
+                    </select>
+                    <PrimaryButton
+                      type="button"
+                      onClick={() => selectedProduct && setSaleProduct(selectedProduct)}
+                      disabled={!selectedProduct}
+                      variant="primary"
+                    >
+                      <Plus size={16} />
+                      Añadir producto
+                    </PrimaryButton>
+                  </div>
+                )}
+              </SectionCard>
+
+              <SectionCard title="Cerrar caja" description="Compara el efectivo esperado con el dinero contado.">
               <form action={handleClose} className="grid gap-4">
                 <input type="hidden" name="cash_session_id" value={session.id} />
 
@@ -442,7 +495,8 @@ export function CajaClient({
                   {isClosingPending ? "Cerrando..." : "Cerrar caja"}
                 </PrimaryButton>
               </form>
-            </SectionCard>
+              </SectionCard>
+            </div>
           </section>
 
           <SectionCard
@@ -511,6 +565,25 @@ export function CajaClient({
           </SectionCard>
 
           <BarberPerformance items={performanceItems} />
+
+          {saleProduct && (
+            <ProductSaleDialog
+              product={saleProduct}
+              openCashSession={{
+                id: session.id,
+                opened_at: session.opened_at,
+                opening_amount: session.opening_amount,
+              }}
+              clients={clients}
+              barbers={barbers}
+              onClose={() => setSaleProduct(null)}
+              onSaved={() => {
+                setSaleProduct(null);
+                setSelectedProductId("");
+                router.refresh();
+              }}
+            />
+          )}
         </>
       )}
     </div>

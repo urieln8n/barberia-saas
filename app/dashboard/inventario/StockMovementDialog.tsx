@@ -149,7 +149,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
               <input
                 name="quantity"
                 type="number"
-                min="0"
+                min={movementType === "adjustment" ? "0" : "0.01"}
                 step="0.01"
                 required
                 value={quantity}

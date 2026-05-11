@@ -1,12 +1,14 @@
 "use client";
 
-import { Edit3, Package, PlusCircle, ToggleLeft, ToggleRight } from "lucide-react";
+import { Edit3, Package, PlusCircle, ShoppingCart, ToggleLeft, ToggleRight } from "lucide-react";
 import type { InventoryProduct } from "./types";
 
 type Props = {
   products: InventoryProduct[];
+  soldUnitsByProduct: Map<string, number>;
   onEdit: (product: InventoryProduct) => void;
   onMovement: (product: InventoryProduct) => void;
+  onSell: (product: InventoryProduct) => void;
   onToggle: (product: InventoryProduct) => void;
   togglingId: string | null;
 };
@@ -44,8 +46,10 @@ function getMargin(product: InventoryProduct): number | null {
 
 export function ProductTable({
   products,
+  soldUnitsByProduct,
   onEdit,
   onMovement,
+  onSell,
   onToggle,
   togglingId,
 }: Props) {
@@ -61,7 +65,8 @@ export function ProductTable({
             <th className="table-header-cell">Stock mínimo</th>
             <th className="table-header-cell">Precio compra</th>
             <th className="table-header-cell">Precio venta</th>
-            <th className="table-header-cell">Margen estimado</th>
+            <th className="table-header-cell">Margen unidad</th>
+            <th className="table-header-cell">Vendidos</th>
             <th className="table-header-cell">Estado</th>
             <th className="table-header-cell text-right">Acciones</th>
           </tr>
@@ -106,6 +111,9 @@ export function ProductTable({
               <td className="px-5 py-4 font-semibold text-slate-700">
                 {formatPercent(getMargin(product))}
               </td>
+              <td className="px-5 py-4 font-black text-[#080A0F]">
+                {soldUnitsByProduct.get(product.id) ?? 0}
+              </td>
               <td className="px-5 py-4">
                 <div className="flex flex-col items-start gap-1.5">
                   {getStockBadge(product)}
@@ -133,6 +141,20 @@ export function ProductTable({
                     title="Registrar movimiento"
                   >
                     <PlusCircle size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onSell(product)}
+                    disabled={
+                      product.product_type !== "retail" ||
+                      !product.is_active ||
+                      product.current_stock <= 0
+                    }
+                    className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-35"
+                    aria-label={`Vender ${product.name}`}
+                    title="Vender producto"
+                  >
+                    <ShoppingCart size={15} />
                   </button>
                   <button
                     type="button"

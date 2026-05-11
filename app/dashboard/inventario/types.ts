@@ -7,6 +7,13 @@ export type InventoryMovementType =
   | "internal_use"
   | "manual_sale";
 
+export type InventoryMovementSource =
+  | "manual"
+  | "cash_sale"
+  | "sale_cancelled"
+  | "adjustment"
+  | "internal_use";
+
 export type InventoryProduct = {
   id: string;
   barbershop_id: string;
@@ -36,6 +43,47 @@ export type InventoryMovement = {
   reason: string | null;
   created_at: string;
   created_by: string | null;
+  sale_item_id?: string | null;
+  cash_session_id?: string | null;
+  sale_id?: string | null;
+  appointment_id?: string | null;
+  source?: InventoryMovementSource | null;
+};
+
+export type InventorySaleItem = {
+  id: string;
+  barbershop_id: string;
+  product_id: string;
+  cash_session_id: string | null;
+  sale_id: string | null;
+  appointment_id: string | null;
+  client_id: string | null;
+  barber_id: string | null;
+  quantity: number;
+  unit_purchase_price: number | null;
+  unit_sale_price: number;
+  total_sale_price: number;
+  estimated_profit: number | null;
+  stock_before: number | null;
+  stock_after: number | null;
+  created_by: string | null;
+  created_at: string;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
+  products?: { name: string | null } | null;
+  clients?: { name: string | null } | null;
+  barbers?: { name: string | null } | null;
+};
+
+export type CashSessionOption = {
+  id: string;
+  opened_at: string;
+  opening_amount: number;
+};
+
+export type InventoryPersonOption = {
+  id: string;
+  name: string;
 };
 
 export type ProductFormValues = {

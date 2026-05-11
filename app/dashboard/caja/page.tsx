@@ -32,6 +32,24 @@ type CashMovementRaw = {
   services?: Relation<{ name: string | null }>;
 };
 
+type InventoryProductRaw = {
+  id: string;
+  barbershop_id: string;
+  name: string;
+  category: string | null;
+  product_type: string;
+  sku: string | null;
+  supplier: string | null;
+  current_stock: number | string | null;
+  min_stock: number | string | null;
+  purchase_price: number | string | null;
+  sale_price: number | string | null;
+  notes: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 function firstRelation<T>(value: Relation<T>): T | null {
   if (!value) return null;
   if (Array.isArray(value)) return value[0] ?? null;
@@ -99,6 +117,7 @@ export default async function CajaPage() {
     clientsResult,
     barbersResult,
     servicesResult,
+    productsResult,
   ] = await Promise.all([
     supabase
       .from("cash_sessions")
@@ -128,11 +147,24 @@ export default async function CajaPage() {
       .eq("barbershop_id", barbershopId)
       .eq("active", true)
       .order("name", { ascending: true }),
+
+    supabase
+      .from("inventory_products")
+      .select(
+        "id, barbershop_id, name, category, product_type, sku, supplier, current_stock, min_stock, purchase_price, sale_price, notes, is_active, created_at, updated_at",
+      )
+      .eq("barbershop_id", barbershopId)
+      .eq("is_active", true)
+      .eq("product_type", "retail")
+      .order("name", { ascending: true }),
   ]);
 
   if (cashSessionResult.error) {
     errorMessage =
       "No se pudo leer la caja. Comprueba que la migración 012_cash_assistant.sql está aplicada en Supabase.";
+  }
+  if (productsResult.error && !errorMessage) {
+    errorMessage = productsResult.error.message;
   }
 
   const session = normalizeSession((cashSessionResult.data as CashSession | null) ?? null);
@@ -202,6 +234,14 @@ export default async function CajaPage() {
         name: service.name,
         price: Number(service.price ?? 0),
         duration_minutes: Number(service.duration_minutes ?? 30),
+      }))}
+      inventoryProducts={((productsResult.data as InventoryProductRaw[] | null) ?? []).map((product) => ({
+        ...product,
+        product_type: product.product_type === "internal" ? "internal" : "retail",
+        current_stock: Number(product.current_stock ?? 0),
+        min_stock: Number(product.min_stock ?? 0),
+        purchase_price: product.purchase_price === null ? null : Number(product.purchase_price),
+        sale_price: product.sale_price === null ? null : Number(product.sale_price),
       }))}
       performanceItems={performanceItems}
       errorMessage={errorMessage}
