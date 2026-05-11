@@ -7,6 +7,7 @@ import {
   getUnresolvedPlaceholders,
   type MarketingVariables,
 } from "@/src/lib/marketing/variables";
+import { addMarketingHistoryItem } from "@/src/lib/marketing/history";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,6 +29,7 @@ type Props = {
   inactiveClientsCount: number;
   totalFreeSlotsToday: number;
   freeSlotText?: string | null;
+  onCopied?: () => void;
 };
 
 // ─── Plantillas ───────────────────────────────────────────────────────────────
@@ -277,6 +279,7 @@ export function PlantillasTab({
   inactiveClientsCount,
   totalFreeSlotsToday,
   freeSlotText,
+  onCopied,
 }: Props) {
   const [filtro, setFiltro]     = useState<Canal | "todos">("todos");
   const [copiedState, setCopied] = useState<{ id: string; unresolvedCount: number } | null>(null);
@@ -299,6 +302,13 @@ export function PlantillasTab({
     const resolved   = resolveMarketingTemplate(p.texto, variables);
     const unresolved = getUnresolvedPlaceholders(resolved);
     await navigator.clipboard.writeText(resolved);
+    addMarketingHistoryItem({
+      source:                  "template",
+      title:                   p.titulo,
+      text:                    resolved,
+      unresolvedPlaceholders:  unresolved,
+    });
+    onCopied?.();
     setCopied({ id: p.id, unresolvedCount: unresolved.length });
     setTimeout(() => setCopied(null), 2500);
   }

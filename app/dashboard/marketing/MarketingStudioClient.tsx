@@ -9,10 +9,12 @@ import {
   CheckCircle2,
   AlertCircle,
   MinusCircle,
+  History,
 } from "lucide-react";
 import { PlantillasTab } from "./PlantillasTab";
 import { PresenciaTab } from "./PresenciaTab";
 import { CampanasTab } from "./CampanasTab";
+import { HistorialTab } from "./HistorialTab";
 
 // ─── Shared types (exported for tabs) ────────────────────────────────────────
 
@@ -197,12 +199,13 @@ function DatosConectados({
 
 // ─── Tab bar ─────────────────────────────────────────────────────────────────
 
-type TabId = "plantillas" | "presencia" | "campanas";
+type TabId = "plantillas" | "presencia" | "campanas" | "historial";
 
 const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: "plantillas", label: "Plantillas",       icon: FileText  },
   { id: "presencia",  label: "Presencia Online", icon: Globe     },
   { id: "campanas",   label: "Campañas",          icon: Megaphone },
+  { id: "historial",  label: "Historial",         icon: History   },
 ];
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -218,7 +221,12 @@ export function MarketingStudioClient({
   totalFreeSlotsToday,
   freeSlotText,
 }: MarketingProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("plantillas");
+  const [activeTab, setActiveTab]     = useState<TabId>("plantillas");
+  const [historyVersion, setHistoryVersion] = useState(0);
+
+  function bumpHistory() {
+    setHistoryVersion((v) => v + 1);
+  }
 
   return (
     <div className="space-y-5">
@@ -269,6 +277,7 @@ export function MarketingStudioClient({
           inactiveClientsCount={inactiveClientsCount}
           totalFreeSlotsToday={totalFreeSlotsToday}
           freeSlotText={freeSlotText}
+          onCopied={bumpHistory}
         />
       )}
       {activeTab === "presencia" && <PresenciaTab />}
@@ -280,7 +289,11 @@ export function MarketingStudioClient({
           bookingUrl={bookingUrl}
           city={city}
           phone={phone}
+          onCopied={bumpHistory}
         />
+      )}
+      {activeTab === "historial" && (
+        <HistorialTab historyVersion={historyVersion} />
       )}
     </div>
   );

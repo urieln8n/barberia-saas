@@ -20,6 +20,7 @@ import {
   getUnresolvedPlaceholders,
   type MarketingVariables,
 } from "@/src/lib/marketing/variables";
+import { addMarketingHistoryItem } from "@/src/lib/marketing/history";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -55,6 +56,7 @@ type Props = {
   bookingUrl: string | null;
   city: string | null;
   phone: string | null;
+  onCopied?: () => void;
 };
 
 // ─── Generator helpers ────────────────────────────────────────────────────────
@@ -427,6 +429,7 @@ export function CampanasTab({
   bookingUrl,
   city,
   phone,
+  onCopied,
 }: Props) {
   const [campanas, setCampanas]         = useState<Campana[]>([]);
   const [draft, setDraft]               = useState({ ...emptyDraft });
@@ -478,6 +481,13 @@ export function CampanasTab({
   async function handleCopyPreview() {
     if (!preview) return;
     await navigator.clipboard.writeText(preview);
+    addMarketingHistoryItem({
+      source:                 "campaign",
+      title:                  draft.nombre || "Campaña sin nombre",
+      text:                   preview,
+      unresolvedPlaceholders: unresolvedInPreview,
+    });
+    onCopied?.();
     setCopiedPreview(true);
     setTimeout(() => setCopiedPreview(false), 2000);
   }
