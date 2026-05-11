@@ -34,6 +34,7 @@ type ShopProps = {
   google_maps_url: string | null;
   latitude: number;
   longitude: number;
+  featured: boolean;
 };
 
 const EMPTY_FC: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
@@ -60,6 +61,7 @@ function shopsToGeoJSON(
           google_maps_url: s.google_maps_url,
           latitude: s.latitude,
           longitude: s.longitude,
+          featured: s.featured,
         },
       })),
   };
@@ -101,15 +103,17 @@ function createPopupHtml(
     props.google_maps_url ||
     `https://www.google.com/maps?q=${props.latitude},${props.longitude}`;
 
-  const pill =
-    "display:inline-block;font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;text-decoration:none;";
+  const featuredBadge = props.featured
+    ? `<div style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;color:#8A641F;background:rgba(213,168,76,0.15);border:1px solid rgba(213,168,76,0.3);border-radius:6px;padding:2px 7px;margin-bottom:8px;">★ Destacada</div>`
+    : "";
 
-  return `<div style="font-family:system-ui,sans-serif;padding:4px 2px;min-width:190px;">
-    <p style="font-size:13px;font-weight:900;color:#080A0F;margin:0 0 3px;line-height:1.3;">${esc(props.name)}</p>
-    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 9px;">${esc(location)}${esc(distStr)}</p>` : ""}
-    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-      <a href="/r/${esc(props.slug)}" style="${pill}background:#C9922A;color:#fff;">Reservar →</a>
-      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="${pill}background:#F1F5F9;color:#080A0F;">Cómo llegar ↗</a>
+  return `<div style="font-family:system-ui,-apple-system,sans-serif;padding:6px 2px;min-width:200px;">
+    ${featuredBadge}
+    <p style="font-size:14px;font-weight:900;color:#0F1623;margin:0 0 3px;line-height:1.3;">${esc(props.name)}</p>
+    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 10px;">${esc(location)}${esc(distStr)}</p>` : ""}
+    <div style="display:flex;gap:6px;">
+      <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#C9922A;color:#fff;">Reservar →</a>
+      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#F1F5F9;color:#0F1623;">↗</a>
     </div>
   </div>`;
 }
@@ -121,6 +125,28 @@ function esc(s: string | null | undefined): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+// ── Cluster count image generator ─────────────────────────────────────────
+// Generates a transparent canvas image with white bold text for the count.
+// Called via map's 'styleimagemissing' event — no external glyph CDN needed.
+
+function makeClusterCountImage(
+  count: number,
+): { width: number; height: number; data: Uint8ClampedArray } {
+  const label = count >= 100 ? "99+" : String(count);
+  const size = 36;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#ffffff";
+  const fontSize = label.length > 2 ? 10 : label.length > 1 ? 13 : 15;
+  ctx.font = `900 ${fontSize}px system-ui,-apple-system,Arial,sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, size / 2, size / 2 + 0.5);
+  return { width: size, height: size, data: ctx.getImageData(0, 0, size, size).data };
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -136,16 +162,15 @@ export function MarketplaceMap({
   const mapRef       = useRef<MLMap | null>(null);
   const popupRef     = useRef<MLPopup | null>(null);
 
-  // Always-fresh refs to avoid stale closures inside event handlers
-  const onSelectRef      = useRef(onSelectShop);
-  const userLocationRef  = useRef(userLocation);
-  const shopsRef         = useRef(shops);
+  // Always-fresh refs to avoid stale closures in event handlers
+  const onSelectRef     = useRef(onSelectShop);
+  const userLocationRef = useRef(userLocation);
+  const shopsRef        = useRef(shops);
 
-  useEffect(() => { onSelectRef.current     = onSelectShop;   });
-  useEffect(() => { userLocationRef.current = userLocation;    });
-  useEffect(() => { shopsRef.current        = shops;          });
+  useEffect(() => { onSelectRef.current     = onSelectShop;  });
+  useEffect(() => { userLocationRef.current = userLocation;  });
+  useEffect(() => { shopsRef.current        = shops;         });
 
-  // Populated after map+sources are ready; safe to call from any effect
   const applyUpdateRef = useRef<
     (shops: BarberiaProfile[], sel: string | null, loc: UserLocation | null | undefined) => void
   >(() => {});
@@ -165,20 +190,37 @@ export function MarketplaceMap({
         style: {
           version: 8,
           sources: {
-            osm: {
+            carto: {
               type: "raster",
-              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+              // Three CartoDB subdomains for parallel tile loading
+              tiles: [
+                "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+              ],
               tileSize: 256,
-              attribution: "© OpenStreetMap contributors",
+              maxzoom: 20,
+              attribution:
+                '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions" target="_blank">CARTO</a>',
             },
           },
-          layers: [{ id: "osm", type: "raster", source: "osm" }],
+          layers: [{ id: "carto", type: "raster", source: "carto" }],
         },
         center: DEFAULT_CENTER,
         zoom: DEFAULT_ZOOM,
       });
 
       mapRef.current = map;
+
+      // Generate cluster count images on demand — no external font CDN required
+      map.on("styleimagemissing", (e) => {
+        const id: string = (e as { id: string }).id;
+        if (!id.startsWith("cc-")) return;
+        const count = parseInt(id.slice(3)) || 0;
+        if (!map.hasImage(id)) {
+          map.addImage(id, makeClusterCountImage(count));
+        }
+      });
 
       map.on("load", () => {
         if (cancelled) return;
@@ -200,15 +242,16 @@ export function MarketplaceMap({
 
         // ── Layers ─────────────────────────────────────────────────────────
 
-        // Cluster glow
+        // Cluster outer glow
         map.addLayer({
           id: "cluster-glow",
           type: "circle",
           source: "shops",
           filter: ["has", "point_count"],
           paint: {
-            "circle-color": "rgba(213,168,76,0.20)",
-            "circle-radius": ["step", ["get", "point_count"], 26, 5, 34, 15, 42],
+            "circle-color": "rgba(213,168,76,0.18)",
+            "circle-radius": ["step", ["get", "point_count"], 30, 5, 38, 15, 46],
+            "circle-blur": 0.7,
           },
         });
 
@@ -220,34 +263,57 @@ export function MarketplaceMap({
           filter: ["has", "point_count"],
           paint: {
             "circle-color": "#D5A84C",
-            "circle-radius": ["step", ["get", "point_count"], 18, 5, 24, 15, 30],
+            "circle-radius": ["step", ["get", "point_count"], 20, 5, 26, 15, 32],
             "circle-stroke-width": 3,
             "circle-stroke-color": "#ffffff",
           },
         });
 
-        // Individual shop
+        // Cluster count numbers — canvas-rendered, no glyph CDN
         map.addLayer({
-          id: "unclustered-point",
+          id: "cluster-count",
+          type: "symbol",
+          source: "shops",
+          filter: ["has", "point_count"],
+          layout: {
+            "icon-image": ["concat", "cc-", ["to-string", ["get", "point_count"]]],
+            "icon-allow-overlap": true,
+            "icon-ignore-placement": true,
+          },
+        });
+
+        // Individual shops — featured shops: gold + larger; regular: dark navy
+        map.addLayer({
+          id: "shop-point",
           type: "circle",
           source: "shops",
           filter: ["!", ["has", "point_count"]],
           paint: {
-            "circle-color": "#D5A84C",
-            "circle-radius": 10,
-            "circle-stroke-width": 2,
+            "circle-color": [
+              "case",
+              ["==", ["get", "featured"], true],
+              "#D5A84C",
+              "#0F1623",
+            ],
+            "circle-radius": [
+              "case",
+              ["==", ["get", "featured"], true],
+              13,
+              10,
+            ],
+            "circle-stroke-width": 2.5,
             "circle-stroke-color": "#ffffff",
           },
         });
 
-        // Selected shop (on top of everything)
+        // Selected shop ring (rendered above everything)
         map.addLayer({
           id: "selected-point",
           type: "circle",
           source: "selected",
           paint: {
             "circle-color": "#C9922A",
-            "circle-radius": 14,
+            "circle-radius": 15,
             "circle-stroke-width": 3,
             "circle-stroke-color": "#ffffff",
           },
@@ -257,18 +323,16 @@ export function MarketplaceMap({
         popupRef.current = new maplibregl.Popup({
           closeButton: true,
           closeOnClick: false,
-          offset: 20,
+          offset: 22,
           maxWidth: "260px",
         });
 
         // ── Events ─────────────────────────────────────────────────────────
+
         map.on("click", "clusters", async (e) => {
           if (!e.features?.length) return;
           const cid = e.features[0].properties?.cluster_id as number;
-          const coords = (e.features[0].geometry as GeoJSON.Point).coordinates as [
-            number,
-            number,
-          ];
+          const coords = (e.features[0].geometry as GeoJSON.Point).coordinates as [number, number];
           try {
             const zoom = await (
               map.getSource("shops") as GeoJSONSource
@@ -279,7 +343,7 @@ export function MarketplaceMap({
           }
         });
 
-        map.on("click", "unclustered-point", (e) => {
+        map.on("click", "shop-point", (e) => {
           if (!e.features?.length) return;
           const p = e.features[0].properties as ShopProps;
           onSelectRef.current(p.shopId);
@@ -288,7 +352,7 @@ export function MarketplaceMap({
         // Click on empty area → deselect
         map.on("click", (e) => {
           const hit = map.queryRenderedFeatures(e.point, {
-            layers: ["unclustered-point", "clusters"],
+            layers: ["shop-point", "clusters"],
           });
           if (!hit.length) {
             onSelectRef.current(null);
@@ -296,12 +360,12 @@ export function MarketplaceMap({
           }
         });
 
-        map.on("mouseenter", "clusters", () => { map.getCanvas().style.cursor = "pointer"; });
-        map.on("mouseleave", "clusters", () => { map.getCanvas().style.cursor = "";        });
-        map.on("mouseenter", "unclustered-point", () => { map.getCanvas().style.cursor = "pointer"; });
-        map.on("mouseleave", "unclustered-point", () => { map.getCanvas().style.cursor = "";        });
+        map.on("mouseenter", "clusters",   () => { map.getCanvas().style.cursor = "pointer"; });
+        map.on("mouseleave", "clusters",   () => { map.getCanvas().style.cursor = "";         });
+        map.on("mouseenter", "shop-point", () => { map.getCanvas().style.cursor = "pointer"; });
+        map.on("mouseleave", "shop-point", () => { map.getCanvas().style.cursor = "";         });
 
-        // ── Register update function ───────────────────────────────────────
+        // ── Register reactive update function ─────────────────────────────
         applyUpdateRef.current = (
           newShops: BarberiaProfile[],
           newSel: string | null,
@@ -324,6 +388,7 @@ export function MarketplaceMap({
                 google_maps_url: shop.google_maps_url,
                 latitude: shop.latitude,
                 longitude: shop.longitude,
+                featured: shop.featured,
               };
               popupRef.current
                 ?.setLngLat([shop.longitude, shop.latitude])
@@ -340,7 +405,7 @@ export function MarketplaceMap({
           }
         };
 
-        // Auto-fit to initial shops
+        // Auto-fit initial shops into view
         const withCoords = initShops.filter(
           (s) => s.latitude != null && s.longitude != null && s.map_visible !== false,
         );
@@ -365,12 +430,12 @@ export function MarketplaceMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Reactive: shops / selection / location → update sources + popup ──────
+  // ── Reactive: shops / selection / location ───────────────────────────────
   useEffect(() => {
     applyUpdateRef.current(shops, selectedShopId, userLocation);
   }, [shops, selectedShopId, userLocation]);
 
-  // ── Reactive: fly to user when location is acquired ──────────────────────
+  // ── Reactive: fly to user location ──────────────────────────────────────
   useEffect(() => {
     if (!userLocation || !mapRef.current) return;
     mapRef.current.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 12, duration: 800 });
