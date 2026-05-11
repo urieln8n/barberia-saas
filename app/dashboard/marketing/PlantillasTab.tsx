@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, MessageCircle, Instagram, Hash, AlertCircle } from "lucide-react";
 import {
   resolveMarketingTemplate,
@@ -8,6 +8,11 @@ import {
   type MarketingVariables,
 } from "@/src/lib/marketing/variables";
 import { addMarketingHistoryItem } from "@/src/lib/marketing/history";
+import {
+  getMarketingTemplateStats,
+  incrementMarketingTemplateStat,
+  type MarketingTemplateStat,
+} from "@/src/lib/marketing/stats";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -229,6 +234,15 @@ function renderTemplate(texto: string, variables: MarketingVariables) {
   });
 }
 
+function formatStatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-ES", {
+    day:   "numeric",
+    month: "short",
+    hour:  "2-digit",
+    minute: "2-digit",
+  });
+}
+
 // ─── VarChip ──────────────────────────────────────────────────────────────────
 
 function VarChip({
@@ -284,6 +298,11 @@ export function PlantillasTab({
   const [filtro, setFiltro]     = useState<Canal | "todos">("todos");
   const [copiedState, setCopied] = useState<{ id: string; unresolvedCount: number } | null>(null);
   const [copiedVar, setCopiedVar] = useState<string | null>(null);
+  const [templateStats, setTemplateStats] = useState<MarketingTemplateStat[]>([]);
+
+  useEffect(() => {
+    setTemplateStats(getMarketingTemplateStats());
+  }, []);
 
   const variables: MarketingVariables = {
     shopName:  barbershopName,
@@ -298,6 +317,13 @@ export function PlantillasTab({
       ? plantillas
       : plantillas.filter((p) => p.canal === filtro);
 
+  const statByTemplateId = useMemo(() => {
+    return new Map(templateStats.map((stat) => [stat.templateId, stat]));
+  }, [templateStats]);
+
+  const topTemplates = templateStats.slice(0, 3);
+  const topTemplateIds = new Set(topTemplates.map((stat) => stat.templateId));
+
   async function handleCopy(p: Plantilla) {
     const resolved   = resolveMarketingTemplate(p.texto, variables);
     const unresolved = getUnresolvedPlaceholders(resolved);
@@ -308,6 +334,8 @@ export function PlantillasTab({
       text:                    resolved,
       unresolvedPlaceholders:  unresolved,
     });
+    incrementMarketingTemplateStat(p.id, p.titulo);
+    setTemplateStats(getMarketingTemplateStats());
     onCopied?.();
     setCopied({ id: p.id, unresolvedCount: unresolved.length });
     setTimeout(() => setCopied(null), 2500);
@@ -388,6 +416,48 @@ export function PlantillasTab({
         </div>
       )}
 
+      {/* Stats */}
+      <div className="rounded-[20px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="font-black text-[#080A0F]">
+              Tus plantillas más usadas
+            </p>
+            <p className="text-xs text-neutral-400">
+              Basado en las copias hechas en este navegador
+            </p>
+          </div>
+        </div>
+
+        {topTemplates.length > 0 ? (
+          <div className="grid gap-2 sm:grid-cols-3">
+            {topTemplates.map((stat) => (
+              <div
+                key={stat.templateId}
+                className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3"
+              >
+                <p className="line-clamp-2 text-sm font-bold text-[#080A0F]">
+                  {stat.templateTitle}
+                </p>
+                <p className="mt-1 text-xs font-semibold text-[#8A641F]">
+                  {stat.copiedCount} copia
+                  {stat.copiedCount === 1 ? "" : "s"}
+                </p>
+                <p className="mt-1 text-[11px] text-neutral-400">
+                  Última vez: {formatStatDate(stat.lastCopiedAt)}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4">
+            <p className="text-sm text-neutral-400">
+              Cuando copies plantillas, tus más usadas aparecerán aquí.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Filter */}
       <div className="flex flex-wrap gap-2">
         {filtros.map((f) => (
@@ -416,6 +486,8 @@ export function PlantillasTab({
           const CanalIcon = canal.icon;
           const isCopied = copiedState?.id === p.id;
           const unresolvedCount = isCopied ? (copiedState?.unresolvedCount ?? 0) : 0;
+          const stat = statByTemplateId.get(p.id);
+          const isTopTemplate = topTemplateIds.has(p.id);
 
           return (
             <div
@@ -436,11 +508,24 @@ export function PlantillasTab({
                   <span className="text-neutral-200">·</span>
                   <span className="text-xs text-neutral-400">{p.categoria}</span>
                 </div>
+                {isTopTemplate && (
+                  <span className="rounded-full border border-[#C9922A]/25 bg-[#C9922A]/10 px-2 py-0.5 text-[10px] font-bold text-[#8A641F]">
+                    ⭐ Más usada
+                  </span>
+                )}
               </div>
 
               {/* Card body */}
               <div className="flex flex-1 flex-col gap-3 p-5">
-                <p className="font-bold text-[#080A0F]">{p.titulo}</p>
+                <div>
+                  <p className="font-bold text-[#080A0F]">{p.titulo}</p>
+                  {stat && stat.copiedCount > 0 && (
+                    <p className="mt-1 text-xs text-neutral-400">
+                      Copiada {stat.copiedCount} vez
+                      {stat.copiedCount === 1 ? "" : "es"}
+                    </p>
+                  )}
+                </div>
                 <p className="flex-1 whitespace-pre-line text-sm leading-6 text-neutral-500">
                   {renderTemplate(p.texto, variables)}
                 </p>

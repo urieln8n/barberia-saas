@@ -21,6 +21,7 @@ import {
   type MarketingVariables,
 } from "@/src/lib/marketing/variables";
 import { addMarketingHistoryItem } from "@/src/lib/marketing/history";
+import { createMarketingId } from "@/src/lib/marketing/id";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -464,7 +465,7 @@ export function CampanasTab({
   function handleGuardar() {
     if (!preview) return;
     const nueva: Campana = {
-      id: crypto.randomUUID(),
+      id: createMarketingId(),
       ...draft,
       texto:    preview,
       creadaEn: new Date().toLocaleDateString("es-ES"),

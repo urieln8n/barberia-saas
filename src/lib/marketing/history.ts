@@ -1,3 +1,5 @@
+import { createMarketingId } from "./id";
+
 const STORAGE_KEY = "barberiaos:marketing-history:v1";
 const MAX_ITEMS   = 10;
 
@@ -30,7 +32,7 @@ export function addMarketingHistoryItem(
   const existing = getMarketingHistory();
   const newItem: MarketingHistoryItem = {
     ...item,
-    id:        crypto.randomUUID(),
+    id:        createMarketingId(),
     createdAt: new Date().toISOString(),
   };
   saveHistory([newItem, ...existing].slice(0, MAX_ITEMS));
