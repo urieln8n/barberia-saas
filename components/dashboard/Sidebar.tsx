@@ -48,7 +48,7 @@ type TabId = "operar" | "crecer" | "ajustes";
 
 const tabItems: Record<TabId, NavItem[]> = {
   operar: [
-    { href: "/dashboard",            label: "Inicio",           icon: Home,        exact: true },
+    { href: "/dashboard",            label: "Dashboard",        icon: Home,        exact: true },
     { href: "/dashboard/agenda",     label: "Reservas",         icon: CalendarDays             },
     { href: "/dashboard/clientes",   label: "Clientes",         icon: Users                    },
     { href: "/dashboard/barberos",   label: "Barberos",         icon: User                     },
@@ -70,7 +70,7 @@ const tabItems: Record<TabId, NavItem[]> = {
     { href: "/dashboard/automatizaciones", label: "Recordatorios",    icon: Workflow,   badge: "Pro"    },
   ],
   ajustes: [
-    { href: "/dashboard/ajustes",  label: "Perfil barbería", icon: Settings                    },
+    { href: "/dashboard/ajustes",  label: "Configuración",   icon: Settings                    },
     { href: "/dashboard/whatsapp", label: "Soporte",         icon: HelpCircle, badge: "Guía"  },
   ],
 };
