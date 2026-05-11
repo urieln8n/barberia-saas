@@ -33,6 +33,18 @@ export async function upsertPublicProfile(formData: FormData): Promise<ActionRes
     return { error: "El nombre público es obligatorio." };
   }
 
+  const latRaw = (formData.get("latitude") as string)?.trim();
+  const lngRaw = (formData.get("longitude") as string)?.trim();
+  const latitude  = latRaw  ? parseFloat(latRaw)  : null;
+  const longitude = lngRaw ? parseFloat(lngRaw) : null;
+
+  if (latitude !== null && (isNaN(latitude) || latitude < -90 || latitude > 90)) {
+    return { error: "La latitud debe estar entre -90 y 90." };
+  }
+  if (longitude !== null && (isNaN(longitude) || longitude < -180 || longitude > 180)) {
+    return { error: "La longitud debe estar entre -180 y 180." };
+  }
+
   const payload = {
     barbershop_id:   barbershopId,
     slug,
@@ -47,6 +59,10 @@ export async function upsertPublicProfile(formData: FormData): Promise<ActionRes
     description:     (formData.get("description") as string)?.trim() || null,
     cover_image_url: (formData.get("cover_image_url") as string)?.trim() || null,
     logo_url:        (formData.get("logo_url") as string)?.trim() || null,
+    latitude,
+    longitude,
+    google_maps_url: (formData.get("google_maps_url") as string)?.trim() || null,
+    map_visible:     formData.get("map_visible") === "true",
   };
 
   const { error } = await supabase

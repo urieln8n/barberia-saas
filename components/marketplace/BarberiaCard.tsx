@@ -22,6 +22,10 @@ export type BarberiaProfile = {
   whatsapp: string | null;
   phone: string | null;
   featured: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  google_maps_url: string | null;
+  map_visible: boolean | null;
 };
 
 function getInitials(name: string) {
@@ -38,12 +42,34 @@ function citySlug(city: string) {
   return encodeURIComponent(city.toLowerCase().trim());
 }
 
-export function BarberiaCard({ profile }: { profile: BarberiaProfile }) {
+export function BarberiaCard({
+  profile,
+  onSelect,
+  isSelected = false,
+}: {
+  profile: BarberiaProfile;
+  onSelect?: () => void;
+  isSelected?: boolean;
+}) {
   const bookingHref = `/r/${profile.slug}`;
   const location = [profile.neighborhood, profile.city].filter(Boolean).join(", ");
 
+  function handleArticleClick(e: React.MouseEvent) {
+    if (!onSelect) return;
+    const target = e.target as HTMLElement;
+    if (target.closest("a") || target.closest("button")) return;
+    onSelect();
+  }
+
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)]">
+    <article
+      className={`group flex flex-col overflow-hidden rounded-[24px] border bg-white shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] ${
+        isSelected
+          ? "border-[#C9922A] ring-2 ring-[#C9922A]/20"
+          : "border-slate-200"
+      } ${onSelect ? "cursor-pointer" : ""}`}
+      onClick={handleArticleClick}
+    >
 
       {/* Cover */}
       <div className="relative h-36 shrink-0 overflow-hidden bg-gradient-to-br from-[#080A0F] to-[#1D2433]">

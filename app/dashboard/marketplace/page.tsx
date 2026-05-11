@@ -24,7 +24,7 @@ export default async function MarketplacePage() {
     supabase
       .from("barbershop_public_profiles")
       .select(
-        "id, slug, public_name, city, neighborhood, address, phone, whatsapp, instagram, website_url, description, cover_image_url, logo_url, is_published, marketplace_enabled"
+        "id, slug, public_name, city, neighborhood, address, phone, whatsapp, instagram, website_url, description, cover_image_url, logo_url, is_published, marketplace_enabled, latitude, longitude, google_maps_url, map_visible"
       )
       .eq("barbershop_id", barbershopId)
       .maybeSingle(),
