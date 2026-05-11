@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
+import { FloatingWhatsAppButton } from "@/components/public/FloatingWhatsAppButton";
 import { SITE_URL } from "@/src/lib/site-url";
 // @ts-ignore
 import "./globals.css";
@@ -77,6 +78,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="font-sans antialiased">
         {children}
+        <FloatingWhatsAppButton />
         <CookieConsentBanner />
         <Analytics />
       </body>
