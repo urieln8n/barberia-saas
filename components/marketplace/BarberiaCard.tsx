@@ -6,7 +6,9 @@ import {
   Star,
   CalendarCheck,
   ExternalLink,
+  Navigation,
 } from "lucide-react";
+import { formatDistance } from "@/src/lib/marketplace/distance";
 
 export type BarberiaProfile = {
   id: string;
@@ -46,10 +48,12 @@ export function BarberiaCard({
   profile,
   onSelect,
   isSelected = false,
+  distanceKm,
 }: {
   profile: BarberiaProfile;
   onSelect?: () => void;
   isSelected?: boolean;
+  distanceKm?: number | null;
 }) {
   const bookingHref = `/r/${profile.slug}`;
   const location = [profile.neighborhood, profile.city].filter(Boolean).join(", ");
@@ -113,8 +117,8 @@ export function BarberiaCard({
         <div>
           <h2 className="font-black text-[#080A0F] leading-snug">{profile.public_name}</h2>
 
-          {location && (
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
+          {(location || distanceKm != null) && (
+            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
               <MapPin size={11} className="shrink-0 text-slate-400" />
               {profile.city && (
                 <Link
@@ -129,6 +133,12 @@ export function BarberiaCard({
               )}
               {profile.neighborhood && (
                 <span>{profile.neighborhood}</span>
+              )}
+              {distanceKm != null && (
+                <span className="flex items-center gap-0.5 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/8 px-1.5 py-0.5 font-semibold text-[#8A641F]">
+                  <Navigation size={9} />
+                  A {formatDistance(distanceKm)}
+                </span>
               )}
             </p>
           )}
