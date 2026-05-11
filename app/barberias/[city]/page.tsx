@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, ChevronLeft, Scissors } from "lucide-react";
 import { createClient } from "@/src/lib/supabase/server";
-import { BarberiaCard, type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
+import { type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
+import { BarberiasClient } from "../BarberiasClient";
 import { SITE_URL } from "@/src/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -39,12 +40,12 @@ async function getProfilesByCity(rawCity: string): Promise<BarberiaProfile[]> {
   const { data } = await supabase
     .from("barbershop_public_profiles")
     .select(
-      "id, barbershop_id, slug, public_name, city, neighborhood, description, cover_image_url, logo_url, instagram, whatsapp, phone, featured"
+      "id, barbershop_id, slug, public_name, city, neighborhood, description, cover_image_url, logo_url, instagram, whatsapp, phone, featured, latitude, longitude, google_maps_url, map_visible"
     )
     .eq("is_published", true)
     .eq("marketplace_enabled", true)
     .ilike("city", city)
-    .order("featured", { ascending: false })
+    .order("priority_score", { ascending: false })
     .order("created_at", { ascending: false });
 
   return (data ?? []) as BarberiaProfile[];
@@ -78,8 +79,6 @@ function EmptyCityState({ city }: { city: string }) {
 export default async function BarberiasCityPage({ params }: Props) {
   const city = formatCityLabel(params.city);
   const profiles = await getProfilesByCity(params.city);
-  const featured = profiles.filter((p) => p.featured);
-  const rest = profiles.filter((p) => !p.featured);
 
   return (
     <main className="min-h-screen bg-[#F6F8FB]">
@@ -137,36 +136,11 @@ export default async function BarberiasCityPage({ params }: Props) {
         {profiles.length === 0 ? (
           <EmptyCityState city={city} />
         ) : (
-          <div className="space-y-10">
-
-            {featured.length > 0 && (
-              <section>
-                <div className="mb-5 flex items-center gap-3">
-                  <p className="section-heading">Destacadas en {city}</p>
-                  <span className="badge-gold">★ Top</span>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {featured.map((p) => (
-                    <BarberiaCard key={p.id} profile={p} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {rest.length > 0 && (
-              <section>
-                <p className="section-heading mb-5">
-                  {featured.length > 0 ? `Más barberías en ${city}` : `Barberías en ${city}`}
-                </p>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {rest.map((p) => (
-                    <BarberiaCard key={p.id} profile={p} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-          </div>
+          <BarberiasClient
+            profiles={profiles}
+            featuredLabel={`Destacadas en ${city}`}
+            restLabel={`Barberías en ${city}`}
+          />
         )}
 
         {/* CTA barbershop owners */}

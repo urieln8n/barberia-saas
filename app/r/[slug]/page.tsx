@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/src/lib/supabase/server";
 import { BookingForm } from "./BookingForm";
+import { TrackPageView } from "./TrackPageView";
+import { TrackedLink } from "./TrackedLink";
 import { SITE_URL } from "@/src/lib/site-url";
 import { Map, QrCode } from "lucide-react";
 import {
@@ -232,8 +234,11 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const publicUrl = `${SITE_URL}/r/${barbershop.slug}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(publicUrl)}`;
 
+  const trackingSource = "direct";
+
   return (
     <main className="premium-grid-bg min-h-screen pb-24 text-slate-950 md:pb-0">
+      <TrackPageView barbershopId={barbershop.id} source={trackingSource} city={barbershop.city} />
       <section className="relative overflow-hidden bg-[#111111] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,155,60,0.24),transparent_34%),linear-gradient(135deg,#111111_0%,#1F2937_52%,#111111_100%)]" />
         <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-12 lg:px-8">
@@ -274,18 +279,29 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <a href="#reservar" className="btn-gold">
+              <TrackedLink
+                barbershopId={barbershop.id}
+                eventType="booking_click"
+                source={trackingSource}
+                city={barbershop.city}
+                href="#reservar"
+                className="btn-gold"
+              >
                 Reservar cita <CalendarCheck size={16} />
-              </a>
+              </TrackedLink>
               {whatsappHref && (
-                <a
+                <TrackedLink
+                  barbershopId={barbershop.id}
+                  eventType="whatsapp_click"
+                  source={trackingSource}
+                  city={barbershop.city}
                   href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm font-bold text-white transition-all duration-150 hover:bg-white/10 active:scale-[0.98]"
                 >
                   WhatsApp <MessageCircle size={15} />
-                </a>
+                </TrackedLink>
               )}
               {barbershop.instagram_url && (
                 <a
@@ -452,7 +468,11 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 </p>
               )}
               {mapsHref && (
-                <a
+                <TrackedLink
+                  barbershopId={barbershop.id}
+                  eventType="directions_click"
+                  source={trackingSource}
+                  city={barbershop.city}
                   href={mapsHref}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -460,7 +480,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 >
                   <Map size={15} className="mt-0.5 shrink-0" />
                   Ver en Google Maps
-                </a>
+                </TrackedLink>
               )}
               {barbershop.phone && (
                 <p className="flex gap-2 text-neutral-600">

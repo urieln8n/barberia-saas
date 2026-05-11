@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { calculatePriorityScore, type PlanName } from "@/src/lib/marketplace/ranking";
 
 async function getAuth() {
   const supabase = await createClient();
@@ -33,6 +34,18 @@ export async function upsertPublicProfile(formData: FormData): Promise<ActionRes
     return { error: "El nombre público es obligatorio." };
   }
 
+  const latRaw = (formData.get("latitude") as string)?.trim();
+  const lngRaw = (formData.get("longitude") as string)?.trim();
+  const latitude  = latRaw  ? parseFloat(latRaw)  : null;
+  const longitude = lngRaw ? parseFloat(lngRaw) : null;
+
+  if (latitude !== null && (isNaN(latitude) || latitude < -90 || latitude > 90)) {
+    return { error: "La latitud debe estar entre -90 y 90." };
+  }
+  if (longitude !== null && (isNaN(longitude) || longitude < -180 || longitude > 180)) {
+    return { error: "La longitud debe estar entre -180 y 180." };
+  }
+
   const payload = {
     barbershop_id:   barbershopId,
     slug,
@@ -47,11 +60,45 @@ export async function upsertPublicProfile(formData: FormData): Promise<ActionRes
     description:     (formData.get("description") as string)?.trim() || null,
     cover_image_url: (formData.get("cover_image_url") as string)?.trim() || null,
     logo_url:        (formData.get("logo_url") as string)?.trim() || null,
+    latitude,
+    longitude,
+    google_maps_url: (formData.get("google_maps_url") as string)?.trim() || null,
+    map_visible:     formData.get("map_visible") === "true",
   };
+
+  // Get current featured status + subscription plan to compute priority_score
+  const [{ data: existing }, { data: sub }] = await Promise.all([
+    supabase
+      .from("barbershop_public_profiles")
+      .select("featured, featured_until")
+      .eq("barbershop_id", barbershopId)
+      .maybeSingle(),
+    supabase
+      .from("subscriptions")
+      .select("plan_name")
+      .eq("barbershop_id", barbershopId)
+      .in("status", ["active", "trial"])
+      .maybeSingle(),
+  ]);
+
+  const priorityScore = calculatePriorityScore(
+    {
+      featured: existing?.featured ?? false,
+      featured_until: existing?.featured_until ?? null,
+      cover_image_url: payload.cover_image_url,
+      logo_url:        payload.logo_url,
+      description:     payload.description,
+      whatsapp:        payload.whatsapp,
+      instagram:       payload.instagram,
+      latitude:        payload.latitude,
+      longitude:       payload.longitude,
+    },
+    (sub?.plan_name ?? null) as PlanName | null,
+  );
 
   const { error } = await supabase
     .from("barbershop_public_profiles")
-    .upsert(payload, { onConflict: "barbershop_id" });
+    .upsert({ ...payload, priority_score: priorityScore }, { onConflict: "barbershop_id" });
 
   if (error) return { error: error.message };
 

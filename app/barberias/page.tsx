@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Scissors, MapPin, Search } from "lucide-react";
+import { Scissors, MapPin } from "lucide-react";
 import { createClient } from "@/src/lib/supabase/server";
-import { BarberiaCard, type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
+import { type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
+import { BarberiasClient } from "./BarberiasClient";
 import { SITE_URL } from "@/src/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -27,11 +28,11 @@ async function getMarketplaceProfiles(): Promise<BarberiaProfile[]> {
   const { data } = await supabase
     .from("barbershop_public_profiles")
     .select(
-      "id, barbershop_id, slug, public_name, city, neighborhood, description, cover_image_url, logo_url, instagram, whatsapp, phone, featured"
+      "id, barbershop_id, slug, public_name, city, neighborhood, description, cover_image_url, logo_url, instagram, whatsapp, phone, featured, latitude, longitude, google_maps_url, map_visible"
     )
     .eq("is_published", true)
     .eq("marketplace_enabled", true)
-    .order("featured", { ascending: false })
+    .order("priority_score", { ascending: false })
     .order("created_at", { ascending: false });
 
   return (data ?? []) as BarberiaProfile[];
@@ -69,8 +70,6 @@ function EmptyMarketplace() {
 
 export default async function BarberiasPage() {
   const profiles = await getMarketplaceProfiles();
-  const featured = profiles.filter((p) => p.featured);
-  const rest = profiles.filter((p) => !p.featured);
   const cityGroups = getCityGroups(profiles);
 
   return (
@@ -125,45 +124,7 @@ export default async function BarberiasPage() {
         {profiles.length === 0 ? (
           <EmptyMarketplace />
         ) : (
-          <div className="space-y-10">
-
-            {/* Featured */}
-            {featured.length > 0 && (
-              <section>
-                <div className="mb-5 flex items-center gap-3">
-                  <p className="section-heading">Barberías destacadas</p>
-                  <span className="badge-gold">
-                    ★ Top
-                  </span>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {featured.map((p) => (
-                    <BarberiaCard key={p.id} profile={p} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* All / Rest */}
-            {rest.length > 0 && (
-              <section>
-                <div className="mb-5 flex items-center justify-between gap-4">
-                  <p className="section-heading">
-                    {featured.length > 0 ? "Más barberías" : "Todas las barberías"}
-                  </p>
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-500">
-                    {profiles.length} {profiles.length === 1 ? "barbería" : "barberías"}
-                  </span>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {rest.map((p) => (
-                    <BarberiaCard key={p.id} profile={p} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-          </div>
+          <BarberiasClient profiles={profiles} />
         )}
 
         {/* Bottom CTA — for barbershop owners */}

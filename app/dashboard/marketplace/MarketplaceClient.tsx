@@ -12,6 +12,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Loader2,
+  MapPin,
 } from "lucide-react";
 import {
   upsertPublicProfile,
@@ -36,6 +37,10 @@ export type PublicProfile = {
   logo_url: string | null;
   is_published: boolean;
   marketplace_enabled: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  google_maps_url: string | null;
+  map_visible: boolean | null;
 };
 
 type Props = {
@@ -165,6 +170,7 @@ function Field({
   placeholder,
   type = "text",
   hint,
+  step,
 }: {
   label: string;
   name: string;
@@ -172,6 +178,7 @@ function Field({
   placeholder?: string;
   type?: string;
   hint?: string;
+  step?: string;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -182,6 +189,7 @@ function Field({
         id={name}
         name={name}
         type={type}
+        step={step}
         defaultValue={defaultValue ?? ""}
         placeholder={placeholder}
         className="input"
@@ -195,6 +203,7 @@ export function MarketplaceClient({ profile, defaultSlug, siteUrl }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<ActionResult | null>(null);
+  const [mapVisible, setMapVisible] = useState(profile?.map_visible ?? true);
 
   const publicUrl = profile ? `${siteUrl}/r/${profile.slug}` : null;
   const qrUrl = publicUrl
@@ -386,6 +395,59 @@ export function MarketplaceClient({ profile, defaultSlug, siteUrl }: Props) {
             defaultValue={profile?.address}
             placeholder="Calle Gran Vía 42, 1º"
           />
+
+          {/* Map location */}
+          <div className="space-y-4 rounded-2xl border border-slate-100 bg-[#F6F8FB] p-4">
+            <div className="flex items-center gap-2">
+              <MapPin size={14} className="text-slate-400" />
+              <p className="text-xs font-black uppercase tracking-wide text-slate-500">
+                Ubicación en mapa
+              </p>
+            </div>
+            <p className="text-xs leading-5 text-slate-400">
+              Añade tus coordenadas para que los clientes te encuentren en el mapa del
+              directorio. En Google Maps: clic derecho en tu local → <em>¿Qué hay aquí?</em>
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label="Latitud"
+                name="latitude"
+                defaultValue={profile?.latitude?.toString()}
+                placeholder="40.4168"
+                type="number"
+                step="any"
+                hint="-90 a 90"
+              />
+              <Field
+                label="Longitud"
+                name="longitude"
+                defaultValue={profile?.longitude?.toString()}
+                placeholder="-3.7038"
+                type="number"
+                step="any"
+                hint="-180 a 180"
+              />
+            </div>
+            <Field
+              label="Enlace Google Maps (opcional)"
+              name="google_maps_url"
+              defaultValue={profile?.google_maps_url}
+              placeholder="https://maps.google.com/?q=..."
+              type="url"
+            />
+            <div className="flex items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-3">
+              <div>
+                <p className="text-sm font-semibold text-[#080A0F]">
+                  Visible en mapa del directorio
+                </p>
+                <p className="mt-0.5 text-xs text-slate-400">
+                  Desactiva para que tu ubicación no aparezca en el mapa público.
+                </p>
+              </div>
+              <Toggle checked={mapVisible} onChange={setMapVisible} label="" />
+            </div>
+            <input type="hidden" name="map_visible" value={mapVisible ? "true" : "false"} />
+          </div>
 
           {/* Contact */}
           <div className="grid gap-5 sm:grid-cols-2">
