@@ -104,16 +104,16 @@ function createPopupHtml(
     `https://www.google.com/maps?q=${props.latitude},${props.longitude}`;
 
   const featuredBadge = props.featured
-    ? `<div style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;color:#8A641F;background:rgba(213,168,76,0.15);border:1px solid rgba(213,168,76,0.3);border-radius:6px;padding:2px 7px;margin-bottom:8px;">★ Destacada</div>`
+    ? `<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;letter-spacing:0.04em;color:#8A641F;background:rgba(213,168,76,0.14);border:1px solid rgba(213,168,76,0.32);border-radius:20px;padding:2px 8px;margin-bottom:9px;">★&nbsp;Destacada</span>`
     : "";
 
-  return `<div style="font-family:system-ui,-apple-system,sans-serif;padding:6px 2px;min-width:200px;">
-    ${featuredBadge}
-    <p style="font-size:14px;font-weight:900;color:#0F1623;margin:0 0 3px;line-height:1.3;">${esc(props.name)}</p>
-    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 10px;">${esc(location)}${esc(distStr)}</p>` : ""}
+  return `<div style="font-family:system-ui,-apple-system,sans-serif;padding:14px 16px 12px;min-width:220px;max-width:260px;">
+    ${featuredBadge ? `<div>${featuredBadge}</div>` : ""}
+    <p style="font-size:15px;font-weight:900;color:#0b0e17;margin:0 0 3px;line-height:1.25;">${esc(props.name)}</p>
+    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 11px;line-height:1.5;">${esc(location)}${esc(distStr)}</p>` : "<div style='margin-bottom:11px'></div>"}
     <div style="display:flex;gap:6px;">
-      <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#C9922A;color:#fff;">Reservar →</a>
-      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#F1F5F9;color:#0F1623;">↗</a>
+      <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:7px 14px;border-radius:10px;text-decoration:none;background:#0b0e17;color:#fff;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Reservar →</a>
+      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;padding:7px 12px;border-radius:10px;text-decoration:none;background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;" title="Cómo llegar">↗</a>
     </div>
   </div>`;
 }
@@ -209,6 +209,14 @@ export function MarketplaceMap({
         center: DEFAULT_CENTER,
         zoom: DEFAULT_ZOOM,
       });
+
+      map.addControl(
+        new maplibregl.NavigationControl({
+          showCompass: false,
+          visualizePitch: false,
+        }),
+        "top-right",
+      );
 
       mapRef.current = map;
 
@@ -452,14 +460,14 @@ export function MarketplaceMap({
         className={`flex items-center justify-center rounded-[20px] border border-dashed border-slate-200 bg-slate-50 ${className}`}
       >
         <div className="px-6 py-10 text-center">
-          <p className="text-sm font-bold text-neutral-400">Sin ubicaciones en mapa</p>
+          <p className="text-sm font-bold text-neutral-400">Sin ubicaciones en el mapa</p>
           <p className="mt-1 text-xs text-neutral-300">
-            Amplía el radio o activa tu ubicación para ver barberías cercanas
+            Añade ubicación para verlas en el mapa.
           </p>
         </div>
       </div>
     );
   }
 
-  return <div ref={containerRef} className={`overflow-hidden rounded-[20px] ${className}`} />;
+  return <div ref={containerRef} className={`overflow-hidden rounded-3xl ${className}`} />;
 }

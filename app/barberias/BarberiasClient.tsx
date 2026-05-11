@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutList, Map, LocateFixed, Loader2, AlertCircle, X } from "lucide-react";
+import {
+  LayoutList,
+  Map,
+  LocateFixed,
+  Loader2,
+  AlertCircle,
+  X,
+  Search,
+  MapPin,
+} from "lucide-react";
 import { BarberiaCard, type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
 import { MarketplaceMap, type UserLocation } from "@/components/marketplace/MarketplaceMap";
 import {
@@ -18,8 +27,9 @@ type Props = {
 
 type SortMode = "default" | "distance";
 type RadiusKm = 1 | 3 | 5 | 10;
+type FeaturedMode = "all" | "featured";
 
-// ── Location button ───────────────────────────────────────────────────────
+// ── Location button ────────────────────────────────────────────────────────
 
 function LocationButton({
   detecting,
@@ -52,7 +62,7 @@ function LocationButton({
       <button
         type="button"
         onClick={onClear}
-        className="flex items-center gap-1.5 rounded-full border border-[#C9922A]/40 bg-[#C9922A]/8 px-3 py-1.5 text-xs font-semibold text-[#8A641F] transition hover:bg-[#C9922A]/15"
+        className="flex items-center gap-1.5 rounded-full border border-[#C9922A]/40 bg-[#C9922A]/10 px-3 py-1.5 text-xs font-semibold text-[#8A641F] transition hover:bg-[#C9922A]/20"
       >
         <LocateFixed size={12} className="text-[#C9922A]" />
         Mi ubicación activa
@@ -76,27 +86,33 @@ function LocationButton({
 // ── Filter bar ────────────────────────────────────────────────────────────
 
 const RADIUS_OPTIONS: { label: string; value: RadiusKm | null }[] = [
-  { label: "1 km",     value: 1  },
-  { label: "3 km",     value: 3  },
-  { label: "5 km",     value: 5  },
-  { label: "10 km",    value: 10 },
+  { label: "1 km",          value: 1    },
+  { label: "3 km",          value: 3    },
+  { label: "5 km",          value: 5    },
+  { label: "10 km",         value: 10   },
   { label: "Toda la ciudad", value: null },
 ];
 
 function FilterBar({
+  featuredMode,
+  onFeaturedModeChange,
   sortMode,
   onSortChange,
   radiusKm,
   onRadiusChange,
   hasLocation,
+  hasFeatured,
   totalCount,
   filteredCount,
 }: {
+  featuredMode: FeaturedMode;
+  onFeaturedModeChange: (m: FeaturedMode) => void;
   sortMode: SortMode;
   onSortChange: (m: SortMode) => void;
   radiusKm: RadiusKm | null;
   onRadiusChange: (r: RadiusKm | null) => void;
   hasLocation: boolean;
+  hasFeatured: boolean;
   totalCount: number;
   filteredCount: number;
 }) {
@@ -104,8 +120,22 @@ function FilterBar({
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Sort pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <FilterPill
+          active={featuredMode === "all"}
+          onClick={() => onFeaturedModeChange("all")}
+        >
+          Todas
+        </FilterPill>
+        {hasFeatured && (
+          <FilterPill
+            active={featuredMode === "featured"}
+            onClick={() => onFeaturedModeChange("featured")}
+          >
+            Destacadas
+          </FilterPill>
+        )}
+        <span className="h-4 w-px bg-slate-200" />
         <FilterPill
           active={sortMode === "default"}
           onClick={() => onSortChange("default")}
@@ -118,10 +148,9 @@ function FilterBar({
           disabled={!hasLocation}
           title={!hasLocation ? "Activa tu ubicación para ordenar por distancia" : undefined}
         >
-          Más cercanas
+          Cerca de mí
         </FilterPill>
 
-        {/* Radius pills — only when location is active */}
         {hasLocation && (
           <>
             <span className="h-4 w-px bg-slate-200" />
@@ -173,7 +202,7 @@ function FilterPill({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
         active
           ? "border-[#C9922A] bg-[#C9922A]/10 text-[#8A641F]"
           : disabled
@@ -186,17 +215,22 @@ function FilterPill({
   );
 }
 
-// ── Empty states ──────────────────────────────────────────────────────────
+// ── Empty / no-results ────────────────────────────────────────────────────
 
 function NoResults({ onClearFilters }: { onClearFilters: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[20px] border border-dashed border-slate-200 py-16 text-center">
-      <p className="text-sm font-bold text-neutral-400">No encontramos barberías con esos filtros.</p>
-      <p className="mt-1 text-xs text-neutral-300">Prueba ampliando el radio de búsqueda.</p>
+    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 py-20 text-center">
+      <MapPin size={28} className="text-slate-300" />
+      <p className="mt-4 text-sm font-bold text-neutral-400">
+        No encontramos barberías con esos filtros.
+      </p>
+      <p className="mt-1 text-xs text-neutral-300">
+        Prueba ampliando el radio de búsqueda o cambia los filtros.
+      </p>
       <button
         type="button"
         onClick={onClearFilters}
-        className="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+        className="mt-5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
       >
         Ver todas las barberías
       </button>
@@ -217,14 +251,16 @@ export function BarberiasClient({
   const [locationError,     setLocationError]     = useState<string | null>(null);
 
   // Filter state
-  const [sortMode,  setSortMode]  = useState<SortMode>("default");
-  const [radiusKm,  setRadiusKm]  = useState<RadiusKm | null>(null);
+  const [sortMode,     setSortMode]     = useState<SortMode>("default");
+  const [radiusKm,     setRadiusKm]     = useState<RadiusKm | null>(null);
+  const [featuredMode, setFeaturedMode] = useState<FeaturedMode>("all");
+  const [searchQuery,  setSearchQuery]  = useState("");
 
   // Map / list state
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
   const [viewMode,       setViewMode]       = useState<"list" | "map">("list");
 
-  // ── Location detection ────────────────────────────────────────────────────
+  // ── Location detection ───────────────────────────────────────────────────
   function detectLocation() {
     if (!navigator.geolocation) {
       setLocationError("Tu navegador no soporta geolocalización.");
@@ -239,9 +275,7 @@ export function BarberiasClient({
         setDetectingLocation(false);
       },
       () => {
-        setLocationError(
-          "No pudimos acceder a tu ubicación. Puedes buscar por ciudad.",
-        );
+        setLocationError("No pudimos acceder a tu ubicación. Puedes buscar por ciudad.");
         setDetectingLocation(false);
       },
       { timeout: 8000 },
@@ -259,10 +293,26 @@ export function BarberiasClient({
     setRadiusKm(null);
     setSortMode("default");
     setSelectedShopId(null);
+    setSearchQuery("");
+    setFeaturedMode("all");
   }
 
   // ── Computed shops ────────────────────────────────────────────────────────
   let displayedShops = profiles;
+
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    displayedShops = displayedShops.filter(
+      (s) =>
+        s.public_name.toLowerCase().includes(q) ||
+        s.city?.toLowerCase().includes(q) ||
+        s.neighborhood?.toLowerCase().includes(q),
+    );
+  }
+
+  if (featuredMode === "featured") {
+    displayedShops = displayedShops.filter((s) => s.featured);
+  }
 
   if (radiusKm !== null && userLocation) {
     displayedShops = filterByRadius(displayedShops, userLocation, radiusKm);
@@ -275,9 +325,12 @@ export function BarberiasClient({
   const featured = displayedShops.filter((p) => p.featured);
   const rest      = displayedShops.filter((p) => !p.featured);
 
-  // ── Card grid ─────────────────────────────────────────────────────────────
-  // Map is always shown; 2-col grid leaves room for the map sidebar.
-  const gridClass = "grid gap-5 sm:grid-cols-2";
+  const visibleOnMap = displayedShops.filter(
+    (s) => s.latitude != null && s.longitude != null && s.map_visible !== false,
+  ).length;
+
+  // ── Grid class ────────────────────────────────────────────────────────────
+  const gridClass = "grid gap-4 sm:grid-cols-2";
 
   function cardDistance(p: BarberiaProfile) {
     if (!userLocation) return null;
@@ -296,6 +349,7 @@ export function BarberiasClient({
     ));
   }
 
+  // ── List content ──────────────────────────────────────────────────────────
   const listContent = (
     <div className="space-y-10">
       {displayedShops.length === 0 ? (
@@ -304,7 +358,7 @@ export function BarberiasClient({
         <>
           {featured.length > 0 && (
             <section>
-              <div className="mb-5 flex items-center gap-3">
+              <div className="mb-4 flex items-center gap-3">
                 <p className="section-heading">{featuredLabel}</p>
                 <span className="badge-gold">★ Top</span>
               </div>
@@ -314,12 +368,13 @@ export function BarberiasClient({
 
           {rest.length > 0 && (
             <section>
-              <div className="mb-5 flex items-center justify-between gap-4">
+              <div className="mb-4 flex items-center justify-between gap-4">
                 <p className="section-heading">
                   {restLabel ?? (featured.length > 0 ? "Más barberías" : "Todas las barberías")}
                 </p>
                 <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-slate-500">
-                  {displayedShops.length} {displayedShops.length === 1 ? "barbería" : "barberías"}
+                  {displayedShops.length}{" "}
+                  {displayedShops.length === 1 ? "barbería" : "barberías"}
                 </span>
               </div>
               <div className={gridClass}>{renderCards(rest)}</div>
@@ -330,9 +385,34 @@ export function BarberiasClient({
     </div>
   );
 
-  // ── Header bar (location + filters) ──────────────────────────────────────
+  // ── Header bar ────────────────────────────────────────────────────────────
   const headerBar = (
-    <div className="space-y-3 rounded-[20px] border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      {/* Search input */}
+      <div className="relative">
+        <Search
+          size={14}
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+        />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Buscar por nombre o ciudad…"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-8 pr-4 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-[#C9922A] focus:ring-2 focus:ring-[#C9922A]/10"
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-slate-400 hover:text-slate-600"
+          >
+            <X size={13} />
+          </button>
+        )}
+      </div>
+
+      {/* Location + sort pills */}
       <div className="flex flex-wrap items-center gap-2">
         <LocationButton
           detecting={detectingLocation}
@@ -348,19 +428,47 @@ export function BarberiasClient({
           </span>
         )}
       </div>
+
       <FilterBar
+        featuredMode={featuredMode}
+        onFeaturedModeChange={setFeaturedMode}
         sortMode={sortMode}
         onSortChange={setSortMode}
         radiusKm={radiusKm}
         onRadiusChange={setRadiusKm}
         hasLocation={!!userLocation}
+        hasFeatured={profiles.some((p) => p.featured)}
         totalCount={profiles.length}
         filteredCount={displayedShops.length}
       />
     </div>
   );
 
-  // ── Map layout ────────────────────────────────────────────────────────────
+  // ── Map wrapper (shared between mobile and desktop) ───────────────────────
+  function MapWrapper({ className }: { className: string }) {
+    return (
+      <div className="relative">
+        {/* Counter badge */}
+        {visibleOnMap > 0 && (
+          <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-[#080A0F]/75 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm">
+            <MapPin size={11} className="text-[#D5A84C]" />
+            {visibleOnMap === 1
+              ? "1 barbería en el mapa"
+              : `${visibleOnMap} barberías en el mapa`}
+          </div>
+        )}
+        <MarketplaceMap
+          shops={displayedShops}
+          selectedShopId={selectedShopId}
+          onSelectShop={setSelectedShopId}
+          userLocation={userLocation}
+          className={className}
+        />
+      </div>
+    );
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-4">
       {headerBar}
@@ -389,27 +497,18 @@ export function BarberiasClient({
         {viewMode === "list" ? (
           listContent
         ) : (
-          <MarketplaceMap
-            shops={displayedShops}
-            selectedShopId={selectedShopId}
-            onSelectShop={setSelectedShopId}
-            userLocation={userLocation}
-            className="h-[70vh]"
-          />
+          <MapWrapper className="h-[70vh] rounded-3xl" />
         )}
       </div>
 
-      {/* Desktop: split layout */}
-      <div className="hidden lg:grid lg:grid-cols-[1fr_440px] lg:gap-6 lg:items-start">
-        <div>{listContent}</div>
+      {/* Desktop: 44 / 56 split */}
+      <div className="hidden lg:grid lg:grid-cols-[44%_56%] lg:gap-6 lg:items-start">
+        <div className="space-y-0">{listContent}</div>
+
         <div className="sticky top-6">
-          <MarketplaceMap
-            shops={displayedShops}
-            selectedShopId={selectedShopId}
-            onSelectShop={setSelectedShopId}
-            userLocation={userLocation}
-            className="h-[calc(100vh-5rem)]"
-          />
+          <div className="overflow-hidden rounded-3xl border border-[#D5A84C]/20 shadow-[0_4px_6px_rgba(0,0,0,0.04),0_20px_60px_rgba(0,0,0,0.10)]">
+            <MapWrapper className="h-[max(640px,calc(100vh-4.5rem))] rounded-3xl" />
+          </div>
         </div>
       </div>
     </div>
