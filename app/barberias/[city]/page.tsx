@@ -45,7 +45,7 @@ async function getProfilesByCity(rawCity: string): Promise<BarberiaProfile[]> {
     .eq("is_published", true)
     .eq("marketplace_enabled", true)
     .ilike("city", city)
-    .order("featured", { ascending: false })
+    .order("priority_score", { ascending: false })
     .order("created_at", { ascending: false });
 
   return (data ?? []) as BarberiaProfile[];

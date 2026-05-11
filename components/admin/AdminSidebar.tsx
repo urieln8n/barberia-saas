@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, TrendingUp, PieChart, CheckSquare, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, TrendingUp, PieChart, CheckSquare, LogOut, Store } from "lucide-react";
 
 const navItems = [
-  { href: "/admin",               label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/admin/leads",         label: "Leads",       icon: Users           },
-  { href: "/admin/deals",         label: "Pipeline",    icon: TrendingUp      },
-  { href: "/admin/tareas",        label: "Tareas",      icon: CheckSquare     },
-  { href: "/admin/suscripciones", label: "MRR",         icon: PieChart        },
+  { href: "/admin",                label: "Dashboard",   icon: LayoutDashboard },
+  { href: "/admin/leads",          label: "Leads",       icon: Users           },
+  { href: "/admin/deals",          label: "Pipeline",    icon: TrendingUp      },
+  { href: "/admin/tareas",         label: "Tareas",      icon: CheckSquare     },
+  { href: "/admin/suscripciones",  label: "MRR",         icon: PieChart        },
+  { href: "/admin/marketplace",    label: "Marketplace", icon: Store           },
 ];
 
 export function AdminSidebar() {
