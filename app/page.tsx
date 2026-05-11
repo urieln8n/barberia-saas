@@ -105,8 +105,9 @@ const steps = [
   },
 ];
 
-const WHATSAPP_URL = "https://wa.me/34600000000?text=Hola%2C%20me%20interesa%20BarberíaOS";
-const CONTACT_EMAIL = "hola@barberiaos.com";
+const CONTACT_PHONE = "+0034645466308";
+const WHATSAPP_URL = "https://wa.me/34645466308?text=Hola%2C%20me%20interesa%20BarberíaOS";
+const CONTACT_EMAIL = "hola_barberiaos@hotmail.com";
 
 const forWhom = [
   {
@@ -749,7 +750,8 @@ const jsonLd = {
       "description": "Software SaaS para barberías en España: reservas, caja, QR, barberos y presencia digital.",
       "contactPoint": {
         "@type": "ContactPoint",
-        "email": "hola@barberiaos.com",
+        "telephone": CONTACT_PHONE,
+        "email": CONTACT_EMAIL,
         "contactType": "customer service",
         "availableLanguage": "es",
       },
@@ -1561,7 +1563,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-5 py-2.5 text-sm font-bold text-emerald-300 transition hover:bg-emerald-400/20"
             >
               <MessageCircle size={15} />
-              Hablar por WhatsApp
+              WhatsApp {CONTACT_PHONE}
             </a>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
@@ -1596,7 +1598,7 @@ export default function LandingPage() {
                   className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 transition hover:text-emerald-700"
                 >
                   <MessageCircle size={15} />
-                  WhatsApp — contacto directo
+                  WhatsApp {CONTACT_PHONE}
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
