@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { useSidebarCollapse } from "./sidebar-context";
 import {
   Home,
   CalendarDays,
@@ -12,9 +13,8 @@ import {
   User,
   CreditCard,
   Banknote,
-  CalendarClock,
+  TrendingUp,
   Wallet,
-  MessageCircle,
   Star,
   RotateCcw,
   Workflow,
@@ -23,81 +23,118 @@ import {
   LogOut,
   QrCode,
   HelpCircle,
+  Boxes,
   ShoppingBag,
+  Receipt,
+  Megaphone,
+  ChevronLeft,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 
-type NavItem  = { href: string; label: string; icon: LucideIcon; badge?: string };
-type NavGroup = { label: string; items: NavItem[] };
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-const navGroups: NavGroup[] = [
-  {
-    label: "Principal",
-    items: [
-      { href: "/dashboard",                  label: "Dashboard",        icon: Home          },
-      { href: "/dashboard/agenda",           label: "Reservas",         icon: CalendarDays  },
-      { href: "/dashboard/clientes",         label: "Clientes",         icon: Users         },
-      { href: "/dashboard/barberos",         label: "Barberos",         icon: User          },
-      { href: "/dashboard/servicios",        label: "Servicios",        icon: Scissors      },
-      { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode        },
-    ],
-  },
-  {
-    label: "Negocio",
-    items: [
-      { href: "/dashboard/caja",             label: "Caja",             icon: Banknote      },
-      { href: "/dashboard/finanzas",         label: "Ventas",           icon: Wallet        },
-      { href: "/dashboard/pagos",            label: "Pagos",            icon: CreditCard    },
-      { href: "/dashboard/huecos",           label: "Estadísticas",     icon: CalendarClock },
-    ],
-  },
-  {
-    label: "Crecimiento",
-    items: [
-      { href: "/dashboard/marketplace",       label: "Marketplace",      icon: ShoppingBag   },
-      { href: "/dashboard/security-audit",   label: "Auditoría web",    icon: ShieldCheck, badge: "Beta" },
-      { href: "/dashboard/marketing",        label: "Promociones",      icon: MessageCircle, badge: "Demo" },
-      { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star          },
-      { href: "/dashboard/recuperacion",     label: "Clientes perdidos", icon: RotateCcw     },
-      { href: "/dashboard/automatizaciones", label: "Recordatorios",     icon: Workflow, badge: "Pro" },
-    ],
-  },
-  {
-    label: "Configuración",
-    items: [
-      { href: "/dashboard/ajustes",          label: "Perfil barbería",  icon: Settings      },
-      { href: "/dashboard/whatsapp",         label: "Soporte",          icon: HelpCircle, badge: "Guía" },
-    ],
-  },
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  badge?: string;
+  exact?: boolean;
+};
+
+type TabId = "operar" | "crecer" | "ajustes";
+
+// ─── Navigation config ────────────────────────────────────────────────────────
+
+const tabItems: Record<TabId, NavItem[]> = {
+  operar: [
+    { href: "/dashboard",            label: "Inicio",           icon: Home,        exact: true },
+    { href: "/dashboard/agenda",     label: "Reservas",         icon: CalendarDays             },
+    { href: "/dashboard/clientes",   label: "Clientes",         icon: Users                    },
+    { href: "/dashboard/barberos",   label: "Barberos",         icon: User                     },
+    { href: "/dashboard/servicios",  label: "Servicios",        icon: Scissors                 },
+    { href: "/dashboard/inventario", label: "Inventario",       icon: Boxes                    },
+    { href: "/dashboard/caja",       label: "Caja",             icon: Banknote                 },
+    { href: "/dashboard/finanzas",   label: "Ventas",           icon: Wallet                   },
+    { href: "/dashboard/pagos",      label: "Pagos",            icon: CreditCard               },
+    { href: "/dashboard/huecos",     label: "Estadísticas",     icon: TrendingUp               },
+    { href: "/dashboard/fiscalidad", label: "Fiscalidad",       icon: Receipt                  },
+  ],
+  crecer: [
+    { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode                      },
+    { href: "/dashboard/marketplace",      label: "Marketplace",      icon: ShoppingBag                 },
+    { href: "/dashboard/marketing",        label: "Marketing Studio", icon: Megaphone                   },
+    { href: "/dashboard/security-audit",   label: "Auditoría Web",   icon: ShieldCheck, badge: "Beta"  },
+    { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star                        },
+    { href: "/dashboard/recuperacion",     label: "Clientes perdidos",icon: RotateCcw                  },
+    { href: "/dashboard/automatizaciones", label: "Recordatorios",    icon: Workflow,   badge: "Pro"    },
+  ],
+  ajustes: [
+    { href: "/dashboard/ajustes",  label: "Perfil barbería", icon: Settings                    },
+    { href: "/dashboard/whatsapp", label: "Soporte",         icon: HelpCircle, badge: "Guía"  },
+  ],
+};
+
+const allItems: NavItem[] = [
+  ...tabItems.operar,
+  ...tabItems.crecer,
+  ...tabItems.ajustes,
 ];
+
+const tabConfig: { id: TabId; label: string }[] = [
+  { id: "operar",  label: "Operar"  },
+  { id: "crecer",  label: "Crecer"  },
+  { id: "ajustes", label: "Ajustes" },
+];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function isActive(pathname: string, item: NavItem): boolean {
+  if (item.exact) return pathname === item.href;
+  return pathname === item.href || pathname.startsWith(item.href + "/");
+}
+
+function getActiveTab(pathname: string): TabId {
+  for (const item of tabItems.crecer) {
+    if (isActive(pathname, item)) return "crecer";
+  }
+  for (const item of tabItems.ajustes) {
+    if (isActive(pathname, item)) return "ajustes";
+  }
+  return "operar";
+}
+
+// ─── NavLink (expanded) ───────────────────────────────────────────────────────
 
 function NavLink({
   item,
-  active,
+  pathname,
   onClick,
 }: {
   item: NavItem;
-  active: boolean;
+  pathname: string;
   onClick?: () => void;
 }) {
   const Icon = item.icon;
+  const active = isActive(pathname, item);
+
   return (
     <Link
       href={item.href}
       onClick={onClick}
-      className={`nav-link ${
+      className={`nav-link transition-all duration-150 ${
         active
-          ? "border border-[#C89B3C]/25 bg-[#F8F5EF] font-bold text-[#111111] shadow-sm"
-          : "font-semibold text-neutral-600 hover:bg-[#F8F5EF] hover:text-neutral-950"
+          ? "bg-[#C9922A]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#C9922A]"
+          : "font-medium text-neutral-500 hover:bg-[#C9922A]/5 hover:text-neutral-900"
       }`}
     >
       <Icon
         size={16}
-        className={`shrink-0 transition-colors ${active ? "text-[#8A641F]" : "text-neutral-400"}`}
+        className={`shrink-0 transition-colors ${active ? "text-[#C9922A]" : "text-neutral-400"}`}
       />
-      <span className="min-w-0 flex-1">{item.label}</span>
+      <span className="min-w-0 flex-1 truncate">{item.label}</span>
       {item.badge && (
-        <span className="rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+        <span className="shrink-0 rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
           {item.badge}
         </span>
       )}
@@ -105,63 +142,72 @@ function NavLink({
   );
 }
 
-function NavGroupSection({
-  group,
-  pathname,
-  onLinkClick,
+// ─── IconNavLink (collapsed) ──────────────────────────────────────────────────
+
+function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
+  const Icon = item.icon;
+  const active = isActive(pathname, item);
+
+  return (
+    <Link
+      href={item.href}
+      title={item.label}
+      className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-150 ${
+        active
+          ? "bg-[#C9922A]/10 shadow-[inset_3px_0_0_#C9922A]"
+          : "hover:bg-[#C9922A]/5"
+      }`}
+    >
+      <Icon
+        size={18}
+        className={`transition-colors ${active ? "text-[#C9922A]" : "text-neutral-400"}`}
+      />
+    </Link>
+  );
+}
+
+// ─── Tab bar (expanded) ───────────────────────────────────────────────────────
+
+function TabBar({
+  activeTab,
+  onChange,
 }: {
-  group: NavGroup;
-  pathname: string;
-  onLinkClick?: () => void;
+  activeTab: TabId;
+  onChange: (tab: TabId) => void;
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <p className="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-neutral-400">
-        {group.label}
-      </p>
-      {group.items.map((item) => (
-        <NavLink
-          key={item.href}
-          item={item}
-          active={pathname === item.href}
-          onClick={onLinkClick}
-        />
+    <div className="mb-4 flex overflow-hidden rounded-2xl border border-[#E7E2D8]">
+      {tabConfig.map((tab) => (
+        <button
+          key={tab.id}
+          type="button"
+          onClick={() => onChange(tab.id)}
+          className={`flex-1 py-[9px] text-[11px] font-black uppercase tracking-wide transition-all duration-150 ${
+            activeTab === tab.id
+              ? "bg-[#080A0F] text-[#C9922A]"
+              : "bg-[#F8F5EF] text-neutral-400 hover:bg-[#EDE8E0] hover:text-neutral-700"
+          }`}
+        >
+          {tab.label}
+        </button>
       ))}
     </div>
   );
 }
 
-function BrandLogo({ onClick }: { onClick?: () => void }) {
-  return (
-    <Link href="/dashboard" onClick={onClick} className="flex items-center gap-3 rounded-2xl">
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#111111] shadow-sm">
-        <Scissors size={15} className="text-[#C9922A]" />
-      </div>
-      <div className="min-w-0">
-        <span className="block text-lg font-black leading-none text-neutral-950">BarberíaOS</span>
-        <span className="mt-1 block text-[11px] font-medium text-neutral-500">Gestión premium</span>
-      </div>
-    </Link>
-  );
-}
-
-function LogoutBtn({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="nav-link w-full border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
-    >
-      <LogOut size={16} className="shrink-0" />
-      Cerrar sesión
-    </button>
-  );
-}
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export default function Sidebar() {
-  const pathname = usePathname();
-  const router   = useRouter();
-  const [open, setOpen] = useState(false);
+  const pathname            = usePathname();
+  const router              = useRouter();
+  const { collapsed, toggle } = useSidebarCollapse();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeTab, setActiveTab]   = useState<TabId>(() => getActiveTab(pathname));
+
+  // Auto-sync tab with current route
+  useEffect(() => {
+    setActiveTab(getActiveTab(pathname));
+  }, [pathname]);
 
   async function handleLogout() {
     const supabase = createClient(
@@ -173,18 +219,23 @@ export default function Sidebar() {
     router.refresh();
   }
 
+  // ── Mobile header ────────────────────────────────────────────────────────────
   return (
     <>
-      {/* ── Mobile header ── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E7E2D8] bg-white/90 px-4 shadow-sm backdrop-blur md:hidden">
-        <BrandLogo />
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#C89B3C]/25 bg-[#080A0F]">
+            <Scissors size={14} className="text-[#C9922A]" />
+          </div>
+          <span className="font-black tracking-tight text-[#080A0F]">BarberíaOS</span>
+        </Link>
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => setDrawerOpen(true)}
           className="btn-outline min-h-0 px-3 py-2"
         >
           <span className="inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#C89B3C]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#C9922A]" />
             Menu
           </span>
         </button>
@@ -193,71 +244,179 @@ export default function Sidebar() {
       {/* ── Mobile drawer ── */}
       <div
         className={`fixed inset-0 z-50 transition-opacity duration-200 md:hidden ${
-          open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
         <button
           type="button"
           aria-label="Cerrar menú"
-          onClick={() => setOpen(false)}
+          onClick={() => setDrawerOpen(false)}
           className="absolute inset-0 bg-neutral-950/40 backdrop-blur-[2px]"
         />
         <aside
           className={`absolute left-0 top-0 flex h-full w-72 flex-col border-r border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
-            open ? "translate-x-0" : "-translate-x-full"
+            drawerOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="mb-6 flex items-center justify-between">
-            <BrandLogo onClick={() => setOpen(false)} />
+          {/* Mobile drawer header */}
+          <div className="mb-5 flex items-center justify-between">
+            <Link href="/dashboard" onClick={() => setDrawerOpen(false)} className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F]">
+                <Scissors size={15} className="text-[#C9922A]" />
+              </div>
+              <div>
+                <p className="text-[15px] font-black leading-none text-neutral-950">BarberíaOS</p>
+                <p className="mt-0.5 text-[10px] font-medium text-neutral-400">Sistema operativo de barbería.</p>
+              </div>
+            </Link>
             <button
               type="button"
-              onClick={() => setOpen(false)}
-              className="btn-outline min-h-0 px-3 py-1.5"
+              onClick={() => setDrawerOpen(false)}
+              className="btn-outline min-h-0 px-3 py-1.5 text-xs"
             >
               Cerrar
             </button>
           </div>
 
-          <nav className="flex flex-1 flex-col gap-5 overflow-y-auto">
-            {navGroups.map((group) => (
-              <NavGroupSection
-                key={group.label}
-                group={group}
+          {/* Mobile nav — all items flat, no tabs */}
+          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
+            {allItems.map((item) => (
+              <NavLink
+                key={item.href}
+                item={item}
                 pathname={pathname}
-                onLinkClick={() => setOpen(false)}
+                onClick={() => setDrawerOpen(false)}
               />
             ))}
           </nav>
 
-          <div className="mt-4">
-            <Link href="/" onClick={() => setOpen(false)} className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
+          {/* Mobile footer */}
+          <div className="mt-4 flex flex-col gap-2">
+            <Link
+              href="/"
+              onClick={() => setDrawerOpen(false)}
+              className="nav-link border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+            >
               <ShieldCheck size={16} className="shrink-0" />
               Volver a la landing
             </Link>
-            <LogoutBtn onClick={handleLogout} />
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="nav-link w-full border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+            >
+              <LogOut size={16} className="shrink-0" />
+              Cerrar sesión
+            </button>
           </div>
         </aside>
       </div>
 
       {/* ── Desktop sidebar ── */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-[#E7E2D8] bg-white/90 p-5 shadow-[0_18px_50px_rgba(17,17,17,0.05)] backdrop-blur md:flex">
-        <div className="mb-8 rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-3">
-          <BrandLogo />
-        </div>
+      <aside
+        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-[#E7E2D8] bg-white/95 shadow-[0_18px_50px_rgba(17,17,17,0.05)] backdrop-blur transition-all duration-300 ease-in-out md:flex ${
+          collapsed ? "w-16 px-2 py-4" : "w-64 p-5"
+        }`}
+      >
+        {/* Toggle collapse button */}
+        <button
+          type="button"
+          onClick={toggle}
+          title={collapsed ? "Expandir menú" : "Colapsar menú"}
+          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#E7E2D8] bg-white shadow-md transition-colors hover:border-[#C9922A]/40 hover:bg-[#C9922A]/5"
+        >
+          {collapsed ? (
+            <ChevronRight size={13} className="text-neutral-400" />
+          ) : (
+            <ChevronLeft size={13} className="text-neutral-400" />
+          )}
+        </button>
 
-        <nav className="flex flex-1 flex-col gap-5 overflow-y-auto">
-          {navGroups.map((group) => (
-          <NavGroupSection key={group.label} group={group} pathname={pathname} />
-          ))}
-        </nav>
+        {/* Brand */}
+        {collapsed ? (
+          <div className="mb-3 flex justify-center">
+            <Link href="/dashboard" title="BarberíaOS — Inicio">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F] shadow-sm">
+                <Scissors size={15} className="text-[#C9922A]" />
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="mb-5 rounded-[20px] border border-[#E7E2D8] bg-[#F8F5EF] px-3 py-3">
+            <Link href="/dashboard" className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F] shadow-sm">
+                <Scissors size={15} className="text-[#C9922A]" />
+              </div>
+              <div className="min-w-0">
+                <span className="block text-[15px] font-black leading-none text-neutral-950">BarberíaOS</span>
+                <span className="mt-1 block truncate text-[10px] font-medium leading-tight text-neutral-400">
+                  Sistema operativo de barbería.
+                </span>
+              </div>
+            </Link>
+          </div>
+        )}
 
-        <div className="mt-4">
-          <Link href="/" className="nav-link mb-2 border border-[#E7E2D8] bg-white font-semibold text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950">
-            <ShieldCheck size={16} className="shrink-0" />
-            Volver a la landing
-          </Link>
-          <LogoutBtn onClick={handleLogout} />
-        </div>
+        {/* Tab bar (expanded only) */}
+        {!collapsed && (
+          <TabBar activeTab={activeTab} onChange={setActiveTab} />
+        )}
+
+        {/* Nav */}
+        {collapsed ? (
+          // Collapsed: icon-only, all items
+          <nav className="flex flex-1 flex-col items-center gap-0.5 overflow-y-auto py-1">
+            {allItems.map((item) => (
+              <IconNavLink key={item.href} item={item} pathname={pathname} />
+            ))}
+          </nav>
+        ) : (
+          // Expanded: items for active tab only
+          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
+            {tabItems[activeTab].map((item) => (
+              <NavLink key={item.href} item={item} pathname={pathname} />
+            ))}
+          </nav>
+        )}
+
+        {/* Footer */}
+        {collapsed ? (
+          <div className="flex flex-col items-center gap-0.5 border-t border-[#E7E2D8] pt-3">
+            <Link
+              href="/"
+              title="Volver a la landing"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-400 transition-colors hover:bg-[#C9922A]/5 hover:text-neutral-700"
+            >
+              <ShieldCheck size={17} />
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Cerrar sesión"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-400 transition-colors hover:bg-[#C9922A]/5 hover:text-neutral-700"
+            >
+              <LogOut size={17} />
+            </button>
+          </div>
+        ) : (
+          <div className="mt-4 flex flex-col gap-2 border-t border-[#E7E2D8] pt-4">
+            <Link
+              href="/"
+              className="nav-link border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+            >
+              <ShieldCheck size={16} className="shrink-0" />
+              Volver a la landing
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="nav-link w-full border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+            >
+              <LogOut size={16} className="shrink-0" />
+              Cerrar sesión
+            </button>
+          </div>
+        )}
       </aside>
     </>
   );

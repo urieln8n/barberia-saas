@@ -1,4 +1,6 @@
 import Sidebar from "@/components/dashboard/Sidebar";
+import { SidebarCollapseProvider } from "@/components/dashboard/sidebar-context";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
 export default function DashboardLayout({
   children,
@@ -6,11 +8,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="premium-grid-bg min-h-screen font-sans antialiased">
-      <Sidebar />
-      <main className="min-h-screen px-4 pb-12 pt-20 md:ml-64 md:max-w-[calc(100vw-16rem)] md:px-7 md:py-7 lg:px-10 lg:py-9">
-        <div className="page-shell">{children}</div>
-      </main>
-    </div>
+    <SidebarCollapseProvider>
+      <div className="premium-grid-bg min-h-screen font-sans antialiased">
+        <Sidebar />
+        <DashboardShell>{children}</DashboardShell>
+      </div>
+    </SidebarCollapseProvider>
   );
 }
