@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Banknote,
   CreditCard,
@@ -10,6 +11,8 @@ import {
   Scale,
   Sparkles,
   Wallet,
+  ShoppingCart,
+  Tag,
 } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -18,7 +21,8 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { StatCard } from "@/components/ui/StatCard";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import type { BarberPerformanceItem } from "@/src/lib/cash/barber-performance";
-import { closeCashSession, createCashMovement, openCashSession } from "./actions";
+import { closeCashSession, createCashMovement, openCashSession, sellInventoryProductFromCash } from "./actions";
+import type { InventoryProduct } from "../inventario/types";
 
 type CashSession = {
   id: string;
@@ -30,6 +34,7 @@ type CashSession = {
 type Client = { id: string; name: string };
 type Barber = { id: string; name: string };
 type Service = { id: string; name: string; price: number; duration_minutes: number };
+type InventoryProductSale = InventoryProduct;
 
 type CashMovement = {
   id: string;
@@ -48,6 +53,7 @@ type CashMovement = {
 type Props = {
   session: CashSession | null;
   movements: CashMovement[];
+  products: InventoryProductSale[];
   clients: Client[];
   barbers: Barber[];
   services: Service[];
@@ -99,25 +105,55 @@ function SubmitError({ message }: { message: string }) {
 export function CajaClient({
   session,
   movements,
+  products,
   clients,
   barbers,
   services,
   performanceItems,
   errorMessage,
 }: Props) {
+  const router = useRouter();
   const [openingError, setOpeningError] = useState("");
   const [movementError, setMovementError] = useState("");
+  const [saleError, setSaleError] = useState("");
   const [closingError, setClosingError] = useState("");
   const [closingAmount, setClosingAmount] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [tip, setTip] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState(products[0]?.id ?? "");
+  const [quantity, setQuantity] = useState("1");
+  const [unitSalePrice, setUnitSalePrice] = useState(
+    products[0]?.sale_price !== null && products[0]?.sale_price !== undefined
+      ? String(products[0].sale_price)
+      : "",
+  );
   const [isOpeningPending, startOpeningTransition] = useTransition();
   const [isMovementPending, startMovementTransition] = useTransition();
+  const [isSalePending, startSaleTransition] = useTransition();
   const [isClosingPending, startClosingTransition] = useTransition();
 
   const selectedService = services.find((service) => service.id === selectedServiceId);
+  const selectedProduct = products.find((product) => product.id === selectedProductId) ?? null;
+  const quantityNumber = Number(quantity);
+  const unitSalePriceNumber = Number(unitSalePrice);
+  const hasValidQuantity = Number.isFinite(quantityNumber) && quantityNumber > 0;
+  const hasValidUnitPrice = Number.isFinite(unitSalePriceNumber) && unitSalePriceNumber > 0;
+  const quantityExceedsStock = selectedProduct
+    ? hasValidQuantity && quantityNumber > selectedProduct.current_stock
+    : false;
+  const productMargin = useMemo(() => {
+    if (!selectedProduct || selectedProduct.purchase_price === null || !hasValidQuantity || !hasValidUnitPrice) {
+      return null;
+    }
+
+    return (unitSalePriceNumber - selectedProduct.purchase_price) * quantityNumber;
+  }, [hasValidQuantity, hasValidUnitPrice, quantityNumber, selectedProduct, unitSalePriceNumber]);
+  const saleTotal = useMemo(() => {
+    if (!hasValidQuantity || !hasValidUnitPrice) return 0;
+    return quantityNumber * unitSalePriceNumber;
+  }, [hasValidQuantity, hasValidUnitPrice, quantityNumber, unitSalePriceNumber]);
 
   const totals = useMemo(() => {
     const byMethod: Record<string, number> = {
@@ -175,6 +211,27 @@ export function CajaClient({
     });
   }
 
+  function handleSale(formData: FormData) {
+    setSaleError("");
+    startSaleTransition(async () => {
+      const result = await sellInventoryProductFromCash(formData);
+      if (result?.error) {
+        setSaleError(result.error);
+        return;
+      }
+
+      if (selectedProduct) {
+        setUnitSalePrice(
+          selectedProduct.sale_price !== null && selectedProduct.sale_price !== undefined
+            ? String(selectedProduct.sale_price)
+            : "",
+        );
+      }
+      setQuantity("1");
+      router.refresh();
+    });
+  }
+
   function handleClose(formData: FormData) {
     setClosingError("");
     startClosingTransition(async () => {
@@ -204,6 +261,166 @@ export function CajaClient({
           {errorMessage}
         </div>
       )}
+
+      <SectionCard
+        title="Vender productos"
+        description="Añade productos a la caja y descuenta stock automáticamente."
+      >
+        {!session ? (
+          <EmptyState
+            icon={ShoppingCart}
+            title="Abre la caja para vender productos"
+            description="La venta de productos se registra dentro de una sesión de caja abierta."
+          />
+        ) : products.length === 0 ? (
+          <EmptyState
+            icon={Tag}
+            title="No hay productos de venta disponibles"
+            description="Solo aparecen productos retail, activos y con stock disponible."
+          />
+        ) : (
+          <form action={handleSale} className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+            <input type="hidden" name="cash_session_id" value={session.id} />
+            <input type="hidden" name="payment_method" value="cash" />
+
+            <div className="grid gap-4">
+              <div>
+                <label className="form-label">Producto *</label>
+                <select
+                  name="product_id"
+                  value={selectedProductId}
+                  onChange={(event) => {
+                    const product = products.find((item) => item.id === event.target.value) ?? null;
+                    setSelectedProductId(event.target.value);
+                    setUnitSalePrice(
+                      product?.sale_price !== null && product?.sale_price !== undefined
+                        ? String(product.sale_price)
+                        : "",
+                    );
+                  }}
+                  className="input py-3"
+                >
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name} · {product.current_stock} uds
+                    </option>
+                  ))}
+                </select>
+                <p className="form-help">
+                  Solo productos retail, activos y con stock disponible.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="form-label">Cantidad *</label>
+                  <input
+                    name="quantity"
+                    type="number"
+                    min="1"
+                    step="1"
+                    required
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)}
+                    className="input py-3"
+                    placeholder="1"
+                  />
+                  {selectedProduct && (
+                    <p
+                      className={`form-help ${
+                        quantityExceedsStock ? "text-red-600" : ""
+                      }`}
+                    >
+                      Disponible: {selectedProduct.current_stock} uds.
+                      {selectedProduct.current_stock <= selectedProduct.min_stock
+                        ? " Stock bajo."
+                        : ""}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="form-label">Precio unitario *</label>
+                  <input
+                    name="unit_sale_price"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    value={unitSalePrice}
+                    onChange={(event) => setUnitSalePrice(event.target.value)}
+                    className="input py-3"
+                    placeholder="0.00"
+                  />
+                  {selectedProduct?.sale_price !== null && selectedProduct?.sale_price !== undefined ? (
+                    <p className="form-help">
+                      Precio sugerido: {formatCurrency(Number(selectedProduct.sale_price))}
+                    </p>
+                  ) : (
+                    <p className="form-help">Introduce el precio de venta manualmente.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                      Total
+                    </p>
+                    <p className="mt-1 text-3xl font-black text-[#080A0F]">
+                      {formatCurrency(saleTotal)}
+                    </p>
+                  </div>
+                  {selectedProduct && (
+                    <span
+                      className={`rounded-full border px-3 py-1 text-xs font-bold ${
+                        selectedProduct.current_stock <= selectedProduct.min_stock
+                          ? "border-amber-200 bg-amber-50 text-amber-700"
+                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      }`}
+                    >
+                      {selectedProduct.current_stock <= selectedProduct.min_stock
+                        ? "Stock bajo"
+                        : "Stock correcto"}
+                    </span>
+                  )}
+                </div>
+                {selectedProduct && selectedProduct.purchase_price !== null && (
+                  <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+                      Margen estimado
+                    </p>
+                    <p
+                      className={`mt-1 text-lg font-black ${
+                        productMargin !== null && productMargin < 0 ? "text-red-600" : "text-[#080A0F]"
+                      }`}
+                    >
+                      {productMargin === null ? "—" : formatCurrency(productMargin)}
+                    </p>
+                  </div>
+                )}
+                <div className="mt-4 text-sm text-slate-500">
+                  Se registrará en caja y se descontará del inventario automáticamente.
+                </div>
+              </div>
+
+              {saleError && <SubmitError message={saleError} />}
+
+              <PrimaryButton
+                type="submit"
+                disabled={isSalePending || !selectedProduct || !hasValidQuantity || !hasValidUnitPrice || quantityExceedsStock}
+                className="min-h-12"
+              >
+                <ShoppingCart size={16} />
+                {isSalePending ? "Vendiendo..." : "Vender producto"}
+              </PrimaryButton>
+            </div>
+          </form>
+        )}
+      </SectionCard>
 
       {!session ? (
         <SectionCard

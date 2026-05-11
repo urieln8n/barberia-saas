@@ -192,3 +192,63 @@ export async function closeCashSession(formData: FormData) {
 
   return { success: true };
 }
+
+export async function sellInventoryProductFromCash(formData: FormData) {
+  const { supabase, barbershopId } = await getContext();
+
+  const cashSessionId = String(formData.get("cash_session_id") ?? "").trim();
+  const productId = String(formData.get("product_id") ?? "").trim();
+  const quantity = parseAmount(formData.get("quantity"));
+  const unitSalePrice = parseAmount(formData.get("unit_sale_price"));
+  const paymentMethod = String(formData.get("payment_method") ?? "cash").trim() || "cash";
+
+  if (!cashSessionId) return { error: "Abre la caja antes de vender productos." };
+  if (!productId) return { error: "Selecciona un producto." };
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    return { error: "La cantidad debe ser mayor que cero." };
+  }
+  if (!Number.isFinite(unitSalePrice) || unitSalePrice <= 0) {
+    return { error: "El precio unitario debe ser mayor que cero." };
+  }
+  if (!PAYMENT_METHODS.includes(paymentMethod as (typeof PAYMENT_METHODS)[number])) {
+    return { error: "Método de pago no válido." };
+  }
+
+  const { error } = await supabase.rpc("sell_inventory_product", {
+    p_barbershop_id: barbershopId,
+    p_product_id: productId,
+    p_cash_session_id: cashSessionId,
+    p_quantity: quantity,
+    p_unit_sale_price: unitSalePrice,
+    p_payment_method: paymentMethod,
+    p_note: "Venta de producto desde caja",
+  });
+
+  if (error) {
+    const message = error.message.toLowerCase();
+
+    if (message.includes("stock suficiente")) {
+      return { error: "No hay stock suficiente para vender este producto." };
+    }
+
+    if (message.includes("uso interno")) {
+      return { error: "No se pueden vender productos de uso interno desde caja." };
+    }
+
+    if (message.includes("inactivos")) {
+      return { error: "No se pueden vender productos inactivos." };
+    }
+
+    if (message.includes("caja ya no esta abierta")) {
+      return { error: "La caja ya no está abierta." };
+    }
+
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard/caja");
+  revalidatePath("/dashboard/inventario");
+  revalidatePath("/dashboard");
+
+  return { success: true };
+}

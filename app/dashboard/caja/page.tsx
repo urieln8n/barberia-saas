@@ -3,6 +3,7 @@ import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
 import { CajaClient } from "./CajaClient";
+import type { InventoryProduct, InventoryProductType } from "../inventario/types";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,17 @@ type CashMovementRaw = {
   clients?: Relation<{ name: string | null }>;
   barbers?: Relation<{ name: string | null }>;
   services?: Relation<{ name: string | null }>;
+};
+
+type InventoryProductRaw = Omit<
+  InventoryProduct,
+  "current_stock" | "min_stock" | "purchase_price" | "sale_price" | "product_type"
+> & {
+  product_type: string;
+  current_stock: number | string | null;
+  min_stock: number | string | null;
+  purchase_price: number | string | null;
+  sale_price: number | string | null;
 };
 
 function firstRelation<T>(value: Relation<T>): T | null {
@@ -78,6 +90,19 @@ function normalizeMovement(movement: CashMovementRaw) {
   };
 }
 
+function normalizeInventoryProduct(product: InventoryProductRaw): InventoryProduct {
+  return {
+    ...product,
+    product_type:
+      product.product_type === "internal" ? "internal" : ("retail" satisfies InventoryProductType),
+    current_stock: Number(product.current_stock ?? 0),
+    min_stock: Number(product.min_stock ?? 0),
+    purchase_price:
+      product.purchase_price === null ? null : Number(product.purchase_price),
+    sale_price: product.sale_price === null ? null : Number(product.sale_price),
+  };
+}
+
 export default async function CajaPage() {
   const supabase = await createClient();
 
@@ -99,6 +124,7 @@ export default async function CajaPage() {
     clientsResult,
     barbersResult,
     servicesResult,
+    productsResult,
   ] = await Promise.all([
     supabase
       .from("cash_sessions")
@@ -127,6 +153,17 @@ export default async function CajaPage() {
       .select("id, name, price, duration_minutes")
       .eq("barbershop_id", barbershopId)
       .eq("active", true)
+      .order("name", { ascending: true }),
+
+    supabase
+      .from("inventory_products")
+      .select(
+        "id, barbershop_id, name, category, product_type, sku, supplier, current_stock, min_stock, purchase_price, sale_price, notes, is_active, created_at, updated_at",
+      )
+      .eq("barbershop_id", barbershopId)
+      .eq("product_type", "retail")
+      .eq("is_active", true)
+      .gt("current_stock", 0)
       .order("name", { ascending: true }),
   ]);
 
@@ -169,6 +206,12 @@ export default async function CajaPage() {
     errorMessage = movementsResult.error.message;
   }
 
+  if (productsResult.error) {
+    errorMessage = errorMessage
+      ? `${errorMessage} / ${productsResult.error.message}`
+      : productsResult.error.message;
+  }
+
   const barbers = (barbersResult.data ?? []).map((barber) => ({
     id: barber.id,
     name: barber.name,
@@ -192,6 +235,9 @@ export default async function CajaPage() {
     <CajaClient
       session={session}
       movements={movements}
+      products={((productsResult.data as InventoryProductRaw[] | null) ?? []).map(
+        normalizeInventoryProduct,
+      )}
       clients={(clientsResult.data ?? []).map((client) => ({
         id: client.id,
         name: client.name,
