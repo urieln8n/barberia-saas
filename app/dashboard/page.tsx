@@ -10,7 +10,6 @@ import {
   CalendarCheck,
   TrendingUp,
   Users,
-  AlertCircle,
   Clock,
   Wallet,
   QrCode,
@@ -26,10 +25,7 @@ import { StatCard }   from "@/components/dashboard/StatCard";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import { TodayAvailability } from "@/components/dashboard/TodayAvailability";
-import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
-import { GrowthScoreCard } from "@/components/dashboard/GrowthScoreCard";
 import { SmartAlerts } from "@/components/dashboard/SmartAlerts";
-import { WelcomePanel } from "@/components/dashboard/WelcomePanel";
 
 export const dynamic = "force-dynamic";
 
@@ -420,16 +416,6 @@ export default async function DashboardPage() {
     0
   );
   const salesToday = cashSalesToday > 0 ? cashSalesToday : todayRevenue;
-  const attendedClientIds = new Set(
-    todayPaymentMovements
-      .map((movement) => movement.client_id)
-      .filter((clientId): clientId is string => Boolean(clientId))
-  );
-  const anonymousPayments = todayPaymentMovements.filter((movement) => !movement.client_id).length;
-  const clientsAttendedToday = attendedClientIds.size + anonymousPayments;
-  const cashPaymentsCount = todayPaymentMovements.filter(
-    (movement) => movement.payment_method === "cash"
-  ).length;
   const barberPerformanceItems = buildBarberPerformance(
     ((activeBarbersResult.data as { id: string; name: string }[]) ?? []).map((barber) => ({
       id: barber.id,
@@ -482,15 +468,6 @@ export default async function DashboardPage() {
   const topServiceToday = Object.entries(serviceSalesCount).sort((a, b) => b[1] - a[1])[0];
   const topServiceTodayName = topServiceToday?.[0] ?? "Sin ventas";
   const topServiceTodayCount = topServiceToday?.[1] ?? 0;
-  const recommendedActions = [
-    barberWithMostSlots && barberWithMostSlots.freeSlots.length > 0
-      ? `${barberWithMostSlots.barberName} tiene ${barberWithMostSlots.freeSlots.length} huecos libres hoy. Publica una promo.`
-      : "La agenda de hoy está bastante completa. Revisa próximas citas.",
-    `${clientsAttendedToday} clientes atendidos y ${cashPaymentsCount} pagos en efectivo registrados hoy.`,
-    cashSessionOpen
-      ? "Cierra caja al final del día para evitar descuadres."
-      : "Abre caja antes de registrar cobros para controlar el efectivo.",
-  ];
   const activationItems = [
     {
       label: "Añadir datos de la barbería",
@@ -671,58 +648,66 @@ export default async function DashboardPage() {
       icon: Megaphone,
     },
   ];
+  const nextActivationItem = activationItems.find((item) => !item.done);
+  const growthPreview = growthFactors.slice(0, 3);
+  const visibleTodayAppointments = todayAppointments.slice(0, 5);
+  const visibleAlerts = smartAlerts.slice(0, 3);
 
   return (
     <div className="space-y-6">
-
-      {/* ── Hero ── */}
       <section className="section-band overflow-hidden">
-        <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#C89B3C]/20 bg-[#C89B3C]/10 px-3 py-1 text-xs font-bold text-[#8A641F]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A]" />
-              Panel principal
+              Hoy en tu barbería
             </div>
             <h1 className="mt-3 text-3xl font-black tracking-tight text-[#111111] md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-500">
-              Vista general de tu barbería: reservas, clientes, actividad, huecos y próximos pasos para dejar el sistema listo.
+              Lo importante de hoy, sin ruido: citas, caja, huecos y la próxima acción para mover el día.
             </p>
+
+            {nextActivationItem && (
+              <div className="mt-5 rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/8 px-4 py-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#8A641F]">
+                      Configuración pendiente
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-neutral-700">
+                      Falta completar {activationItems.filter((item) => !item.done).length} pasos para dejar reservas online listas.
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-500">
+                      Siguiente paso: {nextActivationItem.label}
+                    </p>
+                  </div>
+                  <Link href={nextActivationItem.href} className="btn-dark shrink-0">
+                    Continuar <ArrowRight size={14} />
+                  </Link>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/70">
+                  <div className="h-full rounded-full bg-[#C9922A]" style={{ width: `${activationPercent}%` }} />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px]">
-            <Link
-              href="/dashboard/agenda"
-              className="btn-dark"
-            >
-              Ver agenda hoy
+
+          <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px] lg:grid-cols-1">
+            <Link href="/dashboard/agenda" className="btn-dark justify-center">
+              Ver agenda de hoy
             </Link>
-            <Link
-              href="/dashboard/qr"
-              className="btn-outline"
-            >
+            <Link href="/dashboard/qr" className="btn-outline justify-center">
               Ver QR de reservas
             </Link>
-            <Link
-              href={publicBookingUrl}
-              target="_blank"
-              className="btn-outline"
-            >
+            <Link href={publicBookingUrl} target="_blank" className="btn-outline justify-center">
               Página pública <ArrowRight size={15} />
             </Link>
           </div>
         </div>
       </section>
 
-      <WelcomePanel />
-
-      <ActivationChecklist percent={activationPercent} items={activationItems} />
-
-      <GrowthScoreCard score={growthScore} factors={growthFactors} />
-
-      <SmartAlerts alerts={smartAlerts} />
-
-      {/* ── Control diario ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Ventas hoy"
@@ -741,15 +726,7 @@ export default async function DashboardPage() {
           iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
         />
         <StatCard
-          title="Clientes nuevos"
-          value={String(clientsAttendedToday)}
-          hint={`${todayPaymentMovements.length} cobros vinculados hoy`}
-          icon={Users}
-          iconBg="bg-[#C89B3C]/10"
-          iconColor="text-[#8A641F]"
-        />
-        <StatCard
-          title="Reservas de hoy"
+          title="Reservas hoy"
           value={String(todayAppointments.length)}
           hint={`${weekApptsCount} esta semana`}
           icon={CalendarCheck}
@@ -757,131 +734,48 @@ export default async function DashboardPage() {
           iconColor="text-[#C9922A]"
         />
         <StatCard
-          title="Huecos libres hoy"
+          title="Huecos libres"
           value={String(totalFreeSlotsToday)}
-          hint="Slots disponibles desde ahora"
+          hint={barberWithMostSlots ? `Más disponibles: ${barberWithMostSlots.barberName}` : "Slots disponibles desde ahora"}
           icon={Clock}
           iconBg="bg-slate-100"
           iconColor="text-slate-600"
         />
-        <StatCard
-          title="Barbero top del día"
-          value={topDailyBarber?.barberName ?? "Sin ventas"}
-          hint={topDailyBarber ? formatCurrency(topDailyBarber.totalSold) : "Registra cobros en caja"}
-          icon={User}
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-700"
-        />
-        <StatCard
-          title="Barbero con más huecos"
-          value={barberWithMostSlots?.barberName ?? "Sin barberos"}
-          hint={barberWithMostSlots ? `${barberWithMostSlots.freeSlots.length} huecos libres` : "Crea barberos activos"}
-          icon={AlertCircle}
-          iconBg="bg-amber-50"
-          iconColor="text-amber-700"
-        />
-        <StatCard
-          title="Próximas citas"
-          value={String(upcomingAppointments.length)}
-          hint={topServiceTodayCount > 0 ? `Servicio top: ${topServiceTodayName}` : "Reservas activas próximas"}
-          icon={CalendarCheck}
-          iconBg="bg-[#C89B3C]/10"
-          iconColor="text-[#8A641F]"
-        />
       </section>
 
-      <section className="panel">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="label-section">Acciones recomendadas</p>
-            <h2 className="section-heading mt-1">Insight inteligente</h2>
-            <p className="section-subtext">
-              Hoy {barberWithMostSlots?.barberName ?? "tu equipo"} tiene {barberWithMostSlots?.freeSlots.length ?? totalFreeSlotsToday} huecos libres entre las 15:00 y 18:00. Puedes llenarlos con una promoción rápida.
-            </p>
-          </div>
-          <Link href="/dashboard/caja" className="btn-outline shrink-0">
-            Ver caja <ArrowRight size={14} />
-          </Link>
-        </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {recommendedActions.map((action) => (
-            <div key={action} className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 text-sm font-semibold leading-6 text-neutral-700">
-              {action}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-band overflow-hidden">
-        <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="label-section">Huecos libres</p>
-            <h2 className="section-heading mt-1">Disponibilidad rápida de hoy</h2>
-            <p className="section-subtext">
-              {totalFreeSlotsToday} huecos libres hoy · {barberWithMostSlots?.barberName ?? "Sin barbero"} es quien tiene más disponibilidad.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-bold uppercase text-slate-400">Total huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#080A0F]">{totalFreeSlotsToday}</p>
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-bold uppercase text-slate-400">Más huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#080A0F]">
-                {barberWithMostSlots?.barberName ?? "—"}
-              </p>
-            </div>
-            <Link href="/dashboard/huecos" className="btn-dark">
-              Ver huecos libres <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <BarberPerformance items={barberPerformanceItems} compact />
-
-      <TodayAvailability items={todayAvailabilityItems} />
-
-      {/* ── Próximas citas + Panel lateral ── */}
-      <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
-
-        {/* Próximas citas */}
+      <section className="grid gap-5 xl:grid-cols-[1.35fr_0.85fr]">
         <div className="panel overflow-hidden p-0">
           <div className="border-b border-[#E7E2D8] bg-[#FDFBF7] px-5 py-4 md:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="section-heading">Próximas citas</h2>
-              <p className="text-sm text-neutral-500">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="label-section">Día a día</p>
+                <h2 className="section-heading mt-1">Citas de hoy</h2>
+                <p className="section-subtext">
+                  {todayAppointments.length} reservas para atender hoy, ordenadas por hora.
+                </p>
+              </div>
+              <Link href="/dashboard/agenda" className="btn-outline min-h-0 px-3 py-2">
+                Abrir agenda <ArrowRight size={14} />
+              </Link>
             </div>
-            <Link
-              href="/dashboard/agenda"
-              className="btn-outline min-h-0 px-3 py-2"
-            >
-              Abrir agenda <ArrowRight size={14} />
-            </Link>
-          </div>
           </div>
 
-          {upcomingAppointments.length === 0 ? (
+          {visibleTodayAppointments.length === 0 ? (
             <div className="px-5 pb-5 md:px-6">
-            <EmptyState
-              icon={CalendarCheck}
-              title="Sin citas próximas"
-              description="Comparte tu QR o link público para empezar a llenar la agenda desde Instagram, WhatsApp o Google."
-              action={
-                <Link
-                  href="/dashboard/qr"
-                  className="btn-dark"
-                >
-                  <QrCode size={15} /> Ver QR de reservas
-                </Link>
-              }
-            />
+              <EmptyState
+                icon={CalendarCheck}
+                title="Sin citas hoy"
+                description="Comparte tu QR o link público para empezar a llenar la agenda desde Instagram, WhatsApp o Google."
+                action={
+                  <Link href="/dashboard/qr" className="btn-dark">
+                    <QrCode size={15} /> Ver QR de reservas
+                  </Link>
+                }
+              />
             </div>
           ) : (
             <div className="flex flex-col divide-y divide-[#E7E2D8]">
-              {upcomingAppointments.map((appointment) => (
+              {visibleTodayAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
                   className="flex items-start gap-3 bg-white p-4 transition-colors hover:bg-[#FDFBF7] md:px-6"
@@ -917,20 +811,17 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {/* Panel lateral */}
         <div className="flex flex-col gap-4">
-
-          {/* Link de reservas */}
           <div className="section-band-dark p-5 md:p-6">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#D9B766]">
                 <QrCode size={18} />
               </div>
               <div>
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Tu link de reservas</p>
-            <p className="mt-2 text-sm leading-6 text-white/65">
-              Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
-            </p>
+                <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Tu link de reservas</p>
+                <p className="mt-2 text-sm leading-6 text-white/65">
+                  Un solo enlace para Instagram, WhatsApp, Google y el QR del local.
+                </p>
               </div>
             </div>
             <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3">
@@ -939,10 +830,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <div className="mt-4 grid gap-2">
-              <Link
-                href="/dashboard/qr"
-                className="btn-gold"
-              >
+              <Link href="/dashboard/qr" className="btn-gold">
                 <QrCode size={15} /> Ver y descargar QR
               </Link>
               <Link
@@ -955,15 +843,13 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Acciones rápidas */}
           <div className="panel">
             <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Acciones rápidas</p>
             <div className="mt-3 grid gap-1.5">
               {[
-                { href: "/dashboard/clientes",  label: "Clientes",  icon: Users      },
-                { href: "/dashboard/servicios", label: "Servicios", icon: Scissors   },
-                { href: "/dashboard/pagos",     label: "Pagos",     icon: CreditCard },
-                { href: "/dashboard/barberos",  label: "Barberos",  icon: User       },
+                { href: "/dashboard/caja", label: cashSessionOpen ? "Ir a caja" : "Abrir caja", icon: Wallet },
+                { href: "/dashboard/clientes", label: "Clientes", icon: Users },
+                { href: "/dashboard/servicios", label: "Servicios", icon: Scissors },
               ].map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
@@ -977,9 +863,37 @@ export default async function DashboardPage() {
               ))}
             </div>
           </div>
-
         </div>
       </section>
+
+      <section className="section-band-dark p-5 md:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Crecimiento</p>
+            <h2 className="mt-1 text-3xl font-black text-white">{growthScore}/100</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">
+              Indicador rápido de lo preparado que está el negocio para captar reservas, recuperar clientes y reducir huecos vacíos.
+            </p>
+          </div>
+          <Link href="/dashboard/marketing" className="btn-gold shrink-0">
+            Ver crecimiento <ArrowRight size={14} />
+          </Link>
+        </div>
+        <div className="mt-5 grid gap-2 md:grid-cols-3">
+          {growthPreview.map((factor) => (
+            <div key={factor.label} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+              <p className="text-sm font-black text-white">{factor.label}</p>
+              <p className="mt-1 text-xs leading-5 text-white/50">{factor.hint}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <BarberPerformance items={barberPerformanceItems} compact />
+
+      <TodayAvailability items={todayAvailabilityItems} />
+
+      <SmartAlerts alerts={visibleAlerts} />
     </div>
   );
 }

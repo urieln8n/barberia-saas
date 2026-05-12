@@ -78,6 +78,8 @@ export function BarberiaCard({
           : "border border-slate-200 shadow-[var(--shadow-soft)] hover:border-slate-300 hover:shadow-[var(--shadow-card)]"
       } ${isSelected ? "ring-2 ring-[#C9922A]/50 ring-offset-2" : ""} ${onSelect ? "cursor-pointer" : ""}`}
       onClick={handleArticleClick}
+      tabIndex={onSelect ? 0 : undefined}
+      onKeyDown={onSelect ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(); } } : undefined}
     >
 
       {/* ── Cover ── */}

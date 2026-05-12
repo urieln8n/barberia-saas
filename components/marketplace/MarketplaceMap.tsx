@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Map as MapIcon } from "lucide-react";
 import type { Map as MLMap, GeoJSONSource, Popup as MLPopup } from "maplibre-gl";
 import type { BarberiaProfile } from "./BarberiaCard";
 import {
@@ -158,6 +159,8 @@ export function MarketplaceMap({
   userLocation,
   className = "",
 }: Props) {
+  const [mapStatus, setMapStatus] = useState<"loading" | "loaded" | "error">("loading");
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<MLMap | null>(null);
   const popupRef     = useRef<MLPopup | null>(null);
@@ -230,8 +233,13 @@ export function MarketplaceMap({
         }
       });
 
+      map.on("error", () => {
+        if (!cancelled) setMapStatus("error");
+      });
+
       map.on("load", () => {
         if (cancelled) return;
+        setMapStatus("loaded");
 
         const initShops = shopsRef.current;
 
@@ -469,5 +477,18 @@ export function MarketplaceMap({
     );
   }
 
-  return <div ref={containerRef} className={`overflow-hidden rounded-3xl ${className}`} />;
+  return (
+    <div className={`relative overflow-hidden rounded-3xl ${className}`}>
+      <div ref={containerRef} className="h-full w-full" />
+      {mapStatus === "loading" && (
+        <div className="pointer-events-none absolute inset-0 animate-pulse rounded-3xl bg-slate-100" />
+      )}
+      {mapStatus === "error" && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl bg-slate-50">
+          <MapIcon size={28} className="text-slate-300" />
+          <p className="text-sm font-semibold text-slate-400">No se pudo cargar el mapa</p>
+        </div>
+      )}
+    </div>
+  );
 }

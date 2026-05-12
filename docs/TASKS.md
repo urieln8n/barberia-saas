@@ -82,3 +82,8 @@
 - [ ] T048 — Deploy en Vercel.
 - [ ] T049 — Configurar dominio.
 - [ ] T050 — Checklist de entrega a primer cliente.
+
+## Deuda técnica — UI/Accesibilidad
+
+- [ ] T051 — Auditar touch targets en dashboard: buscar patrón `py-1.5 text-xs` en componentes interactivos de `/dashboard` y subir a mínimo `py-2` (objetivo 40px táctil).
+- [ ] T052 — QA de Inter en Safari iOS: verificar que `next/font/google` carga la fuente correctamente en Safari iOS (network tab, sin flash de system font en primer paint). Comparar con Chrome/Android.

@@ -43,7 +43,7 @@ type Props = {
   initialBarberId?: string | null;
 };
 
-const STEP_LABELS = ["Servicio", "Barbero", "Fecha y hora", "Tus datos"];
+const STEP_LABELS = ["Servicio", "Barbero", "Fecha y hora", "Datos", "Confirmar"];
 const LAST_BOOKING_STORAGE_KEY = "barberiaos:last-public-booking";
 
 type LastBookingStorage = {
@@ -53,12 +53,12 @@ type LastBookingStorage = {
 };
 
 function StepProgress({ step }: { step: number }) {
-  if (step >= 5) return null;
+  if (step > 5) return null;
 
   return (
     <div className="mt-5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
-      <div className="flex gap-1.5">
-        {[1, 2, 3, 4].map((s) => (
+      <div className="grid grid-cols-5 gap-1.5">
+        {[1, 2, 3, 4, 5].map((s) => (
           <div
             key={s}
             className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
@@ -69,8 +69,15 @@ function StepProgress({ step }: { step: number }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between text-xs">
-        <span className="font-semibold text-neutral-500">Paso {step} de 4</span>
+        <span className="font-semibold text-neutral-500">Paso {step} de 5</span>
         <span className="font-black text-[#111827]">{STEP_LABELS[step - 1]}</span>
+      </div>
+      <div className="mt-3 hidden grid-cols-5 gap-2 text-[10px] font-bold uppercase text-neutral-400 sm:grid">
+        {STEP_LABELS.map((label, index) => (
+          <span key={label} className={index + 1 <= step ? "text-[#111827]" : ""}>
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -237,10 +244,12 @@ function ConfirmButton({
   saving,
   disabled,
   onClick,
+  label = "Confirmar reserva",
 }: {
   saving: boolean;
   disabled: boolean;
   onClick: () => void;
+  label?: string;
 }) {
   return (
     <button
@@ -250,7 +259,7 @@ function ConfirmButton({
       className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-[#0F172A] active:scale-[0.98] disabled:opacity-40"
     >
       <CalendarDays size={18} />
-      {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
+      {saving ? "Comprobando disponibilidad..." : label}
     </button>
   );
 }
@@ -294,6 +303,16 @@ export function BookingForm({
 
   const selectedBarberId =
     barber?.id && barber.id !== "any" ? barber.id : null;
+  const visibleSlots = slots.filter((slot) => {
+    if (date !== today) return true;
+
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes()
+    ).padStart(2, "0")}`;
+
+    return slot.time > currentTime;
+  });
 
   useEffect(() => {
     const initialService = services.find((item) => item.id === initialServiceId);
@@ -349,7 +368,7 @@ export function BookingForm({
     let cancelled = false;
 
     async function loadAvailability() {
-      if (!date || !barber) {
+      if (!date || !barber || !service) {
         setUnavailableSlots([]);
         return;
       }
@@ -359,6 +378,7 @@ export function BookingForm({
 
       const result = await getUnavailableSlots({
         barbershopId,
+        serviceId: service.id,
         barberId: selectedBarberId,
         date,
       });
@@ -386,7 +406,7 @@ export function BookingForm({
     return () => {
       cancelled = true;
     };
-  }, [barbershopId, date, selectedBarberId, barber, time]);
+  }, [barbershopId, date, selectedBarberId, barber, service, time]);
 
   function reset() {
     setStep(1);
@@ -468,7 +488,7 @@ export function BookingForm({
       } satisfies LastBookingStorage)
     );
 
-    setStep(5);
+    setStep(6);
   }
 
   return (
@@ -486,7 +506,7 @@ export function BookingForm({
         <div className="p-5 md:p-7">
 
         {/* Volver */}
-        {step > 1 && step < 5 && (
+        {step > 1 && step <= 5 && (
           <button
             type="button"
             onClick={() => {
@@ -503,8 +523,8 @@ export function BookingForm({
         {step === 1 && (
           <section>
             <StepTitle
-              title="¿Qué servicio quieres?"
-              description="Elige el servicio y verás precio, duración y disponibilidad."
+              title="Elige el servicio que necesitas"
+              description="Verás duración, precio y horarios disponibles antes de confirmar."
             />
 
             {showRepeatPrompt && lastBooking && (
@@ -690,7 +710,7 @@ export function BookingForm({
                 )}
 
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
-                  {slots.map((slot) => {
+                  {visibleSlots.map((slot) => {
                     const isUnavailable = unavailableSlots.includes(slot.time);
 
                     return (
@@ -729,8 +749,20 @@ export function BookingForm({
                   })}
                 </div>
 
+                {visibleSlots.length === 0 && (
+                  <div className="mt-3 rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-5 text-center">
+                    <CalendarDays size={20} className="mx-auto text-neutral-300" />
+                    <p className="mt-2 text-sm font-semibold text-neutral-600">
+                      No quedan horas disponibles para este día.
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-400">
+                      Prueba con otra fecha.
+                    </p>
+                  </div>
+                )}
+
                 <p className="mt-3 text-xs text-neutral-400">
-                  Las horas ocupadas no se pueden seleccionar. Si elegiste "Cualquiera",
+                  Solo mostramos horas disponibles. Si elegiste "Cualquiera",
                   se comprueba la disponibilidad del equipo.
                 </p>
               </>
@@ -742,8 +774,8 @@ export function BookingForm({
         {step === 4 && (
           <section className="pb-32 md:pb-0">
             <StepTitle
-              title="Último paso: tus datos"
-              description="Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."
+              title="Tus datos básicos"
+              description="Usaremos tu WhatsApp solo para confirmar tu cita. Sin cuenta, sin contraseña."
             />
 
             <div className="mt-5 grid gap-4">
@@ -807,25 +839,6 @@ export function BookingForm({
               </div>
             </div>
 
-            <div className="mt-5">
-              <ReservationSummary
-                service={service}
-                barber={barber}
-                date={date}
-                time={time}
-                compact
-              />
-            </div>
-
-            {/* Política de cancelación */}
-            <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
-              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
-              <p className="text-xs text-amber-800">
-                <span className="font-semibold">Cancelación:</span>{" "}
-                Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
-              </p>
-            </div>
-
             {/* Consentimiento marketing */}
             <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
               <input
@@ -843,7 +856,7 @@ export function BookingForm({
                 <Link href="/legal/condiciones-reservas" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
                   Condiciones de Reservas
                 </Link>
-                . <span className="text-neutral-400">TODO: conectar validación obligatoria cuando se formalice el flujo legal.</span>
+                .
               </span>
             </label>
 
@@ -869,25 +882,86 @@ export function BookingForm({
               </p>
             )}
 
-            {/* Botón confirmar — desktop */}
+            {/* Botón continuar — desktop */}
             <div className="mt-5 hidden md:block">
-              <ConfirmButton
-                saving={saving}
-                disabled={!name.trim() || !phone.trim() || saving}
-                onClick={handleConfirmBooking}
-              />
+              <button
+                type="button"
+                disabled={!name.trim() || !phone.trim()}
+                onClick={() => {
+                  if (!name.trim() || !phone.trim()) {
+                    setFormError("Añade tu nombre y WhatsApp para continuar.");
+                    return;
+                  }
+
+                  setFormError(null);
+                  setStep(5);
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-[#0F172A] active:scale-[0.98] disabled:opacity-40"
+              >
+                Continuar
+              </button>
             </div>
 
             {/* Mensaje de confianza — desktop */}
             <p className="mt-3 hidden text-center text-xs text-neutral-400 md:block">
+              Revisa tu cita antes de confirmar.
+            </p>
+          </section>
+        )}
+
+        {/* ── Step 5: Resumen y confirmación ── */}
+        {step === 5 && (
+          <section>
+            <StepTitle
+              title="Revisa tu cita antes de confirmar"
+              description="Comprueba servicio, barbero, fecha y hora. La reserva se registrará al confirmar."
+            />
+
+            <div className="mt-5">
+              <ReservationSummary
+                service={service}
+                barber={barber}
+                date={date}
+                time={time}
+              />
+              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-neutral-600">
+                <Phone size={14} className="shrink-0 text-neutral-400" />
+                <span>{name} · {phone}</span>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
+              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
+              <p className="text-xs text-amber-800">
+                <span className="font-semibold">Cancelación:</span>{" "}
+                Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
+              </p>
+            </div>
+
+            {formError && (
+              <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+                {formError}
+              </p>
+            )}
+
+            <div className="mt-5">
+              <ConfirmButton
+                saving={saving}
+                disabled={saving}
+                onClick={handleConfirmBooking}
+                label="Reservar ahora"
+              />
+            </div>
+
+            <p className="mt-3 text-center text-xs text-neutral-400">
               <ShieldCheck size={12} className="mr-1 inline-block" />
               Reserva segura · Sin comisiones · Directo con {barbershopName}
             </p>
           </section>
         )}
 
-        {/* ── Step 5: Confirmación ── */}
-        {step === 5 && (
+        {/* ── Reserva recibida ── */}
+        {step === 6 && (
           <section>
             <div className="text-center">
               <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
@@ -960,17 +1034,42 @@ export function BookingForm({
         </div>
       </div>
 
-      {/* ── Botón fijo inferior — solo móvil, solo Step 4 ── */}
+      {/* ── Botón fijo inferior — solo móvil ── */}
       {step === 4 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#E5E7EB] bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.10)] md:hidden">
+          <button
+            type="button"
+            disabled={!name.trim() || !phone.trim()}
+            onClick={() => {
+              if (!name.trim() || !phone.trim()) {
+                setFormError("Añade tu nombre y WhatsApp para continuar.");
+                return;
+              }
+
+              setFormError(null);
+              setStep(5);
+            }}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all active:scale-[0.98] disabled:opacity-40"
+          >
+            Continuar
+          </button>
+          <p className="mt-2 text-center text-xs text-neutral-400">
+            Revisa tu cita antes de confirmar.
+          </p>
+        </div>
+      )}
+
+      {step === 5 && (
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#E5E7EB] bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.10)] md:hidden">
           <ConfirmButton
             saving={saving}
-            disabled={!name.trim() || !phone.trim() || saving}
+            disabled={saving}
             onClick={handleConfirmBooking}
+            label="Reservar ahora"
           />
           <p className="mt-2 text-center text-xs text-neutral-400">
             <ShieldCheck size={11} className="mr-1 inline-block" />
-            Reserva segura · Sin comisiones · Directo con {barbershopName}
+            Directo con {barbershopName}
           </p>
         </div>
       )}

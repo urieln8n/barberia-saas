@@ -42,49 +42,59 @@ type NavItem = {
   exact?: boolean;
 };
 
-type TabId = "operar" | "crecer" | "ajustes";
+type NavGroup = {
+  id: string;
+  label: string;
+  items: NavItem[];
+};
 
 // ─── Navigation config ────────────────────────────────────────────────────────
 
-const tabItems: Record<TabId, NavItem[]> = {
-  operar: [
-    { href: "/dashboard",            label: "Dashboard",        icon: Home,        exact: true },
-    { href: "/dashboard/agenda",     label: "Reservas",         icon: CalendarDays             },
-    { href: "/dashboard/clientes",   label: "Clientes",         icon: Users                    },
-    { href: "/dashboard/barberos",   label: "Barberos",         icon: User                     },
-    { href: "/dashboard/servicios",  label: "Servicios",        icon: Scissors                 },
-    { href: "/dashboard/inventario", label: "Inventario",       icon: Boxes                    },
-    { href: "/dashboard/caja",       label: "Caja",             icon: Banknote                 },
-    { href: "/dashboard/finanzas",   label: "Ventas",           icon: Wallet                   },
-    { href: "/dashboard/pagos",      label: "Pagos",            icon: CreditCard               },
-    { href: "/dashboard/huecos",     label: "Estadísticas",     icon: TrendingUp               },
-    { href: "/dashboard/fiscalidad", label: "Fiscalidad",       icon: Receipt                  },
-  ],
-  crecer: [
-    { href: "/dashboard/qr",               label: "QR Reservas",      icon: QrCode                      },
-    { href: "/dashboard/marketplace",      label: "Marketplace",      icon: ShoppingBag                 },
-    { href: "/dashboard/marketing",        label: "Marketing Studio", icon: Megaphone                   },
-    { href: "/dashboard/security-audit",   label: "Auditoría Web",   icon: ShieldCheck, badge: "Beta"  },
-    { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star                        },
-    { href: "/dashboard/recuperacion",     label: "Clientes perdidos",icon: RotateCcw                  },
-    { href: "/dashboard/automatizaciones", label: "Recordatorios",    icon: Workflow,   badge: "Pro"    },
-  ],
-  ajustes: [
-    { href: "/dashboard/ajustes",  label: "Configuración",   icon: Settings                    },
-    { href: "/dashboard/whatsapp", label: "Soporte",         icon: HelpCircle, badge: "Guía"  },
-  ],
-};
-
-const allItems: NavItem[] = [
-  ...tabItems.operar,
-  ...tabItems.crecer,
-  ...tabItems.ajustes,
-];
-
-const tabConfig: { id: TabId; label: string }[] = [
-  { id: "operar",  label: "Operar"  },
-  { id: "crecer",  label: "Crecer"  },
-  { id: "ajustes", label: "Ajustes" },
+const navGroups: NavGroup[] = [
+  {
+    id: "dia-a-dia",
+    label: "Día a día",
+    items: [
+      { href: "/dashboard", label: "Hoy", icon: Home, exact: true },
+      { href: "/dashboard/agenda", label: "Reservas", icon: CalendarDays },
+      { href: "/dashboard/caja", label: "Caja", icon: Banknote },
+      { href: "/dashboard/clientes", label: "Clientes", icon: Users },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Crecimiento",
+    items: [
+      { href: "/dashboard/qr", label: "QR de reservas", icon: QrCode },
+      { href: "/dashboard/huecos", label: "Huecos libres", icon: TrendingUp },
+      { href: "/dashboard/resenas", label: "Reseñas", icon: Star },
+      { href: "/dashboard/recuperacion", label: "Recuperar clientes", icon: RotateCcw },
+      { href: "/dashboard/marketing", label: "Marketing", icon: Megaphone },
+      { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow, badge: "Pro" },
+    ],
+  },
+  {
+    id: "gestion",
+    label: "Gestión",
+    items: [
+      { href: "/dashboard/barberos", label: "Barberos", icon: User },
+      { href: "/dashboard/servicios", label: "Servicios", icon: Scissors },
+      { href: "/dashboard/inventario", label: "Inventario", icon: Boxes },
+      { href: "/dashboard/finanzas", label: "Ventas", icon: Wallet },
+      { href: "/dashboard/pagos", label: "Pagos", icon: CreditCard },
+      { href: "/dashboard/fiscalidad", label: "Fiscalidad", icon: Receipt },
+    ],
+  },
+  {
+    id: "sistema",
+    label: "Sistema",
+    items: [
+      { href: "/dashboard/ajustes", label: "Configuración", icon: Settings },
+      { href: "/dashboard/marketplace", label: "Marketplace", icon: ShoppingBag },
+      { href: "/dashboard/security-audit", label: "Auditoría web", icon: ShieldCheck, badge: "Beta" },
+      { href: "/dashboard/whatsapp", label: "Soporte", icon: HelpCircle, badge: "Guía" },
+    ],
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -92,16 +102,6 @@ const tabConfig: { id: TabId; label: string }[] = [
 function isActive(pathname: string, item: NavItem): boolean {
   if (item.exact) return pathname === item.href;
   return pathname === item.href || pathname.startsWith(item.href + "/");
-}
-
-function getActiveTab(pathname: string): TabId {
-  for (const item of tabItems.crecer) {
-    if (isActive(pathname, item)) return "crecer";
-  }
-  for (const item of tabItems.ajustes) {
-    if (isActive(pathname, item)) return "ajustes";
-  }
-  return "operar";
 }
 
 // ─── NavLink (expanded) ───────────────────────────────────────────────────────
@@ -166,35 +166,6 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   );
 }
 
-// ─── Tab bar (expanded) ───────────────────────────────────────────────────────
-
-function TabBar({
-  activeTab,
-  onChange,
-}: {
-  activeTab: TabId;
-  onChange: (tab: TabId) => void;
-}) {
-  return (
-    <div className="mb-4 flex overflow-hidden rounded-2xl border border-[#E7E2D8]">
-      {tabConfig.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          onClick={() => onChange(tab.id)}
-          className={`flex-1 py-[9px] text-[11px] font-black uppercase tracking-wide transition-all duration-150 ${
-            activeTab === tab.id
-              ? "bg-[#080A0F] text-[#C9922A]"
-              : "bg-[#F8F5EF] text-neutral-400 hover:bg-[#EDE8E0] hover:text-neutral-700"
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export default function Sidebar() {
@@ -202,11 +173,9 @@ export default function Sidebar() {
   const router              = useRouter();
   const { collapsed, toggle } = useSidebarCollapse();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeTab, setActiveTab]   = useState<TabId>(() => getActiveTab(pathname));
 
-  // Auto-sync tab with current route
   useEffect(() => {
-    setActiveTab(getActiveTab(pathname));
+    setDrawerOpen(false);
   }, [pathname]);
 
   async function handleLogout() {
@@ -266,7 +235,7 @@ export default function Sidebar() {
               </div>
               <div>
                 <p className="text-[15px] font-black leading-none text-neutral-950">BarberíaOS</p>
-                <p className="mt-0.5 text-[10px] font-medium text-neutral-400">Sistema operativo de barbería.</p>
+                <p className="mt-0.5 text-[10px] font-medium text-neutral-400">Operación diaria de barbería.</p>
               </div>
             </Link>
             <button
@@ -278,15 +247,23 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* Mobile nav — all items flat, no tabs */}
-          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
-            {allItems.map((item) => (
-              <NavLink
-                key={item.href}
-                item={item}
-                pathname={pathname}
-                onClick={() => setDrawerOpen(false)}
-              />
+          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto pb-2">
+            {navGroups.map((group) => (
+              <div key={group.id}>
+                <p className="px-3 pb-2 text-[10px] font-black uppercase tracking-[0.16em] text-neutral-400">
+                  {group.label}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map((item) => (
+                    <NavLink
+                      key={item.href}
+                      item={item}
+                      pathname={pathname}
+                      onClick={() => setDrawerOpen(false)}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
 
@@ -350,31 +327,34 @@ export default function Sidebar() {
               <div className="min-w-0">
                 <span className="block text-[15px] font-black leading-none text-neutral-950">BarberíaOS</span>
                 <span className="mt-1 block truncate text-[10px] font-medium leading-tight text-neutral-400">
-                  Sistema operativo de barbería.
+                  Operación diaria de barbería.
                 </span>
               </div>
             </Link>
           </div>
         )}
 
-        {/* Tab bar (expanded only) */}
-        {!collapsed && (
-          <TabBar activeTab={activeTab} onChange={setActiveTab} />
-        )}
-
-        {/* Nav */}
         {collapsed ? (
           // Collapsed: icon-only, all items
           <nav className="flex flex-1 flex-col items-center gap-0.5 overflow-y-auto py-1">
-            {allItems.map((item) => (
+            {navGroups.flatMap((group) => group.items).map((item) => (
               <IconNavLink key={item.href} item={item} pathname={pathname} />
             ))}
           </nav>
         ) : (
-          // Expanded: items for active tab only
-          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
-            {tabItems[activeTab].map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} />
+          // Expanded: grouped navigation
+          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto pb-2">
+            {navGroups.map((group) => (
+              <div key={group.id}>
+                <p className="px-3 pb-2 text-[10px] font-black uppercase tracking-[0.16em] text-neutral-400">
+                  {group.label}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map((item) => (
+                    <NavLink key={item.href} item={item} pathname={pathname} />
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
         )}

@@ -48,7 +48,7 @@ function LocationButton({
       <button
         type="button"
         disabled
-        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-400"
+        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-500"
       >
         <Loader2 size={12} className="animate-spin" />
         Detectando…
@@ -61,7 +61,7 @@ function LocationButton({
       <button
         type="button"
         onClick={onClear}
-        className="flex items-center gap-1.5 rounded-full border border-[#C9922A]/40 bg-[#C9922A]/10 px-3 py-1.5 text-xs font-semibold text-[#8A641F] transition hover:bg-[#C9922A]/20"
+        className="flex items-center gap-1.5 rounded-full border border-[#C9922A]/40 bg-[#C9922A]/10 px-3 py-2 text-xs font-semibold text-[#8A641F] transition hover:bg-[#C9922A]/20"
       >
         <LocateFixed size={12} className="text-[#C9922A]" />
         Mi ubicación activa
@@ -74,7 +74,7 @@ function LocationButton({
     <button
       type="button"
       onClick={onDetect}
-      className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-[#C9922A]/40 hover:text-[#8A641F]"
+      className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-[#C9922A]/40 hover:text-[#8A641F]"
     >
       <LocateFixed size={12} />
       Usar mi ubicación
@@ -166,14 +166,18 @@ function FilterBar({
         )}
 
         {showCounter && (
-          <span className="ml-auto shrink-0 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/8 px-2.5 py-1 text-[11px] font-bold text-[#8A641F]">
+          <span
+            aria-live="polite"
+            aria-atomic="true"
+            className="ml-auto shrink-0 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/8 px-2.5 py-1 text-[11px] font-bold text-[#8A641F]"
+          >
             {filteredCount} resultado{filteredCount !== 1 ? "s" : ""}
           </span>
         )}
       </div>
 
       {!hasLocation && (
-        <p className="flex items-center gap-1 text-[11px] text-slate-400">
+        <p className="flex items-center gap-1 text-[11px] text-slate-500">
           <LocateFixed size={10} className="shrink-0" />
           Activa tu ubicación para filtrar por radio y ordenar por distancia.
         </p>
@@ -201,7 +205,7 @@ function FilterPill({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+      className={`shrink-0 rounded-full border px-3 py-2 text-xs font-semibold transition-all ${
         active
           ? "border-[#C9922A]/60 bg-[#C9922A]/10 text-[#8A641F] shadow-sm"
           : disabled
@@ -235,6 +239,46 @@ function NoResults({ onClearFilters }: { onClearFilters: () => void }) {
       >
         Ver todas las barberías
       </button>
+    </div>
+  );
+}
+
+// ── Map wrapper (module-level — stable reference prevents MapLibre remount) ──
+
+type MapWrapperProps = {
+  visibleOnMap: number;
+  shops: BarberiaProfile[];
+  selectedShopId: string | null;
+  onSelectShop: (id: string | null) => void;
+  userLocation: UserLocation | null;
+  className: string;
+};
+
+function MapWrapper({
+  visibleOnMap,
+  shops,
+  selectedShopId,
+  onSelectShop,
+  userLocation,
+  className,
+}: MapWrapperProps) {
+  return (
+    <div className="relative">
+      {visibleOnMap > 0 && (
+        <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-[#080A0F]/75 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm">
+          <MapPin size={11} className="text-[#D5A84C]" />
+          {visibleOnMap === 1
+            ? "1 barbería en el mapa"
+            : `${visibleOnMap} barberías en el mapa`}
+        </div>
+      )}
+      <MarketplaceMap
+        shops={shops}
+        selectedShopId={selectedShopId}
+        onSelectShop={onSelectShop}
+        userLocation={userLocation}
+        className={className}
+      />
     </div>
   );
 }
@@ -451,29 +495,6 @@ export function BarberiasClient({
     </div>
   );
 
-  // ── Map wrapper ───────────────────────────────────────────────────────────
-  function MapWrapper({ className }: { className: string }) {
-    return (
-      <div className="relative">
-        {visibleOnMap > 0 && (
-          <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-[#080A0F]/75 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm">
-            <MapPin size={11} className="text-[#D5A84C]" />
-            {visibleOnMap === 1
-              ? "1 barbería en el mapa"
-              : `${visibleOnMap} barberías en el mapa`}
-          </div>
-        )}
-        <MarketplaceMap
-          shops={displayedShops}
-          selectedShopId={selectedShopId}
-          onSelectShop={setSelectedShopId}
-          userLocation={userLocation}
-          className={className}
-        />
-      </div>
-    );
-  }
-
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-5">
@@ -503,7 +524,14 @@ export function BarberiasClient({
         {viewMode === "list" ? (
           listContent
         ) : (
-          <MapWrapper className="h-[60vh] min-h-[360px] rounded-3xl" />
+          <MapWrapper
+            visibleOnMap={visibleOnMap}
+            shops={displayedShops}
+            selectedShopId={selectedShopId}
+            onSelectShop={setSelectedShopId}
+            userLocation={userLocation}
+            className="h-[60vh] min-h-[360px] rounded-3xl"
+          />
         )}
       </div>
 
@@ -519,13 +547,20 @@ export function BarberiasClient({
               <span className="text-sm font-bold text-[#080A0F]">Mapa de barberías</span>
             </div>
             {visibleOnMap > 0 && (
-              <span className="text-xs font-semibold text-slate-400">
+              <span className="text-xs font-semibold text-slate-500">
                 {visibleOnMap} {visibleOnMap === 1 ? "ubicación" : "ubicaciones"}
               </span>
             )}
           </div>
           <div className="overflow-hidden rounded-3xl border border-[#D5A84C]/20 shadow-[0_4px_6px_rgba(0,0,0,0.04),0_20px_60px_rgba(0,0,0,0.10)]">
-            <MapWrapper className="h-[max(600px,calc(100vh-8rem))] rounded-3xl" />
+            <MapWrapper
+              visibleOnMap={visibleOnMap}
+              shops={displayedShops}
+              selectedShopId={selectedShopId}
+              onSelectShop={setSelectedShopId}
+              userLocation={userLocation}
+              className="h-[max(600px,calc(100vh-8rem))] rounded-3xl"
+            />
           </div>
         </div>
       </div>
