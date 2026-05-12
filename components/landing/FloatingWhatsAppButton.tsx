@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 
 const WHATSAPP_URL =
@@ -19,7 +19,15 @@ const HIDDEN_PATH_PREFIXES = [
 ];
 
 export function FloatingWhatsAppButton() {
-  const pathname = usePathname();
+  const [pathname, setPathname] = useState("");
+
+  useEffect(() => {
+    setPathname(window.location.pathname);
+  }, []);
+
+  if (!pathname) {
+    return null;
+  }
 
   if (HIDDEN_PATH_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(prefix))) {
     return null;

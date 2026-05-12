@@ -39,7 +39,7 @@ function LocationButton({
       <button
         type="button"
         disabled
-        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-400"
+        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-500"
       >
         <Loader2 size={12} className="animate-spin" />
         Detectando…
@@ -101,10 +101,13 @@ function FilterBar({
   filteredCount: number;
 }) {
   const showCounter = filteredCount !== totalCount;
+  const counterLabel = `${filteredCount} barbería${filteredCount !== 1 ? "s" : ""} encontrada${
+    filteredCount !== 1 ? "s" : ""
+  }`;
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:pb-0">
         {/* Sort pills */}
         <FilterPill
           active={sortMode === "default"}
@@ -138,14 +141,17 @@ function FilterBar({
         )}
 
         {showCounter && (
-          <span className="ml-auto rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500">
-            {filteredCount} resultado{filteredCount !== 1 ? "s" : ""}
+          <span
+            aria-live="polite"
+            className="ml-auto shrink-0 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500"
+          >
+            {counterLabel}
           </span>
         )}
       </div>
 
       {!hasLocation && (
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500">
           <LocateFixed size={10} className="mr-1 inline" />
           Activa tu ubicación para filtrar por radio y ordenar por distancia.
         </p>
@@ -173,7 +179,7 @@ function FilterPill({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
         active
           ? "border-[#C9922A] bg-[#C9922A]/10 text-[#8A641F]"
           : disabled
@@ -303,7 +309,7 @@ export function BarberiasClient({
       ) : (
         <>
           {featured.length > 0 && (
-            <section>
+            <section aria-label="Barberías destacadas">
               <div className="mb-5 flex items-center gap-3">
                 <p className="section-heading">{featuredLabel}</p>
                 <span className="badge-gold">★ Top</span>
