@@ -25,6 +25,9 @@ function formatPercent(value: number | null): string {
 }
 
 function getStockBadge(product: InventoryProduct) {
+  if (!product.is_active) {
+    return <span className="badge-neutral">Inactivo</span>;
+  }
   if (product.current_stock === 0) {
     return <span className="badge-danger">Sin stock</span>;
   }

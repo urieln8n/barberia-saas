@@ -75,7 +75,7 @@ const tabItems: Record<TabId, NavItem[]> = {
     { href: "/dashboard/servicios",          label: "Servicios",          icon: Scissors                 },
     { href: "/dashboard/finanzas",   label: "Ventas",           icon: Wallet                   },
     { href: "/dashboard/pagos",      label: "Pagos",            icon: CreditCard               },
-    { href: "/dashboard/huecos",     label: "Estadísticas",     icon: TrendingUp               },
+    { href: "/dashboard/estadisticas", label: "Estadísticas",   icon: TrendingUp               },
     { href: "/dashboard/fiscalidad", label: "Fiscalidad",       icon: Receipt                  },
   ],
   crecer: [
@@ -141,7 +141,7 @@ const groupedMobileNav: MobileNavGroup[] = [
       { href: "/dashboard/ajustes", label: "Configuración", icon: Settings },
       { href: "/dashboard/finanzas", label: "Ventas", icon: Wallet },
       { href: "/dashboard/pagos", label: "Pagos", icon: CreditCard },
-      { href: "/dashboard/huecos", label: "Estadísticas", icon: TrendingUp },
+      { href: "/dashboard/estadisticas", label: "Estadísticas", icon: TrendingUp },
       { href: "/dashboard/fiscalidad", label: "Fiscalidad", icon: Receipt },
       { href: "/dashboard/whatsapp", label: "Soporte", icon: HelpCircle, badge: "Guía" },
     ],

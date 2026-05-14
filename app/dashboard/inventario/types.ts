@@ -34,6 +34,7 @@ export type InventoryMovement = {
   previous_stock: number | null;
   new_stock: number | null;
   reason: string | null;
+  source?: string | null;
   created_at: string;
   created_by: string | null;
 };

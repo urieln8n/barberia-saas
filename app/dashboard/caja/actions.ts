@@ -206,14 +206,50 @@ export async function sellInventoryProductFromCash(formData: FormData) {
 
   if (!cashSessionId) return { error: "Abre la caja antes de vender productos." };
   if (!productId) return { error: "Selecciona un producto." };
-  if (!Number.isFinite(quantity) || quantity <= 0) {
-    return { error: "La cantidad debe ser mayor que cero." };
+  if (!Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
+    return { error: "La cantidad debe ser un número entero mayor o igual a 1." };
   }
   if (!Number.isFinite(unitSalePrice) || unitSalePrice <= 0) {
-    return { error: "El precio unitario debe ser mayor que cero." };
+    return { error: "Configura un precio de venta válido antes de vender." };
   }
   if (!PAYMENT_METHODS.includes(paymentMethod as (typeof PAYMENT_METHODS)[number])) {
     return { error: "Método de pago no válido." };
+  }
+
+  const { data: session, error: sessionError } = await supabase
+    .from("cash_sessions")
+    .select("id")
+    .eq("id", cashSessionId)
+    .eq("barbershop_id", barbershopId)
+    .eq("status", "open")
+    .maybeSingle();
+
+  if (sessionError) return { error: sessionError.message };
+  if (!session) return { error: "La caja ya no está abierta." };
+
+  const { data: product, error: productError } = await supabase
+    .from("inventory_products")
+    .select("id, product_type, current_stock, sale_price, is_active")
+    .eq("id", productId)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  if (productError) return { error: productError.message };
+  if (!product) return { error: "No se encontró el producto seleccionado." };
+  if (!product.is_active) return { error: "No se pueden vender productos inactivos." };
+  if (product.product_type !== "retail") {
+    return { error: "No se pueden vender productos de uso interno desde caja." };
+  }
+
+  const stock = Number(product.current_stock ?? 0);
+  const productSalePrice = Number(product.sale_price ?? Number.NaN);
+
+  if (!Number.isFinite(productSalePrice) || productSalePrice <= 0) {
+    return { error: "Configura un precio de venta válido en Inventario antes de vender." };
+  }
+
+  if (stock < quantity) {
+    return { error: "No hay stock suficiente para vender este producto." };
   }
 
   const { error } = await supabase.rpc("sell_inventory_product", {
@@ -221,11 +257,11 @@ export async function sellInventoryProductFromCash(formData: FormData) {
     p_product_id: productId,
     p_cash_session_id: cashSessionId,
     p_quantity: quantity,
-    p_unit_sale_price: unitSalePrice,
+    p_unit_sale_price: productSalePrice,
     p_payment_method: paymentMethod,
     p_client_id: clientId,
     p_barber_id: barberId,
-    p_note: "Venta de producto desde caja",
+    p_note: "Venta desde caja",
   });
 
   if (error) {

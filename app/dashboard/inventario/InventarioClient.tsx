@@ -139,9 +139,8 @@ export function InventarioClient({
         }
       />
 
-      <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-4 py-3 text-sm leading-6 text-[#8A641F]">
-        En esta versión los movimientos son manuales. La conexión automática con
-        caja se añadirá en una fase posterior.
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-800">
+        Inventario conectado con Caja: las ventas de productos descuentan stock y crean un movimiento reciente.
       </div>
 
       {(errorMessage || actionError) && (
@@ -259,8 +258,7 @@ export function InventarioClient({
       >
         {recentMovements.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-            Aún no hay movimientos. Registra una entrada, salida o ajuste desde
-            la tabla de productos.
+            No hay movimientos recientes.
           </p>
         ) : (
           <div className="space-y-2">
@@ -278,7 +276,11 @@ export function InventarioClient({
                     </p>
                     <p className="mt-0.5 text-xs text-slate-500">
                       {movementLabels[movement.movement_type]} · {movement.quantity} uds
-                      {movement.reason ? ` · ${movement.reason}` : ""}
+                      {movement.source === "cash_sale"
+                        ? " · Venta desde caja"
+                        : movement.reason
+                          ? ` · ${movement.reason}`
+                          : ""}
                     </p>
                   </div>
                   <div className="text-left sm:text-right">

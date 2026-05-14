@@ -20,6 +20,11 @@ export type BarberAvailabilityItem = {
   appointmentsToday: number;
   freeSlots: string[];
   nextAvailableSlot: string | null;
+  totalSlots: number;
+  occupiedSlots: number;
+  occupancyPercent: number;
+  workingWindowLabel: string;
+  usesFallbackSchedule: boolean;
   status: "full" | "almost_full" | "available" | "needs_bookings";
   suggestedMessage: string;
 };
@@ -85,6 +90,8 @@ export function buildTodayBarberAvailability({
   endHour?: number;
   intervalMinutes?: number;
 }): BarberAvailabilityItem[] {
+  // Fallback operativo hasta que exista una tabla formal de horarios por barbero.
+  // La agenda publica ya usa start/end por cita; aqui solo se define la ventana de analitica.
   const slots = generateTimeSlots(startHour, endHour, intervalMinutes)
     .map((slot) => slot.time)
     .filter((time) => !isPastSlot(time, todayIso));
@@ -111,6 +118,9 @@ export function buildTodayBarberAvailability({
       });
 
       const status = getStatus(activeAppointments.length, freeSlots.length, slots.length);
+      const occupiedSlots = Math.max(slots.length - freeSlots.length, 0);
+      const occupancyPercent =
+        slots.length > 0 ? Math.round((occupiedSlots / slots.length) * 100) : 0;
 
       return {
         barberId: barber.id,
@@ -118,6 +128,11 @@ export function buildTodayBarberAvailability({
         appointmentsToday: activeAppointments.length,
         freeSlots,
         nextAvailableSlot: freeSlots[0] ?? null,
+        totalSlots: slots.length,
+        occupiedSlots,
+        occupancyPercent,
+        workingWindowLabel: `${String(startHour).padStart(2, "0")}:00-${String(endHour).padStart(2, "0")}:00`,
+        usesFallbackSchedule: true,
         status,
         suggestedMessage: buildSuggestedMessage(barber.name, freeSlots),
       };

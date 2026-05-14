@@ -24,6 +24,7 @@ type MovementRow = Omit<
   quantity: number | string | null;
   previous_stock: number | string | null;
   new_stock: number | string | null;
+  source?: string | null;
 };
 
 function normalizeProduct(product: ProductRow): InventoryProduct {
@@ -73,7 +74,7 @@ export default async function InventarioPage() {
     supabase
       .from("inventory_movements")
       .select(
-        "id, barbershop_id, product_id, movement_type, quantity, previous_stock, new_stock, reason, created_at, created_by",
+        "id, barbershop_id, product_id, movement_type, quantity, previous_stock, new_stock, reason, source, created_at, created_by",
       )
       .eq("barbershop_id", barbershopId)
       .order("created_at", { ascending: false })

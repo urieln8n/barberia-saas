@@ -124,11 +124,7 @@ export function CajaClient({
   const [tip, setTip] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(products[0]?.id ?? "");
   const [quantity, setQuantity] = useState("1");
-  const [unitSalePrice, setUnitSalePrice] = useState(
-    products[0]?.sale_price !== null && products[0]?.sale_price !== undefined
-      ? String(products[0].sale_price)
-      : "",
-  );
+  const [saleSuccess, setSaleSuccess] = useState("");
   const [isOpeningPending, startOpeningTransition] = useTransition();
   const [isMovementPending, startMovementTransition] = useTransition();
   const [isSalePending, startSaleTransition] = useTransition();
@@ -137,7 +133,7 @@ export function CajaClient({
   const selectedService = services.find((service) => service.id === selectedServiceId);
   const selectedProduct = products.find((product) => product.id === selectedProductId) ?? null;
   const quantityNumber = Number(quantity);
-  const unitSalePriceNumber = Number(unitSalePrice);
+  const unitSalePriceNumber = Number(selectedProduct?.sale_price ?? Number.NaN);
   const hasValidQuantity = Number.isFinite(quantityNumber) && quantityNumber > 0;
   const hasValidUnitPrice = Number.isFinite(unitSalePriceNumber) && unitSalePriceNumber > 0;
   const quantityExceedsStock = selectedProduct
@@ -213,6 +209,7 @@ export function CajaClient({
 
   function handleSale(formData: FormData) {
     setSaleError("");
+    setSaleSuccess("");
     startSaleTransition(async () => {
       const result = await sellInventoryProductFromCash(formData);
       if (result?.error) {
@@ -220,14 +217,8 @@ export function CajaClient({
         return;
       }
 
-      if (selectedProduct) {
-        setUnitSalePrice(
-          selectedProduct.sale_price !== null && selectedProduct.sale_price !== undefined
-            ? String(selectedProduct.sale_price)
-            : "",
-        );
-      }
       setQuantity("1");
+      setSaleSuccess("Venta registrada. Caja e inventario actualizados.");
       router.refresh();
     });
   }
@@ -281,6 +272,11 @@ export function CajaClient({
         ) : (
           <form action={handleSale} className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
             <input type="hidden" name="cash_session_id" value={session.id} />
+            <input
+              type="hidden"
+              name="unit_sale_price"
+              value={hasValidUnitPrice ? String(unitSalePriceNumber) : ""}
+            />
 
             <div className="grid gap-4">
               <div>
@@ -289,13 +285,9 @@ export function CajaClient({
                   name="product_id"
                   value={selectedProductId}
                   onChange={(event) => {
-                    const product = products.find((item) => item.id === event.target.value) ?? null;
                     setSelectedProductId(event.target.value);
-                    setUnitSalePrice(
-                      product?.sale_price !== null && product?.sale_price !== undefined
-                        ? String(product.sale_price)
-                        : "",
-                    );
+                    setSaleError("");
+                    setSaleSuccess("");
                   }}
                   className="input py-3"
                 >
@@ -340,24 +332,14 @@ export function CajaClient({
 
                 <div>
                   <label className="form-label">Precio unitario *</label>
-                  <input
-                    name="unit_sale_price"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    required
-                    value={unitSalePrice}
-                    onChange={(event) => setUnitSalePrice(event.target.value)}
-                    className="input py-3"
-                    placeholder="0.00"
-                  />
-                  {selectedProduct?.sale_price !== null && selectedProduct?.sale_price !== undefined ? (
-                    <p className="form-help">
-                      Precio sugerido: {formatCurrency(Number(selectedProduct.sale_price))}
-                    </p>
-                  ) : (
-                    <p className="form-help">Introduce el precio de venta manualmente.</p>
-                  )}
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-lg font-black text-[#080A0F]">
+                    {hasValidUnitPrice ? formatCurrency(unitSalePriceNumber) : "Sin precio"}
+                  </div>
+                  <p className={`form-help ${!hasValidUnitPrice ? "text-red-600" : ""}`}>
+                    {!hasValidUnitPrice
+                      ? "Configura un precio de venta en Inventario antes de vender."
+                      : "Precio de venta cargado desde Inventario."}
+                  </p>
                 </div>
               </div>
 
@@ -411,18 +393,22 @@ export function CajaClient({
                   {selectedProduct && (
                     <span
                       className={`rounded-full border px-3 py-1 text-xs font-bold ${
-                        selectedProduct.current_stock <= selectedProduct.min_stock
+                        quantityExceedsStock
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : selectedProduct.current_stock <= selectedProduct.min_stock
                           ? "border-amber-200 bg-amber-50 text-amber-700"
                           : "border-emerald-200 bg-emerald-50 text-emerald-700"
                       }`}
                     >
-                      {selectedProduct.current_stock <= selectedProduct.min_stock
+                      {quantityExceedsStock
+                        ? "Stock insuficiente"
+                        : selectedProduct.current_stock <= selectedProduct.min_stock
                         ? "Stock bajo"
                         : "Stock correcto"}
                     </span>
                   )}
                 </div>
-                {selectedProduct && selectedProduct.purchase_price !== null && (
+                {selectedProduct && (
                   <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3">
                     <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
                       Margen estimado
@@ -432,7 +418,7 @@ export function CajaClient({
                         productMargin !== null && productMargin < 0 ? "text-red-600" : "text-[#080A0F]"
                       }`}
                     >
-                      {productMargin === null ? "—" : formatCurrency(productMargin)}
+                      {productMargin === null ? "No disponible" : formatCurrency(productMargin)}
                     </p>
                   </div>
                 )}
@@ -442,6 +428,11 @@ export function CajaClient({
               </div>
 
               {saleError && <SubmitError message={saleError} />}
+              {saleSuccess && (
+                <p className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                  {saleSuccess}
+                </p>
+              )}
 
               <PrimaryButton
                 type="submit"
