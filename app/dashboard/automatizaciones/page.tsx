@@ -1,125 +1,250 @@
-import Link from "next/link";
-import {
-  ArrowRight,
-  Bot,
-  CheckCircle2,
-  Clock3,
-  MessageCircle,
-  RefreshCw,
-  Star,
-  Workflow,
-} from "lucide-react";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { Bot, CheckCircle2, Clock3, Mail, MessageCircle, Power, Workflow, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
-import { StatCard } from "@/components/ui/StatCard";
+import { createClient } from "@/src/lib/supabase/server";
+import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 
-const modules = [
+export const dynamic = "force-dynamic";
+
+type AutomationRule = {
+  id: string;
+  type: string;
+  name: string;
+  description: string | null;
+  channel: "whatsapp" | "email" | "internal";
+  template: string | null;
+  is_active: boolean;
+  last_run_at: string | null;
+};
+
+const defaultRules: Omit<AutomationRule, "id" | "last_run_at">[] = [
   {
-    href: "/dashboard/whatsapp",
-    icon: MessageCircle,
-    title: "Asistente WhatsApp",
-    state: "Manual operativo",
-    text: "Plantillas, enlace wa.me y textos listos para copiar. Sin WhatsApp Cloud API todavia.",
+    type: "auto_confirm",
+    name: "Confirmar cita automaticamente",
+    description: "Prepara confirmacion de nuevas reservas cuando el flujo lo permita.",
+    channel: "internal",
+    template: "Cita recibida para {{cliente}} el {{fecha}} a las {{hora}}.",
+    is_active: false,
   },
   {
-    href: "/dashboard/resenas",
-    icon: Star,
-    title: "Asistente de Reseñas",
-    state: "Manual operativo",
-    text: "Mensaje de reseña, link de Google Reviews guardado localmente y respuesta sugerida.",
+    type: "reminder_24h",
+    name: "Recordatorio 24h antes",
+    description: "Mensaje listo para reducir olvidos antes de cada cita.",
+    channel: "whatsapp",
+    template: "Hola {{cliente}}, te recordamos tu cita manana a las {{hora}} en {{barberia}}.",
+    is_active: false,
   },
   {
-    href: "/dashboard/recuperacion",
-    icon: RefreshCw,
-    title: "Recuperacion de Clientes",
-    state: "Mock visual",
-    text: "Lista priorizada y campañas manuales preparadas para conectar citas reales despues.",
+    type: "review_after_visit",
+    name: "Pedir resena despues de la cita",
+    description: "Solicitud amable tras marcar una cita como completada.",
+    channel: "whatsapp",
+    template: "Gracias por venir, {{cliente}}. Nos ayudas dejando una resena? {{link_resena}}",
+    is_active: false,
+  },
+  {
+    type: "reactivate_lost_client",
+    name: "Reactivar cliente perdido",
+    description: "Detecta clientes sin volver y sugiere una promocion.",
+    channel: "whatsapp",
+    template: "Hola {{cliente}}, hace tiempo que no te vemos. Esta semana tienes {{promo}}.",
+    is_active: false,
+  },
+  {
+    type: "low_stock",
+    name: "Avisar stock bajo",
+    description: "Alerta interna cuando un producto cae por debajo del minimo.",
+    channel: "internal",
+    template: "{{producto}} esta por debajo del stock minimo. Reponer hoy.",
+    is_active: false,
+  },
+  {
+    type: "daily_summary",
+    name: "Enviar resumen diario",
+    description: "Resumen interno de citas, caja, productos y no-shows.",
+    channel: "email",
+    template: "Resumen de {{barberia}}: {{citas}} citas, {{caja}} de caja y {{huecos}} huecos.",
+    is_active: false,
+  },
+  {
+    type: "free_slots",
+    name: "Avisar huecos libres",
+    description: "Sugiere accion comercial si quedan huecos durante el dia.",
+    channel: "internal",
+    template: "Hoy quedan {{huecos}} huecos libres. Lanza una promo por WhatsApp.",
+    is_active: false,
+  },
+  {
+    type: "weekly_promo",
+    name: "Crear promocion semanal",
+    description: "Propuesta de promocion basada en servicios y demanda reciente.",
+    channel: "internal",
+    template: "Promo sugerida: {{servicio_top}} para clientes {{segmento}}.",
+    is_active: false,
   },
 ];
 
-const roadmap = [
-  "Guardar configuracion por barberia",
-  "Crear eventos internos de reserva completada y no-show",
-  "Conectar WhatsApp Cloud API con opt-in y logs",
-  "Conectar Google Business Profile para reseñas",
-  "Exponer webhooks para n8n cuando el flujo base este validado",
-];
+function channelIcon(channel: AutomationRule["channel"]) {
+  if (channel === "whatsapp") return MessageCircle;
+  if (channel === "email") return Mail;
+  return Bot;
+}
 
-export default function AutomatizacionesPage() {
+async function getContext() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) redirect("/login");
+
+  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+  if (!barbershopId) redirect("/onboarding");
+
+  return { supabase, barbershopId };
+}
+
+async function toggleAutomationRule(formData: FormData) {
+  "use server";
+
+  const { supabase, barbershopId } = await getContext();
+  const type = String(formData.get("type") ?? "").trim();
+  const isActive = String(formData.get("is_active") ?? "") === "true";
+  const template = String(formData.get("template") ?? "").trim();
+  const fallback = defaultRules.find((rule) => rule.type === type);
+
+  if (!fallback) return;
+
+  await supabase.from("automation_rules").upsert(
+    {
+      barbershop_id: barbershopId,
+      type,
+      name: fallback.name,
+      description: fallback.description,
+      channel: fallback.channel,
+      template: template || fallback.template,
+      is_active: isActive,
+    },
+    { onConflict: "barbershop_id,type" },
+  );
+
+  revalidatePath("/dashboard/automatizaciones");
+}
+
+export default async function AutomatizacionesPage() {
+  const { supabase, barbershopId } = await getContext();
+  const { data, error } = await supabase
+    .from("automation_rules")
+    .select("id, type, name, description, channel, template, is_active, last_run_at")
+    .eq("barbershop_id", barbershopId)
+    .order("created_at", { ascending: true });
+
+  const existingRules = ((data ?? []) as AutomationRule[]).reduce<Record<string, AutomationRule>>((acc, rule) => {
+    acc[rule.type] = rule;
+    return acc;
+  }, {});
+
+  const rules = defaultRules.map((fallback) => ({
+    id: existingRules[fallback.type]?.id ?? fallback.type,
+    type: fallback.type,
+    name: existingRules[fallback.type]?.name ?? fallback.name,
+    description: existingRules[fallback.type]?.description ?? fallback.description,
+    channel: existingRules[fallback.type]?.channel ?? fallback.channel,
+    template: existingRules[fallback.type]?.template ?? fallback.template,
+    is_active: existingRules[fallback.type]?.is_active ?? fallback.is_active,
+    last_run_at: existingRules[fallback.type]?.last_run_at ?? null,
+  }));
+
+  const activeCount = rules.filter((rule) => rule.is_active).length;
+
   return (
     <div className="space-y-6">
       <PageHeader
-        section="Centro de automatizaciones"
-        title="Automatizaciones manuales listas para vender"
-        description="Primera version operativa para activar crecimiento sin APIs externas: WhatsApp asistido, reseñas y recuperacion con plantillas, enlaces y metricas visuales."
-        action={
-          <Link
-            href="/dashboard/whatsapp"
-            className="btn-dark"
-          >
-            Empezar por WhatsApp <ArrowRight size={14} />
-          </Link>
-        }
+        section="Automatizaciones"
+        title="Reglas preparadas sin ejecutar jobs reales"
+        description="Activa, edita y previsualiza automatizaciones. La configuracion queda por barberia y no envia mensajes hasta conectar worker, cron o API externa."
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <StatCard label="Modulos preparados" value="3" description="WhatsApp, reseñas y recuperacion" icon={Workflow} />
-        <StatCard label="APIs externas" value="0" description="fase manual segura" icon={Bot} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
-        <StatCard label="Plantillas listas" value="15" description="copiar o abrir WhatsApp" icon={MessageCircle} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
-        <StatCard label="Tiempo a activar" value="1 dia" description="operativo comercial" icon={Clock3} iconBg="bg-amber-50" iconColor="text-amber-700" />
-      </div>
+      {error && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-800">
+          Aplica la migracion 018_automation_rules.sql para guardar cambios. Mientras tanto puedes revisar las plantillas base.
+        </div>
+      )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {modules.map(({ href, icon: Icon, title, state, text }) => (
-          <Link key={title} href={href} className="metric-card block">
-            <div className="mb-4 flex items-start justify-between gap-3">
-              <div className="metric-icon bg-[#2563EB]/10">
-                <Icon size={18} className="text-[#2563EB]" />
-              </div>
-              <span className={state.includes("Mock") ? "badge-warning" : "badge-success"}>{state}</span>
-            </div>
-            <h3 className="font-bold text-[#111827]">{title}</h3>
-            <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-[#2563EB]">
-              Abrir modulo <ArrowRight size={14} />
-            </span>
-          </Link>
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {([
+          ["Reglas", rules.length, Workflow],
+          ["Activas", activeCount, Power],
+          ["WhatsApp", rules.filter((rule) => rule.channel === "whatsapp").length, MessageCircle],
+          ["Sin worker real", 0, Clock3],
+        ] satisfies [string, number, LucideIcon][]).map(([label, value, Icon]) => (
+          <div key={String(label)} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+            <Icon size={18} className="text-[#C9922A]" />
+            <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-400">{label}</p>
+            <p className="mt-1 text-3xl font-black text-[#080A0F]">{value}</p>
+          </div>
         ))}
-      </div>
+      </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="section-band overflow-hidden">
-          <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/30 via-[#2563EB] to-[#111111]/70" />
-          <div className="p-5 md:p-6">
-            <p className="label-section">Regla de seguridad MVP</p>
-            <h2 className="section-heading">No se envia nada automaticamente</h2>
-            <p className="mt-2 text-sm leading-6 text-neutral-500">
-              El sistema prepara mensajes y decisiones operativas, pero el equipo decide cuando copiar, abrir WhatsApp o pedir una reseña. Esto evita tocar reservas, disponibilidad, auth o datos criticos mientras se valida el producto vendible.
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {["Sin WhatsApp Cloud API", "Sin Google Business API", "Sin n8n", "Sin cambios de SQL"].map((item) => (
-                <div key={item} className="rounded-[16px] border border-[#E7E2D8] bg-[#FDFBF7] p-3 text-sm font-bold text-neutral-700">
-                  <CheckCircle2 size={15} className="mb-2 text-emerald-700" />
-                  {item}
+      <section className="grid gap-4 lg:grid-cols-2">
+        {rules.map((rule) => {
+          const Icon = channelIcon(rule.channel);
+          const preview = (rule.template ?? "")
+            .replaceAll("{{cliente}}", "Carlos")
+            .replaceAll("{{fecha}}", "hoy")
+            .replaceAll("{{hora}}", "17:30")
+            .replaceAll("{{barberia}}", "Barberia Demo")
+            .replaceAll("{{promo}}", "Corte + barba con descuento")
+            .replaceAll("{{producto}}", "Pomada mate")
+            .replaceAll("{{citas}}", "8")
+            .replaceAll("{{caja}}", "320 EUR")
+            .replaceAll("{{huecos}}", "3")
+            .replaceAll("{{servicio_top}}", "Corte + barba")
+            .replaceAll("{{segmento}}", "frecuentes")
+            .replaceAll("{{link_resena}}", "tu enlace de Google");
+
+          return (
+            <article key={rule.type} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111111] text-[#D9B766]">
+                    <Icon size={18} />
+                  </div>
+                  <div>
+                    <h2 className="font-black text-[#111827]">{rule.name}</h2>
+                    <p className="mt-1 text-sm leading-6 text-neutral-500">{rule.description}</p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="panel">
-          <p className="label-section">Preparado para despues</p>
-          <h2 className="section-heading">Estructura futura</h2>
-          <div className="mt-4 space-y-3">
-            {roadmap.map((item, index) => (
-              <div key={item} className="flex gap-3 rounded-[16px] border border-[#E7E2D8] bg-white p-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#111111] text-xs font-black text-white">
-                  {index + 1}
+                <span className={rule.is_active ? "badge-success" : "badge-warning"}>
+                  {rule.is_active ? "Activa" : "Inactiva"}
                 </span>
-                <p className="text-sm font-semibold leading-6 text-neutral-600">{item}</p>
               </div>
-            ))}
-          </div>
-        </div>
+
+              <form action={toggleAutomationRule} className="mt-4 space-y-4">
+                <input type="hidden" name="type" value={rule.type} />
+                <input type="hidden" name="is_active" value={String(!rule.is_active)} />
+                <div>
+                  <label className="form-label">Plantilla editable</label>
+                  <textarea name="template" rows={3} defaultValue={rule.template ?? ""} className="input resize-none py-3" />
+                </div>
+                <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-400">Vista previa segura</p>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-neutral-700">{preview || "Sin plantilla configurada."}</p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs font-semibold text-neutral-400">
+                    Ultima ejecucion: {rule.last_run_at ? new Date(rule.last_run_at).toLocaleString("es-ES") : "Nunca"}
+                  </p>
+                  <button type="submit" className={rule.is_active ? "btn-outline" : "btn-dark"}>
+                    {rule.is_active ? "Desactivar" : "Activar"} <CheckCircle2 size={14} />
+                  </button>
+                </div>
+              </form>
+            </article>
+          );
+        })}
       </section>
     </div>
   );

@@ -48,6 +48,7 @@ type PublicProfile = {
   neighborhood: string | null;
   whatsapp: string | null;
   logo_url: string | null;
+  cover_image_url?: string | null;
 };
 
 type Service = {
@@ -179,6 +180,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
     { data: services, error: servicesError },
     { data: barbers, error: barbersError },
     { data: rawProfile },
+    { data: todayAppointments },
   ] = await Promise.all([
     supabase
       .from("services")
@@ -196,10 +198,16 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
     supabase
       .from("barbershop_public_profiles")
-      .select("description, neighborhood, whatsapp, logo_url")
+      .select("description, neighborhood, whatsapp, logo_url, cover_image_url")
       .eq("barbershop_id", barbershop.id)
       .eq("is_published", true)
       .maybeSingle(),
+    supabase
+      .from("appointments")
+      .select("id, status")
+      .eq("barbershop_id", barbershop.id)
+      .eq("appointment_date", new Date().toISOString().slice(0, 10))
+      .in("status", ["pending", "scheduled", "confirmed"]),
   ]);
 
   const publicProfile = rawProfile as PublicProfile | null;
@@ -233,6 +241,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       : null;
   const publicUrl = `${SITE_URL}/r/${barbershop.slug}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(publicUrl)}`;
+  const freeSlotsToday = Math.max(0, activeBarbers.length * 8 - (todayAppointments?.length ?? 0));
 
   const trackingSource = "direct";
 
@@ -276,6 +285,10 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   {barbershop.phone}
                 </span>
               )}
+              <span className="inline-flex items-center gap-2">
+                <Clock size={15} className="text-[#D9B766]" />
+                Hoy quedan {freeSlotsToday} huecos estimados
+              </span>
             </div>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -441,6 +454,34 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
               </article>
             ))}
+          </section>
+
+          <section className="section-band p-5 md:p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <p className="label-section">Promoción activa</p>
+                <h2 className="section-heading">Oferta destacada</h2>
+              </div>
+              <span className="badge-gold">Disponible hoy</span>
+            </div>
+            <div className="rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/8 p-5">
+              <p className="text-lg font-black text-[#111827]">
+                Reserva online y asegura tu hueco sin llamadas
+              </p>
+              <p className="mt-2 text-sm leading-6 text-neutral-600">
+                {freeSlotsToday > 0
+                  ? `Hoy quedan ${freeSlotsToday} huecos estimados. Elige servicio, barbero y hora desde esta pagina.`
+                  : "Agenda muy completa para hoy. Revisa la siguiente disponibilidad en el formulario."}
+              </p>
+            </div>
+          </section>
+
+          <section className="section-band p-5 md:p-6">
+            <p className="label-section">Reseñas</p>
+            <h2 className="section-heading mt-1">Experiencia de clientes</h2>
+            <div className="mt-4 rounded-2xl border border-dashed border-[#E7E2D8] bg-[#FDFBF7] p-5 text-sm leading-6 text-neutral-500">
+              Esta barbería podrá mostrar reseñas verificadas aquí cuando active el módulo de reseñas de BarberíaOS.
+            </div>
           </section>
         </div>
 

@@ -201,6 +201,8 @@ export async function sellInventoryProductFromCash(formData: FormData) {
   const quantity = parseAmount(formData.get("quantity"));
   const unitSalePrice = parseAmount(formData.get("unit_sale_price"));
   const paymentMethod = String(formData.get("payment_method") ?? "cash").trim() || "cash";
+  const clientId = String(formData.get("client_id") ?? "").trim() || null;
+  const barberId = String(formData.get("barber_id") ?? "").trim() || null;
 
   if (!cashSessionId) return { error: "Abre la caja antes de vender productos." };
   if (!productId) return { error: "Selecciona un producto." };
@@ -221,6 +223,8 @@ export async function sellInventoryProductFromCash(formData: FormData) {
     p_quantity: quantity,
     p_unit_sale_price: unitSalePrice,
     p_payment_method: paymentMethod,
+    p_client_id: clientId,
+    p_barber_id: barberId,
     p_note: "Venta de producto desde caja",
   });
 

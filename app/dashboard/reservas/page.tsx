@@ -10,12 +10,14 @@ export default function ReservasPage() {
         title="Reservas online"
         description="Las reservas que entran por tu link o QR aparecen directamente en la agenda, listas para gestionar el día a día."
         action={
-          <Link
-            href="/dashboard/agenda"
-            className="btn-primary"
-          >
-            Abrir agenda <ArrowRight size={14} />
-          </Link>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Link href="/dashboard/reservas/pipeline" className="btn-primary">
+              Ver pipeline <ArrowRight size={14} />
+            </Link>
+            <Link href="/dashboard/agenda" className="btn-outline">
+              Abrir agenda <ArrowRight size={14} />
+            </Link>
+          </div>
         }
       />
 

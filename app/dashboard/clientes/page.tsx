@@ -372,6 +372,23 @@ export default async function ClientesPage() {
   const recurringClients = clients.filter(
     (client) => client.totalAppointments > 1
   ).length;
+  const lostClients = clients.filter((client) => {
+    if (!client.lastAppointmentDate) return false;
+    const days = Math.floor(
+      (Date.now() - new Date(`${client.lastAppointmentDate}T00:00:00`).getTime()) / 86400000
+    );
+    return days >= 45;
+  }).length;
+  const vipClients = clients.filter((client) => client.totalAppointments >= 8).length;
+  const withoutNextAppointment = clients.filter((client) => {
+    const hasFuture = appointments.some(
+      (appointment) =>
+        (appointment.client_id ?? firstRelation(appointment.clients)?.id) === client.id &&
+        appointment.appointment_date >= today &&
+        !["cancelled", "completed", "no_show"].includes(appointment.status ?? "")
+    );
+    return !hasFuture;
+  }).length;
   const publicBaseUrl = getPublicBaseUrl();
   const barbershopSlug = barbershopResult.data?.slug ?? null;
 
@@ -387,15 +404,15 @@ export default async function ClientesPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">
-              Clientes
+              Clientes CRM
             </p>
 
             <h1 className="mt-2 text-3xl font-black tracking-tight text-[#111827] md:text-4xl">
-              Clientes de {barbershopResult.data?.name ?? "tu barbería"}
+              CRM visual de {barbershopResult.data?.name ?? "tu barbería"}
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
-              Guarda automáticamente los clientes que reservan y detecta quién vuelve, quién no vuelve y a quién puedes recuperar.
+              Segmenta clientes nuevos, frecuentes, perdidos, reactivados y VIP con acciones rápidas para reservar, pedir reseñas y abrir WhatsApp.
             </p>
           </div>
 
@@ -437,10 +454,38 @@ export default async function ClientesPage() {
         </div>
 
         <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Recurrentes</p>
+          <p className="text-sm text-neutral-500">Frecuentes</p>
           <p className="mt-2 text-3xl font-black text-neutral-950">
             {recurringClients}
           </p>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="label-section">Filtros CRM</p>
+            <h2 className="section-heading mt-1">Segmentos listos para actuar</h2>
+            <p className="section-subtext">Usa estos segmentos como lectura operativa. La persistencia avanzada de etiquetas queda preparada para una siguiente iteracion.</p>
+          </div>
+          <Link href="/dashboard/marketing" className="btn-outline">
+            Crear promoción
+          </Link>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            ["Todos", clients.length],
+            ["Nuevos", newClientsThisMonth],
+            ["Frecuentes", recurringClients],
+            ["Perdidos", lostClients],
+            ["Reactivados", 0],
+            ["VIP", vipClients],
+            ["Sin próxima cita", withoutNextAppointment],
+          ].map(([label, value]) => (
+            <span key={String(label)} className="rounded-full border border-[#E7E2D8] bg-[#FDFBF7] px-3 py-2 text-xs font-black text-neutral-700">
+              {label} · {value}
+            </span>
+          ))}
         </div>
       </section>
 
@@ -522,11 +567,11 @@ export default async function ClientesPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-black text-neutral-950">
-                Lista de clientes
+                Clientes CRM
               </h2>
 
               <p className="mt-1 text-sm text-neutral-500">
-                Clientes reales vinculados a reservas y citas.
+                Ficha comercial con estado, ultima visita, servicio, barbero favorito y acciones rapidas.
               </p>
             </div>
           </div>

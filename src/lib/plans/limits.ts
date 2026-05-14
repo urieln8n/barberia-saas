@@ -33,7 +33,7 @@ const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
     label: "Free",
     maxBarbers: 1,
     maxServices: 5,
-    maxTrialBookings: 20,
+    maxTrialBookings: 9999,
     modules: {
       payments: true,
       finances: false,

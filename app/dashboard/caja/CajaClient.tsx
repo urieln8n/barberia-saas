@@ -281,7 +281,6 @@ export function CajaClient({
         ) : (
           <form action={handleSale} className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
             <input type="hidden" name="cash_session_id" value={session.id} />
-            <input type="hidden" name="payment_method" value="cash" />
 
             <div className="grid gap-4">
               <div>
@@ -359,6 +358,41 @@ export function CajaClient({
                   ) : (
                     <p className="form-help">Introduce el precio de venta manualmente.</p>
                   )}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="form-label">Cliente</label>
+                  <select name="client_id" className="input py-3">
+                    <option value="">Sin cliente vinculado</option>
+                    {clients.map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {client.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Barbero</label>
+                  <select name="barber_id" className="input py-3">
+                    <option value="">Sin barbero</option>
+                    {barbers.map((barber) => (
+                      <option key={barber.id} value={barber.id}>
+                        {barber.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Método de pago</label>
+                  <select name="payment_method" defaultValue="cash" className="input py-3">
+                    <option value="cash">Efectivo</option>
+                    <option value="card">Tarjeta</option>
+                    <option value="bizum">Bizum</option>
+                    <option value="transfer">Transferencia</option>
+                    <option value="other">Otro</option>
+                  </select>
                 </div>
               </div>
             </div>

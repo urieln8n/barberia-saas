@@ -722,6 +722,21 @@ export default async function DashboardPage() {
 
       <SmartAlerts alerts={smartAlerts} />
 
+      <section className="section-band p-5 md:p-6">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="label-section">Panel de Hoy</p>
+            <h2 className="section-heading mt-1">Control tower operativo</h2>
+            <p className="section-subtext">
+              Citas, caja, huecos, clientes y barberos resumidos para entender el dia en menos de 10 segundos.
+            </p>
+          </div>
+          <Link href="/dashboard/ia" className="btn-outline">
+            IA del Dueño <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
+
       {/* ── Control diario ── */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -793,7 +808,7 @@ export default async function DashboardPage() {
       <section className="panel">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="label-section">Acciones recomendadas</p>
+            <p className="label-section">Recomendación de BarberíaOS IA</p>
             <h2 className="section-heading mt-1">Insight inteligente</h2>
             <p className="section-subtext">
               Hoy {barberWithMostSlots?.barberName ?? "tu equipo"} tiene {barberWithMostSlots?.freeSlots.length ?? totalFreeSlotsToday} huecos libres entre las 15:00 y 18:00. Puedes llenarlos con una promoción rápida.
