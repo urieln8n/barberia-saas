@@ -30,6 +30,8 @@ import {
   Megaphone,
   ChevronLeft,
   ChevronRight,
+  MoreHorizontal,
+  X,
   type LucideIcon,
 } from "lucide-react";
 
@@ -44,6 +46,19 @@ type NavItem = {
 };
 
 type TabId = "operar" | "crecer" | "ajustes";
+
+type MobilePrimaryItem =
+  | NavItem
+  | {
+      type: "drawer";
+      label: string;
+      icon: LucideIcon;
+    };
+
+type MobileNavGroup = {
+  title: string;
+  items: NavItem[];
+};
 
 // ─── Navigation config ────────────────────────────────────────────────────────
 
@@ -85,6 +100,51 @@ const allItems: NavItem[] = [
   ...tabItems.ajustes,
 ];
 
+const primaryMobileNav: MobilePrimaryItem[] = [
+  { href: "/dashboard", label: "Inicio", icon: Home, exact: true },
+  { href: "/dashboard/agenda", label: "Agenda", icon: CalendarDays },
+  { href: "/dashboard/caja", label: "Caja", icon: Banknote },
+  { href: "/dashboard/clientes", label: "Clientes", icon: Users },
+  { type: "drawer", label: "Más", icon: MoreHorizontal },
+];
+
+const groupedMobileNav: MobileNavGroup[] = [
+  {
+    title: "Operación",
+    items: [
+      { href: "/dashboard/reservas", label: "Reservas", icon: CalendarDays },
+      { href: "/dashboard/reservas/pipeline", label: "Pipeline", icon: Workflow },
+      { href: "/dashboard/barberos", label: "Barberos", icon: User },
+      { href: "/dashboard/servicios", label: "Servicios", icon: Scissors },
+    ],
+  },
+  {
+    title: "Crecimiento",
+    items: [
+      { href: "/dashboard/marketing", label: "Marketing Studio", icon: Megaphone },
+      { href: "/dashboard/resenas", label: "Reseñas", icon: Star },
+      { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow, badge: "Pro" },
+      { href: "/dashboard/ia", label: "IA del Dueño", icon: Bot, badge: "IA" },
+      { href: "/dashboard/recuperacion", label: "Clientes perdidos", icon: RotateCcw },
+      { href: "/dashboard/security-audit", label: "Auditoría Web", icon: ShieldCheck, badge: "Beta" },
+    ],
+  },
+  {
+    title: "Negocio",
+    items: [
+      { href: "/dashboard/inventario", label: "Inventario", icon: Boxes },
+      { href: "/dashboard/qr", label: "QR y página pública", icon: QrCode },
+      { href: "/dashboard/marketplace", label: "Marketplace", icon: ShoppingBag },
+      { href: "/dashboard/ajustes", label: "Configuración", icon: Settings },
+      { href: "/dashboard/finanzas", label: "Ventas", icon: Wallet },
+      { href: "/dashboard/pagos", label: "Pagos", icon: CreditCard },
+      { href: "/dashboard/huecos", label: "Estadísticas", icon: TrendingUp },
+      { href: "/dashboard/fiscalidad", label: "Fiscalidad", icon: Receipt },
+      { href: "/dashboard/whatsapp", label: "Soporte", icon: HelpCircle, badge: "Guía" },
+    ],
+  },
+];
+
 const tabConfig: { id: TabId; label: string }[] = [
   { id: "operar",  label: "Operar"  },
   { id: "crecer",  label: "Crecer"  },
@@ -106,6 +166,12 @@ function getActiveTab(pathname: string): TabId {
     if (isActive(pathname, item)) return "ajustes";
   }
   return "operar";
+}
+
+function isGroupedMobileActive(pathname: string): boolean {
+  return groupedMobileNav.some((group) =>
+    group.items.some((item) => isActive(pathname, item))
+  );
 }
 
 // ─── NavLink (expanded) ───────────────────────────────────────────────────────
@@ -167,6 +233,67 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
         className={`transition-colors ${active ? "text-[#C9922A]" : "text-neutral-400"}`}
       />
     </Link>
+  );
+}
+
+function MobileBottomNav({
+  pathname,
+  onOpenMore,
+}: {
+  pathname: string;
+  onOpenMore: () => void;
+}) {
+  const moreActive = isGroupedMobileActive(pathname);
+
+  return (
+    <nav
+      aria-label="Navegación principal móvil"
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E7E2D8] bg-white/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] pt-1.5 shadow-[0_-12px_35px_rgba(17,17,17,0.08)] backdrop-blur md:hidden"
+    >
+      <div className="grid grid-cols-5 gap-1">
+        {primaryMobileNav.map((item) => {
+          const Icon = item.icon;
+
+          if ("type" in item) {
+            return (
+              <button
+                key={item.label}
+                type="button"
+                aria-label="Abrir más opciones"
+                aria-current={moreActive ? "page" : undefined}
+                onClick={onOpenMore}
+                className={`flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-bold transition-colors ${
+                  moreActive
+                    ? "bg-[#C9922A]/10 text-[#080A0F]"
+                    : "text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+                }`}
+              >
+                <Icon size={19} className={moreActive ? "text-[#C9922A]" : "text-neutral-400"} />
+                <span className="max-w-full truncate">{item.label}</span>
+              </button>
+            );
+          }
+
+          const active = isActive(pathname, item);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={`flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-bold transition-colors ${
+                active
+                  ? "bg-[#C9922A]/10 text-[#080A0F]"
+                  : "text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+              }`}
+            >
+              <Icon size={19} className={active ? "text-[#C9922A]" : "text-neutral-400"} />
+              <span className="max-w-full truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 
@@ -235,17 +362,17 @@ export default function Sidebar() {
         </Link>
         <button
           type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="btn-outline min-h-0 px-3 py-2"
+          onClick={handleLogout}
+          aria-label="Cerrar sesión"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E7E2D8] text-neutral-500 transition-colors hover:bg-[#F8F5EF] hover:text-neutral-950"
         >
-          <span className="inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#C9922A]" />
-            Menu
-          </span>
+          <LogOut size={17} />
         </button>
       </header>
 
-      {/* ── Mobile drawer ── */}
+      <MobileBottomNav pathname={pathname} onOpenMore={() => setDrawerOpen(true)} />
+
+      {/* ── Mobile more sheet ── */}
       <div
         className={`fixed inset-0 z-50 transition-opacity duration-200 md:hidden ${
           drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
@@ -258,44 +385,52 @@ export default function Sidebar() {
           className="absolute inset-0 bg-neutral-950/40 backdrop-blur-[2px]"
         />
         <aside
-          className={`absolute left-0 top-0 flex h-full w-72 flex-col border-r border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
-            drawerOpen ? "translate-x-0" : "-translate-x-full"
+          aria-label="Más opciones de navegación"
+          className={`absolute bottom-0 left-0 right-0 flex max-h-[82vh] flex-col rounded-t-[28px] border-t border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
+            drawerOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >
           {/* Mobile drawer header */}
-          <div className="mb-5 flex items-center justify-between">
-            <Link href="/dashboard" onClick={() => setDrawerOpen(false)} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F]">
-                <Scissors size={15} className="text-[#C9922A]" />
-              </div>
-              <div>
-                <p className="text-[15px] font-black leading-none text-neutral-950">BarberíaOS</p>
-                <p className="mt-0.5 text-[10px] font-medium text-neutral-400">Sistema operativo de barbería.</p>
-              </div>
-            </Link>
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <p className="text-[15px] font-black leading-none text-neutral-950">Más opciones</p>
+              <p className="mt-1 text-xs font-medium text-neutral-400">Herramientas agrupadas por uso.</p>
+            </div>
             <button
               type="button"
+              aria-label="Cerrar más opciones"
               onClick={() => setDrawerOpen(false)}
-              className="btn-outline min-h-0 px-3 py-1.5 text-xs"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E7E2D8] text-neutral-500 transition-colors hover:bg-[#F8F5EF] hover:text-neutral-950"
             >
-              Cerrar
+              <X size={17} />
             </button>
           </div>
 
-          {/* Mobile nav — all items flat, no tabs */}
-          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
-            {allItems.map((item) => (
-              <NavLink
-                key={item.href}
-                item={item}
-                pathname={pathname}
-                onClick={() => setDrawerOpen(false)}
-              />
+          <nav className="flex flex-1 flex-col gap-5 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)]">
+            {groupedMobileNav.map((group) => (
+              <section key={group.title} aria-labelledby={`mobile-nav-${group.title}`}>
+                <h2
+                  id={`mobile-nav-${group.title}`}
+                  className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
+                >
+                  {group.title}
+                </h2>
+                <div className="grid gap-1.5">
+                  {group.items.map((item) => (
+                    <NavLink
+                      key={item.href}
+                      item={item}
+                      pathname={pathname}
+                      onClick={() => setDrawerOpen(false)}
+                    />
+                  ))}
+                </div>
+              </section>
             ))}
           </nav>
 
           {/* Mobile footer */}
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-4 border-t border-[#E7E2D8] pt-3">
             <Link
               href="/"
               onClick={() => setDrawerOpen(false)}
@@ -304,14 +439,6 @@ export default function Sidebar() {
               <ShieldCheck size={16} className="shrink-0" />
               Volver a la landing
             </Link>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="nav-link w-full border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
-            >
-              <LogOut size={16} className="shrink-0" />
-              Cerrar sesión
-            </button>
           </div>
         </aside>
       </div>
