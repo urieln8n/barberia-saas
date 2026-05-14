@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Workflow,
   Bot,
+  Rocket,
   Settings,
   ShieldCheck,
   LogOut,
@@ -79,6 +80,7 @@ const tabItems: Record<TabId, NavItem[]> = {
   ],
   crecer: [
     { href: "/dashboard/clientes",         label: "Clientes CRM",     icon: Users                       },
+    { href: "/dashboard/growth",           label: "Growth",           icon: Rocket,     badge: "Growth" },
     { href: "/dashboard/marketing",        label: "Marketing Studio", icon: Megaphone                   },
     { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star                        },
     { href: "/dashboard/recuperacion",     label: "Clientes perdidos",icon: RotateCcw                  },
@@ -122,6 +124,7 @@ const groupedMobileNav: MobileNavGroup[] = [
     title: "Crecimiento",
     items: [
       { href: "/dashboard/marketing", label: "Marketing Studio", icon: Megaphone },
+      { href: "/dashboard/growth", label: "Growth", icon: Rocket, badge: "Growth" },
       { href: "/dashboard/resenas", label: "Reseñas", icon: Star },
       { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow, badge: "Pro" },
       { href: "/dashboard/ia", label: "IA del Dueño", icon: Bot, badge: "IA" },

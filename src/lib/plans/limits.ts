@@ -122,6 +122,18 @@ export function getPlanLimits(plan: PlanName) {
   return PLAN_LIMITS[plan];
 }
 
+export function canAccessGrowth(plan: PlanName) {
+  return plan === "pro" || plan === "growth" || plan === "premium";
+}
+
+export function canAccessGrowthAds(plan: PlanName) {
+  return plan === "premium";
+}
+
+export function canAccessWhatsappIA(plan: PlanName) {
+  return plan === "growth" || plan === "premium";
+}
+
 export function formatLimit(limit: number | null) {
   return limit === null ? "Ilimitado" : String(limit);
 }
