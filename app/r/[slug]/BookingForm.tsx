@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Clock,
   ChevronLeft,
@@ -15,6 +16,8 @@ import {
   CreditCard,
   MessageCircle,
   ShieldCheck,
+  AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 import { createPublicBooking, getUnavailableSlots } from "./actions";
@@ -43,7 +46,7 @@ type Props = {
   initialBarberId?: string | null;
 };
 
-const STEP_LABELS = ["Servicio", "Barbero", "Fecha y hora", "Tus datos"];
+const STEP_LABELS = ["Servicio", "Barbero", "Día y hora", "Tus datos"];
 const LAST_BOOKING_STORAGE_KEY = "barberiaos:last-public-booking";
 
 type LastBookingStorage = {
@@ -56,21 +59,21 @@ function StepProgress({ step }: { step: number }) {
   if (step >= 5) return null;
 
   return (
-    <div className="mt-5 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
+    <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-3">
       <div className="flex gap-1.5">
         {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
             className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-              s <= step ? "bg-[#111827]" : "bg-white"
+              s <= step ? "bg-[#D5A84C]" : "bg-white"
             }`}
           />
         ))}
       </div>
 
       <div className="mt-3 flex items-center justify-between text-xs">
-        <span className="font-semibold text-neutral-500">Paso {step} de 4</span>
-        <span className="font-black text-[#111827]">{STEP_LABELS[step - 1]}</span>
+        <span className="font-semibold text-slate-500">Paso {step} de 4</span>
+        <span className="font-black text-[#080A0F]">{STEP_LABELS[step - 1]}</span>
       </div>
     </div>
   );
@@ -78,15 +81,15 @@ function StepProgress({ step }: { step: number }) {
 
 function TrustBadges() {
   return (
-    <div className="mt-5 grid gap-2 sm:grid-cols-3">
+    <div className="mt-5 grid gap-2">
       {[
         { icon: BadgeCheck, label: "Sin cuenta necesaria", tone: "text-emerald-600" },
-        { icon: Clock, label: "Reserva en segundos", tone: "text-[#2F6FEB]" },
-        { icon: ShieldCheck, label: "Directo con la barberia", tone: "text-[#2F6FEB]" },
+        { icon: Clock, label: "Reserva en menos de 30 segundos", tone: "text-[#C9922A]" },
+        { icon: ShieldCheck, label: "Directo con la barbería", tone: "text-[#2563EB]" },
       ].map(({ icon: Icon, label, tone }) => (
         <span
           key={label}
-          className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2 text-xs font-semibold text-neutral-600"
+          className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600"
         >
           <Icon size={13} className={tone} />
           {label}
@@ -110,10 +113,10 @@ function BookingHeader({
       </div>
 
       <div className="min-w-0">
-        <p className="truncate text-sm text-neutral-500">
+        <p className="truncate text-sm text-slate-500">
           {barbershopCity ? `Reserva online · ${barbershopCity}` : "Reserva online"}
         </p>
-        <h1 className="truncate text-2xl font-black tracking-normal text-[#111827]">
+        <h1 className="truncate text-2xl font-black tracking-normal text-[#080A0F]">
           {barbershopName}
         </h1>
       </div>
@@ -130,8 +133,8 @@ function StepTitle({
 }) {
   return (
     <div>
-      <h2 className="text-xl font-black text-[#111827]">{title}</h2>
-      <p className="mt-1 text-sm leading-6 text-neutral-500">{description}</p>
+      <h2 className="text-xl font-black text-[#080A0F]">{title}</h2>
+      <p className="mt-1 text-sm leading-6 text-slate-500">{description}</p>
     </div>
   );
 }
@@ -140,19 +143,22 @@ function ChoiceButton({
   children,
   onClick,
   selected = false,
+  disabled = false,
 }: {
   children: ReactNode;
   onClick: () => void;
   selected?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] ${
+      disabled={disabled}
+      className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
-          ? "border-[#111827] bg-[#111827] text-white shadow-lg shadow-slate-900/10"
-          : "border-[#E5E7EB] bg-white hover:border-[#111827] hover:bg-[#F8FAFC]"
+          ? "border-[#080A0F] bg-[#080A0F] text-white shadow-lg shadow-slate-900/10"
+          : "border-slate-200 bg-white hover:border-[#C9922A] hover:bg-[#FFFCF7]"
       }`}
     >
       {children}
@@ -172,10 +178,40 @@ function InfoRow({
   strong?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-neutral-600">
-      <Icon size={14} className="shrink-0 text-neutral-400" />
-      {label && <span className="text-neutral-400">{label}</span>}
-      <span className={strong ? "font-bold text-[#111827]" : ""}>{value}</span>
+    <div className="flex items-center gap-2 text-sm text-slate-600">
+      <Icon size={14} className="shrink-0 text-slate-400" />
+      {label && <span className="text-slate-400">{label}</span>}
+      <span className={strong ? "font-bold text-[#080A0F]" : ""}>{value}</span>
+    </div>
+  );
+}
+
+function formatPrice(value: number | undefined) {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: Number.isInteger(Number(value ?? 0)) ? 0 : 2,
+  }).format(Number(value ?? 0));
+}
+
+function StepPanel({ children }: { children: ReactNode }) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function ElegantError({ message }: { message: string }) {
+  return (
+    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <AlertCircle size={16} className="mt-0.5 shrink-0" />
+      <p className="font-medium">{message}</p>
     </div>
   );
 }
@@ -202,9 +238,9 @@ function ReservationSummary({
     : "";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]">
-      <div className="border-b border-[#E5E7EB] bg-white px-4 py-3">
-        <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+      <div className="border-b border-slate-200 bg-white px-4 py-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
           Resumen de reserva
         </p>
       </div>
@@ -212,8 +248,8 @@ function ReservationSummary({
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-start justify-between gap-3">
           <InfoRow icon={Scissors} value={service?.name ?? "Servicio"} strong />
-          <span className="shrink-0 text-base font-black text-[#111827]">
-            {service?.price} €
+          <span className="shrink-0 text-base font-black text-[#080A0F]">
+            {formatPrice(service?.price)}
           </span>
         </div>
         <InfoRow icon={Clock} value={`${service?.duration_minutes ?? "--"} min de duración`} />
@@ -223,10 +259,10 @@ function ReservationSummary({
         />
         <InfoRow icon={CalendarDays} value={`${formattedDate}${time ? ` · ${time}h` : ""}`} />
 
-        <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5 text-sm">
-          <CreditCard size={14} className="shrink-0 text-neutral-400" />
-          <span className="font-medium text-neutral-700">Pago en el local</span>
-          <span className="ml-auto text-xs text-neutral-400">sin pago online</span>
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm">
+          <CreditCard size={14} className="shrink-0 text-slate-400" />
+          <span className="font-medium text-slate-700">Pago en el local</span>
+          <span className="ml-auto text-xs text-slate-400">sin pago online</span>
         </div>
       </div>
     </div>
@@ -247,9 +283,9 @@ function ConfirmButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-[#0F172A] active:scale-[0.98] disabled:opacity-40"
+      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#080A0F] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-[#10131B] active:scale-[0.98] disabled:translate-y-0 disabled:opacity-40"
     >
-      <CalendarDays size={18} />
+      {saving ? <Clock size={18} /> : <CalendarDays size={18} />}
       {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
     </button>
   );
@@ -473,8 +509,12 @@ export function BookingForm({
 
   return (
     <>
-      <div className="overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-white text-[#111827] shadow-xl shadow-slate-900/10">
-        <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] p-5 md:p-7">
+      <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white text-[#080A0F] shadow-xl shadow-slate-900/10">
+        <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] p-5 md:p-7">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-1 text-xs font-black text-[#8A641F]">
+            <Sparkles size={13} />
+            Elige tu servicio y confirma tu hora
+          </div>
           <BookingHeader
             barbershopName={barbershopName}
             barbershopCity={barbershopCity}
@@ -499,12 +539,13 @@ export function BookingForm({
           </button>
         )}
 
-        {/* ── Step 1: Servicio ── */}
+        <AnimatePresence mode="wait">
+        {/* Step 1: Servicio */}
         {step === 1 && (
-          <section>
+          <StepPanel key="service">
             <StepTitle
               title="¿Qué servicio quieres?"
-              description="Elige el servicio y verás precio, duración y disponibilidad."
+              description="Reserva en menos de 30 segundos. Elige el servicio y verás precio, duración y disponibilidad."
             />
 
             {showRepeatPrompt && lastBooking && (
@@ -548,10 +589,13 @@ export function BookingForm({
 
             <div className="mt-4 grid gap-3">
               {services.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-6 text-center">
-                  <Scissors size={22} className="mx-auto text-neutral-300" />
-                  <p className="mt-2 text-sm font-semibold text-neutral-500">
-                    Esta barbería no tiene servicios disponibles aún.
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+                  <Scissors size={24} className="mx-auto text-slate-300" />
+                  <p className="mt-3 font-black text-[#080A0F]">
+                    Aún no hay servicios publicados
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Esta barbería está preparando su catálogo online. Contacta por WhatsApp o vuelve más tarde.
                   </p>
                 </div>
               )}
@@ -568,93 +612,107 @@ export function BookingForm({
                   <div>
                     <p className="font-bold">{s.name}</p>
                     {s.description && (
-                      <p className="mt-1 text-sm leading-5 text-neutral-500">
+                      <p className="mt-1 text-sm leading-5 text-slate-500">
                         {s.description}
                       </p>
                     )}
-                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
+                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-500">
                       <Clock size={12} /> {s.duration_minutes} min
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-xl font-black">{s.price} €</span>
+                  <span className="shrink-0 text-xl font-black">{formatPrice(s.price)}</span>
                 </ChoiceButton>
               ))}
             </div>
-          </section>
+          </StepPanel>
         )}
 
-        {/* ── Step 2: Barbero ── */}
+        {/* Step 2: Barbero */}
         {step === 2 && (
-          <section>
+          <StepPanel key="barber">
             <StepTitle
               title="¿Con quién quieres ir?"
               description="Puedes elegir un barbero concreto o dejar que la barbería asigne el primero disponible."
             />
 
             <div className="mt-4 grid gap-3">
-              <ChoiceButton
-                onClick={() => {
-                  setBarber({ id: "any", name: "Cualquiera" });
-                  setDate("");
-                  setTime("");
-                  setUnavailableSlots([]);
-                  setFormError(null);
-                  setStep(3);
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
-                    <User size={18} className="text-neutral-400" />
-                  </div>
-
-                  <div>
-                    <p className="font-bold">Cualquiera</p>
-                    <p className="text-sm text-neutral-500">
-                      Primer barbero disponible
-                    </p>
-                  </div>
+              {barbers.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+                  <User size={24} className="mx-auto text-slate-300" />
+                  <p className="mt-3 font-black text-[#080A0F]">
+                    Equipo no disponible online
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Esta barbería aún no ha publicado barberos activos para reservas.
+                  </p>
                 </div>
-                <BadgeCheck size={17} className="shrink-0 text-emerald-500" />
-              </ChoiceButton>
+              ) : (
+                <>
+                  <ChoiceButton
+                    onClick={() => {
+                      setBarber({ id: "any", name: "Cualquiera" });
+                      setDate("");
+                      setTime("");
+                      setUnavailableSlots([]);
+                      setFormError(null);
+                      setStep(3);
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100">
+                        <User size={18} className="text-slate-400" />
+                      </div>
 
-              {barbers.map((b) => (
-                <ChoiceButton
-                  key={b.id}
-                  onClick={() => {
-                    setBarber(b);
-                    setDate("");
-                    setTime("");
-                    setUnavailableSlots([]);
-                    setFormError(null);
-                    setStep(3);
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black uppercase text-[#111827]">
-                      {b.name.charAt(0)}
+                      <div>
+                        <p className="font-bold">Cualquiera</p>
+                        <p className="text-sm text-slate-500">
+                          Primer barbero disponible
+                        </p>
+                      </div>
                     </div>
+                    <BadgeCheck size={17} className="shrink-0 text-emerald-500" />
+                  </ChoiceButton>
 
-                    <div>
-                      <p className="font-bold">{b.name}</p>
-                      <p className="text-sm text-neutral-500">Barbero</p>
-                    </div>
-                  </div>
-                </ChoiceButton>
-              ))}
+                  {barbers.map((b) => (
+                    <ChoiceButton
+                      key={b.id}
+                      onClick={() => {
+                        setBarber(b);
+                        setDate("");
+                        setTime("");
+                        setUnavailableSlots([]);
+                        setFormError(null);
+                        setStep(3);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-sm font-black uppercase text-[#080A0F]">
+                          {b.name.charAt(0)}
+                        </div>
+
+                        <div>
+                          <p className="font-bold">{b.name}</p>
+                          <p className="text-sm text-slate-500">Barbero</p>
+                        </div>
+                      </div>
+                    </ChoiceButton>
+                  ))}
+                </>
+              )}
             </div>
-          </section>
+          </StepPanel>
         )}
 
-        {/* ── Step 3: Fecha y hora ── */}
+        {/* Step 3: Fecha y hora */}
         {step === 3 && (
-          <section>
+          <StepPanel key="datetime">
             <StepTitle
               title="¿Cuándo vienes?"
               description="Selecciona un día y después una hora disponible."
             />
 
-            <label className="mt-4 block text-sm font-semibold text-neutral-700">
+            <label className="mt-4 block text-sm font-semibold text-slate-700">
               Día
             </label>
 
@@ -674,20 +732,16 @@ export function BookingForm({
             {date && (
               <>
                 <div className="mt-5 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-neutral-700">Hora</p>
+                  <p className="text-sm font-semibold text-slate-700">Hora</p>
 
                   {checkingAvailability && (
-                    <p className="rounded-full bg-[#F8FAFC] px-2.5 py-1 text-xs font-medium text-neutral-400">
+                    <p className="rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-400">
                       Comprobando disponibilidad...
                     </p>
                   )}
                 </div>
 
-                {formError && (
-                  <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
-                    {formError}
-                  </p>
-                )}
+                {formError && <ElegantError message={formError} />}
 
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {slots.map((slot) => {
@@ -714,8 +768,8 @@ export function BookingForm({
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
                           : time === slot.time
-                            ? "border-[#111827] bg-[#111827] text-white"
-                            : "border-neutral-200 hover:border-[#111827] hover:bg-neutral-50"
+                            ? "border-[#080A0F] bg-[#080A0F] text-white"
+                            : "border-slate-200 hover:border-[#C9922A] hover:bg-[#FFFCF7]"
                         }`}
                       >
                         <span>{slot.time}</span>
@@ -729,18 +783,26 @@ export function BookingForm({
                   })}
                 </div>
 
-                <p className="mt-3 text-xs text-neutral-400">
+                {date && !checkingAvailability && unavailableSlots.length >= slots.length && (
+                  <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800">
+                    <p className="font-black">No quedan horarios disponibles este día</p>
+                    <p className="mt-1">Prueba otro día para encontrar un hueco libre.</p>
+                  </div>
+                )}
+
+                <p className="mt-3 text-xs text-slate-400">
                   Las horas ocupadas no se pueden seleccionar. Si elegiste "Cualquiera",
                   se comprueba la disponibilidad del equipo.
                 </p>
               </>
             )}
-          </section>
+          </StepPanel>
         )}
 
-        {/* ── Step 4: Datos personales ── */}
+        {/* Step 4: Datos personales */}
         {step === 4 && (
-          <section className="pb-32 md:pb-0">
+          <StepPanel key="customer">
+          <div className="pb-32 md:pb-0">
             <StepTitle
               title="Último paso: tus datos"
               description="Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."
@@ -749,7 +811,7 @@ export function BookingForm({
             <div className="mt-5 grid gap-4">
               {/* Nombre */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label className="mb-1 block text-sm font-semibold text-slate-700">
                   Nombre completo *
                 </label>
                 <input
@@ -766,11 +828,11 @@ export function BookingForm({
 
               {/* Teléfono */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label className="mb-1 block text-sm font-semibold text-slate-700">
                   Teléfono *
                 </label>
                 <div className="relative">
-                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="tel"
                     value={phone}
@@ -787,14 +849,14 @@ export function BookingForm({
 
               {/* Email opcional */}
               <div>
-                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-neutral-700">
+                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-700">
                   Email
-                  <span className="rounded-xl bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-400">
+                  <span className="rounded-xl bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-400">
                     opcional
                   </span>
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="email"
                     value={email}
@@ -818,7 +880,7 @@ export function BookingForm({
             </div>
 
             {/* Política de cancelación */}
-            <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
               <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
               <p className="text-xs text-amber-800">
                 <span className="font-semibold">Cancelación:</span>{" "}
@@ -827,14 +889,14 @@ export function BookingForm({
             </div>
 
             {/* Consentimiento marketing */}
-            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
+            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
               <input
                 type="checkbox"
                 checked={privacyRead}
                 onChange={(e) => setPrivacyRead(e.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
               />
-              <span className="text-xs leading-relaxed text-neutral-500">
+              <span className="text-xs leading-relaxed text-slate-500">
                 He leído la{" "}
                 <Link href="/legal/privacidad" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
                   Política de Privacidad
@@ -843,7 +905,7 @@ export function BookingForm({
                 <Link href="/legal/condiciones-reservas" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
                   Condiciones de Reservas
                 </Link>
-                . <span className="text-neutral-400">TODO: conectar validación obligatoria cuando se formalice el flujo legal.</span>
+                .
               </span>
             </label>
 
@@ -854,20 +916,16 @@ export function BookingForm({
                 onChange={(e) => setMarketingConsent(e.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
               />
-              <span className="text-xs leading-relaxed text-neutral-500">
+              <span className="text-xs leading-relaxed text-slate-500">
                 Acepto que{" "}
-                <span className="font-semibold text-neutral-700">{barbershopName}</span>{" "}
+                <span className="font-semibold text-slate-700">{barbershopName}</span>{" "}
                 pueda contactarme por WhatsApp sobre esta reserva.{" "}
-                <span className="text-neutral-400">(Opcional)</span>
+                <span className="text-slate-400">(Opcional)</span>
               </span>
             </label>
 
             {/* Error */}
-            {formError && (
-              <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
-                {formError}
-              </p>
-            )}
+            {formError && <ElegantError message={formError} />}
 
             {/* Botón confirmar — desktop */}
             <div className="mt-5 hidden md:block">
@@ -879,27 +937,28 @@ export function BookingForm({
             </div>
 
             {/* Mensaje de confianza — desktop */}
-            <p className="mt-3 hidden text-center text-xs text-neutral-400 md:block">
+            <p className="mt-3 hidden text-center text-xs text-slate-400 md:block">
               <ShieldCheck size={12} className="mr-1 inline-block" />
               Reserva segura · Sin comisiones · Directo con {barbershopName}
             </p>
-          </section>
+          </div>
+          </StepPanel>
         )}
 
-        {/* ── Step 5: Confirmación ── */}
+        {/* Step 5: Confirmación */}
         {step === 5 && (
-          <section>
+          <StepPanel key="confirmed">
             <div className="text-center">
               <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
                 <CheckCircle size={36} className="text-green-600" />
               </div>
 
-              <h2 className="mt-4 text-2xl font-black">¡Reserva recibida!</h2>
+              <h2 className="mt-4 text-2xl font-black">Reserva confirmada</h2>
 
-              <p className="mt-2 text-neutral-500">
+              <p className="mt-2 text-slate-500">
                 Tu cita en{" "}
                 <span className="font-semibold text-[#111111]">{barbershopName}</span>{" "}
-                está registrada.
+                está registrada. Tu barbería te espera.
               </p>
             </div>
 
@@ -910,8 +969,8 @@ export function BookingForm({
                 date={date}
                 time={time}
               />
-              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-neutral-600">
-                <Phone size={14} className="shrink-0 text-neutral-400" />
+              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                <Phone size={14} className="shrink-0 text-slate-400" />
                 <span>{name} · {phone}</span>
               </div>
             </div>
@@ -930,7 +989,7 @@ export function BookingForm({
             {(() => {
               const waText = encodeURIComponent(
                 `Hola, acabo de reservar en ${barbershopName}:\n` +
-                `• ${service?.name} · ${service?.price} €\n` +
+                  `• ${service?.name} · ${formatPrice(service?.price)}\n` +
                 `• ${barber?.id === "any" ? "Primer barbero disponible" : barber?.name}\n` +
                 `• ${date} a las ${time}h\n` +
                 `¡Nos vemos!`
@@ -951,12 +1010,13 @@ export function BookingForm({
             <button
               type="button"
               onClick={reset}
-              className="mt-3 w-full rounded-xl border border-[#E5E7EB] py-3 text-sm font-semibold text-neutral-600 transition hover:bg-[#F8FAFC]"
+              className="mt-3 w-full rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
             >
               Hacer otra reserva
             </button>
-          </section>
+          </StepPanel>
         )}
+        </AnimatePresence>
         </div>
       </div>
 

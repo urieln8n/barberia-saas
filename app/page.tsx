@@ -158,8 +158,8 @@ function DashboardMockup() {
   ] as const;
 
   return (
-    <ProductMockupCard dark className="relative mx-auto w-full max-w-4xl rounded-[30px] border-[#D5A84C]/15 bg-[#080A0F]">
-      <div className="rounded-[24px] border border-white/10 bg-[#0B1019] p-4 md:p-5">
+    <ProductMockupCard dark className="premium-mockup relative mx-auto w-full max-w-4xl rounded-[30px]">
+      <div className="rounded-[24px] border border-[#D5A84C]/[0.15] bg-[#0b1019]/[0.88] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:p-5">
         <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <p className="text-xs font-black uppercase text-[#D5A84C]">BarberíaOS</p>
@@ -179,9 +179,9 @@ function DashboardMockup() {
           ].map(([label, value, Icon]) => {
             const TypedIcon = Icon as typeof CalendarCheck2;
             return (
-              <div key={label as string} className="rounded-2xl border border-white/10 bg-white/[0.045] p-3">
+              <div key={label as string} className="rounded-2xl border border-[#D5A84C]/[0.15] bg-white/[0.07] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] font-black uppercase text-white/38">{label as string}</p>
+                  <p className="text-[10px] font-black uppercase text-white/[0.38]">{label as string}</p>
                   <TypedIcon size={14} className="text-[#D5A84C]" />
                 </div>
                 <p className="mt-3 text-2xl font-black text-white">{value as string}</p>
@@ -191,14 +191,14 @@ function DashboardMockup() {
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+          <div className="rounded-2xl border border-[#2F6FEB]/20 bg-[#07111f]/75 p-4 shadow-[0_18px_55px_rgba(0,0,0,0.22)]">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-black text-white">Agenda conectada</p>
               <QrCode size={16} className="text-[#D5A84C]" />
             </div>
             <div className="space-y-2">
               {appointments.map(([time, service, barber, status]) => (
-                <div key={`${time}-${service}`} className="grid grid-cols-[52px_1fr] gap-3 rounded-xl border border-white/10 bg-white/[0.045] p-3 sm:grid-cols-[58px_1fr_auto]">
+                <div key={`${time}-${service}`} className="grid grid-cols-[52px_1fr] gap-3 rounded-xl border border-white/[0.12] bg-white/[0.065] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:grid-cols-[58px_1fr_auto]">
                   <p className="text-sm font-black text-[#D5A84C]">{time}</p>
                   <div>
                     <p className="text-sm font-black text-white">{service}</p>
@@ -213,7 +213,7 @@ function DashboardMockup() {
           </div>
 
           <div className="grid gap-4">
-            <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-4">
+            <div className="rounded-2xl border border-[#D5A84C]/[0.28] bg-[#D5A84C]/[0.12] p-4 shadow-[0_18px_48px_rgba(213,168,76,0.10)]">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-black text-white">Marketing Studio</p>
                 <TrendingUp size={16} className="text-[#D5A84C]" />
@@ -221,7 +221,7 @@ function DashboardMockup() {
               <p className="mt-3 text-3xl font-black text-white">14 clientes</p>
               <p className="mt-1 text-xs leading-5 text-white/55">listos para recuperar esta semana.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
+            <div className="rounded-2xl border border-[#2F6FEB]/[0.18] bg-white/[0.065] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
               <p className="text-sm font-black text-white">IA del dueño</p>
               <p className="mt-3 text-sm leading-6 text-white/58">
                 "Tienes huecos mañana entre 16:00 y 18:00. Publica oferta de barba + corte y escribe a clientes de alta frecuencia."
@@ -236,8 +236,8 @@ function DashboardMockup() {
 
 function PublicBookingMockup() {
   return (
-    <div className="rounded-[28px] border border-white/10 bg-[#0B1019] p-4 shadow-[0_26px_90px_rgba(0,0,0,0.32)]">
-      <div className="rounded-[24px] border border-white/10 bg-black/20 p-4">
+    <div className="premium-mockup rounded-[28px] border p-4">
+      <div className="rounded-[24px] border border-[#D5A84C]/[0.15] bg-[#07111f]/[0.78] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D5A84C] text-[#080A0F]">
@@ -252,7 +252,7 @@ function PublicBookingMockup() {
         </div>
         <div className="mt-5 space-y-2">
           {["Corte premium", "Corte + barba", "Arreglo de barba"].map((service, index) => (
-            <div key={service} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.045] p-3">
+            <div key={service} className="flex items-center justify-between rounded-2xl border border-white/[0.12] bg-white/[0.065] p-3">
               <div>
                 <p className="text-sm font-black text-white">{service}</p>
                 <p className="text-xs text-white/40">{index === 0 ? "30 min" : "45 min"}</p>
@@ -261,7 +261,7 @@ function PublicBookingMockup() {
             </div>
           ))}
         </div>
-        <div className="mt-4 rounded-2xl bg-[#D5A84C] px-4 py-3 text-center text-sm font-black text-[#080A0F]">
+        <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-4 py-3 text-center text-sm font-black text-[#080A0F] shadow-[0_14px_34px_rgba(213,168,76,0.26)]">
           Crear reserva de prueba
         </div>
       </div>
@@ -272,8 +272,8 @@ function PublicBookingMockup() {
 export default function HomePage() {
   return (
     <LandingExperience>
-      <div className="bg-[#05070B] text-white">
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070B]/82 px-5 backdrop-blur-xl lg:px-8">
+      <div className="landing-canvas text-white">
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070d]/82 px-5 backdrop-blur-xl lg:px-8">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
             <Link href="/" className="inline-flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#080A0F]">
@@ -300,7 +300,15 @@ export default function HomePage() {
 
         <section className="relative overflow-hidden px-5 pb-16 pt-12 md:pb-24 md:pt-20 lg:px-8" data-gsap-premium="hero">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/50 to-transparent" />
-          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div className="gold-particles" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-white/70">
                 <Crown size={14} className="text-[#D5A84C]" />
@@ -314,10 +322,10 @@ export default function HomePage() {
                 marketing e IA del dueño para que la barbería deje de operar a ciegas.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="gold" className="min-h-12 px-7">
+                <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7 shadow-[0_18px_44px_rgba(213,168,76,0.30)]">
                   Ver demo <ArrowRight size={17} />
                 </PrimaryButton>
-                <PrimaryButton href="/login" variant="ghost" className="min-h-12 border border-white/10 bg-white/[0.06] px-7 text-white/78 hover:bg-white/[0.1] hover:text-white">
+                <PrimaryButton href="/login" variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
                   Crear reserva de prueba
                 </PrimaryButton>
               </div>
@@ -343,7 +351,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <Shell id="controla" className="border-t border-white/10 bg-[#080A0F]">
+        <Shell id="controla" className="landing-section-graphite border-t border-white/10">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Qué controla BarberíaOS"
@@ -353,7 +361,7 @@ export default function HomePage() {
             />
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {controls.map(([title, text, Icon]) => (
-                <article key={title} className="rounded-[24px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)]" data-gsap-premium="feature">
+                <article key={title} className="premium-dark-card rounded-[24px] p-5" data-gsap-premium="feature">
                   <Icon size={22} className="text-[#D5A84C]" />
                   <h3 className="mt-5 text-xl font-black text-white">{title}</h3>
                   <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
@@ -363,7 +371,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="bg-[#05070B]">
+        <Shell className="landing-section-dark">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <SectionIntro
@@ -372,10 +380,10 @@ export default function HomePage() {
                 text="La ruta pública /r/[slug] ya existe y está pensada para que cada barbería tenga su propio enlace. El QR no manda a una plantilla: manda a una experiencia de reserva directa."
               />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="gold" className="min-h-12 px-7">
+                <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7">
                   Ver demo
                 </PrimaryButton>
-                <PrimaryButton href="/login" variant="ghost" className="min-h-12 border border-white/10 bg-white/[0.06] px-7 text-white/78 hover:bg-white/[0.1] hover:text-white">
+                <PrimaryButton href="/login" variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
                   Crear reserva de prueba
                 </PrimaryButton>
               </div>
@@ -384,13 +392,13 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="bg-[#080A0F]">
+        <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-5 lg:grid-cols-3">
               {operatingBlocks.map((block) => {
                 const Icon = block.icon;
                 return (
-                  <article key={block.title} className="flex min-h-full flex-col rounded-[28px] border border-white/10 bg-white/[0.045] p-6" data-gsap-premium="feature">
+                  <article key={block.title} className="premium-blue-card flex min-h-full flex-col rounded-[28px] p-6" data-gsap-premium="feature">
                     <div className="flex items-center justify-between">
                       <Icon size={24} className="text-[#D5A84C]" />
                       <div className="text-right">
@@ -416,7 +424,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell id="marketing" className="bg-[#05070B]">
+        <Shell id="marketing" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
               <SectionIntro
@@ -424,7 +432,7 @@ export default function HomePage() {
                 title="Convierte huecos, clientes dormidos y reseñas en acciones."
                 text="BarberíaOS no promete magia. Te da señales: quién no volvió, qué hueco conviene empujar, qué mensaje enviar y qué campaña puede generar reservas reales."
               />
-              <div className="rounded-[28px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-6">
+              <div className="rounded-[28px] border border-[#D5A84C]/[0.28] bg-[#D5A84C]/[0.12] p-6 shadow-[0_24px_72px_rgba(213,168,76,0.11)]">
                 <p className="text-sm font-black text-white">Próxima acción sugerida</p>
                 <p className="mt-3 text-2xl font-black leading-tight text-white">
                   Recupera 18 clientes con una campaña de corte + barba antes del viernes.
@@ -437,7 +445,7 @@ export default function HomePage() {
             </div>
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {marketingFeatures.map(([title, text, Icon]) => (
-                <article key={title} className="rounded-[24px] border border-white/10 bg-white/[0.045] p-5" data-gsap-premium="feature">
+                <article key={title} className="premium-dark-card rounded-[24px] p-5" data-gsap-premium="feature">
                   <Icon size={21} className="text-[#D5A84C]" />
                   <h3 className="mt-5 text-lg font-black text-white">{title}</h3>
                   <p className="mt-3 text-sm leading-6 text-white/54">{text}</p>
@@ -447,7 +455,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="bg-[#080A0F]">
+        <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Comparativa honesta"
@@ -460,8 +468,8 @@ export default function HomePage() {
                   key={title}
                   className={`rounded-[28px] border p-6 ${
                     index === 2
-                      ? "border-[#D5A84C]/35 bg-[#D5A84C]/10"
-                      : "border-white/10 bg-white/[0.04]"
+                      ? "border-[#D5A84C]/[0.38] bg-[#D5A84C]/[0.12] shadow-[0_24px_72px_rgba(213,168,76,0.10)]"
+                      : "border-[#2F6FEB]/[0.16] bg-white/[0.055]"
                   }`}
                 >
                   <p className={`text-xl font-black ${index === 2 ? "text-[#D5A84C]" : "text-white"}`}>{title}</p>
@@ -472,7 +480,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell id="precios" className="bg-[#05070B]">
+        <Shell id="precios" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Planes"
@@ -486,8 +494,8 @@ export default function HomePage() {
                   key={plan.name}
                   className={`relative flex min-h-full flex-col rounded-[30px] border p-6 ${
                     plan.featured
-                      ? "border-[#D5A84C]/45 bg-white text-[#080A0F] shadow-[0_24px_90px_rgba(213,168,76,0.16)]"
-                      : "border-white/10 bg-white/[0.045] text-white"
+                      ? "border-[#D5A84C]/45 bg-gradient-to-b from-white to-[#f8f2e6] text-[#080A0F] shadow-[0_26px_96px_rgba(213,168,76,0.20)]"
+                      : "border-[#2F6FEB]/[0.16] bg-white/[0.055] text-white shadow-[0_22px_72px_rgba(0,0,0,0.20)]"
                   }`}
                 >
                   {plan.featured && (
@@ -512,7 +520,7 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                  <PrimaryButton href={plan.featured ? WHATSAPP_URL : "/demo"} variant={plan.featured ? "gold" : "ghost"} className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "border border-white/10 bg-white/[0.06] text-white/78 hover:bg-white/[0.1] hover:text-white"}`}>
+                  <PrimaryButton href={plan.featured ? WHATSAPP_URL : "/demo"} variant={plan.featured ? "gold" : "ghost"} className={`mt-8 min-h-12 w-full ${plan.featured ? "bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526]" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}>
                     {plan.featured ? "Solicitar demo por WhatsApp" : "Ver demo"}
                   </PrimaryButton>
                 </article>
@@ -521,8 +529,8 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="bg-[#080A0F]">
-          <div className="mx-auto max-w-5xl rounded-[32px] border border-[#D5A84C]/25 bg-[#D5A84C]/10 p-7 text-center md:p-12">
+        <Shell className="landing-section-graphite">
+          <div className="mx-auto max-w-5xl rounded-[32px] border border-[#D5A84C]/30 bg-[#D5A84C]/[0.12] p-7 text-center shadow-[0_28px_90px_rgba(213,168,76,0.12)] md:p-12">
             <BadgeEuro className="mx-auto text-[#D5A84C]" size={34} />
             <p className="mt-5 text-xs font-black uppercase text-[#D5A84C]">Pide una demo</p>
             <h2 className="mt-3 text-4xl font-black leading-tight text-white md:text-6xl">
@@ -532,14 +540,14 @@ export default function HomePage() {
               Te enseñamos reservas, caja, productos, QR, clientes, Marketing Studio e IA del dueño en un recorrido corto y directo.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <PrimaryButton href="/demo" variant="gold" className="min-h-12 px-8">
+              <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-8">
                 Ver demo <ArrowRight size={17} />
               </PrimaryButton>
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] border border-emerald-400/25 bg-emerald-400/10 px-8 text-sm font-black text-emerald-300 transition hover:bg-emerald-400/20"
+                className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-8 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
               >
                 <MessageCircle size={17} />
                 Solicitar demo por WhatsApp
@@ -548,10 +556,10 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="bg-[#05070B] pt-0">
+        <Shell className="landing-section-dark pt-0">
           <div className="mx-auto grid max-w-5xl gap-3">
             {faqs.map(([question, answer]) => (
-              <article key={question} className="rounded-[22px] border border-white/10 bg-white/[0.045] p-5">
+              <article key={question} className="rounded-[22px] border border-[#2F6FEB]/[0.16] bg-white/[0.055] p-5 shadow-[0_18px_54px_rgba(0,0,0,0.18)]">
                 <h3 className="font-black text-white">{question}</h3>
                 <p className="mt-2 text-sm leading-7 text-white/55">{answer}</p>
               </article>
@@ -559,7 +567,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <footer className="border-t border-white/10 bg-[#05070B] px-5 py-10 lg:px-8">
+        <footer className="border-t border-white/10 bg-gradient-to-br from-[#05070d] via-[#07111f] to-[#02030a] px-5 py-10 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-sm">
               <Link href="/" className="inline-flex items-center gap-3">
