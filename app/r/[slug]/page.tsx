@@ -251,7 +251,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const trackingSource = "direct";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070D] pb-24 text-white md:pb-0">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070D] pb-[calc(120px+env(safe-area-inset-bottom))] text-white md:pb-0">
       <TrackPageView barbershopId={barbershop.id} source={trackingSource} city={barbershop.city} />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_12%_8%,rgba(217,183,102,0.16),transparent_28rem),radial-gradient(circle_at_86%_18%,rgba(47,111,235,0.15),transparent_30rem),linear-gradient(135deg,#05070D_0%,#07111F_48%,#02030A_100%)]" />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] [background-size:28px_28px]" />
@@ -320,7 +320,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 source={trackingSource}
                 city={barbershop.city}
                 href="#reservar"
-                className="btn-gold"
+                className="btn-gold hidden md:inline-flex"
               >
                 Reservar cita <CalendarCheck size={16} />
               </TrackedLink>
@@ -609,11 +609,6 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
         </aside>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#07111F]/92 px-4 pb-5 pt-3 shadow-[0_-18px_54px_rgba(0,0,0,0.34)] backdrop-blur-xl md:hidden">
-        <a href="#reservar" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-4 py-3 text-sm font-black text-[#080A0F] shadow-[0_18px_48px_rgba(217,183,102,0.24)]">
-          Reservar cita <CalendarCheck size={17} />
-        </a>
-      </div>
     </main>
   );
 }
