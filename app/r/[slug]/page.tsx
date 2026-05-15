@@ -242,24 +242,43 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const publicUrl = `${SITE_URL}/r/${barbershop.slug}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(publicUrl)}`;
   const freeSlotsToday = Math.max(0, activeBarbers.length * 8 - (todayAppointments?.length ?? 0));
+  const heroStyle = publicProfile?.cover_image_url
+    ? {
+        backgroundImage: `linear-gradient(135deg, rgba(8,10,15,0.88), rgba(15,23,42,0.74)), url(${publicProfile.cover_image_url})`,
+      }
+    : undefined;
 
   const trackingSource = "direct";
 
   return (
     <main className="premium-grid-bg min-h-screen pb-24 text-slate-950 md:pb-0">
       <TrackPageView barbershopId={barbershop.id} source={trackingSource} city={barbershop.city} />
-      <section className="relative overflow-hidden bg-[#111111] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,155,60,0.24),transparent_34%),linear-gradient(135deg,#111111_0%,#1F2937_52%,#111111_100%)]" />
-        <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-12 lg:px-8">
+      <section
+        className="relative overflow-hidden bg-[#080A0F] bg-cover bg-center text-white"
+        style={heroStyle}
+      >
+        {!publicProfile?.cover_image_url && (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,168,76,0.22),transparent_34%),linear-gradient(135deg,#080A0F_0%,#1D2433_52%,#080A0F_100%)]" />
+        )}
+        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-4 pb-7 pt-6 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-12 lg:px-8">
           <div>
             <div className="mb-5 flex items-center gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl border border-white/15 bg-white/10 text-xl font-black tracking-wide shadow-2xl shadow-black/20">
-                {getInitials(barbershop.name) || <Scissors size={24} />}
-              </div>
+              {publicProfile?.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={publicProfile.logo_url}
+                  alt={`Logo de ${barbershop.name}`}
+                  className="h-16 w-16 shrink-0 rounded-3xl border border-white/15 bg-white/10 object-cover shadow-2xl shadow-black/20"
+                />
+              ) : (
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl border border-white/15 bg-white/10 text-xl font-black tracking-wide shadow-2xl shadow-black/20">
+                  {getInitials(barbershop.name) || <Scissors size={24} />}
+                </div>
+              )}
               <div className="min-w-0">
                 <p className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-100">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Reserva online disponible
+                  Reserva en menos de 30 segundos
                 </p>
                 <h1 className="mt-3 text-4xl font-black tracking-normal text-white sm:text-5xl">
                   {barbershop.name}
@@ -269,7 +288,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
             <p className="max-w-2xl text-base leading-7 text-white/70">
               {publicProfile?.description ??
-                "Reserva tu corte, barba o servicio de barbería en pocos pasos. Sin cuenta, sin espera y directo con el equipo."}
+                "Elige tu servicio y confirma tu hora desde el móvil. Sin cuenta, sin espera y directo con el equipo."}
             </p>
 
             <div className="mt-5 flex flex-col gap-2 text-sm text-white/70 sm:flex-row sm:flex-wrap">
@@ -331,11 +350,11 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
           <div className="rounded-[28px] border border-white/12 bg-white/[0.07] p-5 shadow-2xl shadow-black/20 backdrop-blur">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#D9B766]">
-              Perfil BarberiaOS
+              Tu barbería te espera
             </p>
             <div className="mt-4 grid gap-3">
               {[
-                { icon: Clock, label: "Reserva rápida", text: "Elige servicio, profesional y hora." },
+                { icon: Clock, label: "Reserva rápida", text: "Elige tu servicio y confirma tu hora." },
                 { icon: ShieldCheck, label: "Sin esperas", text: "Las horas ocupadas se bloquean." },
                 { icon: BadgeCheck, label: "Confirmación", text: "La cita queda registrada en la agenda." },
               ].map(({ icon: Icon, label, text }) => (
@@ -357,7 +376,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       </section>
 
       <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 md:grid-cols-[1fr_0.86fr] md:py-8 lg:px-8">
-        <div className="space-y-6">
+        <div className="order-2 space-y-6 md:order-1">
           <section className="section-band p-5 md:p-6">
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
@@ -396,7 +415,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                       </div>
                       <div className="shrink-0 text-right">
                         <p className="text-xl font-black text-[#111827]">{formatPrice(service.price)}</p>
-                        <a href="#reservar" className="mt-3 inline-flex rounded-xl bg-[#111827] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#0F172A]">
+                        <a href={`/r/${barbershop.slug}?service=${service.id}#reservar`} className="mt-3 inline-flex rounded-xl bg-[#111827] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#0F172A]">
                           Elegir
                         </a>
                       </div>
@@ -485,7 +504,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </section>
         </div>
 
-        <aside className="space-y-6 md:sticky md:top-6 md:self-start">
+        <aside className="order-1 space-y-6 md:sticky md:top-6 md:order-2 md:self-start">
           <section id="reservar" className="scroll-mt-4">
             <BookingForm
               barbershopId={barbershop.id}

@@ -36,7 +36,7 @@ export function LandingExperience({ children }: { children: ReactNode }) {
   }, [prefersReducedMotion]);
 
   return (
-    <main ref={rootRef} className="min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main ref={rootRef} className="min-h-screen overflow-hidden bg-gradient-to-br from-[#05070d] via-[#07111f] to-[#02030a] text-white">
       {children}
     </main>
   );
