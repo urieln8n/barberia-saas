@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Clock,
   ChevronLeft,
@@ -59,21 +59,21 @@ function StepProgress({ step }: { step: number }) {
   if (step >= 5) return null;
 
   return (
-    <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+    <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.055] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
       <div className="flex gap-1.5">
         {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
             className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-              s <= step ? "bg-[#D5A84C]" : "bg-white"
+              s <= step ? "bg-[#D9B766] shadow-[0_0_18px_rgba(217,183,102,0.25)]" : "bg-white/10"
             }`}
           />
         ))}
       </div>
 
       <div className="mt-3 flex items-center justify-between text-xs">
-        <span className="font-semibold text-slate-500">Paso {step} de 4</span>
-        <span className="font-black text-[#080A0F]">{STEP_LABELS[step - 1]}</span>
+        <span className="font-semibold text-white/50">Paso {step} de 4</span>
+        <span className="font-black text-white">{STEP_LABELS[step - 1]}</span>
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ function TrustBadges() {
       ].map(({ icon: Icon, label, tone }) => (
         <span
           key={label}
-          className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600"
+          className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.055] px-3 py-2 text-xs font-semibold text-white/70"
         >
           <Icon size={13} className={tone} />
           {label}
@@ -108,15 +108,15 @@ function BookingHeader({
 }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-white shadow-sm">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/12 text-[#F4D98F] shadow-[0_14px_34px_rgba(217,183,102,0.12)]">
         <Scissors size={22} />
       </div>
 
       <div className="min-w-0">
-        <p className="truncate text-sm text-slate-500">
+        <p className="truncate text-sm text-white/50">
           {barbershopCity ? `Reserva online · ${barbershopCity}` : "Reserva online"}
         </p>
-        <h1 className="truncate text-2xl font-black tracking-normal text-[#080A0F]">
+        <h1 className="truncate text-2xl font-black tracking-normal text-white">
           {barbershopName}
         </h1>
       </div>
@@ -133,8 +133,8 @@ function StepTitle({
 }) {
   return (
     <div>
-      <h2 className="text-xl font-black text-[#080A0F]">{title}</h2>
-      <p className="mt-1 text-sm leading-6 text-slate-500">{description}</p>
+      <h2 className="text-xl font-black text-white">{title}</h2>
+      <p className="mt-1 text-sm leading-6 text-white/58">{description}</p>
     </div>
   );
 }
@@ -155,10 +155,10 @@ function ChoiceButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${
+      className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all focus-visible:outline-[#D9B766] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
-          ? "border-[#080A0F] bg-[#080A0F] text-white shadow-lg shadow-slate-900/10"
-          : "border-slate-200 bg-white hover:border-[#C9922A] hover:bg-[#FFFCF7]"
+          ? "border-[#D9B766]/60 bg-[#D9B766]/14 text-white shadow-[0_18px_54px_rgba(217,183,102,0.16)]"
+          : "border-white/10 bg-white/[0.055] text-white hover:border-[#D9B766]/35 hover:bg-white/[0.085]"
       }`}
     >
       {children}
@@ -178,10 +178,10 @@ function InfoRow({
   strong?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-slate-600">
-      <Icon size={14} className="shrink-0 text-slate-400" />
-      {label && <span className="text-slate-400">{label}</span>}
-      <span className={strong ? "font-bold text-[#080A0F]" : ""}>{value}</span>
+    <div className="flex items-center gap-2 text-sm text-white/62">
+      <Icon size={14} className="shrink-0 text-[#D9B766]" />
+      {label && <span className="text-white/38">{label}</span>}
+      <span className={strong ? "font-bold text-white" : ""}>{value}</span>
     </div>
   );
 }
@@ -195,12 +195,14 @@ function formatPrice(value: number | undefined) {
 }
 
 function StepPanel({ children }: { children: ReactNode }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+      animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+      exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+      transition={{ duration: 0.24, ease: "easeOut" }}
     >
       {children}
     </motion.section>
@@ -209,7 +211,7 @@ function StepPanel({ children }: { children: ReactNode }) {
 
 function ElegantError({ message }: { message: string }) {
   return (
-    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-red-300/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
       <AlertCircle size={16} className="mt-0.5 shrink-0" />
       <p className="font-medium">{message}</p>
     </div>
@@ -238,9 +240,9 @@ function ReservationSummary({
     : "";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-      <div className="border-b border-slate-200 bg-white px-4 py-3">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.055]">
+      <div className="border-b border-white/10 bg-white/[0.045] px-4 py-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-[#D9B766]">
           Resumen de reserva
         </p>
       </div>
@@ -248,7 +250,7 @@ function ReservationSummary({
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-start justify-between gap-3">
           <InfoRow icon={Scissors} value={service?.name ?? "Servicio"} strong />
-          <span className="shrink-0 text-base font-black text-[#080A0F]">
+          <span className="shrink-0 text-base font-black text-white">
             {formatPrice(service?.price)}
           </span>
         </div>
@@ -259,10 +261,10 @@ function ReservationSummary({
         />
         <InfoRow icon={CalendarDays} value={`${formattedDate}${time ? ` · ${time}h` : ""}`} />
 
-        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm">
-          <CreditCard size={14} className="shrink-0 text-slate-400" />
-          <span className="font-medium text-slate-700">Pago en el local</span>
-          <span className="ml-auto text-xs text-slate-400">sin pago online</span>
+        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/15 px-3 py-2.5 text-sm">
+          <CreditCard size={14} className="shrink-0 text-[#D9B766]" />
+          <span className="font-medium text-white/78">Pago en el local</span>
+          <span className="ml-auto text-xs text-white/38">sin pago online</span>
         </div>
       </div>
     </div>
@@ -279,15 +281,16 @@ function ConfirmButton({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#080A0F] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-[#10131B] active:scale-[0.98] disabled:translate-y-0 disabled:opacity-40"
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D9B766] py-4 text-base font-black text-[#080A0F] shadow-[0_18px_48px_rgba(217,183,102,0.24)] transition-all hover:-translate-y-0.5 hover:bg-[#E8C978] active:scale-[0.98] disabled:translate-y-0 disabled:opacity-40"
     >
       {saving ? <Clock size={18} /> : <CalendarDays size={18} />}
       {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
-    </button>
+    </motion.button>
   );
 }
 
@@ -509,9 +512,9 @@ export function BookingForm({
 
   return (
     <>
-      <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white text-[#080A0F] shadow-xl shadow-slate-900/10">
-        <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] p-5 md:p-7">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-1 text-xs font-black text-[#8A641F]">
+      <div className="overflow-hidden rounded-[28px] border border-white/12 bg-[#07111F]/82 text-white shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl">
+        <div className="border-b border-white/10 bg-[radial-gradient(circle_at_12%_0%,rgba(217,183,102,0.14),transparent_24rem),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035))] p-5 md:p-7">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D9B766]/30 bg-[#D9B766]/10 px-3 py-1 text-xs font-black text-[#F4D98F]">
             <Sparkles size={13} />
             Elige tu servicio y confirma tu hora
           </div>
@@ -533,7 +536,7 @@ export function BookingForm({
               setFormError(null);
               setStep(step - 1);
             }}
-            className="mb-5 flex items-center gap-1 text-sm font-semibold text-neutral-400 hover:text-[#111827]"
+            className="mb-5 flex items-center gap-1 text-sm font-semibold text-white/45 transition hover:text-white"
           >
             <ChevronLeft size={15} /> Volver
           </button>
@@ -549,11 +552,11 @@ export function BookingForm({
             />
 
             {showRepeatPrompt && lastBooking && (
-              <div className="mt-4 rounded-2xl border border-[#D9B766]/40 bg-[#FFFBEB] p-4">
-                <p className="text-sm font-black text-[#111827]">
+              <div className="mt-4 rounded-2xl border border-[#D9B766]/35 bg-[#D9B766]/10 p-4">
+                <p className="text-sm font-black text-white">
                   ¿Quieres repetir tu última cita?
                 </p>
-                <div className="mt-3 grid gap-2 text-sm text-neutral-700">
+                <div className="mt-3 grid gap-2 text-sm text-white/70">
                   <p>
                     <span className="font-semibold">Mismo servicio:</span>{" "}
                     {services.find((item) => item.id === lastBooking.serviceId)?.name}
@@ -564,7 +567,7 @@ export function BookingForm({
                       ? barbers.find((item) => item.id === lastBooking.barberId)?.name
                       : "Primer barbero disponible"}
                   </p>
-                  <p className="font-semibold text-[#8A641F]">
+                  <p className="font-semibold text-[#F4D98F]">
                     Solo cambia fecha y hora.
                   </p>
                 </div>
@@ -572,14 +575,14 @@ export function BookingForm({
                   <button
                     type="button"
                     onClick={repeatLastBooking}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#111827] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0F172A] active:scale-[0.98]"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#D9B766] px-4 py-2.5 text-sm font-bold text-[#080A0F] transition hover:bg-[#E8C978] active:scale-[0.98]"
                   >
                     Repetir cita
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowRepeatPrompt(false)}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm font-bold text-neutral-600 transition hover:bg-white"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-white/12 bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-white/70 transition hover:bg-white/[0.08] hover:text-white"
                   >
                     Elegir otra cosa
                   </button>
@@ -589,12 +592,12 @@ export function BookingForm({
 
             <div className="mt-4 grid gap-3">
               {services.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-                  <Scissors size={24} className="mx-auto text-slate-300" />
-                  <p className="mt-3 font-black text-[#080A0F]">
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.045] p-6 text-center">
+                  <Scissors size={24} className="mx-auto text-[#D9B766]" />
+                  <p className="mt-3 font-black text-white">
                     Aún no hay servicios publicados
                   </p>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                  <p className="mt-1 text-sm leading-6 text-white/55">
                     Esta barbería está preparando su catálogo online. Contacta por WhatsApp o vuelve más tarde.
                   </p>
                 </div>
@@ -610,18 +613,18 @@ export function BookingForm({
                   }}
                 >
                   <div>
-                    <p className="font-bold">{s.name}</p>
+                    <p className="font-bold text-white">{s.name}</p>
                     {s.description && (
-                      <p className="mt-1 text-sm leading-5 text-slate-500">
+                      <p className="mt-1 text-sm leading-5 text-white/55">
                         {s.description}
                       </p>
                     )}
-                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-500">
+                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-white/45">
                       <Clock size={12} /> {s.duration_minutes} min
                     </p>
                   </div>
 
-                  <span className="shrink-0 text-xl font-black">{formatPrice(s.price)}</span>
+                  <span className="shrink-0 text-xl font-black text-[#F4D98F]">{formatPrice(s.price)}</span>
                 </ChoiceButton>
               ))}
             </div>
@@ -638,12 +641,12 @@ export function BookingForm({
 
             <div className="mt-4 grid gap-3">
               {barbers.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
-                  <User size={24} className="mx-auto text-slate-300" />
-                  <p className="mt-3 font-black text-[#080A0F]">
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.045] p-6 text-center">
+                  <User size={24} className="mx-auto text-[#D9B766]" />
+                  <p className="mt-3 font-black text-white">
                     Equipo no disponible online
                   </p>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                  <p className="mt-1 text-sm leading-6 text-white/55">
                     Esta barbería aún no ha publicado barberos activos para reservas.
                   </p>
                 </div>
@@ -660,13 +663,13 @@ export function BookingForm({
                     }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100">
-                        <User size={18} className="text-slate-400" />
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/10">
+                        <User size={18} className="text-[#D9B766]" />
                       </div>
 
                       <div>
-                        <p className="font-bold">Cualquiera</p>
-                        <p className="text-sm text-slate-500">
+                        <p className="font-bold text-white">Cualquiera</p>
+                        <p className="text-sm text-white/52">
                           Primer barbero disponible
                         </p>
                       </div>
@@ -687,13 +690,13 @@ export function BookingForm({
                       }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-sm font-black uppercase text-[#080A0F]">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#D9B766]/20 bg-[#D9B766]/10 text-sm font-black uppercase text-[#F4D98F]">
                           {b.name.charAt(0)}
                         </div>
 
                         <div>
-                          <p className="font-bold">{b.name}</p>
-                          <p className="text-sm text-slate-500">Barbero</p>
+                          <p className="font-bold text-white">{b.name}</p>
+                          <p className="text-sm text-white/52">Barbero</p>
                         </div>
                       </div>
                     </ChoiceButton>
@@ -712,7 +715,7 @@ export function BookingForm({
               description="Selecciona un día y después una hora disponible."
             />
 
-            <label className="mt-4 block text-sm font-semibold text-slate-700">
+            <label className="mt-4 block text-sm font-semibold text-white/78">
               Día
             </label>
 
@@ -726,16 +729,16 @@ export function BookingForm({
                 setUnavailableSlots([]);
                 setFormError(null);
               }}
-              className="input mt-1 py-3"
+              className="mt-1 w-full rounded-[14px] border border-white/10 bg-white/[0.075] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-[#D9B766] focus:ring-4 focus:ring-[#D9B766]/10 [color-scheme:dark]"
             />
 
             {date && (
               <>
                 <div className="mt-5 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-slate-700">Hora</p>
+                  <p className="text-sm font-semibold text-white/78">Hora</p>
 
                   {checkingAvailability && (
-                    <p className="rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-400">
+                    <p className="rounded-full border border-white/10 bg-white/[0.055] px-2.5 py-1 text-xs font-medium text-white/45">
                       Comprobando disponibilidad...
                     </p>
                   )}
@@ -766,10 +769,10 @@ export function BookingForm({
                         }}
                         className={`min-h-12 rounded-xl border py-2 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
                           isUnavailable
-                            ? "border-red-100 bg-red-50 text-red-300 line-through"
+                            ? "border-red-300/15 bg-red-500/10 text-red-200/55 line-through"
                           : time === slot.time
-                            ? "border-[#080A0F] bg-[#080A0F] text-white"
-                            : "border-slate-200 hover:border-[#C9922A] hover:bg-[#FFFCF7]"
+                            ? "border-[#D9B766] bg-[#D9B766] text-[#080A0F] shadow-[0_12px_34px_rgba(217,183,102,0.18)]"
+                            : "border-white/10 bg-white/[0.055] text-white hover:border-[#D9B766]/40 hover:bg-white/[0.085]"
                         }`}
                       >
                         <span>{slot.time}</span>
@@ -784,13 +787,13 @@ export function BookingForm({
                 </div>
 
                 {date && !checkingAvailability && unavailableSlots.length >= slots.length && (
-                  <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800">
+                  <div className="mt-4 rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 p-4 text-sm text-[#F4D98F]">
                     <p className="font-black">No quedan horarios disponibles este día</p>
-                    <p className="mt-1">Prueba otro día para encontrar un hueco libre.</p>
+                    <p className="mt-1 text-white/62">Prueba otro día para encontrar un hueco libre.</p>
                   </div>
                 )}
 
-                <p className="mt-3 text-xs text-slate-400">
+                <p className="mt-3 text-xs text-white/38">
                   Las horas ocupadas no se pueden seleccionar. Si elegiste "Cualquiera",
                   se comprueba la disponibilidad del equipo.
                 </p>
@@ -811,7 +814,7 @@ export function BookingForm({
             <div className="mt-5 grid gap-4">
               {/* Nombre */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-slate-700">
+                <label className="mb-1 block text-sm font-semibold text-white/78">
                   Nombre completo *
                 </label>
                 <input
@@ -822,17 +825,17 @@ export function BookingForm({
                   }}
                   placeholder="Ej: Carlos García"
                   autoComplete="name"
-                  className="input py-3"
+                  className="w-full rounded-[14px] border border-white/10 bg-white/[0.075] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-[#D9B766] focus:ring-4 focus:ring-[#D9B766]/10"
                 />
               </div>
 
               {/* Teléfono */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-slate-700">
+                <label className="mb-1 block text-sm font-semibold text-white/78">
                   Teléfono *
                 </label>
                 <div className="relative">
-                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/35" />
                   <input
                     type="tel"
                     value={phone}
@@ -842,28 +845,28 @@ export function BookingForm({
                     }}
                     placeholder="+34 600 000 000"
                     autoComplete="tel"
-                    className="input py-3 pl-10"
+                    className="w-full rounded-[14px] border border-white/10 bg-white/[0.075] px-4 py-3 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-[#D9B766] focus:ring-4 focus:ring-[#D9B766]/10"
                   />
                 </div>
               </div>
 
               {/* Email opcional */}
               <div>
-                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-white/78">
                   Email
-                  <span className="rounded-xl bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-400">
+                  <span className="rounded-xl border border-white/10 bg-white/[0.06] px-2 py-0.5 text-xs font-medium text-white/38">
                     opcional
                   </span>
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/35" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="tu@email.com"
                     autoComplete="email"
-                    className="input py-3 pl-10"
+                    className="w-full rounded-[14px] border border-white/10 bg-white/[0.075] px-4 py-3 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-[#D9B766] focus:ring-4 focus:ring-[#D9B766]/10"
                   />
                 </div>
               </div>
@@ -880,29 +883,29 @@ export function BookingForm({
             </div>
 
             {/* Política de cancelación */}
-            <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
-              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
-              <p className="text-xs text-amber-800">
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#D9B766]/20 bg-[#D9B766]/10 px-4 py-3">
+              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-[#D9B766]" />
+              <p className="text-xs text-white/68">
                 <span className="font-semibold">Cancelación:</span>{" "}
                 Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
               </p>
             </div>
 
             {/* Consentimiento marketing */}
-            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/[0.055] px-4 py-3">
               <input
                 type="checkbox"
                 checked={privacyRead}
                 onChange={(e) => setPrivacyRead(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#D9B766]"
               />
-              <span className="text-xs leading-relaxed text-slate-500">
+              <span className="text-xs leading-relaxed text-white/55">
                 He leído la{" "}
-                <Link href="/legal/privacidad" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                <Link href="/legal/privacidad" className="font-semibold text-[#F4D98F] hover:text-[#FFE7A6]">
                   Política de Privacidad
                 </Link>{" "}
                 y las{" "}
-                <Link href="/legal/condiciones-reservas" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                <Link href="/legal/condiciones-reservas" className="font-semibold text-[#F4D98F] hover:text-[#FFE7A6]">
                   Condiciones de Reservas
                 </Link>
                 .
@@ -914,13 +917,13 @@ export function BookingForm({
                 type="checkbox"
                 checked={marketingConsent}
                 onChange={(e) => setMarketingConsent(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#D9B766]"
               />
-              <span className="text-xs leading-relaxed text-slate-500">
+              <span className="text-xs leading-relaxed text-white/55">
                 Acepto que{" "}
-                <span className="font-semibold text-slate-700">{barbershopName}</span>{" "}
+                <span className="font-semibold text-white/78">{barbershopName}</span>{" "}
                 pueda contactarme por WhatsApp sobre esta reserva.{" "}
-                <span className="text-slate-400">(Opcional)</span>
+                <span className="text-white/35">(Opcional)</span>
               </span>
             </label>
 
@@ -937,7 +940,7 @@ export function BookingForm({
             </div>
 
             {/* Mensaje de confianza — desktop */}
-            <p className="mt-3 hidden text-center text-xs text-slate-400 md:block">
+            <p className="mt-3 hidden text-center text-xs text-white/38 md:block">
               <ShieldCheck size={12} className="mr-1 inline-block" />
               Reserva segura · Sin comisiones · Directo con {barbershopName}
             </p>
@@ -949,15 +952,15 @@ export function BookingForm({
         {step === 5 && (
           <StepPanel key="confirmed">
             <div className="text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-                <CheckCircle size={36} className="text-green-600" />
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full border border-emerald-300/25 bg-emerald-400/10">
+                <CheckCircle size={36} className="text-emerald-300" />
               </div>
 
-              <h2 className="mt-4 text-2xl font-black">Reserva confirmada</h2>
+              <h2 className="mt-4 text-2xl font-black text-white">Reserva confirmada</h2>
 
-              <p className="mt-2 text-slate-500">
+              <p className="mt-2 text-white/58">
                 Tu cita en{" "}
-                <span className="font-semibold text-[#111111]">{barbershopName}</span>{" "}
+                <span className="font-semibold text-white">{barbershopName}</span>{" "}
                 está registrada. Tu barbería te espera.
               </p>
             </div>
@@ -969,18 +972,18 @@ export function BookingForm({
                 date={date}
                 time={time}
               />
-              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-                <Phone size={14} className="shrink-0 text-slate-400" />
+              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.055] px-4 py-3 text-sm text-white/65">
+                <Phone size={14} className="shrink-0 text-[#D9B766]" />
                 <span>{name} · {phone}</span>
               </div>
             </div>
 
             {/* Aviso confirmación */}
-            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <p className="text-sm font-bold text-amber-800">
+            <div className="mt-4 rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 p-4">
+              <p className="text-sm font-bold text-[#F4D98F]">
                 La barbería confirmará tu cita en breve.
               </p>
-              <p className="mt-1 text-sm text-amber-700">
+              <p className="mt-1 text-sm text-white/62">
                 Si tienes alguna duda, contacta directamente con {barbershopName}.
               </p>
             </div>
@@ -999,7 +1002,7 @@ export function BookingForm({
                   href={`https://wa.me/?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-green-200 bg-green-50 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100 active:scale-[0.98]"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-300/20 bg-emerald-400/10 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-400/15 active:scale-[0.98]"
                 >
                   <MessageCircle size={16} />
                   Compartir cita por WhatsApp
@@ -1010,7 +1013,7 @@ export function BookingForm({
             <button
               type="button"
               onClick={reset}
-              className="mt-3 w-full rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+              className="mt-3 w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 text-sm font-semibold text-white/62 transition hover:bg-white/[0.08] hover:text-white"
             >
               Hacer otra reserva
             </button>
@@ -1022,13 +1025,13 @@ export function BookingForm({
 
       {/* ── Botón fijo inferior — solo móvil, solo Step 4 ── */}
       {step === 4 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#E5E7EB] bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.10)] md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#07111F]/92 px-4 pb-6 pt-4 shadow-[0_-18px_54px_rgba(0,0,0,0.32)] backdrop-blur-xl md:hidden">
           <ConfirmButton
             saving={saving}
             disabled={!name.trim() || !phone.trim() || saving}
             onClick={handleConfirmBooking}
           />
-          <p className="mt-2 text-center text-xs text-neutral-400">
+          <p className="mt-2 text-center text-xs text-white/42">
             <ShieldCheck size={11} className="mr-1 inline-block" />
             Reserva segura · Sin comisiones · Directo con {barbershopName}
           </p>

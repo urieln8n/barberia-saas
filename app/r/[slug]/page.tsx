@@ -251,16 +251,19 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const trackingSource = "direct";
 
   return (
-    <main className="premium-grid-bg min-h-screen pb-24 text-slate-950 md:pb-0">
+    <main className="relative min-h-screen overflow-hidden bg-[#05070D] pb-24 text-white md:pb-0">
       <TrackPageView barbershopId={barbershop.id} source={trackingSource} city={barbershop.city} />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_12%_8%,rgba(217,183,102,0.16),transparent_28rem),radial-gradient(circle_at_86%_18%,rgba(47,111,235,0.15),transparent_30rem),linear-gradient(135deg,#05070D_0%,#07111F_48%,#02030A_100%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.8)_1px,transparent_1px)] [background-size:28px_28px]" />
+
       <section
-        className="relative overflow-hidden bg-[#080A0F] bg-cover bg-center text-white"
+        className="relative z-10 overflow-hidden bg-cover bg-center text-white"
         style={heroStyle}
       >
         {!publicProfile?.cover_image_url && (
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,168,76,0.22),transparent_34%),linear-gradient(135deg,#080A0F_0%,#1D2433_52%,#080A0F_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(213,168,76,0.18),transparent_34%),linear-gradient(135deg,rgba(8,10,15,0.70),rgba(7,17,31,0.30))]" />
         )}
-        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-4 pb-7 pt-6 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-12 lg:px-8">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-4 pb-5 pt-5 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:pb-8 md:pt-10 lg:px-8">
           <div>
             <div className="mb-5 flex items-center gap-4">
               {publicProfile?.logo_url ? (
@@ -310,7 +313,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               </span>
             </div>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <TrackedLink
                 barbershopId={barbershop.id}
                 eventType="booking_click"
@@ -348,7 +351,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/12 bg-white/[0.07] p-5 shadow-2xl shadow-black/20 backdrop-blur">
+          <div className="hidden rounded-[28px] border border-white/12 bg-white/[0.07] p-5 shadow-2xl shadow-black/20 backdrop-blur md:block">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-[#D9B766]">
               Tu barbería te espera
             </p>
@@ -375,47 +378,47 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
         </div>
       </section>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 md:grid-cols-[1fr_0.86fr] md:py-8 lg:px-8">
-        <div className="order-2 space-y-6 md:order-1">
-          <section className="section-band p-5 md:p-6">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-6 px-4 py-5 sm:px-6 md:grid-cols-[0.82fr_1fr] md:py-8 lg:px-8">
+        <div className="order-2 space-y-5 md:order-1">
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.24)] backdrop-blur-xl md:p-6">
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
-                <p className="label-section">Servicios</p>
-                <h2 className="section-heading">Servicios destacados</h2>
+                <p className="text-[11px] font-black uppercase text-[#D9B766]">Servicios</p>
+                <h2 className="text-lg font-black text-white">Elige tu servicio y confirma tu hora</h2>
               </div>
-              <span className="rounded-full bg-[#F8F5EF] px-3 py-1 text-xs font-bold text-[#8A641F]">
+              <span className="rounded-full border border-[#D9B766]/25 bg-[#D9B766]/10 px-3 py-1 text-xs font-bold text-[#F4D98F]">
                 {activeServices.length} activos
               </span>
             </div>
 
             {activeServices.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-[#E7E2D8] bg-[#FDFBF7] p-6 text-center">
-                <Scissors size={24} className="mx-auto text-neutral-300" />
-                <p className="mt-3 font-bold text-[#111827]">Servicios no disponibles todavía</p>
-                <p className="mt-1 text-sm leading-6 text-neutral-500">
+              <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.04] p-6 text-center">
+                <Scissors size={24} className="mx-auto text-[#D9B766]" />
+                <p className="mt-3 font-bold text-white">Servicios no disponibles todavía</p>
+                <p className="mt-1 text-sm leading-6 text-white/55">
                   Esta barbería aún no ha publicado su catálogo de servicios online.
                 </p>
               </div>
             ) : (
               <div className="grid gap-3">
                 {activeServices.map((service) => (
-                  <article key={service.id} className="rounded-2xl border border-[#E7E2D8] bg-white p-4 shadow-sm">
+                  <article key={service.id} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4 shadow-sm">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <h3 className="font-black text-[#111827]">{service.name}</h3>
+                        <h3 className="font-black text-white">{service.name}</h3>
                         {service.description && (
-                          <p className="mt-1 text-sm leading-6 text-neutral-500">
+                          <p className="mt-1 text-sm leading-6 text-white/55">
                             {service.description}
                           </p>
                         )}
-                        <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-500">
+                        <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/45">
                           <Clock size={13} />
                           {service.duration_minutes} min
                         </p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-xl font-black text-[#111827]">{formatPrice(service.price)}</p>
-                        <a href={`/r/${barbershop.slug}?service=${service.id}#reservar`} className="mt-3 inline-flex rounded-xl bg-[#111827] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#0F172A]">
+                        <p className="text-xl font-black text-[#F4D98F]">{formatPrice(service.price)}</p>
+                        <a href={`/r/${barbershop.slug}?service=${service.id}#reservar`} className="mt-3 inline-flex rounded-xl bg-[#D9B766] px-3 py-2 text-xs font-bold text-[#080A0F] transition hover:bg-[#E8C978]">
                           Elegir
                         </a>
                       </div>
@@ -426,34 +429,34 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             )}
           </section>
 
-          <section className="section-band p-5 md:p-6">
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
             <div className="mb-4">
-              <p className="label-section">Equipo</p>
-              <h2 className="section-heading">Barberos disponibles</h2>
+              <p className="text-[11px] font-black uppercase text-[#D9B766]">Equipo</p>
+              <h2 className="text-lg font-black text-white">Barberos disponibles</h2>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <article className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
+              <article className="rounded-2xl border border-[#D9B766]/22 bg-[#D9B766]/10 p-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-neutral-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-[#D9B766]">
                     <User size={20} />
                   </div>
                   <div>
-                    <p className="font-black text-[#111827]">Cualquiera</p>
-                    <p className="text-sm text-neutral-500">Primer barbero libre</p>
+                    <p className="font-black text-white">Cualquiera</p>
+                    <p className="text-sm text-white/55">Primer barbero libre</p>
                   </div>
                 </div>
               </article>
 
               {activeBarbers.map((barber) => (
-                <article key={barber.id} className="rounded-2xl border border-[#E7E2D8] bg-white p-4 shadow-sm">
+                <article key={barber.id} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4 shadow-sm">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#111111] text-sm font-black uppercase text-[#D9B766]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#D9B766]/24 bg-[#D9B766]/10 text-sm font-black uppercase text-[#F4D98F]">
                       {barber.name.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-black text-[#111827]">{barber.name}</p>
-                      <p className="text-sm text-neutral-500">Barbero</p>
+                      <p className="font-black text-white">{barber.name}</p>
+                      <p className="text-sm text-white/55">Barbero</p>
                     </div>
                   </div>
                 </article>
@@ -467,27 +470,27 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               { icon: BadgeCheck, title: "Confirmación de cita", text: "La cita se registra directamente en la agenda." },
               { icon: ShieldCheck, title: "Sin dobles reservas", text: "Las horas ocupadas se muestran bloqueadas." },
             ].map(({ icon: Icon, title, text }) => (
-              <article key={title} className="rounded-2xl border border-[#E7E2D8] bg-white p-4 shadow-sm">
-                <Icon size={18} className="text-[#8A641F]" />
-                <h3 className="mt-3 font-black text-[#111827]">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
+              <article key={title} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4 shadow-sm backdrop-blur">
+                <Icon size={18} className="text-[#D9B766]" />
+                <h3 className="mt-3 font-black text-white">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-white/55">{text}</p>
               </article>
             ))}
           </section>
 
-          <section className="section-band p-5 md:p-6">
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
-                <p className="label-section">Promoción activa</p>
-                <h2 className="section-heading">Oferta destacada</h2>
+                <p className="text-[11px] font-black uppercase text-[#D9B766]">Promoción activa</p>
+                <h2 className="text-lg font-black text-white">Oferta destacada</h2>
               </div>
-              <span className="badge-gold">Disponible hoy</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#D9B766]/30 bg-[#D9B766]/10 px-2.5 py-0.5 text-xs font-semibold text-[#F4D98F]">Disponible hoy</span>
             </div>
-            <div className="rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/8 p-5">
-              <p className="text-lg font-black text-[#111827]">
+            <div className="rounded-2xl border border-[#D9B766]/22 bg-[#D9B766]/10 p-5">
+              <p className="text-lg font-black text-white">
                 Reserva online y asegura tu hueco sin llamadas
               </p>
-              <p className="mt-2 text-sm leading-6 text-neutral-600">
+              <p className="mt-2 text-sm leading-6 text-white/62">
                 {freeSlotsToday > 0
                   ? `Hoy quedan ${freeSlotsToday} huecos estimados. Elige servicio, barbero y hora desde esta pagina.`
                   : "Agenda muy completa para hoy. Revisa la siguiente disponibilidad en el formulario."}
@@ -495,16 +498,16 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
           </section>
 
-          <section className="section-band p-5 md:p-6">
-            <p className="label-section">Reseñas</p>
-            <h2 className="section-heading mt-1">Experiencia de clientes</h2>
-            <div className="mt-4 rounded-2xl border border-dashed border-[#E7E2D8] bg-[#FDFBF7] p-5 text-sm leading-6 text-neutral-500">
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
+            <p className="text-[11px] font-black uppercase text-[#D9B766]">Reseñas</p>
+            <h2 className="mt-1 text-lg font-black text-white">Experiencia de clientes</h2>
+            <div className="mt-4 rounded-2xl border border-dashed border-white/15 bg-white/[0.04] p-5 text-sm leading-6 text-white/55">
               Esta barbería podrá mostrar reseñas verificadas aquí cuando active el módulo de reseñas de BarberíaOS.
             </div>
           </section>
         </div>
 
-        <aside className="order-1 space-y-6 md:sticky md:top-6 md:order-2 md:self-start">
+        <aside className="order-1 space-y-5 md:sticky md:top-6 md:order-2 md:self-start">
           <section id="reservar" className="scroll-mt-4">
             <BookingForm
               barbershopId={barbershop.id}
@@ -518,12 +521,12 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             />
           </section>
 
-          <section className="rounded-[28px] border border-[#E7E2D8] bg-white p-5 shadow-sm">
-            <p className="label-section">Información útil</p>
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.20)] backdrop-blur-xl">
+            <p className="text-[11px] font-black uppercase text-[#D9B766]">Información útil</p>
             <div className="mt-4 space-y-3 text-sm">
               {location && (
-                <p className="flex gap-2 text-neutral-600">
-                  <MapPin size={15} className="mt-0.5 shrink-0 text-neutral-400" />
+                <p className="flex gap-2 text-white/62">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-[#D9B766]" />
                   <span>{location}</span>
                 </p>
               )}
@@ -536,15 +539,15 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   href={mapsHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                  className="flex gap-2 font-semibold text-white transition hover:text-[#F4D98F]"
                 >
                   <Map size={15} className="mt-0.5 shrink-0" />
                   Ver en Google Maps
                 </TrackedLink>
               )}
               {barbershop.phone && (
-                <p className="flex gap-2 text-neutral-600">
-                  <MessageCircle size={15} className="mt-0.5 shrink-0 text-neutral-400" />
+                <p className="flex gap-2 text-white/62">
+                  <MessageCircle size={15} className="mt-0.5 shrink-0 text-[#D9B766]" />
                   <span>{barbershop.phone}</span>
                 </p>
               )}
@@ -553,7 +556,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   href={barbershop.instagram_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                  className="flex gap-2 font-semibold text-white transition hover:text-[#F4D98F]"
                 >
                   <Instagram size={15} className="mt-0.5 shrink-0" />
                   Instagram
@@ -564,14 +567,14 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   href={barbershop.google_business_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                  className="flex gap-2 font-semibold text-white transition hover:text-[#F4D98F]"
                 >
                   <Star size={15} className="mt-0.5 shrink-0" />
                   Perfil en Google
                 </a>
               )}
               {!location && !barbershop.phone && !barbershop.instagram_url && !barbershop.google_business_url && (
-                <p className="text-neutral-500">
+                <p className="text-white/55">
                   Esta barbería todavía no ha añadido información pública de contacto.
                 </p>
               )}
@@ -579,17 +582,17 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </section>
 
           {/* QR de reservas */}
-          <section className="rounded-[28px] border border-[#E7E2D8] bg-white p-5 shadow-sm">
+          <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.20)] backdrop-blur-xl">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="label-section">Reserva rápida</p>
-                <p className="mt-0.5 font-black text-[#111827]">QR de citas</p>
+                <p className="text-[11px] font-black uppercase text-[#D9B766]">Reserva rápida</p>
+                <p className="mt-0.5 font-black text-white">QR de citas</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#111827] text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D9B766]/25 bg-[#D9B766]/10 text-[#D9B766]">
                 <QrCode size={16} />
               </div>
             </div>
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex justify-center rounded-2xl border border-white/10 bg-white p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrUrl}
@@ -599,15 +602,15 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 className="rounded-2xl"
               />
             </div>
-            <p className="mt-3 text-center text-xs text-neutral-400">
+            <p className="mt-3 text-center text-xs text-white/42">
               Escanea para reservar desde el móvil
             </p>
           </section>
         </aside>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E7E2D8] bg-white/95 px-4 pb-5 pt-3 shadow-[0_-10px_40px_rgba(17,17,17,0.10)] backdrop-blur md:hidden">
-        <a href="#reservar" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] px-4 py-3 text-sm font-black text-white shadow-lg shadow-slate-900/15">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#07111F]/92 px-4 pb-5 pt-3 shadow-[0_-18px_54px_rgba(0,0,0,0.34)] backdrop-blur-xl md:hidden">
+        <a href="#reservar" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-4 py-3 text-sm font-black text-[#080A0F] shadow-[0_18px_48px_rgba(217,183,102,0.24)]">
           Reservar cita <CalendarCheck size={17} />
         </a>
       </div>
