@@ -7,6 +7,7 @@ import {
   Clock,
   ChevronLeft,
   CalendarDays,
+  CalendarCheck,
   CheckCircle,
   User,
   Scissors,
@@ -275,22 +276,82 @@ function ConfirmButton({
   saving,
   disabled,
   onClick,
+  label = "Confirmar reserva",
+  icon = "calendar",
 }: {
   saving: boolean;
   disabled: boolean;
   onClick: () => void;
+  label?: string;
+  icon?: "calendar" | "check";
 }) {
+  const Icon = icon === "check" ? CheckCircle : CalendarCheck;
+
   return (
     <motion.button
       type="button"
       onClick={onClick}
       disabled={disabled}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D9B766] py-4 text-base font-black text-[#080A0F] shadow-[0_18px_48px_rgba(217,183,102,0.24)] transition-all hover:-translate-y-0.5 hover:bg-[#E8C978] active:scale-[0.98] disabled:translate-y-0 disabled:opacity-40"
+      className="pointer-events-auto flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D9B766] py-4 text-base font-black text-[#080A0F] shadow-[0_18px_48px_rgba(217,183,102,0.24)] transition-all hover:-translate-y-0.5 hover:bg-[#E8C978] active:scale-[0.98] disabled:translate-y-0 disabled:opacity-40"
     >
-      {saving ? <Clock size={18} /> : <CalendarDays size={18} />}
-      {saving ? "Comprobando disponibilidad..." : "Confirmar reserva"}
+      {saving ? <Clock size={18} /> : <Icon size={18} />}
+      {saving ? "Comprobando disponibilidad..." : label}
     </motion.button>
+  );
+}
+
+function MobileStepCta({
+  step,
+  saving,
+  disabled,
+  onConfirm,
+  barbershopName,
+}: {
+  step: number;
+  saving: boolean;
+  disabled: boolean;
+  onConfirm: () => void;
+  barbershopName: string;
+}) {
+  if (step < 1 || step > 4) return null;
+
+  const labels: Record<number, string> = {
+    1: "Selecciona un servicio",
+    2: "Selecciona barbero",
+    3: "Elige día y hora",
+    4: "Confirmar reserva",
+  };
+  const handleClick = () => {
+    if (step === 4) {
+      onConfirm();
+      return;
+    }
+
+    document.getElementById("reservar")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 z-30 px-4 pb-3 pt-3 md:hidden bottom-[env(safe-area-inset-bottom)]">
+      <div className="rounded-[24px] border border-white/10 bg-[#07111F]/90 p-3 shadow-[0_-18px_54px_rgba(0,0,0,0.30)] backdrop-blur-xl">
+        <ConfirmButton
+          saving={saving}
+          disabled={step === 4 && disabled}
+          onClick={handleClick}
+          label={labels[step]}
+          icon={step === 4 ? "check" : "calendar"}
+        />
+        {step === 4 && (
+          <p className="mt-2 text-center text-xs text-white/42">
+            <ShieldCheck size={11} className="mr-1 inline-block" />
+            Reserva segura · Sin comisiones · Directo con {barbershopName}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -805,7 +866,7 @@ export function BookingForm({
         {/* Step 4: Datos personales */}
         {step === 4 && (
           <StepPanel key="customer">
-          <div className="pb-32 md:pb-0">
+          <div>
             <StepTitle
               title="Último paso: tus datos"
               description="Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."
@@ -1023,20 +1084,13 @@ export function BookingForm({
         </div>
       </div>
 
-      {/* ── Botón fijo inferior — solo móvil, solo Step 4 ── */}
-      {step === 4 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#07111F]/92 px-4 pb-6 pt-4 shadow-[0_-18px_54px_rgba(0,0,0,0.32)] backdrop-blur-xl md:hidden">
-          <ConfirmButton
-            saving={saving}
-            disabled={!name.trim() || !phone.trim() || saving}
-            onClick={handleConfirmBooking}
-          />
-          <p className="mt-2 text-center text-xs text-white/42">
-            <ShieldCheck size={11} className="mr-1 inline-block" />
-            Reserva segura · Sin comisiones · Directo con {barbershopName}
-          </p>
-        </div>
-      )}
+      <MobileStepCta
+        step={step}
+        saving={saving}
+        disabled={!name.trim() || !phone.trim() || saving}
+        onConfirm={handleConfirmBooking}
+        barbershopName={barbershopName}
+      />
     </>
   );
 }
