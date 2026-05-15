@@ -131,6 +131,65 @@ const faqs = [
   ["¿Mis clientes tienen que instalar una app?", "No. Reservan desde el navegador con tu link público, tu QR o el botón que compartes por Instagram y WhatsApp."],
 ] as const;
 
+const homeJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: BUSINESS_CONFIG.commercialName,
+    url: BUSINESS_CONFIG.siteUrl,
+    email: BUSINESS_CONFIG.legalEmail,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: BUSINESS_CONFIG.supportEmail,
+      url: `${BUSINESS_CONFIG.siteUrl}/demo`,
+      areaServed: "ES",
+      availableLanguage: ["es"],
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: BUSINESS_CONFIG.commercialName,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: BUSINESS_CONFIG.siteUrl,
+    description:
+      "Software SaaS para barberías con reservas online, agenda, caja, clientes, productos, QR, marketing e IA del dueño.",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "EUR",
+      lowPrice: "39",
+      highPrice: "149",
+      offerCount: "3",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: BUSINESS_CONFIG.siteUrl,
+      },
+    ],
+  },
+];
+
 function Shell({ children, className = "", ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <MotionSection className={`px-5 py-16 md:py-24 lg:px-8 ${className}`} {...props}>
@@ -289,6 +348,10 @@ function PublicBookingMockup() {
 export default function HomePage() {
   return (
     <LandingExperience>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       <div className="landing-canvas text-white">
         <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070d]/82 px-5 backdrop-blur-xl lg:px-8">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">

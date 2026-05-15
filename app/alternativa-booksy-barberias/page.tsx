@@ -50,7 +50,7 @@ const whySwitch = [
   },
   {
     title: "Tu página, tu marca",
-    text: "En Booksy tu perfil está dentro de la plataforma de ellos. En BarberíaOS tienes /r/tu-barberia, tu enlace propio que puedes compartir donde quieras sin depender de nadie.",
+  text: "En Booksy tu perfil está dentro de su plataforma. En BarberíaOS tienes un enlace público de reservas propio que puedes compartir donde quieras sin depender de un marketplace.",
   },
   {
     title: "Caja y gestión completa",
@@ -69,7 +69,7 @@ function Mark({ value, invert = false }: { value: boolean; invert?: boolean }) {
 const faqs = [
   {
     q: "¿Por qué BarberíaOS es mejor que Booksy para mi barbería?",
-    a: "BarberíaOS no cobra comisión por reserva, tus datos de clientes son siempre tuyos, tienes tu propia página /r/tu-barberia y además incluye caja, gestión de barberos y QR — todo en uno y a precio fijo.",
+    a: "BarberíaOS no cobra comisión por reserva, tus datos de clientes son siempre tuyos, tienes tu propio enlace público de reservas y además incluye caja, gestión de barberos y QR: todo en uno y a precio fijo.",
   },
   {
     q: "¿Puedo migrar mis clientes de Booksy a BarberíaOS?",

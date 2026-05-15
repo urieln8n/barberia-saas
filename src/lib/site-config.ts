@@ -3,6 +3,7 @@ import { SITE_URL } from "@/src/lib/site-url";
 export const BUSINESS_CONFIG = {
   commercialName: "BarberíaOS",
   legalOwner: "BarberíaOS",
+  legalContactName: "Equipo BarberíaOS",
   legalEmail: "hola_barberiaos@hotmail.com",
   supportEmail: "hola_barberiaos@hotmail.com",
   privacyEmail: "hola_barberiaos@hotmail.com",
@@ -11,8 +12,13 @@ export const BUSINESS_CONFIG = {
   lastUpdated: "15 de mayo de 2026",
   jurisdiction: "España",
   applicableLaw: "legislación española y normativa europea aplicable",
-  registeredAddress: "España",
-  taxId: "disponible bajo solicitud para comunicaciones formales",
+  contact: "hola_barberiaos@hotmail.com",
+  identificationFallback:
+    "Información identificativa disponible bajo solicitud comercial hasta la formalización del contrato.",
+  registeredAddress:
+    "Información identificativa disponible bajo solicitud comercial hasta la formalización del contrato.",
+  taxId:
+    "Información identificativa disponible bajo solicitud comercial hasta la formalización del contrato.",
   cookieSettingsUrl: "/legal/cookies",
   whatsappUrl:
     "https://wa.me/34645466308?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Barber%C3%ADaOS",
@@ -28,7 +34,7 @@ export const SEO_INTENT_PAGES = [
     status: "publicada",
   },
   {
-    path: "/agenda-online-barberia",
+    path: "/reservas-online-barberia",
     intent: "Agenda online y reservas",
     status: "publicada",
   },
@@ -48,9 +54,24 @@ export const SEO_INTENT_PAGES = [
     status: "publicada",
   },
   {
-    path: "/software-caja-barberia",
+    path: "/caja-para-barberias",
     intent: "Caja y cierre diario para barberías",
-    status: "recomendada",
+    status: "publicada",
+  },
+  {
+    path: "/software-barberias-sin-comision",
+    intent: "Software para barberías sin comisión por reserva",
+    status: "publicada",
+  },
+  {
+    path: "/software-barberias-barcelona",
+    intent: "Software para barberías en Barcelona",
+    status: "publicada",
+  },
+  {
+    path: "/agenda-online-barberia",
+    intent: "Agenda online y reservas",
+    status: "publicada",
   },
   {
     path: "/software-inventario-barberia",

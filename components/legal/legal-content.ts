@@ -24,7 +24,7 @@ export type LegalPageContent = {
 };
 
 export const LEGAL_LAST_UPDATED = BUSINESS_CONFIG.lastUpdated;
-export const PENDING = "Información configurable según el servicio contratado";
+export const PENDING = BUSINESS_CONFIG.identificationFallback;
 const COMMERCIAL_NAME = BUSINESS_CONFIG.commercialName;
 const LEGAL_OWNER = BUSINESS_CONFIG.legalOwner;
 const LEGAL_EMAIL = BUSINESS_CONFIG.legalEmail;
@@ -36,6 +36,7 @@ const TAX_ID = BUSINESS_CONFIG.taxId;
 const JURISDICTION = BUSINESS_CONFIG.jurisdiction;
 const APPLICABLE_LAW = BUSINESS_CONFIG.applicableLaw;
 const COOKIE_SETTINGS_URL = BUSINESS_CONFIG.cookieSettingsUrl;
+const CONTACT = BUSINESS_CONFIG.contact;
 
 export const legalPages: LegalPageContent[] = [
   {
@@ -223,12 +224,12 @@ export const legalPages: LegalPageContent[] = [
     slug: "cookies",
     href: "/legal/cookies",
     title: "Política de Cookies",
-    description: "Información sobre cookies técnicas, preferencias, analíticas y marketing, con una tabla editable para completar antes de producción.",
+    description: "Información sobre cookies técnicas, preferencias, analíticas y marketing en BarberíaOS.",
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "Las cookies necesarias pueden usarse para prestar el servicio.",
       "Las cookies analíticas o de marketing no deben cargarse hasta tener consentimiento.",
-      "La tabla de cookies queda preparada para completar con proveedores reales.",
+      "La tabla de cookies identifica tecnologías necesarias y categorías que solo se activarán cuando exista consentimiento.",
     ],
     sections: [
       {
@@ -263,9 +264,9 @@ export const legalPages: LegalPageContent[] = [
           headers: ["Nombre", "Proveedor", "Finalidad", "Duración", "Tipo", "Base legal"],
           rows: [
             ["barberiaos:cookie-consent", "BarberíaOS", "Guardar preferencias de cookies", "Persistente local", "Necesaria", "Interés legítimo / obligación normativa"],
-            ["sb-*", "Supabase", "Autenticación y sesión, si aplica", PENDING, "Técnica", "Ejecución de contrato"],
-            [PENDING, PENDING, PENDING, PENDING, "Analítica", "Consentimiento"],
-            [PENDING, PENDING, PENDING, PENDING, "Marketing", "Consentimiento"],
+            ["sb-*", "Supabase", "Autenticación y sesión, si aplica", "Según configuración de sesión", "Técnica", "Ejecución de contrato"],
+            ["Analítica", "Proveedor configurado tras consentimiento", "Medición agregada de uso si se activa", "Según proveedor", "Analítica", "Consentimiento"],
+            ["Marketing", "Proveedor configurado tras consentimiento", "Medición de campañas si se activa", "Según proveedor", "Marketing", "Consentimiento"],
           ],
         },
       },
@@ -879,8 +880,8 @@ export const legalPages: LegalPageContent[] = [
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "No se crea formulario porque no existe infraestructura específica de contacto legal.",
-      "Se muestran bloques visuales con placeholders.",
-      "Todos los canales deben completarse por el titular.",
+      "Se muestran canales centralizados para asuntos legales, privacidad y soporte.",
+      `Contacto principal: ${CONTACT}.`,
     ],
     sections: [
       {
@@ -889,10 +890,10 @@ export const legalPages: LegalPageContent[] = [
         table: {
           headers: ["Canal", "Dato"],
           rows: [
-            ["Email legal", PENDING],
-            ["Email privacidad", PENDING],
-            ["Email soporte", PENDING],
-            ["Dirección postal", PENDING],
+            ["Email legal", LEGAL_EMAIL],
+            ["Email privacidad", PRIVACY_EMAIL],
+            ["Email soporte", SUPPORT_EMAIL],
+            ["Dirección postal", ADDRESS],
           ],
         },
       },

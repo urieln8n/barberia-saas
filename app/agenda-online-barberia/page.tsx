@@ -34,7 +34,7 @@ const howWorks = [
   {
     step: "2",
     title: "Compartes el enlace o el QR",
-    text: "Tu página /r/tu-barberia funciona en Instagram, Google, WhatsApp y en el mostrador con QR.",
+    text: "Tu enlace público de reservas funciona en Instagram, Google, WhatsApp y en el mostrador con QR.",
   },
   {
     step: "3",
@@ -55,7 +55,7 @@ const benefits = [
 const faqs = [
   {
     q: "¿Cómo reservan mis clientes con la agenda online?",
-    a: "Comparten tu enlace /r/tu-barberia o escanean el QR del local. El cliente elige barbero, servicio y hora — sin llamadas ni mensajes de WhatsApp.",
+    a: "Comparten el enlace público de reservas de tu barbería o escanean el QR del local. El cliente elige barbero, servicio y hora, sin llamadas ni mensajes de WhatsApp.",
   },
   {
     q: "¿Puedo controlar qué horas ofrezco para reservas?",

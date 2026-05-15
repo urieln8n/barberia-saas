@@ -1,4 +1,4 @@
-const FALLBACK_SITE_URL = "https://barberiaos.com";
+const FALLBACK_SITE_URL = "https://www.barberiaos.com";
 
 function normalizeUrl(url: string) {
   const withProtocol = /^https?:\/\//i.test(url) ? url : `https://${url}`;

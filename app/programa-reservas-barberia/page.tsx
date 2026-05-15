@@ -26,7 +26,7 @@ const included = [
   "Detección de no-show y huecos libres",
   "Caja diaria con cobros por barbero",
   "Base de datos de clientes propia",
-  "Página pública /r/tu-barberia",
+  "Enlace público de reservas de cada barbería",
   "QR descargable para el local",
   "Panel de control en tiempo real",
 ];
