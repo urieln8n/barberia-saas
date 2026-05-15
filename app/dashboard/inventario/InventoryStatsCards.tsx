@@ -1,4 +1,4 @@
-import { AlertTriangle, Boxes, CircleDollarSign, PackageCheck, PackageX, SprayCan } from "lucide-react";
+import { AlertTriangle, Boxes, CircleDollarSign, PackageCheck, PackageX, TrendingUp } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import type { InventoryProduct } from "./types";
 
@@ -34,6 +34,14 @@ export function InventoryStatsCards({ products }: Props) {
       total + product.current_stock * Number(product.purchase_price ?? 0),
     0,
   );
+  const estimatedRetailValue = retailProducts.reduce(
+    (total, product) => total + product.current_stock * Number(product.sale_price ?? 0),
+    0,
+  );
+  const estimatedMargin = retailProducts.reduce((total, product) => {
+    if (product.purchase_price === null || product.sale_price === null) return total;
+    return total + product.current_stock * (product.sale_price - product.purchase_price);
+  }, 0);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
@@ -60,7 +68,7 @@ export function InventoryStatsCards({ products }: Props) {
         iconColor="text-red-700"
       />
       <StatCard
-        label="Valor estimado"
+        label="Valor coste"
         value={formatCurrency(estimatedValue)}
         description="A precio de compra"
         icon={CircleDollarSign}
@@ -68,18 +76,18 @@ export function InventoryStatsCards({ products }: Props) {
         iconColor="text-emerald-700"
       />
       <StatCard
-        label="Venta"
-        value={retailProducts.length}
-        description="Productos retail"
+        label="Valor venta"
+        value={formatCurrency(estimatedRetailValue)}
+        description="Stock retail disponible"
         icon={Boxes}
         iconBg="bg-[#D5A84C]/10"
         iconColor="text-[#8A641F]"
       />
       <StatCard
-        label="Uso interno"
-        value={internalProducts.length}
-        description="Consumibles"
-        icon={SprayCan}
+        label="Margen estimado"
+        value={formatCurrency(estimatedMargin)}
+        description={`${retailProducts.length} venta · ${internalProducts.length} interno`}
+        icon={TrendingUp}
         iconBg="bg-slate-100"
         iconColor="text-slate-700"
       />

@@ -82,8 +82,9 @@ export async function createCashMovement(formData: FormData) {
   const { supabase, barbershopId } = await getContext();
 
   const cashSessionId = String(formData.get("cash_session_id") ?? "").trim();
+  const movementType = String(formData.get("movement_type") ?? "payment").trim();
   const clientId = String(formData.get("client_id") ?? "").trim() || null;
-  const barberId = String(formData.get("barber_id") ?? "").trim();
+  const barberId = String(formData.get("barber_id") ?? "").trim() || null;
   const serviceId = String(formData.get("service_id") ?? "").trim() || null;
   const amount = parseAmount(formData.get("amount"));
   const discountAmount = parseAmount(formData.get("discount_amount"));
@@ -92,7 +93,10 @@ export async function createCashMovement(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim() || null;
 
   if (!cashSessionId) return { error: "No hay una caja abierta válida." };
-  if (!barberId) return { error: "Selecciona un barbero." };
+  if (movementType !== "payment" && movementType !== "expense") {
+    return { error: "Tipo de movimiento no válido." };
+  }
+  if (movementType === "payment" && !barberId) return { error: "Selecciona un barbero." };
   if (!Number.isFinite(amount) || amount <= 0) return { error: "Precio inválido." };
   if (!Number.isFinite(discountAmount) || discountAmount < 0) return { error: "Descuento inválido." };
   if (!Number.isFinite(tipAmount) || tipAmount < 0) return { error: "Propina inválida." };
@@ -122,7 +126,7 @@ export async function createCashMovement(formData: FormData) {
     discount_amount: discountAmount,
     tip_amount: tipAmount,
     payment_method: paymentMethod,
-    movement_type: "payment",
+    movement_type: movementType,
     description,
   });
 

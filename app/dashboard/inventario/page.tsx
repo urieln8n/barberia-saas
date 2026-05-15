@@ -78,7 +78,7 @@ export default async function InventarioPage() {
       )
       .eq("barbershop_id", barbershopId)
       .order("created_at", { ascending: false })
-      .limit(8),
+      .limit(50),
   ]);
 
   const errorMessage =

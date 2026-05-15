@@ -8,9 +8,7 @@ import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
 import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
 import {
   CalendarCheck,
-  TrendingUp,
   Users,
-  AlertCircle,
   Clock,
   Wallet,
   QrCode,
@@ -30,6 +28,10 @@ import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist"
 import { GrowthScoreCard } from "@/components/dashboard/GrowthScoreCard";
 import { SmartAlerts } from "@/components/dashboard/SmartAlerts";
 import { WelcomePanel } from "@/components/dashboard/WelcomePanel";
+import {
+  PremiumDashboardItem,
+  PremiumDashboardMotion,
+} from "@/components/dashboard/PremiumDashboardMotion";
 
 export const dynamic = "force-dynamic";
 
@@ -486,6 +488,9 @@ export default async function DashboardPage() {
     barberWithMostSlots && barberWithMostSlots.freeSlots.length > 0
       ? `${barberWithMostSlots.barberName} tiene ${barberWithMostSlots.freeSlots.length} huecos libres hoy. Publica una promo.`
       : "La agenda de hoy está bastante completa. Revisa próximas citas.",
+    topServiceTodayCount > 0
+      ? `${topServiceTodayName} es el servicio con más cobros hoy. Úsalo como gancho para horas flojas.`
+      : "Aún no hay servicio líder hoy. Registra cobros para detectar qué empujar.",
     `${clientsAttendedToday} clientes atendidos y ${cashPaymentsCount} pagos en efectivo registrados hoy.`,
     cashSessionOpen
       ? "Cierra caja al final del día para evitar descuadres."
@@ -687,7 +692,7 @@ export default async function DashboardPage() {
               {barbershop?.name ?? "Tu barbería"}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-500">
-              Vista general de tu barbería: reservas, clientes, actividad, huecos y próximos pasos para dejar el sistema listo.
+              Lo importante de hoy en una sola vista: agenda, caja, huecos, clientes para recuperar y equipo activo.
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px]">
@@ -714,21 +719,13 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <WelcomePanel />
-
-      <ActivationChecklist percent={activationPercent} items={activationItems} />
-
-      <GrowthScoreCard score={growthScore} factors={growthFactors} />
-
-      <SmartAlerts alerts={smartAlerts} />
-
       <section className="section-band p-5 md:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">Panel de Hoy</p>
-            <h2 className="section-heading mt-1">Control tower operativo</h2>
+            <h2 className="section-heading mt-1">Control operativo</h2>
             <p className="section-subtext">
-              Citas, caja, huecos, clientes y barberos resumidos para entender el dia en menos de 10 segundos.
+              Reservas, caja, huecos, clientes y barberos ordenados para entender el día en menos de 5 segundos.
             </p>
           </div>
           <Link href="/dashboard/ia" className="btn-outline">
@@ -738,71 +735,188 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Control diario ── */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          title="Ventas hoy"
-          value={formatCurrency(salesToday)}
-          hint={cashSalesToday > 0 ? "Desde caja" : "Desde pagos"}
-          icon={TrendingUp}
-          iconBg="bg-[#16A34A]/10"
-          iconColor="text-[#16A34A]"
-        />
-        <StatCard
-          title="Caja"
-          value={cashSessionOpen ? "Abierta" : "Cerrada"}
-          hint={cashSessionOpen ? "Lista para registrar cobros" : "Abre caja para controlar el día"}
-          icon={Wallet}
-          iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
-          iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
-        />
-        <StatCard
-          title="Clientes nuevos"
-          value={String(clientsAttendedToday)}
-          hint={`${todayPaymentMovements.length} cobros vinculados hoy`}
-          icon={Users}
-          iconBg="bg-[#C89B3C]/10"
-          iconColor="text-[#8A641F]"
-        />
-        <StatCard
-          title="Reservas de hoy"
-          value={String(todayAppointments.length)}
-          hint={`${weekApptsCount} esta semana`}
-          icon={CalendarCheck}
-          iconBg="bg-[#C9922A]/10"
-          iconColor="text-[#C9922A]"
-        />
-        <StatCard
-          title="Huecos libres hoy"
-          value={String(totalFreeSlotsToday)}
-          hint="Slots disponibles desde ahora"
-          icon={Clock}
-          iconBg="bg-slate-100"
-          iconColor="text-slate-600"
-        />
-        <StatCard
-          title="Barbero top del día"
-          value={topDailyBarber?.barberName ?? "Sin ventas"}
-          hint={topDailyBarber ? formatCurrency(topDailyBarber.totalSold) : "Registra cobros en caja"}
-          icon={User}
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-700"
-        />
-        <StatCard
-          title="Barbero con más huecos"
-          value={barberWithMostSlots?.barberName ?? "Sin barberos"}
-          hint={barberWithMostSlots ? `${barberWithMostSlots.freeSlots.length} huecos libres` : "Crea barberos activos"}
-          icon={AlertCircle}
-          iconBg="bg-amber-50"
-          iconColor="text-amber-700"
-        />
-        <StatCard
-          title="Próximas citas"
-          value={String(upcomingAppointments.length)}
-          hint={topServiceTodayCount > 0 ? `Servicio top: ${topServiceTodayName}` : "Reservas activas próximas"}
-          icon={CalendarCheck}
-          iconBg="bg-[#C89B3C]/10"
-          iconColor="text-[#8A641F]"
-        />
+      <PremiumDashboardMotion className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <PremiumDashboardItem className="md:col-span-2 xl:col-span-1">
+          <StatCard
+            kicker="Prioridad 1"
+            title="Reservas de hoy"
+            value={String(todayAppointments.length)}
+            hint={todayAppointments.length > 0 ? `${weekApptsCount} citas esta semana` : "Agenda sin reservas activas hoy"}
+            icon={CalendarCheck}
+            iconBg="bg-[#C9922A]/10"
+            iconColor="text-[#C9922A]"
+            tone="dark"
+            footer={
+              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-[#D5A84C]">
+                Abrir agenda <ArrowRight size={12} />
+              </Link>
+            }
+          />
+        </PremiumDashboardItem>
+        <PremiumDashboardItem>
+          <StatCard
+            kicker="Prioridad 2"
+            title="Caja del día"
+            value={formatCurrency(salesToday)}
+            hint={cashSessionOpen ? "Caja abierta y lista para cobros" : "Caja cerrada: abre sesión antes de cobrar"}
+            icon={Wallet}
+            iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
+            iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
+            tone={cashSessionOpen ? "success" : "warning"}
+            footer={
+              <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+                Ver caja <ArrowRight size={12} />
+              </Link>
+            }
+          />
+        </PremiumDashboardItem>
+        <PremiumDashboardItem>
+          <StatCard
+            kicker="Oportunidad"
+            title="Próximos huecos libres"
+            value={String(totalFreeSlotsToday)}
+            hint={barberWithMostSlots ? `${barberWithMostSlots.barberName} tiene más disponibilidad` : "Configura barberos para calcular huecos"}
+            icon={Clock}
+            iconBg="bg-slate-100"
+            iconColor="text-slate-600"
+            footer={
+              <Link href="/dashboard/huecos" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+                Llenar huecos <ArrowRight size={12} />
+              </Link>
+            }
+          />
+        </PremiumDashboardItem>
+        <PremiumDashboardItem>
+          <StatCard
+            kicker="Retención"
+            title="Clientes que podrían volver"
+            value={String(dormantClientsCount)}
+            hint={dormantClientsCount > 0 ? "Más de 45 días sin visita registrada" : "No hay clientes dormidos detectados"}
+            icon={Users}
+            iconBg="bg-[#C89B3C]/10"
+            iconColor="text-[#8A641F]"
+            footer={
+              <Link href="/dashboard/recuperacion" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+                Recuperar clientes <ArrowRight size={12} />
+              </Link>
+            }
+          />
+        </PremiumDashboardItem>
+        <PremiumDashboardItem>
+          <StatCard
+            kicker="Equipo"
+            title="Barberos activos"
+            value={String(activeBarbersCount)}
+            hint={topDailyBarber ? `Top hoy: ${topDailyBarber.barberName}` : "Sin ventas asignadas todavía"}
+            icon={User}
+            iconBg="bg-emerald-50"
+            iconColor="text-emerald-700"
+            footer={
+              <Link href="/dashboard/barberos" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+                Ver equipo <ArrowRight size={12} />
+              </Link>
+            }
+          />
+        </PremiumDashboardItem>
+      </PremiumDashboardMotion>
+
+      <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
+        <div className="panel overflow-hidden p-0">
+          <div className="border-b border-slate-200 bg-slate-50/80 px-5 py-4 md:px-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="label-section">Reservas de hoy</p>
+                <h2 className="section-heading mt-1">Lo próximo en agenda</h2>
+                <p className="section-subtext">
+                  Primer vistazo para saber quién llega, a qué hora y con qué barbero.
+                </p>
+              </div>
+              <Link href="/dashboard/reservas" className="btn-outline min-h-0 px-3 py-2">
+                Ver reservas <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+
+          {todayAppointments.length === 0 ? (
+            <div className="p-5 md:p-6">
+              <EmptyState
+                icon={CalendarCheck}
+                title="Hoy no hay reservas activas"
+                description="Comparte tu enlace público o revisa los huecos libres para empujar una campaña rápida por WhatsApp."
+                action={
+                  <Link href="/dashboard/huecos" className="btn-dark">
+                    <Clock size={15} /> Ver huecos libres
+                  </Link>
+                }
+              />
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {todayAppointments.slice(0, 5).map((appointment) => (
+                <article
+                  key={appointment.id}
+                  className="grid gap-3 bg-white p-4 transition-colors hover:bg-slate-50/80 sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
+                >
+                  <div className="inline-flex w-fit items-center gap-2 rounded-2xl bg-[#080A0F] px-3 py-2 text-white">
+                    <Clock size={14} className="text-[#D5A84C]" />
+                    <span className="text-sm font-black">{formatTime(appointment.start_time)}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-black text-[#111827]">
+                      {appointment.clients?.name ?? "Cliente sin nombre"}
+                    </p>
+                    <p className="mt-0.5 text-xs leading-5 text-slate-500">
+                      {appointment.services?.name ?? "Servicio sin definir"} · {appointment.barbers?.name ?? "Sin barbero"}
+                    </p>
+                  </div>
+                  <span className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusClass(appointment.status)}`}>
+                    {statusLabel(appointment.status)}
+                  </span>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="grid gap-5">
+          <div className="section-band-dark p-5 md:p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase text-[#D5A84C]">Caja del día</p>
+                <p className="mt-2 text-4xl font-black leading-none text-white">{formatCurrency(salesToday)}</p>
+                <p className="mt-2 text-sm leading-6 text-white/55">
+                  {cashSessionOpen ? "Sesión abierta. Mantén cobros y efectivo sincronizados." : "La caja está cerrada. Abre sesión para controlar efectivo y descuadres."}
+                </p>
+              </div>
+              <div className={cashSessionOpen ? "badge-success" : "badge-warning"}>
+                {cashSessionOpen ? "Abierta" : "Cerrada"}
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+                <p className="text-[10px] font-bold uppercase text-white/35">Clientes atendidos</p>
+                <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+                <p className="text-[10px] font-bold uppercase text-white/35">Efectivo</p>
+                <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="panel">
+            <p className="label-section">Clientes para recuperar</p>
+            <h2 className="section-heading mt-1">{dormantClientsCount} podrían volver</h2>
+            <p className="section-subtext">
+              {dormantClientsCount > 0
+                ? "Activa una campaña corta para clientes sin visita en más de 45 días."
+                : "Cuando haya clientes inactivos, aparecerán aquí como oportunidad de recuperación."}
+            </p>
+            <Link href="/dashboard/recuperacion" className="mt-4 btn-outline w-full">
+              Abrir recuperación <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section className="panel">
@@ -818,7 +932,7 @@ export default async function DashboardPage() {
             Ver caja <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {recommendedActions.map((action) => (
             <div key={action} className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 text-sm font-semibold leading-6 text-neutral-700">
               {action}
@@ -857,6 +971,14 @@ export default async function DashboardPage() {
       <BarberPerformance items={barberPerformanceItems} compact />
 
       <TodayAvailability items={todayAvailabilityItems} />
+
+      <WelcomePanel />
+
+      <ActivationChecklist percent={activationPercent} items={activationItems} />
+
+      <GrowthScoreCard score={growthScore} factors={growthFactors} />
+
+      <SmartAlerts alerts={smartAlerts} />
 
       {/* ── Próximas citas + Panel lateral ── */}
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">

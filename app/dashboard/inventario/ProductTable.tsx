@@ -53,8 +53,78 @@ export function ProductTable({
   togglingId,
 }: Props) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+    <>
+      <div className="grid gap-3 p-4 md:hidden">
+        {products.map((product) => (
+          <article key={product.id} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-black text-[#080A0F]">{product.name}</p>
+                <p className="mt-0.5 text-xs text-slate-400">
+                  {product.sku ? `SKU ${product.sku}` : "Sin SKU"}
+                  {product.supplier ? ` · ${product.supplier}` : ""}
+                </p>
+              </div>
+              {getStockBadge(product)}
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-2xl bg-slate-50 px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-slate-400">Stock</p>
+                <p className="mt-1 font-black text-[#080A0F]">{product.current_stock}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-slate-400">Venta</p>
+                <p className="mt-1 font-black text-[#080A0F]">{formatCurrency(product.sale_price)}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-slate-400">Margen</p>
+                <p className="mt-1 font-black text-[#080A0F]">{formatPercent(getMargin(product))}</p>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center justify-between gap-2">
+              <span className={product.product_type === "retail" ? "badge-gold" : "badge-neutral"}>
+                {product.product_type === "retail" ? "Venta" : "Uso interno"}
+              </span>
+              <div className="flex items-center justify-end gap-1">
+                <button
+                  type="button"
+                  onClick={() => onEdit(product)}
+                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#080A0F]"
+                  aria-label={`Editar ${product.name}`}
+                  title="Editar"
+                >
+                  <Edit3 size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onMovement(product)}
+                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#C9922A]/10 hover:text-[#8A641F]"
+                  aria-label={`Registrar movimiento de ${product.name}`}
+                  title="Registrar movimiento"
+                >
+                  <PlusCircle size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onToggle(product)}
+                  disabled={togglingId === product.id}
+                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#080A0F] disabled:opacity-40"
+                  aria-label={
+                    product.is_active
+                      ? `Desactivar ${product.name}`
+                      : `Activar ${product.name}`
+                  }
+                  title={product.is_active ? "Desactivar" : "Activar"}
+                >
+                  {product.is_active ? <ToggleRight size={17} /> : <ToggleLeft size={17} />}
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full text-sm">
         <thead className="border-b border-slate-200 bg-slate-50/80">
           <tr>
             <th className="table-header-cell">Producto</th>
@@ -156,7 +226,8 @@ export function ProductTable({
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+        </table>
+      </div>
+    </>
   );
 }

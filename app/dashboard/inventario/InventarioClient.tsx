@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Boxes, Filter, Plus, Search } from "lucide-react";
+import { motion } from "framer-motion";
+import { AlertCircle, Boxes, Filter, PackagePlus, Plus, Search, ShoppingCart, TrendingUp } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
@@ -38,6 +39,14 @@ function formatDate(iso: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(value);
 }
 
 export function InventarioClient({
@@ -90,6 +99,47 @@ export function InventarioClient({
   const productById = useMemo(() => {
     return new Map(products.map((product) => [product.id, product]));
   }, [products]);
+
+  const lowStockProducts = useMemo(
+    () =>
+      products
+        .filter((product) => product.is_active && product.current_stock <= product.min_stock)
+        .sort((a, b) => a.current_stock - b.current_stock)
+        .slice(0, 4),
+    [products],
+  );
+
+  const salesLeaders = useMemo(() => {
+    const soldByProduct = new Map<string, number>();
+
+    for (const movement of recentMovements) {
+      const isSale =
+        movement.source === "cash_sale" || movement.movement_type === "manual_sale";
+
+      if (!isSale) continue;
+
+      soldByProduct.set(
+        movement.product_id,
+        (soldByProduct.get(movement.product_id) ?? 0) + movement.quantity,
+      );
+    }
+
+    return Array.from(soldByProduct.entries())
+      .map(([productId, quantitySold]) => {
+        const product = productById.get(productId);
+        const estimatedMargin =
+          product?.sale_price !== null &&
+          product?.purchase_price !== null &&
+          product?.sale_price !== undefined &&
+          product?.purchase_price !== undefined
+            ? (product.sale_price - product.purchase_price) * quantitySold
+            : null;
+
+        return { product, productId, quantitySold, estimatedMargin };
+      })
+      .sort((a, b) => b.quantitySold - a.quantitySold)
+      .slice(0, 4);
+  }, [productById, recentMovements]);
 
   function openCreate() {
     setEditingProduct(null);
@@ -151,6 +201,99 @@ export function InventarioClient({
       )}
 
       <InventoryStatsCards products={products} />
+
+      <section className="grid gap-4 xl:grid-cols-[1fr_1fr]">
+        <SectionCard
+          title="Productos a vigilar"
+          description="Stock bajo o agotado que puede afectar a ventas y consumibles."
+          action={
+            <PrimaryButton type="button" onClick={openCreate} variant="secondary" className="w-full sm:w-auto">
+              <PackagePlus size={16} />
+              Añadir producto
+            </PrimaryButton>
+          }
+        >
+          {lowStockProducts.length === 0 ? (
+            <EmptyState
+              icon={Boxes}
+              title="Stock bajo control."
+              description="No hay productos activos por debajo del mínimo configurado."
+              tone="success"
+            />
+          ) : (
+            <div className="grid gap-3">
+              {lowStockProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.04 }}
+                  className="flex flex-col gap-3 rounded-[18px] border border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0">
+                    <p className="font-black text-[#080A0F]">{product.name}</p>
+                    <p className="mt-0.5 text-xs text-slate-500">
+                      {product.product_type === "retail" ? "Producto de venta" : "Uso interno"} · mínimo {product.min_stock} uds
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={product.current_stock === 0 ? "badge-danger" : "badge-warning"}>
+                      {product.current_stock === 0 ? "Sin stock" : "Stock bajo"}
+                    </span>
+                    <span className="text-sm font-black text-[#080A0F]">{product.current_stock} uds</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        <SectionCard
+          title="Productos más vendidos"
+          description="Ranking estimado desde movimientos recientes conectados con Caja."
+          action={
+            <span className="badge-gold">
+              <ShoppingCart size={13} />
+              Caja conectada
+            </span>
+          }
+        >
+          {salesLeaders.length === 0 ? (
+            <EmptyState
+              icon={TrendingUp}
+              title="Aún no hay ventas de productos."
+              description="Cuando vendas desde Caja, aparecerán aquí los productos con más salida."
+            />
+          ) : (
+            <div className="grid gap-3">
+              {salesLeaders.map((leader, index) => (
+                <motion.div
+                  key={leader.productId}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.04 }}
+                  className="flex items-center justify-between gap-3 rounded-[18px] border border-slate-200 bg-slate-50/70 px-4 py-3"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F] text-xs font-black text-[#D5A84C]">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate font-black text-[#080A0F]">
+                        {leader.product?.name ?? "Producto eliminado"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Margen estimado: {leader.estimatedMargin === null ? "sin coste" : formatCurrency(leader.estimatedMargin)}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="badge-success">{leader.quantitySold} uds</span>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+      </section>
 
       <SectionCard
         title="Productos"
@@ -254,15 +397,17 @@ export function InventarioClient({
 
       <SectionCard
         title="Movimientos recientes"
-        description="Últimas entradas, salidas y ajustes manuales registrados."
+        description="Últimas entradas, salidas, ventas y ajustes manuales registrados."
       >
         {recentMovements.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-            No hay movimientos recientes.
-          </p>
+          <EmptyState
+            icon={Boxes}
+            title="Sin movimientos de stock."
+            description="Las entradas, ajustes y ventas desde caja aparecerán en este historial."
+          />
         ) : (
           <div className="space-y-2">
-            {recentMovements.map((movement) => {
+            {recentMovements.slice(0, 8).map((movement) => {
               const product = productById.get(movement.product_id);
 
               return (

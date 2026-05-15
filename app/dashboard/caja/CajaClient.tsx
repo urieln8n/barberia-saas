@@ -2,14 +2,18 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
+  ArrowDownRight,
+  ArrowUpRight,
   Banknote,
+  Boxes,
   CreditCard,
   Landmark,
+  LockKeyhole,
+  PackagePlus,
   Plus,
   ReceiptText,
-  Scale,
-  Sparkles,
   Wallet,
   ShoppingCart,
   Tag,
@@ -94,11 +98,48 @@ function movementTotal(movement: CashMovement) {
   return total;
 }
 
+function isProductSale(movement: CashMovement) {
+  return (
+    movement.movement_type === "payment" &&
+    !movement.services &&
+    (movement.description ?? "").toLowerCase().includes("venta desde caja")
+  );
+}
+
 function SubmitError({ message }: { message: string }) {
   return (
     <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
       {message}
     </p>
+  );
+}
+
+function QuickAction({
+  href,
+  icon: Icon,
+  label,
+  description,
+}: {
+  href: string;
+  icon: typeof Plus;
+  label: string;
+  description: string;
+}) {
+  return (
+    <motion.a
+      href={href}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      className="flex min-h-[92px] items-start gap-3 rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-[#2563EB]/30 hover:bg-slate-50"
+    >
+      <span className="metric-icon h-9 w-9 rounded-2xl bg-[#2563EB]/10">
+        <Icon size={16} className="text-[#2563EB]" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-sm font-black text-[#080A0F]">{label}</span>
+        <span className="mt-0.5 block text-xs leading-5 text-slate-500">{description}</span>
+      </span>
+    </motion.a>
   );
 }
 
@@ -115,6 +156,7 @@ export function CajaClient({
   const router = useRouter();
   const [openingError, setOpeningError] = useState("");
   const [movementError, setMovementError] = useState("");
+  const [expenseError, setExpenseError] = useState("");
   const [saleError, setSaleError] = useState("");
   const [closingError, setClosingError] = useState("");
   const [closingAmount, setClosingAmount] = useState("");
@@ -127,6 +169,7 @@ export function CajaClient({
   const [saleSuccess, setSaleSuccess] = useState("");
   const [isOpeningPending, startOpeningTransition] = useTransition();
   const [isMovementPending, startMovementTransition] = useTransition();
+  const [isExpensePending, startExpenseTransition] = useTransition();
   const [isSalePending, startSaleTransition] = useTransition();
   const [isClosingPending, startClosingTransition] = useTransition();
 
@@ -161,21 +204,37 @@ export function CajaClient({
     };
 
     const salesMovements = movements.filter((movement) => movement.movement_type === "payment");
+    const expenseMovements = movements.filter((movement) => movement.movement_type === "expense");
+    const productMovements = salesMovements.filter(isProductSale);
+    const serviceMovements = salesMovements.filter((movement) => !isProductSale(movement));
     const totalSold = salesMovements.reduce((sum, movement) => sum + movementTotal(movement), 0);
+    const serviceRevenue = serviceMovements.reduce((sum, movement) => sum + movementTotal(movement), 0);
+    const productRevenue = productMovements.reduce((sum, movement) => sum + movementTotal(movement), 0);
+    const expenses = expenseMovements.reduce((sum, movement) => sum + Math.abs(movementTotal(movement)), 0);
 
     for (const movement of salesMovements) {
       byMethod[movement.payment_method] =
         (byMethod[movement.payment_method] ?? 0) + movementTotal(movement);
     }
 
-    const expectedCash = Number(session?.opening_amount ?? 0) + byMethod.cash;
+    const cashExpenses = expenseMovements
+      .filter((movement) => movement.payment_method === "cash")
+      .reduce((sum, movement) => sum + Math.abs(movementTotal(movement)), 0);
+    const expectedCash = Number(session?.opening_amount ?? 0) + byMethod.cash - cashExpenses;
     const averageTicket = salesMovements.length > 0 ? totalSold / salesMovements.length : 0;
+    const balanceFinal = Number(session?.opening_amount ?? 0) + totalSold - expenses;
 
     return {
       byMethod,
       totalSold,
+      serviceRevenue,
+      productRevenue,
+      expenses,
       expectedCash,
+      balanceFinal,
       count: salesMovements.length,
+      productCount: productMovements.length,
+      expenseCount: expenseMovements.length,
       averageTicket,
     };
   }, [movements, session?.opening_amount]);
@@ -207,6 +266,19 @@ export function CajaClient({
     });
   }
 
+  function handleExpense(formData: FormData) {
+    setExpenseError("");
+    startExpenseTransition(async () => {
+      const result = await createCashMovement(formData);
+      if (result?.error) {
+        setExpenseError(result.error);
+        return;
+      }
+
+      router.refresh();
+    });
+  }
+
   function handleSale(formData: FormData) {
     setSaleError("");
     setSaleSuccess("");
@@ -235,13 +307,13 @@ export function CajaClient({
     <div className="space-y-5">
       <PageHeader
         section="Caja"
-        title="Asistente de Caja"
-        description="Abre caja, registra cobros y controla el cierre del día con desglose por método de pago."
+        title="Caja diaria"
+        description="Control operativo del día: servicios, productos, gastos, efectivo esperado y cierre."
       >
         {session && (
           <div className="rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
             Hoy empezaste con <span className="font-black text-[#080A0F]">{formatCurrency(Number(session.opening_amount))}</span> en caja.
-            Has cobrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.totalSold)}</span>.
+            Has cobrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.totalSold)}</span> y registrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.expenses)}</span> en gastos.
             Cierre estimado: <span className="font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</span>.
           </div>
         )}
@@ -253,10 +325,99 @@ export function CajaClient({
         </div>
       )}
 
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <QuickAction
+          href={session ? "#registrar-cobro" : "#abrir-caja"}
+          icon={ReceiptText}
+          label={session ? "Registrar venta" : "Abrir caja"}
+          description={session ? "Cobro de servicio o venta manual." : "Define el efectivo inicial del día."}
+        />
+        <QuickAction
+          href={session ? "#venta-productos" : "#abrir-caja"}
+          icon={ShoppingCart}
+          label="Vender producto"
+          description="Caja e inventario quedan conectados."
+        />
+        <QuickAction
+          href={session ? "#registrar-gasto" : "#abrir-caja"}
+          icon={ArrowDownRight}
+          label="Registrar gasto"
+          description="Salida de efectivo del turno."
+        />
+        <QuickAction
+          href={session ? "#cerrar-caja" : "/dashboard/inventario"}
+          icon={session ? LockKeyhole : PackagePlus}
+          label={session ? "Cerrar caja" : "Añadir producto"}
+          description={session ? "Cuenta efectivo y revisa diferencia." : "Prepara productos para vender."}
+        />
+      </section>
+
       <SectionCard
+        className="scroll-mt-24"
+        bodyClassName="p-5 md:p-6"
+        title="Panel conectado"
+        description="Lectura rápida de caja, productos vendidos y gastos antes del cierre."
+      >
+        <div className="grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-[22px] border border-slate-200 bg-[linear-gradient(135deg,#080A0F_0%,#111827_58%,#1D4ED8_130%)] p-5 text-white shadow-[0_24px_70px_rgba(8,10,15,0.24)]"
+          >
+            <p className="text-xs font-black uppercase text-white/45">Balance operativo</p>
+            <p className="mt-3 text-4xl font-black leading-none">{formatCurrency(totals.balanceFinal)}</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/45">Servicios</p>
+                <p className="mt-1 text-lg font-black">{formatCurrency(totals.serviceRevenue)}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/45">Productos</p>
+                <p className="mt-1 text-lg font-black">{formatCurrency(totals.productRevenue)}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/45">Gastos</p>
+                <p className="mt-1 text-lg font-black">{formatCurrency(totals.expenses)}</p>
+              </div>
+            </div>
+          </motion.div>
+          <div className="grid gap-3">
+            <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-black uppercase text-slate-400">Efectivo esperado</p>
+                  <p className="mt-1 text-2xl font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</p>
+                </div>
+                <Banknote size={20} className="text-[#8A641F]" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-[18px] border border-emerald-100 bg-emerald-50 px-4 py-3">
+                <p className="text-xs font-bold uppercase text-emerald-700">Cobros</p>
+                <p className="mt-1 text-xl font-black text-emerald-900">{totals.count}</p>
+              </div>
+              <div className="rounded-[18px] border border-amber-100 bg-amber-50 px-4 py-3">
+                <p className="text-xs font-bold uppercase text-amber-700">Productos</p>
+                <p className="mt-1 text-xl font-black text-amber-900">{totals.productCount}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        className="scroll-mt-24"
         title="Vender productos"
         description="Añade productos a la caja y descuenta stock automáticamente."
+        action={
+          <PrimaryButton href="/dashboard/inventario" variant="secondary" className="w-full sm:w-auto">
+            <Boxes size={16} />
+            Inventario
+          </PrimaryButton>
+        }
+        bodyClassName="p-5 md:p-6"
       >
+        <div id="venta-productos" className="sr-only" />
         {!session ? (
           <EmptyState
             icon={ShoppingCart}
@@ -453,6 +614,7 @@ export function CajaClient({
           description="Introduce el efectivo inicial disponible en caja antes de empezar a vender."
           className="max-w-2xl"
         >
+          <div id="abrir-caja" className="sr-only" />
           <form action={handleOpen} className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
             <div>
               <label className="form-label">Importe inicial</label>
@@ -485,21 +647,23 @@ export function CajaClient({
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard label="Caja inicial" value={formatCurrency(Number(session.opening_amount))} description="Apertura del día" icon={Wallet} />
-            <StatCard label="Total vendido hoy" value={formatCurrency(totals.totalSold)} description={`${totals.count} cobros`} icon={ReceiptText} iconBg="bg-emerald-50" iconColor="text-emerald-600" />
-            <StatCard label="Efectivo esperado" value={formatCurrency(totals.expectedCash)} description="Caja inicial + efectivo" icon={Banknote} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
-            <StatCard label="Ticket medio" value={formatCurrency(totals.averageTicket)} description="Promedio por cobro" icon={Sparkles} />
+            <StatCard label="Ingresos servicios" value={formatCurrency(totals.serviceRevenue)} description="Cobros de agenda y servicios" icon={ArrowUpRight} iconBg="bg-emerald-50" iconColor="text-emerald-600" />
+            <StatCard label="Ventas productos" value={formatCurrency(totals.productRevenue)} description={`${totals.productCount} ventas desde caja`} icon={ShoppingCart} iconBg="bg-[#D5A84C]/10" iconColor="text-[#8A641F]" />
+            <StatCard label="Gastos" value={formatCurrency(totals.expenses)} description={`${totals.expenseCount} salidas registradas`} icon={ArrowDownRight} iconBg="bg-red-50" iconColor="text-red-600" />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
+            <StatCard label="Efectivo esperado" value={formatCurrency(totals.expectedCash)} description="Caja inicial + efectivo - gastos" icon={Banknote} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
             <StatCard label="Total tarjeta" value={formatCurrency(totals.byMethod.card)} description="Cobros con tarjeta" icon={CreditCard} />
             <StatCard label="Total Bizum" value={formatCurrency(totals.byMethod.bizum)} description="Cobros por Bizum" icon={Landmark} iconBg="bg-amber-50" iconColor="text-amber-700" />
-            <StatCard label="Total transferencia" value={formatCurrency(totals.byMethod.transfer)} description="Cobros por transferencia" icon={Scale} iconBg="bg-orange-50" iconColor="text-orange-700" />
           </div>
 
           <section className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
             <SectionCard title="Registrar cobro" description="Añade un cobro manual a la caja abierta.">
+              <div id="registrar-cobro" className="sr-only" />
               <form action={handleMovement} className="grid gap-4">
                 <input type="hidden" name="cash_session_id" value={session.id} />
+                <input type="hidden" name="movement_type" value="payment" />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
@@ -627,64 +791,119 @@ export function CajaClient({
               </form>
             </SectionCard>
 
-            <SectionCard title="Cerrar caja" description="Compara el efectivo esperado con el dinero contado.">
-              <form action={handleClose} className="grid gap-4">
-                <input type="hidden" name="cash_session_id" value={session.id} />
+            <div className="grid gap-5">
+              <SectionCard title="Registrar gasto" description="Salida de caja para compras, cambio o incidencias.">
+                <div id="registrar-gasto" className="sr-only" />
+                <form action={handleExpense} className="grid gap-4">
+                  <input type="hidden" name="cash_session_id" value={session.id} />
+                  <input type="hidden" name="movement_type" value="expense" />
+                  <input type="hidden" name="discount_amount" value="0" />
+                  <input type="hidden" name="tip_amount" value="0" />
 
-                <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-neutral-400">
-                    Efectivo esperado
-                  </p>
-                  <p className="mt-2 text-3xl font-black text-[#111827]">
-                    {formatCurrency(totals.expectedCash)}
-                  </p>
-                </div>
+                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                    <div>
+                      <label className="form-label">Importe *</label>
+                      <input
+                        name="amount"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        required
+                        placeholder="Ej: 12.50"
+                        className="input py-3"
+                      />
+                    </div>
+                    <div>
+                      <label className="form-label">Método</label>
+                      <select name="payment_method" defaultValue="cash" className="input py-3">
+                        <option value="cash">Efectivo</option>
+                        <option value="card">Tarjeta</option>
+                        <option value="bizum">Bizum</option>
+                        <option value="transfer">Transferencia</option>
+                        <option value="other">Otro</option>
+                      </select>
+                    </div>
+                  </div>
 
-                <div>
-                  <label className="form-label">Dinero real contado *</label>
-                  <input
-                    name="closing_amount"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                    value={closingAmount}
-                    onChange={(event) => setClosingAmount(event.target.value)}
-                    placeholder="0.00"
-                    className="input py-3"
-                  />
-                </div>
+                  <div>
+                    <label className="form-label">Concepto</label>
+                    <input
+                      name="description"
+                      placeholder="Ej: reposición de cuchillas"
+                      className="input py-3"
+                    />
+                  </div>
 
-                <div className={`rounded-2xl border px-4 py-3 ${
-                  closingDifference === 0
-                    ? "border-neutral-200 bg-neutral-50 text-neutral-600"
-                    : closingDifference > 0
-                      ? "border-emerald-100 bg-emerald-50 text-emerald-700"
-                      : "border-red-100 bg-red-50 text-red-700"
-                }`}>
-                  <p className="text-xs font-bold uppercase tracking-[0.16em]">Diferencia estimada</p>
-                  <p className="mt-1 text-2xl font-black">
-                    {formatCurrency(closingAmount ? closingDifference : 0)}
-                  </p>
-                </div>
+                  {expenseError && <SubmitError message={expenseError} />}
 
-                <div>
-                  <label className="form-label">Nota de cierre</label>
-                  <textarea
-                    name="closing_notes"
-                    rows={4}
-                    placeholder="Ej: Faltan 2 € por cambio entregado manualmente"
-                    className="input resize-none"
-                  />
-                </div>
+                  <PrimaryButton type="submit" disabled={isExpensePending} variant="secondary">
+                    <ArrowDownRight size={16} />
+                    {isExpensePending ? "Registrando..." : "Registrar gasto"}
+                  </PrimaryButton>
+                </form>
+              </SectionCard>
 
-                {closingError && <SubmitError message={closingError} />}
+              <SectionCard title="Cerrar caja" description="Compara el efectivo esperado con el dinero contado.">
+                <div id="cerrar-caja" className="sr-only" />
+                <form action={handleClose} className="grid gap-4">
+                  <input type="hidden" name="cash_session_id" value={session.id} />
 
-                <PrimaryButton type="submit" disabled={isClosingPending} variant="danger">
-                  {isClosingPending ? "Cerrando..." : "Cerrar caja"}
-                </PrimaryButton>
-              </form>
-            </SectionCard>
+                  <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-neutral-400">
+                      Efectivo esperado
+                    </p>
+                    <p className="mt-2 text-3xl font-black text-[#111827]">
+                      {formatCurrency(totals.expectedCash)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Dinero real contado *</label>
+                    <input
+                      name="closing_amount"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      required
+                      value={closingAmount}
+                      onChange={(event) => setClosingAmount(event.target.value)}
+                      placeholder="0.00"
+                      className="input py-3"
+                    />
+                  </div>
+
+                  <div className={`rounded-2xl border px-4 py-3 ${
+                    closingDifference === 0
+                      ? "border-neutral-200 bg-neutral-50 text-neutral-600"
+                      : closingDifference > 0
+                        ? "border-emerald-100 bg-emerald-50 text-emerald-700"
+                        : "border-red-100 bg-red-50 text-red-700"
+                  }`}>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em]">Diferencia estimada</p>
+                    <p className="mt-1 text-2xl font-black">
+                      {formatCurrency(closingAmount ? closingDifference : 0)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Nota de cierre</label>
+                    <textarea
+                      name="closing_notes"
+                      rows={4}
+                      placeholder="Ej: Faltan 2 € por cambio entregado manualmente"
+                      className="input resize-none"
+                    />
+                  </div>
+
+                  {closingError && <SubmitError message={closingError} />}
+
+                  <PrimaryButton type="submit" disabled={isClosingPending} variant="danger">
+                    <LockKeyhole size={16} />
+                    {isClosingPending ? "Cerrando..." : "Cerrar caja"}
+                  </PrimaryButton>
+                </form>
+              </SectionCard>
+            </div>
           </section>
 
           <SectionCard

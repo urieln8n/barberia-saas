@@ -148,6 +148,13 @@ const groupedMobileNav: MobileNavGroup[] = [
   },
 ];
 
+const quickMobileActions: NavItem[] = [
+  { href: "/dashboard/reservas", label: "Nueva reserva", icon: CalendarDays },
+  { href: "/dashboard/qr", label: "QR público", icon: QrCode },
+  { href: "/dashboard/growth", label: "Growth", icon: Rocket, badge: "Growth" },
+  { href: "/dashboard/ia", label: "IA dueño", icon: Bot, badge: "IA" },
+];
+
 const tabConfig: { id: TabId; label: string }[] = [
   { id: "operar",  label: "Operar"  },
   { id: "crecer",  label: "Crecer"  },
@@ -337,10 +344,23 @@ export default function Sidebar() {
   const { collapsed, toggle } = useSidebarCollapse();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeTab, setActiveTab]   = useState<TabId>(() => getActiveTab(pathname));
+  const [activeMobileGroup, setActiveMobileGroup] = useState<string>(() => {
+    return (
+      groupedMobileNav.find((group) =>
+        group.items.some((item) => isActive(pathname, item))
+      )?.title ?? groupedMobileNav[0].title
+    );
+  });
 
   // Auto-sync tab with current route
   useEffect(() => {
     setActiveTab(getActiveTab(pathname));
+    const currentGroup = groupedMobileNav.find((group) =>
+      group.items.some((item) => isActive(pathname, item))
+    );
+    if (currentGroup) {
+      setActiveMobileGroup(currentGroup.title);
+    }
   }, [pathname]);
 
   async function handleLogout() {
@@ -409,27 +429,87 @@ export default function Sidebar() {
             </button>
           </div>
 
-          <nav className="flex flex-1 flex-col gap-5 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)]">
-            {groupedMobileNav.map((group) => (
-              <section key={group.title} aria-labelledby={`mobile-nav-${group.title}`}>
-                <h2
-                  id={`mobile-nav-${group.title}`}
-                  className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
-                >
-                  {group.title}
-                </h2>
-                <div className="grid gap-1.5">
-                  {group.items.map((item) => (
-                    <NavLink
+          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)]">
+            <section aria-labelledby="mobile-quick-actions">
+              <h2
+                id="mobile-quick-actions"
+                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
+              >
+                Accesos rápidos
+              </h2>
+              <div className="grid grid-cols-2 gap-2">
+                {quickMobileActions.map((item) => {
+                  const Icon = item.icon;
+                  const active = isActive(pathname, item);
+
+                  return (
+                    <Link
                       key={item.href}
-                      item={item}
-                      pathname={pathname}
+                      href={item.href}
                       onClick={() => setDrawerOpen(false)}
-                    />
-                  ))}
-                </div>
-              </section>
-            ))}
+                      aria-current={active ? "page" : undefined}
+                      className={`min-h-[78px] rounded-[20px] border p-3 transition-colors ${
+                        active
+                          ? "border-[#C9922A]/35 bg-[#C9922A]/10 text-[#080A0F]"
+                          : "border-[#E7E2D8] bg-[#FAF8F4] text-neutral-700 hover:border-[#C9922A]/30 hover:bg-[#C9922A]/5"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <Icon
+                          size={18}
+                          className={active ? "text-[#C9922A]" : "text-neutral-400"}
+                        />
+                        {item.badge && (
+                          <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase text-[#8A641F]">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      <span className="mt-3 block text-sm font-black leading-tight">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section aria-labelledby="mobile-grouped-navigation" className="min-h-0">
+              <h2
+                id="mobile-grouped-navigation"
+                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
+              >
+                Secciones
+              </h2>
+              <div className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] p-1">
+                {groupedMobileNav.map((group) => {
+                  const active = group.title === activeMobileGroup;
+
+                  return (
+                    <button
+                      key={group.title}
+                      type="button"
+                      onClick={() => setActiveMobileGroup(group.title)}
+                      className={`min-h-10 rounded-xl text-xs font-black transition-colors ${
+                        active
+                          ? "bg-[#080A0F] text-[#C9922A] shadow-sm"
+                          : "text-neutral-500 hover:bg-white hover:text-neutral-950"
+                      }`}
+                    >
+                      {group.title}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="grid gap-1.5">
+                {(groupedMobileNav.find((group) => group.title === activeMobileGroup) ?? groupedMobileNav[0]).items.map((item) => (
+                  <NavLink
+                    key={item.href}
+                    item={item}
+                    pathname={pathname}
+                    onClick={() => setDrawerOpen(false)}
+                  />
+                ))}
+              </div>
+            </section>
           </nav>
 
           {/* Mobile footer */}

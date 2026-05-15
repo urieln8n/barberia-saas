@@ -31,6 +31,7 @@ import { LostMoneyCalculator } from "@/components/marketing/LostMoneyCalculator"
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ProductMockupCard } from "@/components/ui/ProductMockupCard";
 import { FAQAccordion } from "@/components/landing/FAQAccordion";
+import { LandingExperience, MotionSection } from "@/components/landing/PremiumLandingMotion";
 import { SITE_URL } from "@/src/lib/site-url";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
@@ -322,9 +323,9 @@ const publicLegalLinks = [
 
 function Shell({ children, className = "", ...props }: HTMLAttributes<HTMLElement>) {
   return (
-    <section className={`px-5 py-20 lg:px-8 ${className}`} {...props}>
+    <MotionSection className={`px-5 py-20 lg:px-8 ${className}`} {...props}>
       {children}
-    </section>
+    </MotionSection>
   );
 }
 
@@ -841,7 +842,7 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen overflow-hidden bg-[#FAFBFF] text-[#080A0F]">
+      <LandingExperience>
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
@@ -882,7 +883,7 @@ export default function LandingPage() {
       </header>
 
       {/* ── Hero ── */}
-      <Shell className="pb-14 pt-12 lg:pb-20 lg:pt-20">
+      <Shell className="pb-14 pt-12 lg:pb-20 lg:pt-20" data-gsap-premium="hero">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/10 px-4 py-2 text-xs font-black uppercase text-[#C9922A]">
@@ -919,7 +920,9 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-          <DashboardMockup />
+          <div data-gsap-premium="feature">
+            <DashboardMockup />
+          </div>
         </div>
       </Shell>
 
@@ -1014,7 +1017,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Setup ── */}
-      <Shell id="setup" className="bg-[#080A0F] text-white">
+      <Shell id="setup" className="bg-[#080A0F] text-white" data-gsap-premium="feature">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <LandingSection
@@ -1081,7 +1084,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Módulos ── */}
-      <Shell id="modulos" className="bg-white">
+      <Shell id="modulos" className="bg-white" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <LandingSection
             eyebrow="Sistema completo"
@@ -1107,7 +1110,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Marketplace ── */}
-      <Shell id="marketplace">
+      <Shell id="marketplace" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
@@ -1140,7 +1143,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Página pública + QR ── */}
-      <Shell id="qr" className="bg-white">
+      <Shell id="qr" className="bg-white" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <QRVisual />
@@ -1173,7 +1176,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Auditoría web ── */}
-      <Shell id="auditoria" className="bg-[#080A0F] text-white">
+      <Shell id="auditoria" className="bg-[#080A0F] text-white" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
@@ -1217,7 +1220,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Widget ── */}
-      <Shell id="widget">
+      <Shell id="widget" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <WidgetVisual />
@@ -1250,7 +1253,7 @@ export default function LandingPage() {
       </Shell>
 
       {/* ── Por qué no somos otra agenda ── */}
-      <Shell className="bg-[#080A0F] text-white">
+      <Shell className="bg-[#080A0F] text-white" data-gsap-premium="feature">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
@@ -1658,7 +1661,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
-    </main>
+      </LandingExperience>
     </>
   );
 }
