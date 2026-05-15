@@ -1,130 +1,236 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
+  Bot,
   CalendarDays,
   CheckCircle2,
-  LockKeyhole,
+  MessageCircle,
+  PackageCheck,
   QrCode,
+  ReceiptText,
   Scissors,
-  Settings,
-  Users,
+  Sparkles,
 } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
+import { BUSINESS_CONFIG, CONVERSION_EVENTS } from "@/src/lib/site-config";
 
-const demoSteps = [
+export const metadata: Metadata = {
+  title: "Demo guiada de BarberíaOS",
+  description:
+    "Recorrido comercial por BarberíaOS: dashboard, reserva pública, agenda, caja, productos, clientes e IA del dueño para barberías.",
+  alternates: { canonical: `${BUSINESS_CONFIG.siteUrl}/demo` },
+  openGraph: {
+    title: "Demo guiada de BarberíaOS",
+    description:
+      "Mira cómo una barbería usa BarberíaOS para reservar, ordenar la agenda, cerrar caja, vender productos y recuperar clientes.",
+    url: `${BUSINESS_CONFIG.siteUrl}/demo`,
+    siteName: BUSINESS_CONFIG.commercialName,
+    type: "website",
+  },
+};
+
+const journey = [
   {
-    title: "Panel del dueño",
-    text: "Vista general con reservas, huecos, clientes, caja y próximos pasos.",
+    title: "Dashboard del dueño",
+    text: "Empieza por la vista de mando: reservas de hoy, caja, ocupación, productos vendidos y próximos pasos.",
     href: "/dashboard",
     icon: BarChart3,
+    proof: "Una pantalla para saber cómo va el día.",
   },
   {
-    title: "Reservas",
-    text: "Mira citas del día, confirma reservas y detecta huecos libres por barbero.",
+    title: "Reserva pública",
+    text: "Prueba la experiencia que verá un cliente desde Instagram, Google, QR o WhatsApp.",
+    href: BUSINESS_CONFIG.demoBookingUrl,
+    icon: QrCode,
+    proof: "Sin login para el cliente.",
+  },
+  {
+    title: "Agenda por barbero",
+    text: "Comprueba cómo se ordenan citas, huecos y estados para no depender de mensajes sueltos.",
     href: "/dashboard/agenda",
     icon: CalendarDays,
+    proof: "Menos llamadas, menos confusión.",
   },
   {
-    title: "Clientes",
-    text: "Consulta clientes guardados, visitas, teléfono y acciones de recuperación.",
-    href: "/dashboard/clientes",
-    icon: Users,
+    title: "Caja y cierre diario",
+    text: "Mira cobros, métodos de pago, propinas y cierre para saber qué entra cada día.",
+    href: "/dashboard/caja",
+    icon: ReceiptText,
+    proof: "Control real del dinero.",
   },
   {
-    title: "Barberos",
-    text: "Añade tu equipo y mantén la agenda organizada por cada barbero.",
-    href: "/dashboard/barberos",
-    icon: Scissors,
+    title: "Productos e inventario",
+    text: "Conecta venta en mostrador con stock básico para no perder margen en productos.",
+    href: "/dashboard/inventario",
+    icon: PackageCheck,
+    proof: "Ingresos extra visibles.",
   },
   {
-    title: "Servicios",
-    text: "Configura cortes, barba, combos, precios y duración para reservar online.",
-    href: "/dashboard/servicios",
-    icon: Settings,
+    title: "IA del dueño",
+    text: "Revisa sugerencias para huecos, clientes dormidos, campañas y mensajes comerciales.",
+    href: "/dashboard/ia",
+    icon: Bot,
+    proof: "Acciones concretas, no informes largos.",
   },
-  {
-    title: "QR Reservas",
-    text: "Copia el link, descarga el QR y compártelo en Instagram, WhatsApp o Google.",
-    href: "/dashboard/qr",
-    icon: QrCode,
-  },
-];
+] as const;
+
+const outcomes = [
+  ["Reservas 24/7", "El cliente reserva cuando quiere y la barbería mantiene el control."],
+  ["Caja conectada", "Cada servicio, producto y propina queda en el cierre del día."],
+  ["Clientes propios", "La barbería conserva su base de clientes y no paga comisión por cita."],
+] as const;
 
 export default function DemoPage() {
   return (
     <main className="min-h-screen bg-[#F7FAFC] px-5 py-8 text-[#080A0F] lg:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="inline-flex items-center gap-3">
+          <Link href="/" className="inline-flex items-center gap-3" aria-label="Volver a BarberíaOS">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-[#D5A84C]">
               <Scissors size={18} />
             </span>
-            <span className="font-black">BarberiaOS</span>
+            <span className="font-black">BarberíaOS</span>
           </Link>
-          <div className="flex flex-wrap gap-2">
-            <PrimaryButton href="/" variant="secondary">Volver a la landing</PrimaryButton>
-            <PrimaryButton href="/login" variant="dark">Entrar al panel</PrimaryButton>
-          </div>
+          <nav aria-label="Acciones de demo">
+            <ul className="flex flex-wrap gap-2">
+              <li><PrimaryButton href="/" variant="secondary">Volver</PrimaryButton></li>
+              <li><PrimaryButton href={BUSINESS_CONFIG.loginUrl} variant="dark">Entrar al panel</PrimaryButton></li>
+            </ul>
+          </nav>
         </header>
 
-        <section className="mt-12 rounded-[32px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)] md:p-10">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-4 py-2 text-xs font-black uppercase text-[#2563EB]">
-              <CheckCircle2 size={14} />
-              Demo guiada segura
+        <section className="mt-12 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[var(--shadow-card)]">
+          <div className="grid gap-0 lg:grid-cols-[0.96fr_1.04fr]">
+            <div className="p-6 md:p-10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-4 py-2 text-xs font-black uppercase text-[#2563EB]">
+                <CheckCircle2 size={14} />
+                Demo guiada segura
+              </div>
+              <h1 className="mt-6 text-[clamp(2.5rem,6vw,5rem)] font-black leading-[0.95]">
+                Mira cómo BarberíaOS vende citas y ordena una barbería real.
+              </h1>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+                Recorre lo que importa para un dueño: dashboard, reserva pública, agenda, caja, productos e IA. La reserva de prueba abre una experiencia pública como la que usaría un cliente.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <PrimaryButton
+                  href={BUSINESS_CONFIG.demoBookingUrl}
+                  variant="primary"
+                  className="min-h-12 px-6"
+                  data-event={CONVERSION_EVENTS.openPublicBookingDemo}
+                >
+                  Crear reserva de prueba <ArrowRight size={16} />
+                </PrimaryButton>
+                <a
+                  href={BUSINESS_CONFIG.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-event={CONVERSION_EVENTS.openWhatsappDemo}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] border border-emerald-200 bg-emerald-50 px-6 text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
+                >
+                  <MessageCircle size={16} />
+                  Pedir demo por WhatsApp
+                </a>
+              </div>
             </div>
-            <h1 className="mt-6 text-[clamp(2.6rem,6vw,5.2rem)] font-black leading-[0.95]">
-              Explora BarberiaOS sin perderte.
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Esta guía te enseña qué mirar primero: dashboard, reservas, clientes, barberos, servicios, QR y configuración. Para proteger datos reales, el panel completo requiere una cuenta y una barbería propia.
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <PrimaryButton href="/login" variant="primary" className="min-h-12 px-6">
-                Crear cuenta de prueba <ArrowRight size={16} />
-              </PrimaryButton>
-              <PrimaryButton href="/login" variant="secondary" className="min-h-12 px-6">
-                Entrar al panel
-              </PrimaryButton>
+            <div className="border-t border-slate-200 bg-[#080A0F] p-6 text-white lg:border-l lg:border-t-0 md:p-10">
+              <div className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div>
+                    <p className="text-xs font-black uppercase text-[#D5A84C]">Hoy</p>
+                    <h2 className="mt-1 text-2xl font-black">Nova Barber Studio</h2>
+                  </div>
+                  <Sparkles className="text-[#D5A84C]" />
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  {[
+                    ["Reservas", "31"],
+                    ["Caja", "1.248 €"],
+                    ["Productos", "186 €"],
+                    ["Clientes a recuperar", "14"],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.07] p-4">
+                      <p className="text-[11px] font-black uppercase text-white/40">{label}</p>
+                      <p className="mt-3 text-2xl font-black">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-5 rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 p-4 text-sm font-semibold leading-6 text-white/75">
+                  IA del dueño: mañana tienes huecos entre 16:00 y 18:00. Publica corte + barba y escribe a clientes frecuentes.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="mt-5 rounded-[24px] border border-[#DDE7FB] bg-[#EFF6FF] p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-            <div className="metric-icon bg-white text-[#2563EB]">
-              <LockKeyhole size={17} />
-            </div>
+        <section className="mt-8 grid gap-4 md:grid-cols-3">
+          {outcomes.map(([title, text]) => (
+            <article key={title} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-soft)]">
+              <h2 className="text-lg font-black">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-8">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="font-black text-[#111827]">Cómo probar sin tocar datos reales</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                Crea una cuenta, completa el onboarding con una barbería ficticia y usa servicios/barberos de prueba. Cada cuenta trabaja sobre su propia barbería.
+              <p className="text-xs font-black uppercase text-[#2563EB]">Recorrido recomendado</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight">Qué revisar en menos de 10 minutos</h2>
+            </div>
+            <PrimaryButton href={BUSINESS_CONFIG.loginUrl} variant="secondary">
+              Entrar al panel
+            </PrimaryButton>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {journey.map((step) => {
+              const Icon = step.icon;
+              return (
+                <Link
+                  key={step.title}
+                  href={step.href}
+                  className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[var(--shadow-card)]"
+                >
+                  <div className="metric-icon bg-[#2563EB]/10 text-[#2563EB]">
+                    <Icon size={18} />
+                  </div>
+                  <h3 className="mt-5 text-xl font-black">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-500">{step.text}</p>
+                  <p className="mt-4 text-sm font-black text-[#111827]">{step.proof}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#2563EB]">
+                    Abrir sección <ArrowRight size={14} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[28px] border border-[#D5A84C]/30 bg-[#FFF7E6] p-6 md:p-8">
+          <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <h2 className="text-2xl font-black">Siguiente paso lógico</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Prueba primero la reserva pública. Después entra al panel o pide una demo por WhatsApp para ver cómo quedaría con servicios, equipo y horarios de tu barbería.
               </p>
             </div>
-          </div>
-        </section>
-
-        <section className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {demoSteps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <Link
-                key={step.title}
-                href={step.href}
-                className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[var(--shadow-card)]"
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <PrimaryButton href={BUSINESS_CONFIG.demoBookingUrl} variant="primary">
+                Reserva pública
+              </PrimaryButton>
+              <a
+                href={BUSINESS_CONFIG.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] bg-[#080A0F] px-5 text-sm font-black text-white"
               >
-                <div className="metric-icon bg-[#2563EB]/10 text-[#2563EB]">
-                  <Icon size={18} />
-                </div>
-                <h2 className="mt-5 text-xl font-black">{step.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-500">{step.text}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#2563EB]">
-                  Abrir sección <ArrowRight size={14} />
-                </span>
-              </Link>
-            );
-          })}
+                <MessageCircle size={16} />
+                WhatsApp
+              </a>
+            </div>
+          </div>
         </section>
       </div>
     </main>

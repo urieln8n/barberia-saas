@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import type { HTMLAttributes } from "react";
 import {
   ArrowRight,
@@ -27,10 +28,26 @@ import {
 import { LandingExperience, MotionSection } from "@/components/landing/PremiumLandingMotion";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ProductMockupCard } from "@/components/ui/ProductMockupCard";
+import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
-const CONTACT_EMAIL = "hola_barberiaos@hotmail.com";
-const WHATSAPP_URL =
-  "https://wa.me/34645466308?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Barber%C3%ADaOS";
+const CONTACT_EMAIL = BUSINESS_CONFIG.legalEmail;
+const WHATSAPP_URL = BUSINESS_CONFIG.whatsappUrl;
+const DEMO_BOOKING_URL = BUSINESS_CONFIG.demoBookingUrl;
+
+export const metadata: Metadata = {
+  title: "Software para barberías | Reservas, caja, QR e IA",
+  description:
+    "BarberíaOS conecta reservas online, agenda, caja, clientes, productos, QR, marketing e IA del dueño para barberías. Sin comisión por reserva.",
+  alternates: { canonical: `${BUSINESS_CONFIG.siteUrl}/` },
+  openGraph: {
+    title: "Software para barberías | Reservas, caja, QR e IA",
+    description:
+      "Reservas online, agenda, caja, clientes, productos, QR, marketing e IA del dueño para barberías modernas.",
+    url: `${BUSINESS_CONFIG.siteUrl}/`,
+    siteName: BUSINESS_CONFIG.commercialName,
+    type: "website",
+  },
+};
 
 const controls = [
   ["Reservas", "Agenda por barbero, estados, huecos y confirmaciones.", CalendarCheck2],
@@ -49,7 +66,7 @@ const operatingBlocks = [
     icon: QrCode,
     stat: "24/7",
     label: "Reservas abiertas",
-    points: ["Página pública /r/tu-barberia", "Servicios y barberos visibles", "Menos llamadas y menos mensajes sueltos"],
+    points: ["Enlace público de reservas", "Servicios y barberos visibles", "Menos llamadas y menos mensajes sueltos"],
   },
   {
     eyebrow: "Caja + productos",
@@ -245,7 +262,7 @@ function PublicBookingMockup() {
             </div>
             <div>
               <p className="font-black text-white">Nova Barber Studio</p>
-              <p className="text-xs text-white/42">/r/nova-barber</p>
+              <p className="text-xs text-white/42">Enlace propio de reservas</p>
             </div>
           </div>
           <QrCode className="text-[#D5A84C]" size={26} />
@@ -281,11 +298,13 @@ export default function HomePage() {
               </span>
               <span className="font-black tracking-tight">BarberíaOS</span>
             </Link>
-            <nav className="hidden items-center gap-6 text-sm font-bold text-white/54 md:flex">
-              <Link href="#controla" className="transition hover:text-white">Producto</Link>
-              <Link href="#marketing" className="transition hover:text-white">Marketing</Link>
-              <Link href="#precios" className="transition hover:text-white">Precios</Link>
-              <Link href="/demo" className="transition hover:text-white">Demo</Link>
+            <nav className="hidden items-center gap-6 text-sm font-bold text-white/54 md:flex" aria-label="Navegación principal">
+              <ul className="flex items-center gap-6">
+                <li><Link href="#controla" className="transition hover:text-white">Producto</Link></li>
+                <li><Link href="#marketing" className="transition hover:text-white">Marketing</Link></li>
+                <li><Link href="#precios" className="transition hover:text-white">Precios</Link></li>
+                <li><Link href="/demo" className="transition hover:text-white">Demo</Link></li>
+              </ul>
             </nav>
             <a
               href={WHATSAPP_URL}
@@ -325,7 +344,7 @@ export default function HomePage() {
                 <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7 shadow-[0_18px_44px_rgba(213,168,76,0.30)]">
                   Ver demo <ArrowRight size={17} />
                 </PrimaryButton>
-                <PrimaryButton href="/login" variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
                   Crear reserva de prueba
                 </PrimaryButton>
               </div>
@@ -377,13 +396,13 @@ export default function HomePage() {
               <SectionIntro
                 eyebrow="Reservas con QR"
                 title="Tu escaparate, Instagram y mostrador pueden vender citas mientras tú cortas."
-                text="La ruta pública /r/[slug] ya existe y está pensada para que cada barbería tenga su propio enlace. El QR no manda a una plantilla: manda a una experiencia de reserva directa."
+                text="El enlace público de reservas de cada barbería está pensado para convertir visitas de Instagram, Google, mostrador o WhatsApp en citas reales. El QR no manda a una plantilla: manda a una experiencia de reserva directa."
               />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7">
                   Ver demo
                 </PrimaryButton>
-                <PrimaryButton href="/login" variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
                   Crear reserva de prueba
                 </PrimaryButton>
               </div>
@@ -583,26 +602,34 @@ export default function HomePage() {
             <div className="grid gap-7 sm:grid-cols-3">
               <div>
                 <p className="text-xs font-black uppercase text-white/32">Producto</p>
-                <nav className="mt-3 flex flex-col gap-2 text-sm font-bold text-white/52">
-                  <Link href="#controla" className="hover:text-white">Qué controla</Link>
-                  <Link href="#marketing" className="hover:text-white">Marketing Studio</Link>
-                  <Link href="#precios" className="hover:text-white">Precios</Link>
+                <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Enlaces de producto">
+                  <ul className="flex flex-col gap-2">
+                    <li><Link href="#controla" className="hover:text-white">Qué controla</Link></li>
+                    <li><Link href="#marketing" className="hover:text-white">Marketing Studio</Link></li>
+                    <li><Link href="#precios" className="hover:text-white">Precios</Link></li>
+                  </ul>
                 </nav>
               </div>
               <div>
                 <p className="text-xs font-black uppercase text-white/32">Acciones</p>
-                <nav className="mt-3 flex flex-col gap-2 text-sm font-bold text-white/52">
-                  <Link href="/demo" className="hover:text-white">Ver demo</Link>
-                  <Link href="/login" className="hover:text-white">Crear reserva de prueba</Link>
-                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a>
+                <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Acciones comerciales">
+                  <ul className="flex flex-col gap-2">
+                    <li><Link href="/demo" className="hover:text-white">Ver demo</Link></li>
+                    <li><Link href={DEMO_BOOKING_URL} className="hover:text-white">Crear reserva de prueba</Link></li>
+                    <li><Link href="/login" className="hover:text-white">Entrar al panel</Link></li>
+                    <li><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>
+                  </ul>
                 </nav>
               </div>
               <div>
                 <p className="text-xs font-black uppercase text-white/32">Legal</p>
-                <nav className="mt-3 flex flex-col gap-2 text-sm font-bold text-white/52">
-                  <Link href="/legal/aviso-legal" className="hover:text-white">Aviso legal</Link>
-                  <Link href="/legal/privacidad" className="hover:text-white">Privacidad</Link>
-                  <Link href="/legal/terminos" className="hover:text-white">Términos</Link>
+                <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Enlaces legales">
+                  <ul className="flex flex-col gap-2">
+                    <li><Link href="/legal/aviso-legal" className="hover:text-white">Aviso legal</Link></li>
+                    <li><Link href="/legal/privacidad" className="hover:text-white">Privacidad</Link></li>
+                    <li><Link href="/legal/cookies" className="hover:text-white">Cookies</Link></li>
+                    <li><Link href="/legal/terminos" className="hover:text-white">Términos</Link></li>
+                  </ul>
                 </nav>
               </div>
             </div>

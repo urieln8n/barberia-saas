@@ -1,14 +1,13 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/src/lib/site-url";
+import { BUSINESS_CONFIG, SEO_INTENT_PAGES } from "@/src/lib/site-config";
 import { legalPages } from "@/components/legal/legal-content";
 
-const commercialRoutes = [
-  { path: "/software-para-barberias", priority: 0.9 },
-  { path: "/agenda-online-barberia", priority: 0.9 },
-  { path: "/programa-reservas-barberia", priority: 0.85 },
-  { path: "/alternativa-booksy-barberias", priority: 0.85 },
-  { path: "/barberias", priority: 0.8 },
-];
+const SITE_URL = BUSINESS_CONFIG.siteUrl;
+
+const commercialRoutes = SEO_INTENT_PAGES.filter((page) => page.status === "publicada").map((page) => ({
+  path: page.path,
+  priority: page.path === "/barberias" ? 0.8 : 0.9,
+}));
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -26,12 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority,
     })),
-    {
-      url: `${SITE_URL}/login`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    },
     {
       url: `${SITE_URL}/legal`,
       lastModified: now,

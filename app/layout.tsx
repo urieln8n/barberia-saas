@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { FloatingWhatsAppButton } from "@/components/landing/FloatingWhatsAppButton";
 import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
-import { SITE_URL } from "@/src/lib/site-url";
+import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 // @ts-ignore
 import "./globals.css";
 
@@ -14,16 +14,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://barberiaos.com"),
+  metadataBase: new URL(BUSINESS_CONFIG.siteUrl),
   title: {
     default: "Software para barberías | Reservas, caja y QR — BarberíaOS",
     template: "%s | BarberíaOS",
   },
   description:
     "Software para barberías con reservas online, caja, QR, página pública y control de barberos. Sin comisión por cita. Prueba BarberíaOS sin permanencia.",
-  alternates: {
-    canonical: "https://barberiaos.com/",
-  },
   robots: {
     index: true,
     follow: true,
@@ -35,8 +32,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: "https://barberiaos.com",
-    siteName: "BarberíaOS",
+    url: BUSINESS_CONFIG.siteUrl,
+    siteName: BUSINESS_CONFIG.commercialName,
     title: "Software para barberías | Reservas, caja y QR — BarberíaOS",
     description:
       "Software para barberías con reservas online, caja, QR y página pública. Sin comisión por cita. Sin permanencia.",
@@ -66,6 +63,9 @@ export const metadata: Metadata = {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
     apple: "/icon.svg",
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 

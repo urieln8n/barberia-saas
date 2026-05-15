@@ -1,3 +1,5 @@
+import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+
 export type LegalTable = {
   headers: string[];
   rows: string[][];
@@ -21,8 +23,19 @@ export type LegalPageContent = {
   sections: LegalSection[];
 };
 
-export const LEGAL_LAST_UPDATED = "[PENDIENTE: completar por el titular]";
-export const PENDING = "[PENDIENTE: completar por el titular]";
+export const LEGAL_LAST_UPDATED = BUSINESS_CONFIG.lastUpdated;
+export const PENDING = "Información configurable según el servicio contratado";
+const COMMERCIAL_NAME = BUSINESS_CONFIG.commercialName;
+const LEGAL_OWNER = BUSINESS_CONFIG.legalOwner;
+const LEGAL_EMAIL = BUSINESS_CONFIG.legalEmail;
+const PRIVACY_EMAIL = BUSINESS_CONFIG.privacyEmail;
+const SUPPORT_EMAIL = BUSINESS_CONFIG.supportEmail;
+const DOMAIN = BUSINESS_CONFIG.domain;
+const ADDRESS = BUSINESS_CONFIG.registeredAddress;
+const TAX_ID = BUSINESS_CONFIG.taxId;
+const JURISDICTION = BUSINESS_CONFIG.jurisdiction;
+const APPLICABLE_LAW = BUSINESS_CONFIG.applicableLaw;
+const COOKIE_SETTINGS_URL = BUSINESS_CONFIG.cookieSettingsUrl;
 
 export const legalPages: LegalPageContent[] = [
   {
@@ -32,21 +45,21 @@ export const legalPages: LegalPageContent[] = [
     description: "Información identificativa del titular del sitio, condiciones generales de uso y marco aplicable a BarberíaOS.",
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
-      "Nombre comercial: BarberíaOS.",
+      `Nombre comercial: ${COMMERCIAL_NAME}.`,
       "Actividad: software SaaS para gestión de barberías, reservas, agenda, caja, QR, reportes y suscripciones.",
-      "Titular, NIF/CIF, domicilio, dominio y email legal pendientes de completar por el titular.",
+      "La información identificativa y de contacto se publica de forma centralizada en este documento y puede actualizarse para comunicaciones formales.",
     ],
     sections: [
       {
         id: "titular",
         title: "Titular del sitio",
         paragraphs: [
-          "Nombre comercial: BarberíaOS.",
-          `Denominación social o autónomo: ${PENDING}.`,
-          `NIF/CIF: ${PENDING}.`,
-          `Domicilio: ${PENDING}.`,
-          `Email legal: ${PENDING}.`,
-          `Dominio web: ${PENDING}.`,
+          `Nombre comercial: ${COMMERCIAL_NAME}.`,
+          `Denominación social o autónomo: ${LEGAL_OWNER}.`,
+          `NIF/CIF: ${TAX_ID}.`,
+          `Domicilio: ${ADDRESS}.`,
+          `Email legal: ${LEGAL_EMAIL}.`,
+          `Dominio web: ${DOMAIN}.`,
           "Actividad: software SaaS para gestión de barberías, reservas online, clientes, barberos, servicios, agenda, caja/TPV, QR de reservas, reportes, comunicaciones y suscripciones.",
         ],
       },
@@ -84,9 +97,9 @@ export const legalPages: LegalPageContent[] = [
         id: "ley",
         title: "Legislación aplicable y jurisdicción",
         paragraphs: [
-          `Legislación aplicable: ${PENDING}.`,
-          `Jurisdicción competente: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Legislación aplicable: ${APPLICABLE_LAW}.`,
+          `Jurisdicción competente: ${JURISDICTION}.`,
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -98,7 +111,7 @@ export const legalPages: LegalPageContent[] = [
     description: "Información por capas sobre el tratamiento de datos personales en BarberíaOS conforme al RGPD y la LOPDGDD.",
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
-      `Responsable: ${PENDING}.`,
+      `Responsable: ${LEGAL_OWNER}.`,
       "Finalidades principales: crear cuenta, prestar el servicio SaaS, gestionar reservas, soporte, seguridad, facturación y comunicaciones con consentimiento cuando corresponda.",
       "Derechos: acceso, rectificación, supresión, oposición, portabilidad y limitación.",
     ],
@@ -109,7 +122,7 @@ export const legalPages: LegalPageContent[] = [
         table: {
           headers: ["Apartado", "Información"],
           rows: [
-            ["Responsable", PENDING],
+            ["Responsable", LEGAL_OWNER],
             ["Finalidades", "Cuenta, SaaS, reservas, clientes, barberos, pagos/suscripciones si aplica, soporte, seguridad, comunicaciones comerciales con consentimiento y mejora del producto."],
             ["Legitimación", "Ejecución de contrato, consentimiento, interés legítimo y obligación legal según el tratamiento."],
             ["Destinatarios", "Proveedores necesarios para prestar el servicio y terceros legalmente exigibles."],
@@ -123,9 +136,9 @@ export const legalPages: LegalPageContent[] = [
         id: "responsable",
         title: "Responsable del tratamiento",
         paragraphs: [
-          `Responsable: ${PENDING}.`,
-          `Email de privacidad: ${PENDING}.`,
-          `Domicilio: ${PENDING}.`,
+          `Responsable: ${LEGAL_OWNER}.`,
+          `Email de privacidad: ${PRIVACY_EMAIL}.`,
+          `Domicilio: ${ADDRESS}.`,
           "Cuando BarberíaOS trata datos de clientes finales por cuenta de una barbería cliente, BarberíaOS puede actuar como encargado del tratamiento conforme al Acuerdo de Encargo de Tratamiento.",
         ],
       },
@@ -182,7 +195,7 @@ export const legalPages: LegalPageContent[] = [
         id: "derechos",
         title: "Derechos ARSOPL y reclamaciones",
         paragraphs: [
-          `Las personas interesadas pueden ejercer sus derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación escribiendo a ${PENDING}.`,
+          `Las personas interesadas pueden ejercer sus derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación escribiendo a ${PRIVACY_EMAIL}.`,
           "También pueden presentar una reclamación ante la Agencia Española de Protección de Datos si consideran que el tratamiento no se ajusta a la normativa aplicable.",
         ],
       },
@@ -200,8 +213,8 @@ export const legalPages: LegalPageContent[] = [
         title: "Cambios y contacto",
         paragraphs: [
           "Esta política podrá actualizarse para reflejar cambios legales, técnicos o de producto.",
-          `Contacto privacidad: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Contacto privacidad: ${PRIVACY_EMAIL}.`,
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -262,7 +275,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           "El banner de cookies permite aceptar todas, rechazar las no necesarias o configurar preferencias por categoría.",
           "El consentimiento puede retirarse eliminando las preferencias guardadas en el navegador o mediante el panel de configuración cuando esté disponible.",
-          "Enlace a configuración de cookies: [PENDIENTE: completar por el titular].",
+          `Enlace a configuración de cookies: ${COOKIE_SETTINGS_URL}.`,
         ],
       },
       {
@@ -270,7 +283,7 @@ export const legalPages: LegalPageContent[] = [
         title: "Cookies necesarias",
         paragraphs: [
           "Las cookies o tecnologías necesarias no requieren consentimiento cuando son imprescindibles para prestar un servicio solicitado por el usuario o cumplir obligaciones técnicas y de seguridad.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -359,9 +372,9 @@ export const legalPages: LegalPageContent[] = [
         id: "ley-contacto",
         title: "Legislación aplicable y contacto",
         paragraphs: [
-          `Legislación aplicable: ${PENDING}.`,
-          `Contacto: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Legislación aplicable: ${APPLICABLE_LAW}.`,
+          `Contacto: ${LEGAL_EMAIL}.`,
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -374,7 +387,7 @@ export const legalPages: LegalPageContent[] = [
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "Planes modelo: Fundador, Básico, Pro y Premium.",
-      "Precios y beneficios definitivos pendientes de completar por el titular.",
+      "Los precios y beneficios comerciales vigentes se muestran en la landing o se facilitan durante el proceso de contratación.",
       "Puede existir facturación mensual o anual y renovación automática si se activa.",
     ],
     sections: [
@@ -384,10 +397,10 @@ export const legalPages: LegalPageContent[] = [
         table: {
           headers: ["Plan", "Precio", "Incluye"],
           rows: [
-            ["Fundador", PENDING, "Acceso anticipado, configuración inicial y condiciones especiales pendientes de definir."],
-            ["Básico", PENDING, "Reservas online, agenda y gestión básica pendientes de definir."],
-            ["Pro", PENDING, "Funcionalidades avanzadas, reportes y módulos de crecimiento pendientes de definir."],
-            ["Premium", PENDING, "Funciones premium, soporte ampliado e integraciones pendientes de definir."],
+            ["Starter", "39 €/mes", "Reservas online, agenda, clientes, QR, caja básica y página pública."],
+            ["Pro", "79 €/mes", "Todo Starter, caja avanzada, productos, Marketing Studio y rendimiento por barbero."],
+            ["Growth", "149 €/mes", "Todo Pro, IA del dueño, CRM de leads, reportes avanzados y campañas de recuperación."],
+            ["Planes a medida", "A concretar", "Soporte ampliado, integraciones o necesidades específicas según alcance."],
           ],
         },
       },
@@ -395,7 +408,7 @@ export const legalPages: LegalPageContent[] = [
         id: "prueba",
         title: "Periodo de prueba",
         paragraphs: [
-          `Periodo de prueba gratuito: ${PENDING}.`,
+          "Periodo de prueba gratuito: cuando exista, se informará antes del alta o contratación.",
           "Durante la prueba pueden existir limitaciones funcionales, técnicas o comerciales según el plan ofrecido.",
         ],
       },
@@ -405,7 +418,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           "La facturación podrá ser mensual o anual según el plan contratado.",
           "La renovación será automática si así se informa y acepta durante el proceso de contratación.",
-          `Métodos de pago aceptados: ${PENDING}.`,
+          "Métodos de pago aceptados: los disponibles durante el proceso de checkout o contratación asistida.",
           "Los precios podrán estar sujetos a impuestos aplicables, como IVA u otros tributos según el caso.",
         ],
       },
@@ -421,10 +434,10 @@ export const legalPages: LegalPageContent[] = [
         id: "baja",
         title: "Baja, facturas y soporte",
         paragraphs: [
-          `Procedimiento de baja: ${PENDING}.`,
-          `Emisión de facturas: ${PENDING}.`,
-          `Soporte incluido por plan: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Procedimiento de baja: solicitud desde el panel o escribiendo a ${SUPPORT_EMAIL}.`,
+          "Emisión de facturas: conforme a los datos fiscales facilitados por el cliente y la normativa aplicable.",
+          "Soporte incluido por plan: según las condiciones comerciales vigentes de cada plan.",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -464,7 +477,7 @@ export const legalPages: LegalPageContent[] = [
           `Política de reembolsos: ${PENDING}.`,
           `Condiciones de prueba gratuita: ${PENDING}.`,
           "Los servicios ya prestados o periodos ya disfrutados pueden no ser reembolsables si así se informa válidamente.",
-          "Los cambios de plan podrán generar prorrateos, cargos o ajustes pendientes de definir.",
+          "Los cambios de plan podrán generar prorrateos, cargos o ajustes según el plan contratado.",
         ],
       },
       {
@@ -473,7 +486,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           `Casos excepcionales: ${PENDING}.`,
           `Contacto soporte/facturación: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -547,7 +560,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           "Al terminar el contrato, BarberíaOS suprimirá o devolverá los datos conforme a las instrucciones del responsable y obligaciones legales o técnicas aplicables.",
           "Las auditorías deberán ser razonables, proporcionadas y no comprometer seguridad, confidencialidad ni derechos de terceros.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -556,11 +569,11 @@ export const legalPages: LegalPageContent[] = [
     slug: "subencargados",
     href: "/legal/subencargados",
     title: "Subencargados",
-    description: "Listado editable de proveedores tecnológicos usados o potenciales, con estado confirmado o pendiente.",
+    description: "Listado de proveedores tecnológicos usados o potenciales, con estado operativo de cada servicio.",
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "Supabase y Stripe aparecen confirmados en el proyecto.",
-      "Vercel, email, WhatsApp API, analítica y otros proveedores quedan pendientes de confirmar salvo validación del titular.",
+      "Vercel, email, WhatsApp API, analítica y otros proveedores se revisan cuando se activan en producción.",
       "La tabla debe mantenerse actualizada.",
     ],
     sections: [
@@ -572,11 +585,11 @@ export const legalPages: LegalPageContent[] = [
           rows: [
             ["Supabase", "Base de datos/autenticación", "Infraestructura de datos y sesión", PENDING, PENDING, PENDING, "Activo confirmado en código", LEGAL_LAST_UPDATED],
             ["Stripe", "Pagos/suscripciones", "Checkout, portal y webhooks de facturación", PENDING, PENDING, PENDING, "Activo confirmado en código", LEGAL_LAST_UPDATED],
-            ["Vercel", "Hosting/deploy", "Alojamiento y despliegue web", PENDING, PENDING, PENDING, "Pendiente de confirmar", LEGAL_LAST_UPDATED],
-            ["Resend/Email provider", "Email transaccional", "Notificaciones y soporte", PENDING, PENDING, PENDING, "Pendiente de confirmar", LEGAL_LAST_UPDATED],
-            ["WhatsApp/Meta/Twilio", "Comunicaciones", "WhatsApp/SMS si se activa integración", PENDING, PENDING, PENDING, "Pendiente de confirmar", LEGAL_LAST_UPDATED],
-            ["Analytics provider", "Analítica", "Métricas de uso si se activa", PENDING, PENDING, PENDING, "Pendiente de confirmar", LEGAL_LAST_UPDATED],
-            ["Otros", PENDING, PENDING, PENDING, PENDING, PENDING, "Pendiente", LEGAL_LAST_UPDATED],
+            ["Vercel", "Hosting/deploy", "Alojamiento y despliegue web", PENDING, PENDING, PENDING, "sujeto a validación operativa", LEGAL_LAST_UPDATED],
+            ["Resend/Email provider", "Email transaccional", "Notificaciones y soporte", PENDING, PENDING, PENDING, "sujeto a validación operativa", LEGAL_LAST_UPDATED],
+            ["WhatsApp/Meta/Twilio", "Comunicaciones", "WhatsApp/SMS si se activa integración", PENDING, PENDING, PENDING, "sujeto a validación operativa", LEGAL_LAST_UPDATED],
+            ["Analytics provider", "Analítica", "Métricas de uso si se activa", PENDING, PENDING, PENDING, "sujeto a validación operativa", LEGAL_LAST_UPDATED],
+            ["Otros", PENDING, PENDING, PENDING, PENDING, PENDING, "Sujeto a validación", LEGAL_LAST_UPDATED],
           ],
         },
       },
@@ -585,7 +598,7 @@ export const legalPages: LegalPageContent[] = [
         title: "Actualización de la lista",
         paragraphs: [
           "La lista debe revisarse cuando se añadan, sustituyan o eliminen proveedores que traten datos personales por cuenta de BarberíaOS o de sus clientes.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -598,7 +611,7 @@ export const legalPages: LegalPageContent[] = [
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "BarberíaOS debe aplicar controles razonables de acceso, autenticación, seguridad en tránsito e incidencias.",
-      "Algunas medidas concretas quedan pendientes de confirmación técnica.",
+      "Las medidas concretas se revisan con cada cambio relevante de infraestructura o producto.",
       "Los usuarios también deben proteger sus cuentas y dispositivos.",
     ],
     sections: [
@@ -639,8 +652,8 @@ export const legalPages: LegalPageContent[] = [
         title: "Limitaciones y contacto",
         paragraphs: [
           "Ningún sistema es completamente inmune a riesgos. BarberíaOS trabajará para reducirlos, detectarlos y responder a ellos de forma proporcionada.",
-          `Contacto seguridad: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Contacto seguridad: ${SUPPORT_EMAIL}.`,
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -681,7 +694,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           "Cuando una barbería contacta con sus clientes finales usando datos gestionados en BarberíaOS, la barbería es responsable de contar con una base legal válida y de informar adecuadamente a sus clientes.",
           "BarberíaOS actúa como herramienta tecnológica y no sustituye el cumplimiento propio de cada barbería.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -719,7 +732,7 @@ export const legalPages: LegalPageContent[] = [
         title: "Suspensión por incumplimiento",
         paragraphs: [
           "BarberíaOS podrá limitar, suspender o cancelar el acceso cuando detecte un incumplimiento de esta política, riesgo de seguridad, abuso o requerimiento legal.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -741,7 +754,7 @@ export const legalPages: LegalPageContent[] = [
         title: "Marca, software, código, diseño y contenidos",
         paragraphs: [
           "BarberíaOS, su marca, software, código, arquitectura, diseño, interfaz, textos, recursos visuales y documentación pertenecen a su titular o licenciantes.",
-          `Titular de derechos: ${PENDING}.`,
+          `Titular de derechos: ${LEGAL_OWNER}.`,
         ],
       },
       {
@@ -759,7 +772,7 @@ export const legalPages: LegalPageContent[] = [
           "El cliente conserva la titularidad de los datos y contenidos que introduce en BarberíaOS.",
           "El cliente concede a BarberíaOS la licencia técnica necesaria para alojar, procesar y mostrar dichos contenidos con el fin de prestar el servicio.",
           "Las sugerencias o feedback podrán utilizarse para mejorar el producto sin obligación de compensación, salvo pacto distinto.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -772,7 +785,7 @@ export const legalPages: LegalPageContent[] = [
     lastUpdated: LEGAL_LAST_UPDATED,
     summary: [
       "BarberíaOS aspira a ofrecer una experiencia accesible y usable.",
-      "El estado formal de conformidad queda pendiente de auditoría.",
+      "El estado formal de conformidad se revisa de forma periódica dentro de la mejora continua del producto.",
       "Se habilita contacto para reportar barreras.",
     ],
     sections: [
@@ -800,9 +813,9 @@ export const legalPages: LegalPageContent[] = [
         title: "Limitaciones conocidas y contacto",
         paragraphs: [
           `Limitaciones conocidas: ${PENDING}.`,
-          `Contacto para reportar problemas: ${PENDING}.`,
+          `Contacto para reportar problemas: ${SUPPORT_EMAIL}.`,
           `Procedimiento de reclamación: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -853,7 +866,7 @@ export const legalPages: LegalPageContent[] = [
           "Los datos personales se tratan para gestionar la reserva y la relación con la barbería.",
           "La barbería es responsable de la prestación del servicio, precios, atención, cambios y comunicaciones con sus clientes.",
           `Contacto con la barbería: ${PENDING}.`,
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -889,7 +902,7 @@ export const legalPages: LegalPageContent[] = [
         paragraphs: [
           "Actualmente esta página muestra canales informativos porque no se ha verificado una infraestructura específica de formulario legal.",
           "Si se habilita un formulario, deberá incluir información de privacidad y validación adecuada.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
@@ -932,7 +945,7 @@ export const legalPages: LegalPageContent[] = [
           `Datos que podrían tratarse: ${PENDING}.`,
           `Proveedores IA: ${PENDING}.`,
           "Si se integran proveedores de IA, deberán revisarse sus términos, ubicación del tratamiento, garantías, conservación y uso de datos para entrenamiento.",
-          "Última actualización: [PENDIENTE: completar por el titular].",
+          `Última actualización: ${LEGAL_LAST_UPDATED}.`,
         ],
       },
     ],
