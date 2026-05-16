@@ -3,8 +3,10 @@ import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { isSafeAuditUrl } from "@/src/lib/audit/ssrf-guard";
 import { normalizeShieldAuditResult } from "@/src/lib/audit/shield-result";
+import { runInternalShieldAudit } from "@/src/lib/audit/internal-shield-audit";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 // 30 s — generous for slow sites + Python service startup
 const AUDIT_SERVICE_TIMEOUT_MS = 30_000;
@@ -110,54 +112,41 @@ export async function POST(request: Request) {
 
     const auditId: string = auditRow.id;
 
-    // ── 8. Call the Python audit microservice ────────────────────────────────
+    // ── 8. Run passive audit ────────────────────────────────────────────────
     const serviceUrl = process.env.SECURITY_AUDIT_SERVICE_URL;
-    if (!serviceUrl) {
-      console.error("[security-audit] SECURITY_AUDIT_SERVICE_URL is not configured.");
-
-      await supabase
-        .from("security_audits")
-        .update({ status: "error", report: { error: "Servicio no configurado." } })
-        .eq("id", auditId);
-
-      return NextResponse.json(
-        {
-          error: PUBLIC_SERVICE_UNAVAILABLE_MESSAGE,
-          code: "AUDIT_SERVICE_UNAVAILABLE",
-        },
-        { status: 503 }
-      );
-    }
-
     let auditResult: Record<string, unknown>;
     try {
-      const response = await fetch(`${serviceUrl.replace(/\/$/, "")}/audit`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ url: targetUrl }),
-        signal:  AbortSignal.timeout(AUDIT_SERVICE_TIMEOUT_MS),
-      });
+      if (serviceUrl) {
+        const response = await fetch(`${serviceUrl.replace(/\/$/, "")}/audit`, {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ url: targetUrl }),
+          signal:  AbortSignal.timeout(AUDIT_SERVICE_TIMEOUT_MS),
+        });
 
-      if (!response.ok) {
-        const errBody = await response.json().catch(() => ({})) as Record<string, unknown>;
-        throw new Error(
-          typeof errBody.detail === "string"
-            ? errBody.detail
-            : `El servicio respondió con HTTP ${response.status}.`
-        );
+        if (!response.ok) {
+          const errBody = await response.json().catch(() => ({})) as Record<string, unknown>;
+          throw new Error(
+            typeof errBody.detail === "string"
+              ? errBody.detail
+              : `El servicio respondió con HTTP ${response.status}.`
+          );
+        }
+
+        auditResult = await response.json() as Record<string, unknown>;
+      } else {
+        auditResult = await runInternalShieldAudit(targetUrl);
       }
-
-      auditResult = await response.json() as Record<string, unknown>;
     } catch (fetchErr) {
       const msg =
-        fetchErr instanceof Error ? fetchErr.message : "Error de conexión con el servicio.";
+        fetchErr instanceof Error ? fetchErr.message : "No se pudo analizar la URL pública.";
 
       await supabase
         .from("security_audits")
-        .update({ status: "error", report: { error: msg } })
+        .update({ status: "error", report: { error: "Audit unavailable" } })
         .eq("id", auditId);
 
-      console.error("[security-audit] Service call failed:", msg);
+      console.error("[security-audit] Passive audit failed:", msg);
       return NextResponse.json(
         {
           error: PUBLIC_SERVICE_UNAVAILABLE_MESSAGE,
