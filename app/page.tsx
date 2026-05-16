@@ -366,6 +366,7 @@ export default function HomePage() {
                 <li><Link href="#controla" className="transition hover:text-white">Producto</Link></li>
                 <li><Link href="#marketing" className="transition hover:text-white">Marketing</Link></li>
                 <li><Link href="#precios" className="transition hover:text-white">Precios</Link></li>
+                <li><Link href="/proposito" className="transition hover:text-white">Propósito</Link></li>
                 <li><Link href="/demo" className="transition hover:text-white">Demo</Link></li>
               </ul>
             </nav>
@@ -662,7 +663,7 @@ export default function HomePage() {
                 Sistema operativo para barberías: reservas, caja, barberos, productos, marketing e IA en un solo panel.
               </p>
             </div>
-            <div className="grid gap-7 sm:grid-cols-3">
+            <div className="grid gap-7 sm:grid-cols-4">
               <div>
                 <p className="text-xs font-black uppercase text-white/32">Producto</p>
                 <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Enlaces de producto">
@@ -670,6 +671,20 @@ export default function HomePage() {
                     <li><Link href="#controla" className="hover:text-white">Qué controla</Link></li>
                     <li><Link href="#marketing" className="hover:text-white">Marketing Studio</Link></li>
                     <li><Link href="#precios" className="hover:text-white">Precios</Link></li>
+                  </ul>
+                </nav>
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase text-white/32">Empresa</p>
+                <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Enlaces de empresa">
+                  <ul className="flex flex-col gap-2">
+                    <li><Link href="/vision" className="hover:text-white">Visión</Link></li>
+                    <li><Link href="/mision" className="hover:text-white">Misión</Link></li>
+                    <li><Link href="/proposito" className="hover:text-white">Propósito</Link></li>
+                    <li><Link href="/movimiento" className="hover:text-white">Movimiento</Link></li>
+                    <li><Link href="/impacto" className="hover:text-white">Impacto</Link></li>
+                    <li><Link href="/academia" className="hover:text-white">Academia</Link></li>
+                    <li><Link href="/historias" className="hover:text-white">Historias</Link></li>
                   </ul>
                 </nav>
               </div>
