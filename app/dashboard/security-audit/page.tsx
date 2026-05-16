@@ -6,8 +6,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { SecurityAuditClient, type AuditHistoryEntry } from "./SecurityAuditClient";
 
 export const metadata: Metadata = {
-  title: "Auditoría web | BarberíaOS",
-  description: "Analiza el rendimiento técnico, seguridad básica y señales de conversión de tu web.",
+  title: "BarberíaOS Shield | BarberíaOS",
+  description: "Auditoría pasiva de confianza digital, SEO visible y conversión a reservas.",
 };
 
 export default async function SecurityAuditPage() {
@@ -29,9 +29,9 @@ export default async function SecurityAuditPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        eyebrow="Herramientas"
-        title="Auditoría web"
-        description="Analiza el estado técnico de tu web: HTTPS, cabeceras, SEO y señales de conversión para clientes."
+        section="Herramientas premium"
+        title="BarberíaOS Shield"
+        description="Auditoría pasiva de confianza digital para detectar señales públicas que ayudan a generar reservas, visibilidad y credibilidad."
       />
       <SecurityAuditClient history={(history ?? []) as AuditHistoryEntry[]} />
     </div>

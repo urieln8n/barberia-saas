@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { isSafeAuditUrl } from "@/src/lib/audit/ssrf-guard";
+import { normalizeShieldAuditResult } from "@/src/lib/audit/shield-result";
 
 export const dynamic = "force-dynamic";
 
 // 30 s — generous for slow sites + Python service startup
 const AUDIT_SERVICE_TIMEOUT_MS = 30_000;
+const PUBLIC_SERVICE_UNAVAILABLE_MESSAGE =
+  "La auditoría automática está temporalmente no disponible. Puedes solicitar una revisión manual.";
 
 export async function POST(request: Request) {
   try {
@@ -110,6 +113,8 @@ export async function POST(request: Request) {
     // ── 8. Call the Python audit microservice ────────────────────────────────
     const serviceUrl = process.env.SECURITY_AUDIT_SERVICE_URL;
     if (!serviceUrl) {
+      console.error("[security-audit] SECURITY_AUDIT_SERVICE_URL is not configured.");
+
       await supabase
         .from("security_audits")
         .update({ status: "error", report: { error: "Servicio no configurado." } })
@@ -117,9 +122,8 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          error:
-            "El servicio de auditoría no está configurado. " +
-            "Añade SECURITY_AUDIT_SERVICE_URL al entorno.",
+          error: PUBLIC_SERVICE_UNAVAILABLE_MESSAGE,
+          code: "AUDIT_SERVICE_UNAVAILABLE",
         },
         { status: 503 }
       );
@@ -155,30 +159,35 @@ export async function POST(request: Request) {
 
       console.error("[security-audit] Service call failed:", msg);
       return NextResponse.json(
-        { error: `No se pudo completar la auditoría: ${msg}` },
+        {
+          error: PUBLIC_SERVICE_UNAVAILABLE_MESSAGE,
+          code: "AUDIT_SERVICE_UNAVAILABLE",
+        },
         { status: 502 }
       );
     }
 
-    // ── 9. Persist result ────────────────────────────────────────────────────
-    const rawScore = auditResult.score;
-    const score: number | null =
-      typeof rawScore === "number" && rawScore >= 0 && rawScore <= 100
-        ? Math.round(rawScore)
-        : null;
+    // ── 9. Normalize and persist Shield result ───────────────────────────────
+    const shieldResult = normalizeShieldAuditResult(auditResult, targetUrl, auditId);
 
     const report = {
-      security:     Array.isArray(auditResult.security)   ? auditResult.security   : [],
-      seo:          Array.isArray(auditResult.seo)        ? auditResult.seo        : [],
-      conversion:   Array.isArray(auditResult.conversion) ? auditResult.conversion : [],
-      barberiaos:   Array.isArray(auditResult.barberiaos) ? auditResult.barberiaos : [],
-      summary:      Array.isArray(auditResult.summary)    ? auditResult.summary    : [],
-      completed_at: new Date().toISOString(),
+      category_scores:      shieldResult.category_scores,
+      detected_signals:     shieldResult.detected_signals,
+      issues:               shieldResult.issues,
+      recommendations:      shieldResult.recommendations,
+      recommended_cta:      shieldResult.recommended_cta,
+      security:             shieldResult.security,
+      seo:                  shieldResult.seo,
+      conversion:           shieldResult.conversion,
+      barberiaos:           shieldResult.barberiaos,
+      customer_conversion:  shieldResult.customer_conversion,
+      summary:              shieldResult.summary,
+      completed_at:         new Date().toISOString(),
     };
 
     const { error: updateError } = await supabase
       .from("security_audits")
-      .update({ status: "done", score, report })
+      .update({ status: "done", score: shieldResult.score, report })
       .eq("id", auditId)
       .eq("barbershop_id", barbershopId); // RLS extra guard
 
@@ -188,19 +197,13 @@ export async function POST(request: Request) {
     }
 
     // ── 10. Return result ────────────────────────────────────────────────────
-    return NextResponse.json({
-      audit_id:   auditId,
-      url:        typeof auditResult.url === "string" ? auditResult.url : targetUrl,
-      score,
-      security:   report.security,
-      seo:        report.seo,
-      conversion: report.conversion,
-      barberiaos: report.barberiaos,
-      summary:    report.summary,
-    });
+    return NextResponse.json(shieldResult);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error interno del servidor.";
     console.error("[security-audit] Unexpected error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: PUBLIC_SERVICE_UNAVAILABLE_MESSAGE },
+      { status: 500 }
+    );
   }
 }
