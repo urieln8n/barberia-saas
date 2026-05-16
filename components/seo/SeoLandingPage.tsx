@@ -146,19 +146,10 @@ export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq }: 
               <Link href="/vision" className="font-bold text-slate-600 hover:text-[#080A0F]">Visión</Link>
             </li>
             <li>
-              <Link href="/mision" className="font-bold text-slate-600 hover:text-[#080A0F]">Misión</Link>
-            </li>
-            <li>
-              <Link href="/movimiento" className="font-bold text-slate-600 hover:text-[#080A0F]">Movimiento</Link>
-            </li>
-            <li>
               <Link href="/impacto" className="font-bold text-slate-600 hover:text-[#080A0F]">Impacto</Link>
             </li>
             <li>
               <Link href="/academia" className="font-bold text-slate-600 hover:text-[#080A0F]">Academia</Link>
-            </li>
-            <li>
-              <Link href="/historias" className="font-bold text-slate-600 hover:text-[#080A0F]">Historias</Link>
             </li>
             <li>
               <Link href={BUSINESS_CONFIG.demoBookingUrl} className="font-bold text-slate-600 hover:text-[#080A0F]">

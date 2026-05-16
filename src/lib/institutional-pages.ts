@@ -18,7 +18,9 @@ export type InstitutionalPage = {
   intro: string;
   lead: string;
   primaryCta: string;
+  primaryCtaHref?: string;
   secondaryCta: string;
+  secondaryCtaHref?: string;
   stats?: Array<{ value: string; label: string }>;
   sections: Array<{
     eyebrow?: string;
@@ -39,6 +41,9 @@ export type InstitutionalPage = {
 
 const sharedKeywords =
   "software para barberías, sistema para barberías, reservas para barberías, agenda para barberías, caja para barberías, gestión de clientes para barberías, software para barberos independientes";
+
+const founderWhatsappUrl =
+  `${BUSINESS_CONFIG.whatsappUrl.split("?")[0]}?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20unirme%20como%20barber%C3%ADa%20fundadora%20de%20Barber%C3%ADaOS.`;
 
 export const institutionalPages: Record<InstitutionalPageKey, InstitutionalPage> = {
   vision: {
@@ -208,6 +213,7 @@ export const institutionalPages: Record<InstitutionalPageKey, InstitutionalPage>
     lead:
       "Queremos que cada dueño pueda gestionar sus reservas, clientes y caja desde un sistema propio, sin depender siempre de terceros ni pagar comisión por cada cliente que vuelve.",
     primaryCta: "Únete como barbería fundadora",
+    primaryCtaHref: founderWhatsappUrl,
     secondaryCta: "Hablar por WhatsApp",
     stats: [
       { value: "1.000", label: "barberías independientes digitalizadas con orden" },
@@ -278,7 +284,7 @@ export const institutionalPages: Record<InstitutionalPageKey, InstitutionalPage>
     featureGridTitle: "Impacto por área",
     features: [
       { title: "Económico", text: "Menos citas perdidas, más ventas de productos y mejor caja diaria." },
-      { title: "Educativo", text: "BarberíaOS Academy, guías de crecimiento y formación para dueños." },
+      { title: "Educativo", text: "Academia BarberíaOS, guías de crecimiento y formación para dueños." },
       { title: "Operativo", text: "Agenda, servicios, barberos y productos conectados en un sistema para barberías." },
       { title: "Comercial", text: "Reseñas, recordatorios y recuperación de clientes con acciones simples." },
     ],
@@ -291,10 +297,10 @@ export const institutionalPages: Record<InstitutionalPageKey, InstitutionalPage>
   },
   academia: {
     path: "/academia",
-    title: "BarberíaOS Academy | Aprende a hacer crecer tu barbería",
+    title: "Academia BarberíaOS | Aprende a hacer crecer tu barbería",
     description:
-      "BarberíaOS Academy enseñará a dueños de barberías a usar mejor su agenda, caja, clientes, marketing, productos, reseñas e Instagram para crecer.",
-    eyebrow: "BarberíaOS Academy",
+      "Academia BarberíaOS enseñará a dueños de barberías a usar mejor su agenda, caja, clientes, marketing, productos, reseñas e Instagram para crecer.",
+    eyebrow: "Academia BarberíaOS",
     h1: "Aprende a convertir tu barbería en un negocio más ordenado, rentable y profesional.",
     intro:
       "BarberíaOS no solo entrega software. También quiere enseñar a los dueños a usar mejor su agenda, caja, clientes, marketing, productos y reseñas.",

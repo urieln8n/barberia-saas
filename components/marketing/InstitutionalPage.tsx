@@ -23,12 +23,9 @@ import { getInstitutionalPageJsonLd, institutionalPages } from "@/src/lib/instit
 
 const companyLinks = [
   ["Visión", institutionalPages.vision.path],
-  ["Misión", institutionalPages.mision.path],
   ["Propósito", institutionalPages.proposito.path],
-  ["Movimiento", institutionalPages.movimiento.path],
   ["Impacto", institutionalPages.impacto.path],
   ["Academia", institutionalPages.academia.path],
-  ["Historias", institutionalPages.historias.path],
 ] as const;
 
 const iconCycle = [
@@ -60,7 +57,7 @@ function PublicHeader() {
             Movimiento
           </Link>
           <Link href="/academia" className="transition hover:text-white">
-            Academy
+            Academia
           </Link>
           <Link href="/demo" className="transition hover:text-white">
             Demo
@@ -209,6 +206,9 @@ function PublicFooter() {
 
 export function InstitutionalPage({ page }: { page: InstitutionalPageData }) {
   const jsonLd = getInstitutionalPageJsonLd(page);
+  const primaryCtaHref = page.primaryCtaHref ?? "/demo";
+  const secondaryCtaHref = page.secondaryCtaHref ?? BUSINESS_CONFIG.whatsappUrl;
+  const primaryCtaIsExternal = primaryCtaHref.startsWith("http");
 
   return (
     <main className="min-h-screen bg-[#05070d] text-white">
@@ -230,11 +230,22 @@ export function InstitutionalPage({ page }: { page: InstitutionalPageData }) {
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/68">{page.intro}</p>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/52">{page.lead}</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7 shadow-[0_18px_44px_rgba(213,168,76,0.30)]">
-                  {page.primaryCta} <ArrowRight size={17} />
-                </PrimaryButton>
+                {primaryCtaIsExternal ? (
+                  <a
+                    href={primaryCtaHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-gold min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7 shadow-[0_18px_44px_rgba(213,168,76,0.30)]"
+                  >
+                    {page.primaryCta} <ArrowRight size={17} />
+                  </a>
+                ) : (
+                  <PrimaryButton href={primaryCtaHref} variant="gold" className="min-h-12 bg-gradient-to-r from-[#E8C675] via-[#D5A84C] to-[#B98526] px-7 shadow-[0_18px_44px_rgba(213,168,76,0.30)]">
+                    {page.primaryCta} <ArrowRight size={17} />
+                  </PrimaryButton>
+                )}
                 <a
-                  href={BUSINESS_CONFIG.whatsappUrl}
+                  href={secondaryCtaHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-7 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
