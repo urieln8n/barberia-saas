@@ -1,5 +1,5 @@
 -- ============================================================
--- Migracion 016: BarberiaOS Shield manual review requests
+-- Migracion 021: BarberiaOS Shield manual review requests
 -- ============================================================
 -- Solicitudes de revision manual para BarberiaOS Shield.
 -- Mantiene aislamiento multi-tenant por barbershop_id y RLS.

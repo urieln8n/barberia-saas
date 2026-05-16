@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, TrendingUp, PieChart, CheckSquare, LogOut, Store } from "lucide-react";
+import { LayoutDashboard, Users, TrendingUp, PieChart, CheckSquare, LogOut, Store, ShieldCheck } from "lucide-react";
 
 const navItems = [
   { href: "/admin",                label: "Dashboard",   icon: LayoutDashboard },
@@ -11,13 +11,14 @@ const navItems = [
   { href: "/admin/tareas",         label: "Tareas",      icon: CheckSquare     },
   { href: "/admin/suscripciones",  label: "MRR",         icon: PieChart        },
   { href: "/admin/marketplace",    label: "Marketplace", icon: Store           },
+  { href: "/admin/shield",         label: "Shield",      icon: ShieldCheck     },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-slate-800 bg-[#0F172A] shadow-sm">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-slate-800 bg-[#0F172A] shadow-sm print:hidden">
       {/* Brand */}
       <div className="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
         <span className="h-8 w-8 rounded-xl border border-white/15 bg-[#2F6FEB]" />
