@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   CheckCircle2,
   Clock,
-  Copy,
   FileText,
   Loader2,
   MessageCircle,
@@ -14,7 +13,9 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
+import { buildShieldCommercialReport } from "@/src/lib/audit/shield-report";
 import { updateShieldManualReviewStatus } from "./actions";
+import { CopyWhatsAppSummaryButton } from "./CopyWhatsAppSummaryButton";
 import type { ShieldAdminRequest, ReviewStatus } from "./types";
 
 const STATUS_LABELS: Record<ReviewStatus, string> = {
@@ -55,72 +56,11 @@ function normalizePhone(phone: string | null) {
   return digits.startsWith("+") ? digits.slice(1) : digits;
 }
 
-function getIssues(request: ShieldAdminRequest) {
-  const issues = request.latestAudit?.report?.issues;
-  if (Array.isArray(issues) && issues.length > 0) return issues;
-
-  return [
-    {
-      title: "Revisión comercial pendiente",
-      detail: "Aún no hay auditoría automática vinculada. Revisa manualmente reserva visible, WhatsApp directo y señales de confianza.",
-      severity: "warn" as const,
-    },
-  ];
-}
-
-function getRecommendations(request: ShieldAdminRequest) {
-  const recommendations = request.latestAudit?.report?.recommendations;
-  if (Array.isArray(recommendations) && recommendations.length > 0) return recommendations;
-
-  return [
-    {
-      id: "booking-button",
-      title: "Añadir botón visible de reserva",
-      detail: "Coloca la reserva como acción principal desde móvil.",
-      priority: "alta" as const,
-    },
-    {
-      id: "whatsapp-direct",
-      title: "Activar WhatsApp directo",
-      detail: "Permite preguntar o reservar sin fricción.",
-      priority: "alta" as const,
-    },
-    {
-      id: "trust-signals",
-      title: "Reforzar señales de confianza",
-      detail: "Muestra reseñas, ubicación y horarios claros.",
-      priority: "media" as const,
-    },
-  ];
-}
-
-function getCommercialCta(request: ShieldAdminRequest) {
-  return request.latestAudit?.report?.recommended_cta ?? {
-    title: "Convertir presencia digital en reservas",
-    description:
-      "BarberíaOS puede activar reservas online, QR, WhatsApp, seguimiento de clientes y recordatorios para llenar mejor la agenda.",
-    tone: "growth" as const,
-  };
-}
-
-function buildWhatsappSummary(request: ShieldAdminRequest) {
-  const issues = getIssues(request).slice(0, 3).map((issue) => issue.title.toLowerCase());
-  const issueText = issues.length > 0
-    ? issues.join(", ")
-    : "reserva online, WhatsApp directo y señales de confianza";
-
-  return [
-    `Hola${request.barbershop?.name ? ` ${request.barbershop.name}` : ""}, hemos revisado tu presencia digital y detectamos algunos puntos que pueden estar frenando reservas: ${issueText}.`,
-    "Con BarberíaOS podemos activar reservas online, QR, seguimiento de clientes y recordatorios para ayudarte a llenar más la agenda.",
-  ].join(" ");
-}
-
 export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[] }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["value"]>("all");
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(requests[0]?.id ?? null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const counts = useMemo(() => ({
@@ -143,17 +83,6 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
       setPendingId(null);
       if (!result.success) setError(result.error);
     });
-  }
-
-  async function copyWhatsappSummary(request: ShieldAdminRequest) {
-    const text = buildWhatsappSummary(request);
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(request.id);
-      window.setTimeout(() => setCopiedId((current) => current === request.id ? null : current), 1800);
-    } catch {
-      setError("No se pudo copiar el resumen. Revisa los permisos del navegador.");
-    }
   }
 
   return (
@@ -222,9 +151,10 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
           ) : (
             <div className="divide-y divide-slate-100">
               {filteredRequests.map((request) => {
+                const report = buildShieldCommercialReport(request);
                 const phone = normalizePhone(request.barbershop?.phone ?? null);
                 const whatsappUrl = phone
-                  ? `https://wa.me/${phone}?text=${encodeURIComponent(buildWhatsappSummary(request))}`
+                  ? `https://wa.me/${phone}?text=${encodeURIComponent(report.whatsappSummary)}`
                   : null;
                 const rowBusy = isPending && pendingId === request.id;
                 const selected = selectedRequest?.id === request.id;
@@ -280,17 +210,15 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
                           Sin teléfono
                         </button>
                       )}
-                      <button
-                        type="button"
-                        onClick={() => copyWhatsappSummary(request)}
+                      <CopyWhatsAppSummaryButton
+                        text={report.whatsappSummary}
                         className="btn-outline w-full"
-                      >
-                        <Copy size={14} />
-                        {copiedId === request.id ? "Copiado" : "Copiar resumen"}
-                      </button>
+                        idleLabel="Copiar resumen"
+                        copiedLabel="Copiado"
+                      />
                       <Link href={`/admin/shield/${request.id}/report`} className="btn-outline w-full">
                         <FileText size={14} />
-                        Informe
+                        Ver informe
                       </Link>
                       <button
                         type="button"
@@ -321,6 +249,11 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
         <aside className="rounded-[24px] border border-slate-200 bg-white shadow-[var(--shadow-soft)] xl:sticky xl:top-6 xl:self-start">
           {selectedRequest ? (
             <div className="space-y-5 p-5">
+              {(() => {
+                const report = buildShieldCommercialReport(selectedRequest);
+
+                return (
+                  <>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="label-section">Detalle comercial</p>
@@ -335,13 +268,13 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
               <div className="grid gap-2 text-sm">
                 <DetailLine label="URL" value={selectedRequest.url} mono />
                 <DetailLine label="Estado" value={STATUS_LABELS[selectedRequest.status]} />
-                <DetailLine label="Score" value={selectedRequest.latestAudit?.score !== null && selectedRequest.latestAudit?.score !== undefined ? `${selectedRequest.latestAudit.score}/100` : "Sin auditoría automática"} />
+                <DetailLine label="Score" value={report.scoreLabel} />
                 <DetailLine label="Ciudad" value={selectedRequest.barbershop?.city ?? "Sin dato"} />
                 <DetailLine label="Notas internas" value={selectedRequest.notes ?? "Sin notas internas"} />
               </div>
 
-              <DetailBlock title="Problemas detectados">
-                {getIssues(selectedRequest).slice(0, 5).map((issue, index) => (
+              <DetailBlock title={report.hasRealScore ? "Problemas detectados" : "Puntos a revisar"}>
+                {report.detectedProblems.slice(0, 5).map((issue, index) => (
                   <div key={`${issue.title}-${index}`} className="rounded-2xl border border-amber-100 bg-amber-50 px-3 py-2">
                     <p className="text-sm font-black text-amber-900">{issue.title}</p>
                     <p className="mt-1 text-xs leading-5 text-amber-800/80">{issue.detail}</p>
@@ -350,8 +283,8 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
               </DetailBlock>
 
               <DetailBlock title="Recomendaciones">
-                {getRecommendations(selectedRequest).slice(0, 5).map((recommendation) => (
-                  <div key={recommendation.id} className="rounded-2xl border border-slate-100 bg-[#F6F8FB] px-3 py-2">
+                {report.recommendations.slice(0, 5).map((recommendation, index) => (
+                  <div key={`${recommendation.title}-${index}`} className="rounded-2xl border border-slate-100 bg-[#F6F8FB] px-3 py-2">
                     <p className="text-sm font-black text-[#080A0F]">{recommendation.title}</p>
                     <p className="mt-1 text-xs leading-5 text-slate-500">{recommendation.detail}</p>
                   </div>
@@ -359,20 +292,20 @@ export function ShieldAdminClient({ requests }: { requests: ShieldAdminRequest[]
               </DetailBlock>
 
               <div className="rounded-2xl border border-[#C9922A]/25 bg-[#C9922A]/10 px-4 py-3">
-                <p className="text-sm font-black text-[#080A0F]">{getCommercialCta(selectedRequest).title}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-600">{getCommercialCta(selectedRequest).description}</p>
+                <p className="text-sm font-black text-[#080A0F]">Propuesta BarberíaOS</p>
+                <p className="mt-1 text-xs leading-5 text-slate-600">{report.barberiaosProposal}</p>
               </div>
 
               <div className="grid gap-2">
-                <button type="button" onClick={() => copyWhatsappSummary(selectedRequest)} className="btn-gold w-full">
-                  <Copy size={14} />
-                  {copiedId === selectedRequest.id ? "Resumen copiado" : "Copiar resumen para WhatsApp"}
-                </button>
+                <CopyWhatsAppSummaryButton text={report.whatsappSummary} idleLabel="Copiar resumen para WhatsApp" />
                 <Link href={`/admin/shield/${selectedRequest.id}/report`} className="btn-dark w-full">
                   <FileText size={14} />
                   Generar informe
                 </Link>
               </div>
+                  </>
+                );
+              })()}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
