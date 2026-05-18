@@ -39,7 +39,7 @@ export function FloatingWhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Solicitar demo por WhatsApp"
-      className="fixed bottom-4 right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_18px_45px_rgba(16,185,129,0.28)] transition hover:-translate-y-0.5 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:bottom-5 sm:right-5 sm:px-5"
+      className="fixed bottom-4 right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border border-[#D5A84C]/35 bg-[#0D0F14] px-4 py-3 text-sm font-black text-[#D5A84C] shadow-[0_18px_45px_rgba(201,146,42,0.18)] transition hover:-translate-y-0.5 hover:bg-[#D5A84C]/10 focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/50 focus:ring-offset-2 sm:bottom-5 sm:right-5 sm:px-5"
     >
       <MessageCircle size={18} className="shrink-0" />
       <span>Solicitar demo</span>

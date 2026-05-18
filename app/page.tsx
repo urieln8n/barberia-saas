@@ -259,7 +259,7 @@ function SectionIntro({
 
 function Pill({ children }: { children: string }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-white/62">
+    <span className="inline-flex items-center rounded-full border border-[#D5A84C]/20 bg-[#D5A84C]/[0.05] px-3 py-1 text-xs font-bold text-white/70">
       {children}
     </span>
   );
@@ -395,7 +395,7 @@ export default function HomePage() {
         <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070d]/82 px-5 backdrop-blur-xl lg:px-8">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
             <Link href="/" className="inline-flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#080A0F]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#080A0F] ring-1 ring-[#D5A84C]/25">
                 <Scissors size={18} />
               </span>
               <span className="font-black tracking-tight">BarberíaOS</span>
@@ -413,7 +413,7 @@ export default function HomePage() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-sm font-black text-emerald-300 transition hover:bg-emerald-400/20 sm:inline-flex"
+              className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
             >
               Pedir demo
             </a>
@@ -421,7 +421,7 @@ export default function HomePage() {
         </header>
 
         <section className="relative overflow-hidden px-5 pb-16 pt-12 md:pb-24 md:pt-20 lg:px-8" data-gsap-premium="hero">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#38BDF8]/55 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/40 to-transparent" />
           <div className="premium-hero-glow" aria-hidden="true" />
           <div className="gold-particles" aria-hidden="true">
             <span />
@@ -433,8 +433,8 @@ export default function HomePage() {
           </div>
           <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-white/70">
-                <Crown size={14} className="text-[#38BDF8]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/[0.07] px-3 py-1.5 text-xs font-black text-[#D5A84C]/90">
+                <Crown size={14} className="text-[#D5A84C]" />
                 SaaS para barberías que quieren vender reservas sin perder control
               </div>
               <h1 className="mt-6 text-5xl font-black leading-[0.96] tracking-normal text-white md:text-7xl">
@@ -455,7 +455,7 @@ export default function HomePage() {
               <div className="mt-5">
                 <a
                   href={DEMO_BOOKING_URL}
-                  className="inline-flex items-center gap-2 text-sm font-black text-emerald-300 transition hover:text-emerald-200"
+                  className="inline-flex items-center gap-2 text-sm font-black text-[#D5A84C] transition hover:text-[#D5A84C]/80"
                 >
                   <QrCode size={16} />
                   Probar página pública de reservas
@@ -513,7 +513,7 @@ export default function HomePage() {
               {activationSteps.map(([step, text]) => (
                 <article key={step} className="premium-dark-card rounded-[24px] p-5">
                   <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#38BDF8]/25 bg-[#38BDF8]/10 text-sm font-black text-[#38BDF8]">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 text-sm font-black text-[#D5A84C]">
                       {step}
                     </div>
                     <div>
@@ -753,7 +753,7 @@ export default function HomePage() {
                   }`}
                 >
                   {plan.featured && (
-                    <span className="absolute right-5 top-5 rounded-full bg-[#2563EB] px-3 py-1 text-xs font-black text-white">
+                    <span className="absolute right-5 top-5 rounded-full bg-[#D5A84C] px-3 py-1 text-xs font-black text-[#080A0F]">
                       Más equilibrado
                     </span>
                   )}
@@ -859,7 +859,7 @@ export default function HomePage() {
           <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-sm">
               <Link href="/" className="inline-flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#080A0F]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#080A0F] ring-1 ring-[#D5A84C]/25">
                   <Scissors size={18} />
                 </span>
                 <span className="font-black tracking-tight text-white">BarberíaOS</span>
