@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark" | "gold";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark" | "gold" | "premiumBlue";
 
 type SharedProps = {
   children: ReactNode;
@@ -28,6 +28,7 @@ const variantClasses: Record<Variant, string> = {
   danger: "btn-danger",
   dark: "btn-dark",
   gold: "btn-gold",
+  premiumBlue: "btn-premium-blue",
 };
 
 export function PrimaryButton(props: PrimaryButtonProps) {

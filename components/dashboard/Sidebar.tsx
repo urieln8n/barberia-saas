@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   LogOut,
   QrCode,
+  PackageCheck,
   HelpCircle,
   Boxes,
   ShoppingBag,
@@ -86,6 +87,7 @@ const tabItems: Record<TabId, NavItem[]> = {
     { href: "/dashboard/recuperacion",     label: "Clientes perdidos",icon: RotateCcw                  },
     { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow,   badge: "Pro"    },
     { href: "/dashboard/ia",               label: "IA del Dueño",     icon: Bot,        badge: "IA"     },
+    { href: "/dashboard/kit",              label: "BarberíaOS Kit",   icon: PackageCheck, badge: "Kit" },
     { href: "/dashboard/qr",               label: "QR y página pública", icon: QrCode                   },
     { href: "/dashboard/marketplace",      label: "Marketplace",      icon: ShoppingBag                 },
     { href: "/dashboard/security-audit",   label: "Auditoría Web",    icon: ShieldCheck, badge: "Beta" },
@@ -128,6 +130,7 @@ const groupedMobileNav: MobileNavGroup[] = [
       { href: "/dashboard/resenas", label: "Reseñas", icon: Star },
       { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow, badge: "Pro" },
       { href: "/dashboard/ia", label: "IA del Dueño", icon: Bot, badge: "IA" },
+      { href: "/dashboard/kit", label: "BarberíaOS Kit", icon: PackageCheck, badge: "Kit" },
       { href: "/dashboard/recuperacion", label: "Clientes perdidos", icon: RotateCcw },
       { href: "/dashboard/security-audit", label: "Auditoría Web", icon: ShieldCheck, badge: "Beta" },
     ],
@@ -151,6 +154,7 @@ const groupedMobileNav: MobileNavGroup[] = [
 const quickMobileActions: NavItem[] = [
   { href: "/dashboard/reservas", label: "Nueva reserva", icon: CalendarDays },
   { href: "/dashboard/qr", label: "QR público", icon: QrCode },
+  { href: "/dashboard/kit", label: "Kit", icon: PackageCheck, badge: "Kit" },
   { href: "/dashboard/growth", label: "Growth", icon: Rocket, badge: "Growth" },
   { href: "/dashboard/ia", label: "IA dueño", icon: Bot, badge: "IA" },
 ];
