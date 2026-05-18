@@ -17,21 +17,30 @@ type CashMovementRow = {
 
 function parseAmount(value: FormDataEntryValue | null, fallback = 0) {
   if (typeof value !== "string" || value.trim() === "") return fallback;
-  const amount = Number(value);
+  const amount = Number(value.replace(",", "."));
   return Number.isFinite(amount) ? amount : Number.NaN;
+}
+
+function normalizeMoney(value: number) {
+  return Math.round(value * 100) / 100;
 }
 
 function movementTotal(movement: CashMovementRow) {
   const amount = Number(movement.amount ?? 0);
   const discount = Number(movement.discount_amount ?? 0);
   const tip = Number(movement.tip_amount ?? 0);
+
+  if (!Number.isFinite(amount) || !Number.isFinite(discount) || !Number.isFinite(tip)) {
+    return Number.NaN;
+  }
+
   const total = amount - discount + tip;
 
   if (movement.movement_type === "refund" || movement.movement_type === "expense") {
-    return -total;
+    return normalizeMoney(-total);
   }
 
-  return total;
+  return normalizeMoney(total);
 }
 
 async function getContext() {
@@ -51,7 +60,7 @@ async function getContext() {
 
 export async function openCashSession(formData: FormData) {
   const { supabase, userId, barbershopId } = await getContext();
-  const openingAmount = parseAmount(formData.get("opening_amount"));
+  const openingAmount = normalizeMoney(parseAmount(formData.get("opening_amount")));
 
   if (!Number.isFinite(openingAmount) || openingAmount < 0) {
     return { error: "Importe inicial inválido." };
@@ -86,9 +95,9 @@ export async function createCashMovement(formData: FormData) {
   const clientId = String(formData.get("client_id") ?? "").trim() || null;
   const barberId = String(formData.get("barber_id") ?? "").trim() || null;
   const serviceId = String(formData.get("service_id") ?? "").trim() || null;
-  const amount = parseAmount(formData.get("amount"));
-  const discountAmount = parseAmount(formData.get("discount_amount"));
-  const tipAmount = parseAmount(formData.get("tip_amount"));
+  const amount = normalizeMoney(parseAmount(formData.get("amount")));
+  const discountAmount = normalizeMoney(parseAmount(formData.get("discount_amount")));
+  const tipAmount = normalizeMoney(parseAmount(formData.get("tip_amount")));
   const paymentMethod = String(formData.get("payment_method") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim() || null;
 
@@ -142,7 +151,7 @@ export async function closeCashSession(formData: FormData) {
   const { supabase, barbershopId } = await getContext();
 
   const cashSessionId = String(formData.get("cash_session_id") ?? "").trim();
-  const closingAmount = parseAmount(formData.get("closing_amount"));
+  const closingAmount = normalizeMoney(parseAmount(formData.get("closing_amount")));
   const notes = String(formData.get("closing_notes") ?? "").trim() || null;
 
   if (!cashSessionId) return { error: "No hay una caja abierta válida." };
@@ -173,8 +182,13 @@ export async function closeCashSession(formData: FormData) {
     .filter((movement) => movement.payment_method === "cash")
     .reduce((sum, movement) => sum + movementTotal(movement), 0);
 
-  const expectedCashAmount = Number(session.opening_amount ?? 0) + cashMovementTotal;
-  const differenceAmount = closingAmount - expectedCashAmount;
+  const openingAmount = Number(session.opening_amount ?? 0);
+  if (!Number.isFinite(openingAmount) || openingAmount < 0 || !Number.isFinite(cashMovementTotal)) {
+    return { error: "No se pudo calcular el efectivo esperado de forma segura." };
+  }
+
+  const expectedCashAmount = normalizeMoney(Math.max(0, openingAmount + cashMovementTotal));
+  const differenceAmount = normalizeMoney(closingAmount - expectedCashAmount);
 
   const { error } = await supabase
     .from("cash_sessions")

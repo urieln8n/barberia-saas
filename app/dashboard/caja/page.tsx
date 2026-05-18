@@ -50,15 +50,6 @@ function firstRelation<T>(value: Relation<T>): T | null {
   return value;
 }
 
-function getLocalDateISO() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
 function normalizeSession(session: CashSession | null) {
   if (!session) return null;
 
@@ -116,7 +107,6 @@ export default async function CajaPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  const today = getLocalDateISO();
   let errorMessage: string | null = null;
 
   const [
@@ -197,8 +187,6 @@ export default async function CajaPage() {
         )
         .eq("barbershop_id", barbershopId)
         .eq("cash_session_id", session.id)
-        .gte("created_at", `${today}T00:00:00`)
-        .lte("created_at", `${today}T23:59:59`)
         .order("created_at", { ascending: false })
     : { data: [], error: null };
 
