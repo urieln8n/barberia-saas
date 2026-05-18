@@ -37,6 +37,7 @@ import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 const CONTACT_EMAIL = BUSINESS_CONFIG.legalEmail;
 const WHATSAPP_URL = BUSINESS_CONFIG.whatsappUrl;
 const DEMO_BOOKING_URL = BUSINESS_CONFIG.demoBookingUrl;
+const DEMO_URL = BUSINESS_CONFIG.demoUrl;
 
 export const metadata: Metadata = {
   title: "Software para barberías | Reservas, caja, QR e IA",
@@ -54,12 +55,12 @@ export const metadata: Metadata = {
 };
 
 const controls = [
-  ["Reservas", "Agenda por barbero, estados, huecos y confirmaciones.", CalendarCheck2],
-  ["Clientes", "Historial, frecuencia, clientes dormidos y datos propios.", Users],
-  ["Barberos", "Rendimiento por persona, ocupación, servicios y ventas.", Scissors],
-  ["Caja", "Cobros, propinas, métodos de pago y cierre diario.", WalletCards],
-  ["Productos", "Venta en mostrador, stock básico e ingresos extra.", PackageCheck],
-  ["Marketing", "Campañas, reseñas, WhatsApp, Instagram y recuperación.", Megaphone],
+  ["Reservas", "Link y QR para que el cliente reserve sin escribirte por WhatsApp.", CalendarCheck2],
+  ["Agenda", "Citas por día, servicio, barbero y estado desde un panel claro.", Clock3],
+  ["Clientes", "Historial y base propia para que el cliente vuelva a tu barbería.", Users],
+  ["Caja", "Servicios, productos, métodos de pago y cierre diario en orden.", WalletCards],
+  ["Equipo", "Barberos, servicios, rendimiento y ocupación sin hojas sueltas.", Scissors],
+  ["Crecimiento", "Mensajes, reseñas y campañas manuales para llenar huecos.", Megaphone],
 ] as const;
 
 const operatingBlocks = [
@@ -100,10 +101,30 @@ const marketingFeatures = [
 ] as const;
 
 const kitItems = [
-  ["QR y enlace propio", "Tu página pública de reservas lista para mostrador, Instagram, Google y WhatsApp.", QrCode],
-  ["Carteles y mensajes", "Ideas de piezas para imprimir, stories y textos listos para compartir con clientes.", Printer],
-  ["Activación guiada", "Checklist para pasar de tener software a usarlo físicamente dentro del local.", CheckCircle2],
-  ["Setup recomendado", "Tablet, soporte, impresora, cajón y lector como recomendaciones, no hardware propio.", Tablet],
+  ["QR de reservas", "Enlace propio para mostrador, espejo, Instagram, Google y WhatsApp.", QrCode],
+  ["Carteles descargables", "Materiales imprimibles para que el QR se vea dentro del local.", Printer],
+  ["Mensajes listos", "Textos para WhatsApp, bio de Instagram e historias sin improvisar.", MessageCircle],
+  ["Setup recomendado", "Tablet, soporte, impresora y caja como guía de compra, no hardware propio.", Tablet],
+] as const;
+
+const activationSteps = [
+  ["Día 1", "Configuramos barbería, servicios, barberos, enlace público y QR."],
+  ["Día 2", "Revisamos agenda, caja básica, materiales del Kit y primer flujo de reservas."],
+  ["Después", "Te quedas con checklist, mensajes y soporte para operar sin depender de papel."],
+] as const;
+
+const founderBenefits = [
+  "Activación guiada de la barbería",
+  "Ajuste de servicios, barberos y QR inicial",
+  "Feedback directo para priorizar mejoras reales",
+  "Condiciones fundadoras mientras el programa esté abierto",
+] as const;
+
+const demoDeliverables = [
+  "Diagnóstico rápido de cómo reservas hoy",
+  "Demo de la página pública y QR",
+  "Recorrido por agenda, caja, clientes y Kit",
+  "Recomendación honesta del plan adecuado",
 ] as const;
 
 const comparisons = [
@@ -114,25 +135,31 @@ const comparisons = [
 
 const plans = [
   {
-    name: "Starter",
+    name: "Arranca",
     price: "39 €",
     description: "Para dejar atrás WhatsApp y papel con una base profesional.",
+    forWho: "Barberías pequeñas o barberos que quieren ordenar reservas.",
+    limits: "Hasta 2 barberos · activación asistida básica",
     featured: false,
-    features: ["Reservas online", "Agenda y clientes", "QR de reservas", "Caja básica", "Página pública"],
+    features: ["Reservas online", "Agenda y clientes", "QR de reservas", "Caja básica", "Página pública", "Soporte por WhatsApp"],
   },
   {
-    name: "Pro",
+    name: "Control",
     price: "79 €",
     description: "Para barberías con equipo que quieren control diario y marketing.",
+    forWho: "Locales con equipo, caja diaria y venta de productos.",
+    limits: "Hasta 5 barberos · Kit de activación incluido",
     featured: true,
-    features: ["Todo en Starter", "Caja avanzada", "Productos", "Marketing Studio", "Clientes dormidos", "Rendimiento por barbero"],
+    features: ["Todo en Arranca", "Caja avanzada", "Productos", "Marketing Studio", "Clientes dormidos", "Rendimiento por barbero", "Materiales QR guiados"],
   },
   {
-    name: "Growth",
+    name: "Domina",
     price: "149 €",
     description: "Para dueños que quieren crecimiento, IA y visión completa del negocio.",
+    forWho: "Dueños que quieren recuperar clientes y tomar decisiones con datos.",
+    limits: "Hasta 10 barberos · revisión mensual de crecimiento",
     featured: false,
-    features: ["Todo en Pro", "IA del dueño", "CRM de leads", "Reportes avanzados", "Campañas de recuperación", "Soporte prioritario"],
+    features: ["Todo en Control", "IA del dueño", "CRM de leads", "Reportes avanzados", "Campañas de recuperación", "Soporte prioritario", "Sesión mensual de optimización"],
   },
 ] as const;
 
@@ -140,6 +167,7 @@ const faqs = [
   ["¿BarberíaOS es solo una agenda?", "No. La agenda es una parte. BarberíaOS conecta reservas, caja, clientes, barberos, productos, QR, marketing e IA en un solo sistema."],
   ["¿Cobra comisión por reserva?", "No. El modelo es plan mensual fijo. Tus clientes, tus datos y tu relación comercial siguen siendo tuyos."],
   ["¿Mis clientes tienen que instalar una app?", "No. Reservan desde el navegador con tu link público, tu QR o el botón que compartes por Instagram y WhatsApp."],
+  ["¿El hardware lo vende BarberíaOS?", "No por ahora. Te recomendamos tablet, soporte, impresora o caja si encajan con tu local, pero no prometemos hardware propio."],
 ] as const;
 
 const homeJsonLd = [
@@ -250,17 +278,17 @@ function DashboardMockup() {
         <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <p className="text-xs font-black uppercase text-[#38BDF8]">BarberíaOS</p>
-            <h3 className="mt-1 text-xl font-black text-white md:text-2xl">Panel del dueño</h3>
+            <h3 className="mt-1 text-xl font-black text-white md:text-2xl">Panel demo del dueño</h3>
           </div>
-          <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-black text-emerald-300">
-            Hoy en control
+          <div className="rounded-full border border-[#38BDF8]/25 bg-[#38BDF8]/10 px-3 py-1 text-xs font-black text-[#BDEBFF]">
+            Datos de ejemplo
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
-            ["Reservas", "31", CalendarCheck2],
-            ["Caja", "1.248 €", ReceiptText],
+            ["Reservas hoy", "31", CalendarCheck2],
+            ["Caja estimada", "1.248 €", ReceiptText],
             ["Productos", "186 €", PackageCheck],
             ["Ocupación", "87%", Gauge],
           ].map(([label, value, Icon]) => {
@@ -306,7 +334,7 @@ function DashboardMockup() {
                 <TrendingUp size={16} className="text-[#38BDF8]" />
               </div>
               <p className="mt-3 text-3xl font-black text-white">14 clientes</p>
-              <p className="mt-1 text-xs leading-5 text-white/55">listos para recuperar esta semana.</p>
+              <p className="mt-1 text-xs leading-5 text-white/55">ejemplo de clientes a recuperar.</p>
             </div>
             <div className="rounded-2xl border border-[#38BDF8]/[0.18] bg-[#2563EB]/[0.08] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_16px_44px_rgba(37,99,235,0.10)]">
               <p className="text-sm font-black text-white">IA del dueño</p>
@@ -331,8 +359,8 @@ function PublicBookingMockup() {
               <Scissors size={19} />
             </div>
             <div>
-              <p className="font-black text-white">Nova Barber Studio</p>
-              <p className="text-xs text-white/42">Enlace propio de reservas</p>
+              <p className="font-black text-white">Demo Barber Studio</p>
+              <p className="text-xs text-white/42">Ejemplo de página pública</p>
             </div>
           </div>
           <QrCode className="text-[#38BDF8]" size={26} />
@@ -349,7 +377,7 @@ function PublicBookingMockup() {
           ))}
         </div>
         <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#38BDF8] via-[#2563EB] to-[#1D4ED8] px-4 py-3 text-center text-sm font-black text-white shadow-[0_16px_38px_rgba(37,99,235,0.34)]">
-          Crear reserva de prueba
+          Ver flujo de reserva
         </div>
       </div>
     </div>
@@ -375,9 +403,9 @@ export default function HomePage() {
             <nav className="hidden items-center gap-6 text-sm font-bold text-white/54 md:flex" aria-label="Navegación principal">
               <ul className="flex items-center gap-6">
                 <li><Link href="#controla" className="transition hover:text-white">Producto</Link></li>
-                <li><Link href="#marketing" className="transition hover:text-white">Marketing</Link></li>
+                <li><Link href="#activacion" className="transition hover:text-white">Activación</Link></li>
+                <li><Link href="#fundadoras" className="transition hover:text-white">Fundadoras</Link></li>
                 <li><Link href="#precios" className="transition hover:text-white">Precios</Link></li>
-                <li><Link href="/proposito" className="transition hover:text-white">Propósito</Link></li>
                 <li><Link href="/demo" className="transition hover:text-white">Demo</Link></li>
               </ul>
             </nav>
@@ -387,7 +415,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="hidden rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-sm font-black text-emerald-300 transition hover:bg-emerald-400/20 sm:inline-flex"
             >
-              WhatsApp
+              Pedir demo
             </a>
           </div>
         </header>
@@ -407,39 +435,37 @@ export default function HomePage() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-white/70">
                 <Crown size={14} className="text-[#38BDF8]" />
-                Sistema operativo para barberías modernas
+                SaaS para barberías que quieren vender reservas sin perder control
               </div>
               <h1 className="mt-6 text-5xl font-black leading-[0.96] tracking-normal text-white md:text-7xl">
-                Reservas, caja y control de barberos en un solo panel.
+                Tu barbería ordenada y lista para reservar online en 48h.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/64">
-                BarberíaOS conecta reservas, clientes, barberos, servicios, caja, productos, QR, reseñas,
-                marketing e IA del dueño para que la barbería deje de operar a ciegas.
+                BarberíaOS conecta reservas, agenda, clientes, caja, QR, productos y mensajes de crecimiento
+                para dueños que quieren dejar de depender de WhatsApp, papel o plataformas con comisión.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="premiumBlue" className="min-h-12 px-7">
-                  Ver demo <ArrowRight size={17} />
+                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
+                  Pedir demo por WhatsApp <MessageCircle size={17} />
                 </PrimaryButton>
-                <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Crear reserva de prueba
+                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                  Ver demo interactiva <ArrowRight size={17} />
                 </PrimaryButton>
               </div>
               <div className="mt-5">
                 <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={DEMO_BOOKING_URL}
                   className="inline-flex items-center gap-2 text-sm font-black text-emerald-300 transition hover:text-emerald-200"
                 >
-                  <MessageCircle size={16} />
-                  Solicitar demo por WhatsApp
+                  <QrCode size={16} />
+                  Probar página pública de reservas
                   <ChevronRight size={15} />
                 </a>
               </div>
               <div className="mt-8 flex flex-wrap gap-2">
                 <Pill>Sin comisión por reserva</Pill>
-                <Pill>Clientes propios</Pill>
-                <Pill>Mobile-first</Pill>
+                <Pill>Activación guiada</Pill>
+                <Pill>Kit QR incluido</Pill>
               </div>
             </div>
             <DashboardMockup />
@@ -450,8 +476,8 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Qué controla BarberíaOS"
-              title="No es una agenda. Es el cockpit del dueño."
-              text="Una barbería no pierde dinero solo por no tener reservas online. Lo pierde cuando las reservas, caja, productos, clientes y campañas viven en sitios distintos."
+              title="Un sistema claro para dueños de barbería, no otra app que nadie usa."
+              text="BarberíaOS está pensado para locales que viven entre WhatsApp, agenda, caja, clientes y productos. El objetivo es simple: que el dueño sepa qué pasa y que el cliente pueda reservar sin fricción."
               center
             />
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -466,20 +492,55 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        <Shell className="landing-section-dark">
+        <Shell id="activacion" className="landing-section-dark">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <SectionIntro
+                eyebrow="Activación en 48h"
+                title="No compras solo una herramienta: sales con tu barbería configurada."
+                text="En una demo validamos si encaja. Si avanzas, dejamos configurado lo esencial: servicios, barberos, enlace de reservas, QR, agenda y primeros materiales para compartir."
+              />
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
+                  Pedir demo por WhatsApp <MessageCircle size={17} />
+                </PrimaryButton>
+                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                  Ver demo interactiva
+                </PrimaryButton>
+              </div>
+            </div>
+            <div className="grid gap-3">
+              {activationSteps.map(([step, text]) => (
+                <article key={step} className="premium-dark-card rounded-[24px] p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#38BDF8]/25 bg-[#38BDF8]/10 text-sm font-black text-[#38BDF8]">
+                      {step}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-white">{step === "Después" ? "Acompañamiento" : `Activación ${step}`}</h3>
+                      <p className="mt-2 text-sm leading-7 text-white/58">{text}</p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Shell>
+
+        <Shell className="landing-section-graphite">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <SectionIntro
                 eyebrow="Reservas con QR"
-                title="Tu escaparate, Instagram y mostrador pueden vender citas mientras tú cortas."
-                text="El enlace público de reservas de cada barbería está pensado para convertir visitas de Instagram, Google, mostrador o WhatsApp en citas reales. El QR no manda a una plantilla: manda a una experiencia de reserva directa."
+                title="Tu mostrador, espejo e Instagram pueden mandar reservas al mismo sistema."
+                text="El cliente entra desde tu QR o enlace, elige servicio, barbero y hora. Tú ves la reserva en la agenda sin perseguir conversaciones sueltas."
               />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="premiumBlue" className="min-h-12 px-7">
-                  Ver demo
+                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
+                  Pedir demo por WhatsApp
                 </PrimaryButton>
                 <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Crear reserva de prueba
+                  Probar reserva pública
                 </PrimaryButton>
               </div>
             </div>
@@ -492,21 +553,19 @@ export default function HomePage() {
             <div>
               <SectionIntro
                 eyebrow="BarberíaOS Kit"
-                title="Del panel al mostrador: software, QR, materiales y setup recomendado."
-                text="BarberíaOS Kit convierte el enlace de reservas en una activación física y digital: QR para imprimir, carteles, textos para Instagram y WhatsApp, checklist de puesta en marcha y recomendaciones de hardware para operar mejor."
+                title="Del software al local: QR, carteles, mensajes y setup recomendado."
+                text="El Kit convierte BarberíaOS en algo visible dentro de la barbería. Incluye QR de reservas, materiales descargables, mensajes para WhatsApp e Instagram, checklist de activación y recomendaciones de tablet, impresora o caja si encajan con tu operación."
               />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href="/demo" variant="premiumBlue" className="min-h-12 px-7">
-                  Ver demo <ArrowRight size={17} />
+                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
+                  Pedir demo por WhatsApp <MessageCircle size={17} />
                 </PrimaryButton>
                 <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={DEMO_URL}
                   className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-7 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
                 >
-                  <MessageCircle size={17} />
-                  Consultar por WhatsApp
+                  Ver demo interactiva
+                  <ArrowRight size={17} />
                 </a>
               </div>
             </div>
@@ -516,7 +575,7 @@ export default function HomePage() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-black uppercase text-[#38BDF8]">Kit incluido en la activación</p>
-                    <h3 className="mt-2 text-2xl font-black text-white">Todo listo para que el cliente reserve sin escribir.</h3>
+                    <h3 className="mt-2 text-2xl font-black text-white">Materiales para pasar de “tengo software” a “mis clientes reservan”.</h3>
                   </div>
                   <QrCode size={34} className="shrink-0 text-[#38BDF8]" />
                 </div>
@@ -547,7 +606,7 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="text-xs font-bold leading-5 text-white/40">
-                BarberíaOS no fabrica hardware propio todavía. El kit muestra materiales digitales y recomendaciones de compra/configuración para tu local.
+                BarberíaOS no fabrica hardware propio. El Kit incluye materiales digitales y una guía honesta de setup recomendado para tu local.
               </p>
             </div>
           </div>
@@ -641,12 +700,46 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        <Shell id="fundadoras" className="landing-section-dark">
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div>
+              <SectionIntro
+                eyebrow="Programa Barberías Fundadoras"
+                title="Estamos abriendo plazas para barberías que quieren implantarlo con acompañamiento."
+                text="No vamos a inventar casos reales. El programa fundador existe para trabajar con dueños que quieran ordenar reservas, caja y clientes con una activación guiada, feedback directo y condiciones iniciales claras."
+              />
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
+                  Pedir plaza fundadora <MessageCircle size={17} />
+                </PrimaryButton>
+                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                  Ver demo interactiva
+                </PrimaryButton>
+              </div>
+            </div>
+            <div className="premium-blue-panel rounded-[30px] p-6">
+              <p className="text-xs font-black uppercase text-[#38BDF8]">Qué incluye</p>
+              <div className="mt-5 grid gap-3">
+                {founderBenefits.map((benefit) => (
+                  <div key={benefit} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.065] p-4">
+                    <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-[#38BDF8]" />
+                    <p className="text-sm font-bold leading-6 text-white/76">{benefit}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-5 text-xs font-semibold leading-5 text-white/45">
+                Sin prometer resultados falsos: se valida caso a caso, con datos de tu barbería y una recomendación honesta de plan.
+              </p>
+            </div>
+          </div>
+        </Shell>
+
         <Shell id="precios" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Planes"
-              title="Precios claros para cada fase de la barbería."
-              text="Sin comisiones por reserva. Sin dependencia de marketplaces. Empieza con control operativo y sube cuando necesites crecimiento."
+              title="Precios claros para empezar sin comisión por reserva."
+              text="Planes pensados por fase de negocio. Todos incluyen página pública, QR de reservas y activación asistida; eliges según equipo, caja, marketing y soporte que necesitas."
               center
             />
             <div className="mt-10 grid gap-5 lg:grid-cols-3">
@@ -668,6 +761,19 @@ export default function HomePage() {
                   <p className={`mt-3 min-h-14 text-sm leading-6 ${plan.featured ? "text-slate-500" : "text-white/55"}`}>
                     {plan.description}
                   </p>
+                  <div className={`mt-4 rounded-2xl border p-4 ${
+                    plan.featured ? "border-slate-200 bg-slate-50" : "border-white/10 bg-white/[0.045]"
+                  }`}>
+                    <p className={`text-xs font-black uppercase ${plan.featured ? "text-[#2563EB]" : "text-[#38BDF8]"}`}>
+                      Para quién
+                    </p>
+                    <p className={`mt-2 text-sm leading-6 ${plan.featured ? "text-slate-600" : "text-white/62"}`}>
+                      {plan.forWho}
+                    </p>
+                    <p className={`mt-3 text-xs font-bold ${plan.featured ? "text-slate-400" : "text-white/38"}`}>
+                      {plan.limits}
+                    </p>
+                  </div>
                   <div className="mt-7 flex items-end gap-1">
                     <span className="text-5xl font-black">{plan.price}</span>
                     <span className={plan.featured ? "pb-2 text-sm font-bold text-slate-400" : "pb-2 text-sm font-bold text-white/35"}>/mes</span>
@@ -681,11 +787,34 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                  <PrimaryButton href={plan.featured ? WHATSAPP_URL : "/demo"} variant={plan.featured ? "premiumBlue" : "ghost"} className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}>
-                    {plan.featured ? "Solicitar demo por WhatsApp" : "Ver demo"}
+                  <PrimaryButton href={plan.featured ? WHATSAPP_URL : DEMO_URL} variant={plan.featured ? "premiumBlue" : "ghost"} className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}>
+                    {plan.featured ? "Pedir demo por WhatsApp" : "Ver demo interactiva"}
                   </PrimaryButton>
                 </article>
               ))}
+            </div>
+            <p className="mx-auto mt-6 max-w-3xl text-center text-xs font-semibold leading-5 text-white/42">
+              Precios orientativos para España, sin comisión por reserva. IVA, condiciones finales y alcance de activación se confirman en la demo según el tamaño de la barbería.
+            </p>
+          </div>
+        </Shell>
+
+        <Shell className="landing-section-graphite">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <SectionIntro
+                eyebrow="Después de pedir demo"
+                title="Sales con una respuesta clara: si encaja, cómo se activa y qué plan tiene sentido."
+                text="La demo no es una llamada genérica. Se revisa tu forma actual de reservar, se enseña el flujo público y se aterriza una activación realista para tu barbería."
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                {demoDeliverables.map((item) => (
+                  <article key={item} className="premium-dark-card rounded-[24px] p-5">
+                    <CheckCircle2 size={18} className="text-[#38BDF8]" />
+                    <p className="mt-4 text-sm font-bold leading-6 text-white/74">{item}</p>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </Shell>
@@ -695,23 +824,21 @@ export default function HomePage() {
             <BadgeEuro className="mx-auto text-[#38BDF8]" size={34} />
             <p className="mt-5 text-xs font-black uppercase text-[#38BDF8]">Pide una demo</p>
             <h2 className="mt-3 text-4xl font-black leading-tight text-white md:text-6xl">
-              Mira BarberíaOS con una barbería real, no con diapositivas.
+              Mira BarberíaOS aplicado a tu forma real de trabajar.
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/62">
-              Te enseñamos reservas, caja, productos, QR, clientes, Marketing Studio e IA del dueño en un recorrido corto y directo.
+              Te enseñamos reservas, caja, productos, QR, clientes, Marketing Studio e IA del dueño en un recorrido corto y directo, sin prometer resultados que no se puedan demostrar.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <PrimaryButton href="/demo" variant="premiumBlue" className="min-h-12 px-8">
-                Ver demo <ArrowRight size={17} />
+              <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-8">
+                Pedir demo por WhatsApp <MessageCircle size={17} />
               </PrimaryButton>
               <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={DEMO_URL}
                 className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-8 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
               >
-                <MessageCircle size={17} />
-                Solicitar demo por WhatsApp
+                Ver demo interactiva
+                <ArrowRight size={17} />
               </a>
             </div>
           </div>

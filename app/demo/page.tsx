@@ -35,44 +35,38 @@ const journey = [
   {
     title: "Dashboard del dueño",
     text: "Empieza por la vista de mando: reservas de hoy, caja, ocupación, productos vendidos y próximos pasos.",
-    href: "/dashboard",
     icon: BarChart3,
-    proof: "Una pantalla para saber cómo va el día.",
+    proof: "Lo verás en la demo guiada, sin necesitar acceso técnico.",
   },
   {
     title: "Reserva pública",
     text: "Prueba la experiencia que verá un cliente desde Instagram, Google, QR o WhatsApp.",
-    href: BUSINESS_CONFIG.demoBookingUrl,
     icon: QrCode,
     proof: "Sin login para el cliente.",
   },
   {
     title: "Agenda por barbero",
     text: "Comprueba cómo se ordenan citas, huecos y estados para no depender de mensajes sueltos.",
-    href: "/dashboard/agenda",
     icon: CalendarDays,
-    proof: "Menos llamadas, menos confusión.",
+    proof: "Te enseñamos el flujo en una llamada corta.",
   },
   {
     title: "Caja y cierre diario",
     text: "Mira cobros, métodos de pago, propinas y cierre para saber qué entra cada día.",
-    href: "/dashboard/caja",
     icon: ReceiptText,
-    proof: "Control real del dinero.",
+    proof: "Ejemplo visual de operación diaria.",
   },
   {
     title: "Productos e inventario",
     text: "Conecta venta en mostrador con stock básico para no perder margen en productos.",
-    href: "/dashboard/inventario",
     icon: PackageCheck,
     proof: "Ingresos extra visibles.",
   },
   {
     title: "IA del dueño",
     text: "Revisa sugerencias para huecos, clientes dormidos, campañas y mensajes comerciales.",
-    href: "/dashboard/ia",
     icon: Bot,
-    proof: "Acciones concretas, no informes largos.",
+    proof: "Ideas accionables, siempre revisadas por el dueño.",
   },
 ] as const;
 
@@ -80,6 +74,12 @@ const outcomes = [
   ["Reservas 24/7", "El cliente reserva cuando quiere y la barbería mantiene el control."],
   ["Caja conectada", "Cada servicio, producto y propina queda en el cierre del día."],
   ["Clientes propios", "La barbería conserva su base de clientes y no paga comisión por cita."],
+] as const;
+
+const demoNotes = [
+  "Datos de ejemplo: las cifras del panel sirven para enseñar el flujo, no son resultados prometidos.",
+  "La reserva pública sí se puede probar desde el enlace demo.",
+  "Para ver el dashboard completo, pide demo y lo revisamos contigo sin que tengas que configurar nada.",
 ] as const;
 
 export default function DemoPage() {
@@ -96,7 +96,16 @@ export default function DemoPage() {
           <nav aria-label="Acciones de demo">
             <ul className="flex flex-wrap gap-2">
               <li><PrimaryButton href="/" variant="secondary">Volver</PrimaryButton></li>
-              <li><PrimaryButton href={BUSINESS_CONFIG.loginUrl} variant="dark">Entrar al panel</PrimaryButton></li>
+              <li>
+                <a
+                  href={BUSINESS_CONFIG.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-dark"
+                >
+                  Pedir demo
+                </a>
+              </li>
             </ul>
           </nav>
         </header>
@@ -106,43 +115,51 @@ export default function DemoPage() {
             <div className="p-6 md:p-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-4 py-2 text-xs font-black uppercase text-[#2563EB]">
                 <CheckCircle2 size={14} />
-                Demo guiada segura
+                Demo comercial sin login
               </div>
               <h1 className="mt-6 text-[clamp(2.5rem,6vw,5rem)] font-black leading-[0.95]">
-                Mira cómo BarberíaOS vende citas y ordena una barbería real.
+                Entiende en 10 minutos si BarberíaOS encaja con tu barbería.
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-                Recorre lo que importa para un dueño: dashboard, reserva pública, agenda, caja, productos e IA. La reserva de prueba abre una experiencia pública como la que usaría un cliente.
+                Prueba la reserva pública y revisa qué vería el dueño: agenda, caja, clientes, QR, Kit de activación y crecimiento. Los datos del panel son ejemplos para explicar el producto, no resultados inventados.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton
-                  href={BUSINESS_CONFIG.demoBookingUrl}
-                  variant="primary"
-                  className="min-h-12 px-6"
-                  data-event={CONVERSION_EVENTS.openPublicBookingDemo}
-                >
-                  Crear reserva de prueba <ArrowRight size={16} />
-                </PrimaryButton>
                 <a
                   href={BUSINESS_CONFIG.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-event={CONVERSION_EVENTS.openWhatsappDemo}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] border border-emerald-200 bg-emerald-50 px-6 text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
+                  className="btn-primary min-h-12 px-6"
                 >
                   <MessageCircle size={16} />
                   Pedir demo por WhatsApp
                 </a>
+                <PrimaryButton
+                  href={BUSINESS_CONFIG.demoBookingUrl}
+                  variant="secondary"
+                  className="min-h-12 px-6"
+                  data-event={CONVERSION_EVENTS.openPublicBookingDemo}
+                >
+                  Ver demo interactiva <ArrowRight size={16} />
+                </PrimaryButton>
+              </div>
+              <div className="mt-6 grid gap-2">
+                {demoNotes.map((note) => (
+                  <p key={note} className="flex gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold leading-6 text-slate-600">
+                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#2563EB]" />
+                    {note}
+                  </p>
+                ))}
               </div>
             </div>
             <div className="border-t border-slate-200 bg-[#080A0F] p-6 text-white lg:border-l lg:border-t-0 md:p-10">
               <div className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div>
-                    <p className="text-xs font-black uppercase text-[#D5A84C]">Hoy</p>
-                    <h2 className="mt-1 text-2xl font-black">Nova Barber Studio</h2>
+                    <p className="text-xs font-black uppercase text-[#38BDF8]">Panel demo · datos de ejemplo</p>
+                    <h2 className="mt-1 text-2xl font-black">Demo Barber Studio</h2>
                   </div>
-                  <Sparkles className="text-[#D5A84C]" />
+                  <Sparkles className="text-[#38BDF8]" />
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3">
                   {[
@@ -158,7 +175,7 @@ export default function DemoPage() {
                   ))}
                 </div>
                 <p className="mt-5 rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 p-4 text-sm font-semibold leading-6 text-white/75">
-                  IA del dueño: mañana tienes huecos entre 16:00 y 18:00. Publica corte + barba y escribe a clientes frecuentes.
+                  Ejemplo de IA del dueño: mañana hay huecos entre 16:00 y 18:00. Publica corte + barba y escribe a clientes frecuentes.
                 </p>
               </div>
             </div>
@@ -180,17 +197,16 @@ export default function DemoPage() {
               <p className="text-xs font-black uppercase text-[#2563EB]">Recorrido recomendado</p>
               <h2 className="mt-2 text-3xl font-black tracking-tight">Qué revisar en menos de 10 minutos</h2>
             </div>
-            <PrimaryButton href={BUSINESS_CONFIG.loginUrl} variant="secondary">
-              Entrar al panel
+            <PrimaryButton href={BUSINESS_CONFIG.demoBookingUrl} variant="secondary">
+              Probar reserva pública
             </PrimaryButton>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {journey.map((step) => {
               const Icon = step.icon;
               return (
-                <Link
+                <article
                   key={step.title}
-                  href={step.href}
                   className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[var(--shadow-card)]"
                 >
                   <div className="metric-icon bg-[#2563EB]/10 text-[#2563EB]">
@@ -200,9 +216,9 @@ export default function DemoPage() {
                   <p className="mt-3 text-sm leading-6 text-slate-500">{step.text}</p>
                   <p className="mt-4 text-sm font-black text-[#111827]">{step.proof}</p>
                   <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#2563EB]">
-                    Abrir sección <ArrowRight size={14} />
+                    Incluido en la demo <CheckCircle2 size={14} />
                   </span>
-                </Link>
+                </article>
               );
             })}
           </div>
@@ -213,13 +229,10 @@ export default function DemoPage() {
             <div>
               <h2 className="text-2xl font-black">Siguiente paso lógico</h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                Prueba primero la reserva pública. Después entra al panel o pide una demo por WhatsApp para ver cómo quedaría con servicios, equipo y horarios de tu barbería.
+                Prueba primero la reserva pública. Después pide una demo por WhatsApp para ver cómo quedaría con servicios, equipo, horarios, caja y materiales QR de tu barbería.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <PrimaryButton href={BUSINESS_CONFIG.demoBookingUrl} variant="primary">
-                Reserva pública
-              </PrimaryButton>
               <a
                 href={BUSINESS_CONFIG.whatsappUrl}
                 target="_blank"
@@ -227,8 +240,11 @@ export default function DemoPage() {
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] bg-[#080A0F] px-5 text-sm font-black text-white"
               >
                 <MessageCircle size={16} />
-                WhatsApp
+                Pedir demo por WhatsApp
               </a>
+              <PrimaryButton href={BUSINESS_CONFIG.demoBookingUrl} variant="secondary">
+                Ver demo interactiva
+              </PrimaryButton>
             </div>
           </div>
         </section>

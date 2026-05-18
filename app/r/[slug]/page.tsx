@@ -74,6 +74,13 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function isDemoBarbershop(slug: string, name?: string | null) {
+  const normalizedSlug = slug.toLowerCase();
+  const normalizedName = (name ?? "").toLowerCase();
+
+  return normalizedSlug === "demo-barber" || normalizedName.includes("demo");
+}
+
 function formatWhatsAppHref(phone: string | null, barbershopName: string) {
   if (!phone) return null;
 
@@ -110,6 +117,7 @@ async function getPublicBarbershop(slug: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = params.slug?.trim();
+  const isDemoSlug = slug ? isDemoBarbershop(slug) : false;
   if (!slug) {
     return {
       title: "Reservas online | BarberiaOS",
@@ -132,31 +140,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const isDemoPage = isDemoBarbershop(barbershop.slug, barbershop.name) || isDemoSlug;
+  const displayName = isDemoPage ? "Demo Barber Studio" : barbershop.name;
   const location = [barbershop.address, barbershop.city].filter(Boolean).join(", ");
 
   return {
-    title: `${barbershop.name} | Reservas online`,
-    description: location
-      ? `Reserva cita online en ${barbershop.name}, ${location}.`
-      : `Reserva cita online en ${barbershop.name}.`,
+    title: `${displayName} | Reservas online`,
+    description: isDemoPage
+      ? "Demo interactiva de reservas online con BarberíaOS para barberías."
+      : location
+        ? `Reserva cita online en ${displayName}, ${location}.`
+        : `Reserva cita online en ${displayName}.`,
     alternates: {
       canonical: `/r/${barbershop.slug}`,
     },
     openGraph: {
       type: "website",
       url: `${SITE_URL}/r/${barbershop.slug}`,
-      title: `${barbershop.name} | Reservas online`,
-      description: location
-        ? `Reserva cita online en ${barbershop.name}, ${location}.`
-        : `Reserva cita online en ${barbershop.name}.`,
+      title: `${displayName} | Reservas online`,
+      description: isDemoPage
+        ? "Demo interactiva de reservas online con BarberíaOS para barberías."
+        : location
+          ? `Reserva cita online en ${displayName}, ${location}.`
+          : `Reserva cita online en ${displayName}.`,
       siteName: "BarberíaOS",
     },
     twitter: {
       card: "summary",
-      title: `${barbershop.name} | Reservas online`,
-      description: location
-        ? `Reserva cita online en ${barbershop.name}, ${location}.`
-        : `Reserva cita online en ${barbershop.name}.`,
+      title: `${displayName} | Reservas online`,
+      description: isDemoPage
+        ? "Demo interactiva de reservas online con BarberíaOS para barberías."
+        : location
+          ? `Reserva cita online en ${displayName}, ${location}.`
+          : `Reserva cita online en ${displayName}.`,
     },
   };
 }
@@ -221,6 +237,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
   const activeServices = (services ?? []) as Service[];
   const activeBarbers = (barbers ?? []) as Barber[];
+  const isDemoPage = isDemoBarbershop(barbershop.slug, barbershop.name);
+  const displayName = isDemoPage ? "Demo Barber Studio" : barbershop.name;
   const initialServiceId = activeServices.some(
     (service) => service.id === searchParams?.service
   )
@@ -234,7 +252,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const location = [barbershop.address, barbershop.city].filter(Boolean).join(", ");
   const locationLabel = [publicProfile?.neighborhood, barbershop.city].filter(Boolean).join(", ") || location;
   const whatsappPhone = publicProfile?.whatsapp || barbershop.phone;
-  const whatsappHref = formatWhatsAppHref(whatsappPhone, barbershop.name);
+  const whatsappHref = formatWhatsAppHref(whatsappPhone, displayName);
   const mapsHref =
     barbershop.address
       ? `https://maps.google.com/?q=${encodeURIComponent([barbershop.address, barbershop.city].filter(Boolean).join(", "))}`
@@ -270,27 +288,34 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={publicProfile.logo_url}
-                  alt={`Logo de ${barbershop.name}`}
+                  alt={`Logo de ${displayName}`}
                   className="h-16 w-16 shrink-0 rounded-3xl border border-white/15 bg-white/10 object-cover shadow-2xl shadow-black/20"
                 />
               ) : (
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl border border-white/15 bg-white/10 text-xl font-black tracking-wide shadow-2xl shadow-black/20">
-                  {getInitials(barbershop.name) || <Scissors size={24} />}
+                  {getInitials(displayName) || <Scissors size={24} />}
                 </div>
               )}
               <div className="min-w-0">
                 <p className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-100">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Reserva en menos de 30 segundos
+                  {isDemoPage ? "Demo interactiva de reservas" : "Reserva en menos de 30 segundos"}
                 </p>
                 <h1 className="mt-3 text-4xl font-black tracking-normal text-white sm:text-5xl">
-                  {barbershop.name}
+                  {displayName}
                 </h1>
+                {isDemoPage && (
+                  <p className="mt-2 inline-flex rounded-full border border-[#38BDF8]/25 bg-[#38BDF8]/10 px-3 py-1 text-xs font-black uppercase text-[#BDEBFF]">
+                    Datos demo para probar el flujo
+                  </p>
+                )}
               </div>
             </div>
 
             <p className="max-w-2xl text-base leading-7 text-white/70">
-              {publicProfile?.description ??
+              {isDemoPage
+                ? "Prueba cómo reservaría un cliente desde el móvil. Esta página usa datos de demostración para enseñar el flujo público de BarberíaOS."
+                : publicProfile?.description ??
                 "Elige tu servicio y confirma tu hora desde el móvil. Sin cuenta, sin espera y directo con el equipo."}
             </p>
 
@@ -309,7 +334,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               )}
               <span className="inline-flex items-center gap-2">
                 <Clock size={15} className="text-[#D9B766]" />
-                Hoy quedan {freeSlotsToday} huecos estimados
+                {isDemoPage ? "Disponibilidad demo para probar el flujo" : `Hoy quedan ${freeSlotsToday} huecos estimados`}
               </span>
             </div>
 
@@ -322,7 +347,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href="#reservar"
                 className="btn-gold hidden md:inline-flex"
               >
-                Reservar cita <CalendarCheck size={16} />
+                {isDemoPage ? "Probar reserva demo" : "Reservar cita"} <CalendarCheck size={16} />
               </TrackedLink>
               {whatsappHref && (
                 <TrackedLink
@@ -357,8 +382,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </p>
             <div className="mt-4 grid gap-3">
               {[
-                { icon: Clock, label: "Reserva rápida", text: "Elige tu servicio y confirma tu hora." },
-                { icon: ShieldCheck, label: "Sin esperas", text: "Las horas ocupadas se bloquean." },
+                { icon: Clock, label: "Reserva rápida", text: isDemoPage ? "Prueba el flujo como si fueras un cliente." : "Elige tu servicio y confirma tu hora." },
+                { icon: ShieldCheck, label: "Sin cuenta", text: "El cliente reserva desde el navegador." },
                 { icon: BadgeCheck, label: "Confirmación", text: "La cita queda registrada en la agenda." },
               ].map(({ icon: Icon, label, text }) => (
                 <div key={label} className="rounded-2xl border border-white/10 bg-black/10 p-4">
@@ -487,11 +512,13 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               <span className="inline-flex items-center gap-1 rounded-full border border-[#D9B766]/30 bg-[#D9B766]/10 px-2.5 py-0.5 text-xs font-semibold text-[#F4D98F]">Disponible hoy</span>
             </div>
             <div className="rounded-2xl border border-[#D9B766]/22 bg-[#D9B766]/10 p-5">
-              <p className="text-lg font-black text-white">
-                Reserva online y asegura tu hueco sin llamadas
+                <p className="text-lg font-black text-white">
+                {isDemoPage ? "Demo de reserva online sin llamadas" : "Reserva online y asegura tu hueco sin llamadas"}
               </p>
               <p className="mt-2 text-sm leading-6 text-white/62">
-                {freeSlotsToday > 0
+                {isDemoPage
+                  ? "Los datos de esta página son de demostración para enseñar cómo reservaría un cliente."
+                  : freeSlotsToday > 0
                   ? `Hoy quedan ${freeSlotsToday} huecos estimados. Elige servicio, barbero y hora desde esta pagina.`
                   : "Agenda muy completa para hoy. Revisa la siguiente disponibilidad en el formulario."}
               </p>
@@ -501,8 +528,10 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           <section className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl md:p-6">
             <p className="text-[11px] font-black uppercase text-[#D9B766]">Reseñas</p>
             <h2 className="mt-1 text-lg font-black text-white">Experiencia de clientes</h2>
-            <div className="mt-4 rounded-2xl border border-dashed border-white/15 bg-white/[0.04] p-5 text-sm leading-6 text-white/55">
-              Esta barbería podrá mostrar reseñas verificadas aquí cuando active el módulo de reseñas de BarberíaOS.
+              <div className="mt-4 rounded-2xl border border-dashed border-white/15 bg-white/[0.04] p-5 text-sm leading-6 text-white/55">
+              {isDemoPage
+                ? "En una barbería real, aquí se podrán mostrar reseñas verificadas cuando el módulo esté activo. No usamos testimonios inventados en la demo."
+                : "Esta barbería podrá mostrar reseñas verificadas aquí cuando active el módulo de reseñas de BarberíaOS."}
             </div>
           </section>
         </div>
@@ -512,12 +541,13 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             <BookingForm
               barbershopId={barbershop.id}
               barbershopSlug={barbershop.slug}
-              barbershopName={barbershop.name}
+              barbershopName={displayName}
               barbershopCity={barbershop.city ?? ""}
               services={activeServices}
               barbers={activeBarbers}
               initialServiceId={initialServiceId}
               initialBarberId={initialBarberId}
+              isDemo={isDemoPage}
             />
           </section>
 
@@ -596,7 +626,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrUrl}
-                alt={`QR de reservas de ${barbershop.name}`}
+                alt={`QR de reservas de ${displayName}`}
                 width={160}
                 height={160}
                 className="rounded-2xl"

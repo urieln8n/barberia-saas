@@ -45,6 +45,7 @@ type Props = {
   barbers: Barber[];
   initialServiceId?: string | null;
   initialBarberId?: string | null;
+  isDemo?: boolean;
 };
 
 const STEP_LABELS = ["Servicio", "Barbero", "Día y hora", "Tus datos"];
@@ -96,6 +97,17 @@ function TrustBadges() {
           {label}
         </span>
       ))}
+    </div>
+  );
+}
+
+function DemoNotice() {
+  return (
+    <div className="mt-4 rounded-2xl border border-[#38BDF8]/25 bg-[#38BDF8]/10 px-4 py-3 text-sm leading-6 text-[#DFF6FF]">
+      <p className="font-black">Estás probando una demo.</p>
+      <p className="mt-1 text-white/62">
+        Puedes recorrer el flujo como cliente. Los datos visibles son de demostración y no representan una barbería real.
+      </p>
     </div>
   );
 }
@@ -364,6 +376,7 @@ export function BookingForm({
   barbers,
   initialServiceId = null,
   initialBarberId = null,
+  isDemo = false,
 }: Props) {
   const [step, setStep] = useState(1);
   const [service, setService] = useState<Service | null>(null);
@@ -583,6 +596,7 @@ export function BookingForm({
             barbershopName={barbershopName}
             barbershopCity={barbershopCity}
           />
+          {isDemo && <DemoNotice />}
           {step === 1 && <TrustBadges />}
           <StepProgress step={step} />
         </div>
@@ -609,7 +623,9 @@ export function BookingForm({
           <StepPanel key="service">
             <StepTitle
               title="¿Qué servicio quieres?"
-              description="Reserva en menos de 30 segundos. Elige el servicio y verás precio, duración y disponibilidad."
+              description={isDemo
+                ? "Elige un servicio para probar cómo se vería la reserva pública de una barbería."
+                : "Reserva en menos de 30 segundos. Elige el servicio y verás precio, duración y disponibilidad."}
             />
 
             {showRepeatPrompt && lastBooking && (
@@ -697,7 +713,9 @@ export function BookingForm({
           <StepPanel key="barber">
             <StepTitle
               title="¿Con quién quieres ir?"
-              description="Puedes elegir un barbero concreto o dejar que la barbería asigne el primero disponible."
+              description={isDemo
+                ? "Selecciona un barbero demo o deja que el sistema asigne el primero disponible."
+                : "Puedes elegir un barbero concreto o dejar que la barbería asigne el primero disponible."}
             />
 
             <div className="mt-4 grid gap-3">
@@ -773,7 +791,9 @@ export function BookingForm({
           <StepPanel key="datetime">
             <StepTitle
               title="¿Cuándo vienes?"
-              description="Selecciona un día y después una hora disponible."
+              description={isDemo
+                ? "Selecciona día y hora para revisar la experiencia. La disponibilidad pertenece al entorno demo."
+                : "Selecciona un día y después una hora disponible."}
             />
 
             <label className="mt-4 block text-sm font-semibold text-white/78">
@@ -869,7 +889,9 @@ export function BookingForm({
           <div>
             <StepTitle
               title="Último paso: tus datos"
-              description="Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."
+              description={isDemo
+                ? "Para una prueba real usa datos ficticios. No necesitas cuenta ni contraseña."
+                : "Solo necesitamos tu nombre y teléfono. Sin cuenta, sin contraseña."}
             />
 
             <div className="mt-5 grid gap-4">
@@ -1042,10 +1064,12 @@ export function BookingForm({
             {/* Aviso confirmación */}
             <div className="mt-4 rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 p-4">
               <p className="text-sm font-bold text-[#F4D98F]">
-                La barbería confirmará tu cita en breve.
+                {isDemo ? "Reserva demo completada." : "La barbería confirmará tu cita en breve."}
               </p>
               <p className="mt-1 text-sm text-white/62">
-                Si tienes alguna duda, contacta directamente con {barbershopName}.
+                {isDemo
+                  ? "En una barbería real, esta cita quedaría registrada en su agenda."
+                  : `Si tienes alguna duda, contacta directamente con ${barbershopName}.`}
               </p>
             </div>
 
