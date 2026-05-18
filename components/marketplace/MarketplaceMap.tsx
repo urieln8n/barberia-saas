@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Map as MLMap, GeoJSONSource, Popup as MLPopup } from "maplibre-gl";
 import type { BarberiaProfile } from "./BarberiaCard";
 import {
@@ -161,6 +161,8 @@ export function MarketplaceMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<MLMap | null>(null);
   const popupRef     = useRef<MLPopup | null>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Always-fresh refs to avoid stale closures in event handlers
   const onSelectRef     = useRef(onSelectShop);
@@ -179,6 +181,8 @@ export function MarketplaceMap({
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
+    let resizeObserver: ResizeObserver | null = null;
+    let revealTimer: number | null = null;
 
     import("maplibre-gl").then((ml) => {
       if (cancelled || !containerRef.current || mapRef.current) return;
@@ -211,6 +215,19 @@ export function MarketplaceMap({
       });
 
       mapRef.current = map;
+      revealTimer = window.setTimeout(() => {
+        if (!cancelled) {
+          setIsMapReady(true);
+          map.resize();
+        }
+      }, 2500);
+
+      if ("ResizeObserver" in window) {
+        resizeObserver = new ResizeObserver(() => {
+          map.resize();
+        });
+        resizeObserver.observe(containerRef.current);
+      }
 
       // Generate cluster count images on demand — no external font CDN required
       map.on("styleimagemissing", (e) => {
@@ -417,11 +434,25 @@ export function MarketplaceMap({
           map.setCenter([withCoords[0].longitude!, withCoords[0].latitude!]);
           map.setZoom(SELECTED_ZOOM);
         }
+
+        setIsMapReady(true);
+        map.resize();
+        if (revealTimer !== null) {
+          window.clearTimeout(revealTimer);
+          revealTimer = null;
+        }
       });
+    }).catch(() => {
+      if (!cancelled) {
+        setIsMapReady(true);
+        setMapError("No se pudo cargar el mapa.");
+      }
     });
 
     return () => {
       cancelled = true;
+      if (revealTimer !== null) window.clearTimeout(revealTimer);
+      resizeObserver?.disconnect();
       popupRef.current?.remove();
       mapRef.current?.remove();
       mapRef.current = null;
@@ -449,11 +480,11 @@ export function MarketplaceMap({
   if (!hasMapShops) {
     return (
       <div
-        className={`flex items-center justify-center rounded-[20px] border border-dashed border-slate-200 bg-slate-50 ${className}`}
+        className={`flex items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 ${className}`}
       >
         <div className="px-6 py-10 text-center">
           <p className="text-sm font-bold text-neutral-400">Sin ubicaciones en mapa</p>
-          <p className="mt-1 text-xs text-neutral-300">
+          <p className="mt-1 text-xs text-slate-500">
             Amplía el radio o activa tu ubicación para ver barberías cercanas
           </p>
         </div>
@@ -461,5 +492,21 @@ export function MarketplaceMap({
     );
   }
 
-  return <div ref={containerRef} className={`overflow-hidden rounded-[20px] ${className}`} />;
+  return (
+    <div className={`relative overflow-hidden rounded-3xl bg-slate-100 ${className}`}>
+      <div ref={containerRef} className="absolute inset-0" />
+      {mapError && (
+        <div className="absolute inset-3 z-10 flex items-center justify-center rounded-2xl border border-amber-200 bg-amber-50/95 px-4 py-3 text-center text-xs font-semibold text-amber-800 shadow-sm">
+          {mapError}
+        </div>
+      )}
+      {!isMapReady && !mapError && (
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-slate-100/80 backdrop-blur-[1px]">
+          <span className="animate-pulse rounded-full border border-white/70 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-500 shadow-sm">
+            Cargando mapa…
+          </span>
+        </div>
+      )}
+    </div>
+  );
 }

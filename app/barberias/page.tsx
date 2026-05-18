@@ -73,7 +73,7 @@ export default async function BarberiasPage() {
   const cityGroups = getCityGroups(profiles);
 
   return (
-    <main className="min-h-screen bg-[#F6F8FB]">
+    <main className="min-h-screen bg-[#F6F8FB] pb-20 lg:pb-0">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-[#080A0F] py-16 text-white md:py-20">
