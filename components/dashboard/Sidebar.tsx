@@ -194,10 +194,12 @@ function NavLink({
   item,
   pathname,
   onClick,
+  dark,
 }: {
   item: NavItem;
   pathname: string;
   onClick?: () => void;
+  dark?: boolean;
 }) {
   const Icon = item.icon;
   const active = isActive(pathname, item);
@@ -207,18 +209,26 @@ function NavLink({
       href={item.href}
       onClick={onClick}
       className={`nav-link transition-all duration-150 ${
-        active
-          ? "bg-[#C9922A]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#C9922A]"
-          : "font-medium text-neutral-500 hover:bg-[#C9922A]/5 hover:text-neutral-900"
+        dark
+          ? active
+            ? "bg-[#C9922A]/15 font-semibold text-white shadow-[inset_3px_0_0_#C9922A]"
+            : "font-medium text-neutral-400 hover:bg-white/[0.07] hover:text-neutral-100"
+          : active
+            ? "bg-[#C9922A]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#C9922A]"
+            : "font-medium text-neutral-500 hover:bg-[#C9922A]/5 hover:text-neutral-900"
       }`}
     >
       <Icon
         size={16}
-        className={`shrink-0 transition-colors ${active ? "text-[#C9922A]" : "text-neutral-400"}`}
+        className={`shrink-0 transition-colors ${active ? "text-[#C9922A]" : dark ? "text-neutral-500" : "text-neutral-400"}`}
       />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
       {item.badge && (
-        <span className="shrink-0 rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase ${
+          dark
+            ? "border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]"
+            : "border-[#D5A84C]/25 bg-[#D5A84C]/10 text-[#8A641F]"
+        }`}>
           {item.badge}
         </span>
       )}
@@ -228,7 +238,7 @@ function NavLink({
 
 // ─── IconNavLink (collapsed) ──────────────────────────────────────────────────
 
-function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
+function IconNavLink({ item, pathname, dark }: { item: NavItem; pathname: string; dark?: boolean }) {
   const Icon = item.icon;
   const active = isActive(pathname, item);
 
@@ -237,14 +247,18 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       href={item.href}
       title={item.label}
       className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-150 ${
-        active
-          ? "bg-[#C9922A]/10 shadow-[inset_3px_0_0_#C9922A]"
-          : "hover:bg-[#C9922A]/5"
+        dark
+          ? active
+            ? "bg-[#C9922A]/15 shadow-[inset_3px_0_0_#C9922A]"
+            : "hover:bg-white/[0.07]"
+          : active
+            ? "bg-[#C9922A]/10 shadow-[inset_3px_0_0_#C9922A]"
+            : "hover:bg-[#C9922A]/5"
       }`}
     >
       <Icon
         size={18}
-        className={`transition-colors ${active ? "text-[#C9922A]" : "text-neutral-400"}`}
+        className={`transition-colors ${active ? "text-[#C9922A]" : dark ? "text-neutral-500" : "text-neutral-400"}`}
       />
     </Link>
   );
@@ -262,7 +276,7 @@ function MobileBottomNav({
   return (
     <nav
       aria-label="Navegación principal móvil"
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E7E2D8] bg-white/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] pt-1.5 shadow-[0_-12px_35px_rgba(17,17,17,0.08)] backdrop-blur md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/[0.08] bg-[#0D0F14]/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] pt-1.5 shadow-[0_-16px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl md:hidden"
     >
       <div className="grid grid-cols-5 gap-1">
         {primaryMobileNav.map((item) => {
@@ -278,11 +292,11 @@ function MobileBottomNav({
                 onClick={onOpenMore}
                 className={`flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-bold transition-colors ${
                   moreActive
-                    ? "bg-[#C9922A]/10 text-[#080A0F]"
-                    : "text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+                    ? "bg-[#C9922A]/15 text-white"
+                    : "text-neutral-400 hover:bg-white/[0.07] hover:text-neutral-100"
                 }`}
               >
-                <Icon size={19} className={moreActive ? "text-[#C9922A]" : "text-neutral-400"} />
+                <Icon size={19} className={moreActive ? "text-[#C9922A]" : "text-neutral-500"} />
                 <span className="max-w-full truncate">{item.label}</span>
               </button>
             );
@@ -297,11 +311,11 @@ function MobileBottomNav({
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-bold transition-colors ${
                 active
-                  ? "bg-[#C9922A]/10 text-[#080A0F]"
-                  : "text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+                  ? "bg-[#C9922A]/15 text-white"
+                  : "text-neutral-400 hover:bg-white/[0.07] hover:text-neutral-100"
               }`}
             >
-              <Icon size={19} className={active ? "text-[#C9922A]" : "text-neutral-400"} />
+              <Icon size={19} className={active ? "text-[#C9922A]" : "text-neutral-500"} />
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
@@ -321,7 +335,7 @@ function TabBar({
   onChange: (tab: TabId) => void;
 }) {
   return (
-    <div className="mb-4 flex overflow-hidden rounded-2xl border border-[#E7E2D8]">
+    <div className="mb-4 flex overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04]">
       {tabConfig.map((tab) => (
         <button
           key={tab.id}
@@ -329,8 +343,8 @@ function TabBar({
           onClick={() => onChange(tab.id)}
           className={`flex-1 py-[9px] text-[11px] font-black uppercase tracking-wide transition-all duration-150 ${
             activeTab === tab.id
-              ? "bg-[#080A0F] text-[#C9922A]"
-              : "bg-[#F8F5EF] text-neutral-400 hover:bg-[#EDE8E0] hover:text-neutral-700"
+              ? "bg-[#C9922A] text-[#080A0F]"
+              : "text-neutral-500 hover:bg-white/[0.07] hover:text-neutral-300"
           }`}
         >
           {tab.label}
@@ -380,18 +394,18 @@ export default function Sidebar() {
   // ── Mobile header ────────────────────────────────────────────────────────────
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#E7E2D8] bg-white/90 px-4 shadow-sm backdrop-blur md:hidden">
+      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/[0.08] bg-[#0D0F14]/95 px-4 shadow-[0_1px_20px_rgba(0,0,0,0.4)] backdrop-blur-xl md:hidden">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#C89B3C]/25 bg-[#080A0F]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#C89B3C]/30 bg-[#C9922A]/10">
             <Scissors size={14} className="text-[#C9922A]" />
           </div>
-          <span className="font-black tracking-tight text-[#080A0F]">BarberíaOS</span>
+          <span className="font-black tracking-tight text-white">BarberíaOS</span>
         </Link>
         <button
           type="button"
           onClick={handleLogout}
           aria-label="Cerrar sesión"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E7E2D8] text-neutral-500 transition-colors hover:bg-[#F8F5EF] hover:text-neutral-950"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.12] text-neutral-400 transition-colors hover:bg-white/[0.07] hover:text-white"
         >
           <LogOut size={17} />
         </button>
@@ -413,21 +427,21 @@ export default function Sidebar() {
         />
         <aside
           aria-label="Más opciones de navegación"
-          className={`absolute bottom-0 left-0 right-0 flex max-h-[82vh] flex-col rounded-t-[28px] border-t border-[#E7E2D8] bg-white p-5 shadow-2xl transition-transform duration-200 ${
+          className={`absolute bottom-0 left-0 right-0 flex max-h-[82vh] flex-col rounded-t-[28px] border-t border-white/[0.08] bg-[#0D0F14] p-5 shadow-[0_-24px_60px_rgba(0,0,0,0.6)] transition-transform duration-200 ${
             drawerOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >
           {/* Mobile drawer header */}
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <p className="text-[15px] font-black leading-none text-neutral-950">Más opciones</p>
-              <p className="mt-1 text-xs font-medium text-neutral-400">Herramientas agrupadas por uso.</p>
+              <p className="text-[15px] font-black leading-none text-white">Más opciones</p>
+              <p className="mt-1 text-xs font-medium text-neutral-500">Herramientas agrupadas por uso.</p>
             </div>
             <button
               type="button"
               aria-label="Cerrar más opciones"
               onClick={() => setDrawerOpen(false)}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E7E2D8] text-neutral-500 transition-colors hover:bg-[#F8F5EF] hover:text-neutral-950"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.12] text-neutral-400 transition-colors hover:bg-white/[0.07] hover:text-white"
             >
               <X size={17} />
             </button>
@@ -437,7 +451,7 @@ export default function Sidebar() {
             <section aria-labelledby="mobile-quick-actions">
               <h2
                 id="mobile-quick-actions"
-                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
+                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-500"
               >
                 Accesos rápidos
               </h2>
@@ -454,17 +468,17 @@ export default function Sidebar() {
                       aria-current={active ? "page" : undefined}
                       className={`min-h-[78px] rounded-[20px] border p-3 transition-colors ${
                         active
-                          ? "border-[#C9922A]/35 bg-[#C9922A]/10 text-[#080A0F]"
-                          : "border-[#E7E2D8] bg-[#FAF8F4] text-neutral-700 hover:border-[#C9922A]/30 hover:bg-[#C9922A]/5"
+                          ? "border-[#C9922A]/35 bg-[#C9922A]/15 text-white"
+                          : "border-white/[0.08] bg-white/[0.04] text-neutral-300 hover:border-[#C9922A]/25 hover:bg-[#C9922A]/10"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <Icon
                           size={18}
-                          className={active ? "text-[#C9922A]" : "text-neutral-400"}
+                          className={active ? "text-[#C9922A]" : "text-neutral-500"}
                         />
                         {item.badge && (
-                          <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase text-[#8A641F]">
+                          <span className="rounded-full border border-[#C9922A]/20 bg-[#C9922A]/10 px-2 py-0.5 text-[9px] font-black uppercase text-[#C9922A]">
                             {item.badge}
                           </span>
                         )}
@@ -479,11 +493,11 @@ export default function Sidebar() {
             <section aria-labelledby="mobile-grouped-navigation" className="min-h-0">
               <h2
                 id="mobile-grouped-navigation"
-                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-400"
+                className="mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-neutral-500"
               >
                 Secciones
               </h2>
-              <div className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] p-1">
+              <div className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-1">
                 {groupedMobileNav.map((group) => {
                   const active = group.title === activeMobileGroup;
 
@@ -494,8 +508,8 @@ export default function Sidebar() {
                       onClick={() => setActiveMobileGroup(group.title)}
                       className={`min-h-10 rounded-xl text-xs font-black transition-colors ${
                         active
-                          ? "bg-[#080A0F] text-[#C9922A] shadow-sm"
-                          : "text-neutral-500 hover:bg-white hover:text-neutral-950"
+                          ? "bg-[#C9922A] text-[#080A0F] shadow-sm"
+                          : "text-neutral-500 hover:bg-white/[0.07] hover:text-neutral-200"
                       }`}
                     >
                       {group.title}
@@ -510,6 +524,7 @@ export default function Sidebar() {
                     item={item}
                     pathname={pathname}
                     onClick={() => setDrawerOpen(false)}
+                    dark
                   />
                 ))}
               </div>
@@ -517,11 +532,11 @@ export default function Sidebar() {
           </nav>
 
           {/* Mobile footer */}
-          <div className="mt-4 border-t border-[#E7E2D8] pt-3">
+          <div className="mt-4 border-t border-white/[0.08] pt-3">
             <Link
               href="/"
               onClick={() => setDrawerOpen(false)}
-              className="nav-link border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+              className="nav-link border border-white/[0.08] bg-white/[0.05] font-medium text-neutral-400 hover:bg-white/[0.10] hover:text-white"
             >
               <ShieldCheck size={16} className="shrink-0" />
               Volver a la landing
@@ -532,7 +547,7 @@ export default function Sidebar() {
 
       {/* ── Desktop sidebar ── */}
       <aside
-        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-[#E7E2D8] bg-white/95 shadow-[0_18px_50px_rgba(17,17,17,0.05)] backdrop-blur transition-all duration-300 ease-in-out md:flex ${
+        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-white/[0.08] bg-[#0D0F14] shadow-[0_18px_50px_rgba(0,0,0,0.5)] transition-all duration-300 ease-in-out md:flex ${
           collapsed ? "w-16 px-2 py-4" : "w-64 p-5"
         }`}
       >
@@ -541,12 +556,12 @@ export default function Sidebar() {
           type="button"
           onClick={toggle}
           title={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#E7E2D8] bg-white shadow-md transition-colors hover:border-[#C9922A]/40 hover:bg-[#C9922A]/5"
+          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.12] bg-[#1A1D24] shadow-md transition-colors hover:border-[#C9922A]/40 hover:bg-[#C9922A]/10"
         >
           {collapsed ? (
-            <ChevronRight size={13} className="text-neutral-400" />
+            <ChevronRight size={13} className="text-neutral-500" />
           ) : (
-            <ChevronLeft size={13} className="text-neutral-400" />
+            <ChevronLeft size={13} className="text-neutral-500" />
           )}
         </button>
 
@@ -554,20 +569,20 @@ export default function Sidebar() {
         {collapsed ? (
           <div className="mb-3 flex justify-center">
             <Link href="/dashboard" title="BarberíaOS — Inicio">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F] shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#C89B3C]/30 bg-[#C9922A]/10 shadow-sm">
                 <Scissors size={15} className="text-[#C9922A]" />
               </div>
             </Link>
           </div>
         ) : (
-          <div className="mb-5 rounded-[20px] border border-[#E7E2D8] bg-[#F8F5EF] px-3 py-3">
+          <div className="mb-5 rounded-[20px] border border-white/[0.08] bg-white/[0.05] px-3 py-3">
             <Link href="/dashboard" className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C89B3C]/25 bg-[#080A0F] shadow-sm">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C89B3C]/30 bg-[#C9922A]/10 shadow-sm">
                 <Scissors size={15} className="text-[#C9922A]" />
               </div>
               <div className="min-w-0">
-                <span className="block text-[15px] font-black leading-none text-neutral-950">BarberíaOS</span>
-                <span className="mt-1 block truncate text-[10px] font-medium leading-tight text-neutral-400">
+                <span className="block text-[15px] font-black leading-none text-white">BarberíaOS</span>
+                <span className="mt-1 block truncate text-[10px] font-medium leading-tight text-neutral-500">
                   Sistema operativo de barbería.
                 </span>
               </div>
@@ -585,25 +600,25 @@ export default function Sidebar() {
           // Collapsed: icon-only, all items
           <nav className="flex flex-1 flex-col items-center gap-0.5 overflow-y-auto py-1">
             {allItems.map((item) => (
-              <IconNavLink key={item.href} item={item} pathname={pathname} />
+              <IconNavLink key={item.href} item={item} pathname={pathname} dark />
             ))}
           </nav>
         ) : (
           // Expanded: items for active tab only
           <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
             {tabItems[activeTab].map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} />
+              <NavLink key={item.href} item={item} pathname={pathname} dark />
             ))}
           </nav>
         )}
 
         {/* Footer */}
         {collapsed ? (
-          <div className="flex flex-col items-center gap-0.5 border-t border-[#E7E2D8] pt-3">
+          <div className="flex flex-col items-center gap-0.5 border-t border-white/[0.08] pt-3">
             <Link
               href="/"
               title="Volver a la landing"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-400 transition-colors hover:bg-[#C9922A]/5 hover:text-neutral-700"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-500 transition-colors hover:bg-white/[0.07] hover:text-neutral-200"
             >
               <ShieldCheck size={17} />
             </Link>
@@ -611,16 +626,16 @@ export default function Sidebar() {
               type="button"
               onClick={handleLogout}
               title="Cerrar sesión"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-400 transition-colors hover:bg-[#C9922A]/5 hover:text-neutral-700"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl text-neutral-500 transition-colors hover:bg-white/[0.07] hover:text-neutral-200"
             >
               <LogOut size={17} />
             </button>
           </div>
         ) : (
-          <div className="mt-4 flex flex-col gap-2 border-t border-[#E7E2D8] pt-4">
+          <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.08] pt-4">
             <Link
               href="/"
-              className="nav-link border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+              className="nav-link border border-white/[0.08] bg-white/[0.05] font-medium text-neutral-400 hover:bg-white/[0.10] hover:text-white"
             >
               <ShieldCheck size={16} className="shrink-0" />
               Volver a la landing
@@ -628,7 +643,7 @@ export default function Sidebar() {
             <button
               type="button"
               onClick={handleLogout}
-              className="nav-link w-full border border-[#E7E2D8] bg-white font-medium text-neutral-500 hover:bg-[#F8F5EF] hover:text-neutral-950"
+              className="nav-link w-full border border-white/[0.08] bg-white/[0.05] font-medium text-neutral-400 hover:bg-white/[0.10] hover:text-white"
             >
               <LogOut size={16} className="shrink-0" />
               Cerrar sesión
