@@ -82,7 +82,7 @@ const METHOD_TONE: Record<string, string> = {
 };
 
 function formatCurrency(value: number) {
-  return `${value.toFixed(2)} €`;
+  return `${(Number.isFinite(value) ? value : 0).toFixed(2)} €`;
 }
 
 function movementTotal(movement: CashMovement) {
@@ -96,6 +96,12 @@ function movementTotal(movement: CashMovement) {
   }
 
   return total;
+}
+
+function parseMoneyInput(value: string) {
+  if (value.trim() === "") return Number.NaN;
+  const amount = Number(value.replace(",", "."));
+  return Number.isFinite(amount) ? amount : Number.NaN;
 }
 
 function isProductSale(movement: CashMovement) {
@@ -220,7 +226,7 @@ export function CajaClient({
     const cashExpenses = expenseMovements
       .filter((movement) => movement.payment_method === "cash")
       .reduce((sum, movement) => sum + Math.abs(movementTotal(movement)), 0);
-    const expectedCash = Number(session?.opening_amount ?? 0) + byMethod.cash - cashExpenses;
+    const expectedCash = Math.max(0, Number(session?.opening_amount ?? 0) + byMethod.cash - cashExpenses);
     const averageTicket = salesMovements.length > 0 ? totalSold / salesMovements.length : 0;
     const balanceFinal = Number(session?.opening_amount ?? 0) + totalSold - expenses;
 
@@ -239,8 +245,8 @@ export function CajaClient({
     };
   }, [movements, session?.opening_amount]);
 
-  const countedCash = Number(closingAmount || 0);
-  const closingDifference = countedCash - totals.expectedCash;
+  const countedCash = parseMoneyInput(closingAmount);
+  const closingDifference = Number.isFinite(countedCash) ? countedCash - totals.expectedCash : 0;
 
   function handleOpen(formData: FormData) {
     setOpeningError("");
@@ -297,6 +303,13 @@ export function CajaClient({
 
   function handleClose(formData: FormData) {
     setClosingError("");
+    const amount = parseMoneyInput(String(formData.get("closing_amount") ?? ""));
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      setClosingError("Dinero real contado inválido.");
+      return;
+    }
+
     startClosingTransition(async () => {
       const result = await closeCashSession(formData);
       if (result?.error) setClosingError(result.error);
@@ -881,7 +894,7 @@ export function CajaClient({
                   }`}>
                     <p className="text-xs font-bold uppercase tracking-[0.16em]">Diferencia estimada</p>
                     <p className="mt-1 text-2xl font-black">
-                      {formatCurrency(closingAmount ? closingDifference : 0)}
+                      {formatCurrency(Number.isFinite(countedCash) ? closingDifference : 0)}
                     </p>
                   </div>
 
@@ -897,7 +910,16 @@ export function CajaClient({
 
                   {closingError && <SubmitError message={closingError} />}
 
-                  <PrimaryButton type="submit" disabled={isClosingPending} variant="danger">
+                  <PrimaryButton
+                    type="submit"
+                    disabled={
+                      isClosingPending ||
+                      !Number.isFinite(countedCash) ||
+                      countedCash < 0 ||
+                      !Number.isFinite(totals.expectedCash)
+                    }
+                    variant="danger"
+                  >
                     <LockKeyhole size={16} />
                     {isClosingPending ? "Cerrando..." : "Cerrar caja"}
                   </PrimaryButton>
