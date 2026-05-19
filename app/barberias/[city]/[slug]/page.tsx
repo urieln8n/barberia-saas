@@ -35,6 +35,7 @@ type PublicProfile = {
   id: string;
   barbershop_id: string;
   slug: string;
+  public_slug: string | null;
   public_name: string;
   city: string | null;
   neighborhood: string | null;
@@ -131,9 +132,9 @@ async function getProfile(slug: string) {
   const { data } = await supabase
     .from("barbershop_public_profiles")
     .select(
-      "id, barbershop_id, slug, public_name, city, neighborhood, address, phone, whatsapp, instagram, website_url, description, cover_image_url, logo_url, featured, google_maps_url, barbershops(id, slug, public_booking_enabled)",
+      "id, barbershop_id, slug, public_slug, public_name, city, neighborhood, address, phone, whatsapp, instagram, website_url, description, cover_image_url, logo_url, featured, google_maps_url, barbershops(id, slug, public_booking_enabled)",
     )
-    .eq("slug", slug)
+    .or(`slug.eq.${slug},public_slug.eq.${slug}`)
     .eq("is_published", true)
     .eq("marketplace_enabled", true)
     .maybeSingle();
@@ -222,7 +223,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const city = profile.city ?? cityLabel(params.city);
-  const canonical = `${SITE_URL}/barberias/${citySlug(city)}/${profile.slug}`;
+  const canonical = `${SITE_URL}/barberias/${citySlug(city)}/${profile.public_slug || profile.slug}`;
   const title = `${profile.public_name} en ${city} | Reservar cita online`;
   const description = `Reserva cita en ${profile.public_name}, barberia en ${city}. Consulta servicios, precios, barberos y disponibilidad desde BarberiaOS.`;
 
@@ -253,7 +254,7 @@ export default async function BarberiaMarketplaceProfilePage({ params }: Props) 
 
   const { services, barbers } = await getPublicProfileData(profile);
   const city = profile.city ?? cityLabel(params.city);
-  const canonical = `${SITE_URL}/barberias/${citySlug(city)}/${profile.slug}`;
+  const canonical = `${SITE_URL}/barberias/${citySlug(city)}/${profile.public_slug || profile.slug}`;
   const bookingHref = `/r/${profile.slug}`;
   const whatsappHref = formatWhatsAppHref(profile.whatsapp, profile.public_name);
   const directionsHref = getDirectionsHref(profile);

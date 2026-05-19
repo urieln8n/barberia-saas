@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutList, Map, LocateFixed, Loader2, AlertCircle, X } from "lucide-react";
+import { LayoutList, Map, LocateFixed, Loader2, AlertCircle, X, Search, BadgeCheck, Star, MessageCircle } from "lucide-react";
 import { BarberiaCard, type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
 import { MarketplaceMap, type UserLocation } from "@/components/marketplace/MarketplaceMap";
+import { trackMarketplaceEvent } from "@/app/r/[slug]/track-action";
 import {
   sortByDistance,
   filterByRadius,
@@ -16,8 +17,9 @@ type Props = {
   restLabel?: string;
 };
 
-type SortMode = "default" | "distance";
+type SortMode = "default" | "distance" | "featured";
 type RadiusKm = 1 | 3 | 5 | 10;
+type ChipFilter = "whatsapp" | "verified" | "featured";
 
 // ── Location button ───────────────────────────────────────────────────────
 
@@ -84,18 +86,26 @@ const RADIUS_OPTIONS: { label: string; value: RadiusKm | null }[] = [
 ];
 
 function FilterBar({
+  search,
+  onSearchChange,
   sortMode,
   onSortChange,
   radiusKm,
   onRadiusChange,
+  activeChips,
+  onToggleChip,
   hasLocation,
   totalCount,
   filteredCount,
 }: {
+  search: string;
+  onSearchChange: (value: string) => void;
   sortMode: SortMode;
   onSortChange: (m: SortMode) => void;
   radiusKm: RadiusKm | null;
   onRadiusChange: (r: RadiusKm | null) => void;
+  activeChips: ChipFilter[];
+  onToggleChip: (filter: ChipFilter) => void;
   hasLocation: boolean;
   totalCount: number;
   filteredCount: number;
@@ -106,7 +116,17 @@ function FilterBar({
   }`;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
+      <div className="relative">
+        <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="Buscar por nombre o barrio"
+          className="input pl-9"
+        />
+      </div>
+
       <div className="flex items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:pb-0">
         {/* Sort pills */}
         <FilterPill
@@ -114,6 +134,12 @@ function FilterBar({
           onClick={() => onSortChange("default")}
         >
           Relevancia
+        </FilterPill>
+        <FilterPill
+          active={sortMode === "featured"}
+          onClick={() => onSortChange("featured")}
+        >
+          Destacadas
         </FilterPill>
         <FilterPill
           active={sortMode === "distance"}
@@ -150,6 +176,30 @@ function FilterBar({
         )}
       </div>
 
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:pb-0">
+        <ChipPill
+          active={activeChips.includes("whatsapp")}
+          onClick={() => onToggleChip("whatsapp")}
+          icon={<MessageCircle size={12} />}
+        >
+          Con WhatsApp
+        </ChipPill>
+        <ChipPill
+          active={activeChips.includes("verified")}
+          onClick={() => onToggleChip("verified")}
+          icon={<BadgeCheck size={12} />}
+        >
+          Verificadas
+        </ChipPill>
+        <ChipPill
+          active={activeChips.includes("featured")}
+          onClick={() => onToggleChip("featured")}
+          icon={<Star size={12} />}
+        >
+          Destacadas
+        </ChipPill>
+      </div>
+
       {!hasLocation && (
         <p className="text-[11px] text-slate-500">
           <LocateFixed size={10} className="mr-1 inline" />
@@ -157,6 +207,33 @@ function FilterBar({
         </p>
       )}
     </div>
+  );
+}
+
+function ChipPill({
+  active,
+  onClick,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+        active
+          ? "border-[#080A0F] bg-[#080A0F] text-white"
+          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-[#080A0F]"
+      }`}
+    >
+      {icon}
+      {children}
+    </button>
   );
 }
 
@@ -225,6 +302,8 @@ export function BarberiasClient({
   // Filter state
   const [sortMode,  setSortMode]  = useState<SortMode>("default");
   const [radiusKm,  setRadiusKm]  = useState<RadiusKm | null>(null);
+  const [search, setSearch] = useState("");
+  const [activeChips, setActiveChips] = useState<ChipFilter[]>([]);
 
   // Map / list state
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
@@ -265,10 +344,45 @@ export function BarberiasClient({
     setRadiusKm(null);
     setSortMode("default");
     setSelectedShopId(null);
+    setSearch("");
+    setActiveChips([]);
+  }
+
+  function toggleChip(filter: ChipFilter) {
+    setActiveChips((current) =>
+      current.includes(filter)
+        ? current.filter((item) => item !== filter)
+        : [...current, filter],
+    );
   }
 
   // ── Computed shops ────────────────────────────────────────────────────────
   let displayedShops = profiles;
+
+  const normalizedSearch = search.trim().toLowerCase();
+  if (normalizedSearch) {
+    displayedShops = displayedShops.filter((profile) =>
+      [
+        profile.public_name,
+        profile.neighborhood,
+        profile.city,
+        profile.description,
+        profile.short_description,
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(normalizedSearch)),
+    );
+  }
+
+  if (activeChips.includes("whatsapp")) {
+    displayedShops = displayedShops.filter((profile) => Boolean(profile.whatsapp));
+  }
+  if (activeChips.includes("verified")) {
+    displayedShops = displayedShops.filter((profile) => Boolean(profile.is_verified));
+  }
+  if (activeChips.includes("featured")) {
+    displayedShops = displayedShops.filter((profile) => Boolean(profile.is_featured ?? profile.featured));
+  }
 
   if (radiusKm !== null && userLocation) {
     displayedShops = filterByRadius(displayedShops, userLocation, radiusKm);
@@ -276,10 +390,12 @@ export function BarberiasClient({
 
   if (sortMode === "distance" && userLocation) {
     displayedShops = sortByDistance(displayedShops, userLocation);
+  } else if (sortMode === "featured") {
+    displayedShops = [...displayedShops].sort((a, b) => Number(b.is_featured ?? b.featured) - Number(a.is_featured ?? a.featured));
   }
 
-  const featured = displayedShops.filter((p) => p.featured);
-  const rest      = displayedShops.filter((p) => !p.featured);
+  const featured = displayedShops.filter((p) => p.is_featured ?? p.featured);
+  const rest      = displayedShops.filter((p) => !(p.is_featured ?? p.featured));
 
   // ── Card grid ─────────────────────────────────────────────────────────────
   // Map is always shown; 2-col grid leaves room for the map sidebar.
@@ -298,6 +414,9 @@ export function BarberiasClient({
         distanceKm={cardDistance(p)}
         onSelect={() => setSelectedShopId((prev) => (prev === p.id ? null : p.id))}
         isSelected={selectedShopId === p.id}
+        onTrack={(barbershopId, eventType) => {
+          trackMarketplaceEvent(barbershopId, eventType, "city_page", p.city);
+        }}
       />
     ));
   }
@@ -338,7 +457,7 @@ export function BarberiasClient({
 
   // ── Header bar (location + filters) ──────────────────────────────────────
   const headerBar = (
-    <div className="space-y-3 rounded-[20px] border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="space-y-3 rounded-[24px] border border-[#E7E2D8] bg-white/95 px-4 py-4 shadow-[var(--shadow-warm)] backdrop-blur">
       <div className="flex flex-wrap items-center gap-2">
         <LocationButton
           detecting={detectingLocation}
@@ -355,10 +474,14 @@ export function BarberiasClient({
         )}
       </div>
       <FilterBar
+        search={search}
+        onSearchChange={setSearch}
         sortMode={sortMode}
         onSortChange={setSortMode}
         radiusKm={radiusKm}
         onRadiusChange={setRadiusKm}
+        activeChips={activeChips}
+        onToggleChip={toggleChip}
         hasLocation={!!userLocation}
         totalCount={profiles.length}
         filteredCount={displayedShops.length}
@@ -406,7 +529,7 @@ export function BarberiasClient({
       </div>
 
       {/* Desktop: split layout */}
-      <div className="hidden lg:grid lg:grid-cols-[1fr_440px] lg:gap-6 lg:items-start">
+      <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-6 lg:items-start">
         <div>{listContent}</div>
         <div className="sticky top-6">
           <MarketplaceMap
@@ -414,7 +537,7 @@ export function BarberiasClient({
             selectedShopId={selectedShopId}
             onSelectShop={setSelectedShopId}
             userLocation={userLocation}
-            className="h-[calc(100vh-5rem)]"
+            className="h-[640px] min-h-[520px]"
           />
         </div>
       </div>
