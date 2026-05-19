@@ -2,16 +2,43 @@ import type { MetadataRoute } from "next";
 import { BUSINESS_CONFIG, SEO_INTENT_PAGES } from "@/src/lib/site-config";
 import { institutionalPageList } from "@/src/lib/institutional-pages";
 import { legalPages } from "@/components/legal/legal-content";
+import { createClient } from "@/src/lib/supabase/server";
 
 const SITE_URL = BUSINESS_CONFIG.siteUrl;
 
-const commercialRoutes = SEO_INTENT_PAGES.filter((page) => page.status === "publicada").map((page) => ({
-  path: page.path,
-  priority: page.path === "/barberias" ? 0.8 : 0.9,
-}));
+const commercialRoutes = SEO_INTENT_PAGES.filter((page) => page.status === "publicada").map(
+  (page) => ({
+    path: page.path,
+    priority: page.path === "/barberias" ? 0.8 : 0.9,
+  }),
+);
 
-export default function sitemap(): MetadataRoute.Sitemap {
+function citySlug(value: string | null) {
+  return encodeURIComponent((value ?? "").trim().toLowerCase());
+}
+
+function profileSlug(profile: { public_slug?: string | null; slug?: string | null }) {
+  return (profile.public_slug ?? profile.slug ?? "").trim();
+}
+
+async function getMarketplaceProfiles() {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("barbershop_public_profiles")
+      .select("slug, public_slug, city, updated_at")
+      .eq("is_published", true)
+      .eq("marketplace_enabled", true);
+
+    return data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const marketplaceProfiles = await getMarketplaceProfiles();
 
   return [
     {
@@ -50,5 +77,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.4,
     })),
+    ...marketplaceProfiles
+      .filter((profile) => profileSlug(profile) && profile.city)
+      .map((profile) => ({
+        url: `${SITE_URL}/barberias/${citySlug(profile.city)}/${profileSlug(profile)}`,
+        lastModified: profile.updated_at ? new Date(profile.updated_at) : now,
+        changeFrequency: "weekly" as const,
+        priority: profileSlug(profile) === "demo-barber" ? 0.6 : 0.7,
+      })),
   ];
 }
