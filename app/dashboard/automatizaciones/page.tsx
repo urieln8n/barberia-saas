@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Bot, CheckCircle2, Clock3, Mail, MessageCircle, Power, Workflow, type LucideIcon } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 

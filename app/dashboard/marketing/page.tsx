@@ -5,7 +5,7 @@ import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { MarketingStudioClient } from "./MarketingStudioClient";
 
 export const dynamic = "force-dynamic";

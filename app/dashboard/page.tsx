@@ -21,7 +21,8 @@ import {
   Star,
 } from "lucide-react";
 import { StatCard }   from "@/components/dashboard/StatCard";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import { TodayAvailability } from "@/components/dashboard/TodayAvailability";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
@@ -92,32 +93,6 @@ function formatDate(date: string) {
     day: "2-digit",
     month: "short",
   });
-}
-
-function statusLabel(status: string) {
-  const labels: Record<string, string> = {
-    pending: "Pendiente",
-    scheduled: "Programada",
-    confirmed: "Confirmada",
-    completed: "Completada",
-    cancelled: "Cancelada",
-    no_show: "No apareció",
-  };
-
-  return labels[status] ?? status;
-}
-
-function statusClass(status: string) {
-  const classes: Record<string, string> = {
-    pending:   "bg-amber-50 text-amber-700 border-amber-100",
-    scheduled: "bg-amber-50 text-amber-700 border-amber-100",
-    confirmed: "bg-slate-100 text-slate-600 border-slate-200",
-    completed: "bg-green-50 text-green-700 border-green-100",
-    cancelled: "bg-red-50   text-red-700   border-red-100",
-    no_show:   "bg-red-50   text-red-700   border-red-100",
-  };
-
-  return classes[status] ?? "bg-neutral-100 text-neutral-700 border-neutral-200";
 }
 
 function getWeekStartISO() {
@@ -869,9 +844,7 @@ export default async function DashboardPage() {
                       {appointment.services?.name ?? "Servicio sin definir"} · {appointment.barbers?.name ?? "Sin barbero"}
                     </p>
                   </div>
-                  <span className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusClass(appointment.status)}`}>
-                    {statusLabel(appointment.status)}
-                  </span>
+                  <StatusBadge status={appointment.status} />
                 </article>
               ))}
             </div>
@@ -1037,9 +1010,7 @@ export default async function DashboardPage() {
                       <p className="font-bold leading-tight text-[#111827]">
                         {appointment.clients?.name ?? "Cliente sin nombre"}
                       </p>
-                      <span className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusClass(appointment.status)}`}>
-                        {statusLabel(appointment.status)}
-                      </span>
+                      <StatusBadge status={appointment.status} />
                     </div>
                     <p className="mt-0.5 text-xs text-neutral-500">
                       {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}

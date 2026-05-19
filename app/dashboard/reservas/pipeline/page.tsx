@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CalendarClock, Check, MessageCircle, MoveRight, Phone, Scissors, UserRound, X } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";

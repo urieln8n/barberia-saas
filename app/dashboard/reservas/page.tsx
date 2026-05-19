@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CalendarCheck, CheckCircle2, QrCode, Users } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function ReservasPage() {
   return (
