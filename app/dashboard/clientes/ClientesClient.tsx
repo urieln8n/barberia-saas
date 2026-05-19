@@ -106,7 +106,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre, teléfono o email..."
-          className="input py-3"
+          className="input-field py-3"
         />
       )}
 
@@ -129,7 +129,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
         <div className="table-shell">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]">
+              <thead className="border-b border-[#E7E2D8] bg-[#F8F5EF]">
                 <tr>
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
@@ -138,9 +138,9 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5E7EB]">
+              <tbody className="divide-y divide-[#E7E2D8]">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="transition-colors hover:bg-[#F8FAFC]">
+                  <tr key={c.id} className="transition-colors hover:bg-[#FAF8F4]">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-xs font-bold uppercase text-[#7AA2FF]">
@@ -192,7 +192,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         )}
                         <button
                           type="button"
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
                           title="Pedir reseña"
                         >
                           <Star size={15} />
@@ -207,7 +207,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         <button
                           type="button"
                           onClick={() => openEdit(c)}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
                         >
                           <Pencil size={15} />
                         </button>
@@ -237,7 +237,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -249,7 +249,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
                 >
                   <X size={18} />
                 </button>
@@ -263,7 +263,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                     required
                     defaultValue={editing?.name ?? ""}
                     placeholder="Ej: Carlos García"
-                    className="input py-3"
+                    className="input-field py-3"
                   />
                 </div>
 
@@ -277,7 +277,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                       type="tel"
                       defaultValue={editing?.phone ?? ""}
                       placeholder="+34 600 000 000"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
                   <div>
@@ -289,7 +289,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                       type="email"
                       defaultValue={editing?.email ?? ""}
                       placeholder="cliente@email.com"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
                 </div>
@@ -302,7 +302,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                     name="notes"
                     defaultValue={editing?.notes ?? ""}
                     placeholder="Ej: Prefiere degradado bajo"
-                    className="input py-3"
+                    className="input-field py-3"
                   />
                 </div>
 
