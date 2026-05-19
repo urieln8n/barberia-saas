@@ -56,6 +56,9 @@ export function BarberiaCard({
   distanceKm?: number | null;
 }) {
   const bookingHref = `/r/${profile.slug}`;
+  const profileHref = profile.city
+    ? `/barberias/${citySlug(profile.city)}/${profile.slug}`
+    : bookingHref;
   const location = [profile.neighborhood, profile.city].filter(Boolean).join(", ");
 
   function handleArticleClick(e: React.MouseEvent) {
@@ -188,7 +191,7 @@ export function BarberiaCard({
             Reservar cita
           </Link>
           <Link
-            href={bookingHref}
+            href={profileHref}
             className="btn-outline px-3 text-xs"
             aria-label={`Ver perfil de ${profile.public_name}`}
           >
