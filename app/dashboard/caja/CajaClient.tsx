@@ -136,7 +136,7 @@ function QuickAction({
       href={href}
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
-      className="flex min-h-[92px] items-start gap-3 rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-[#2563EB]/30 hover:bg-slate-50"
+      className="flex min-h-[92px] items-start gap-3 rounded-[18px] border border-[#E7E2D8] bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-[#2563EB]/30 hover:bg-[#FAF8F4]"
     >
       <span className="metric-icon h-9 w-9 rounded-2xl bg-[#2563EB]/10">
         <Icon size={16} className="text-[#2563EB]" />
@@ -375,7 +375,7 @@ export function CajaClient({
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[22px] border border-slate-200 bg-[linear-gradient(135deg,#080A0F_0%,#111827_58%,#1D4ED8_130%)] p-5 text-white shadow-[0_24px_70px_rgba(8,10,15,0.24)]"
+            className="rounded-[22px] border border-[#111827] bg-[linear-gradient(135deg,#080A0F_0%,#111827_58%,#1D4ED8_130%)] p-5 text-white shadow-[0_24px_70px_rgba(8,10,15,0.24)]"
           >
             <p className="text-xs font-black uppercase text-white/45">Balance operativo</p>
             <p className="mt-3 text-4xl font-black leading-none">{formatCurrency(totals.balanceFinal)}</p>
@@ -395,7 +395,7 @@ export function CajaClient({
             </div>
           </motion.div>
           <div className="grid gap-3">
-            <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-black uppercase text-slate-400">Efectivo esperado</p>
@@ -463,7 +463,7 @@ export function CajaClient({
                     setSaleError("");
                     setSaleSuccess("");
                   }}
-                  className="input py-3"
+                  className="input-field py-3"
                 >
                   {products.map((product) => (
                     <option key={product.id} value={product.id}>
@@ -487,7 +487,7 @@ export function CajaClient({
                     required
                     value={quantity}
                     onChange={(event) => setQuantity(event.target.value)}
-                    className="input py-3"
+                    className="input-field py-3"
                     placeholder="1"
                   />
                   {selectedProduct && (
@@ -506,7 +506,7 @@ export function CajaClient({
 
                 <div>
                   <label className="form-label">Precio unitario *</label>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-lg font-black text-[#080A0F]">
+                  <div className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3 text-lg font-black text-[#080A0F]">
                     {hasValidUnitPrice ? formatCurrency(unitSalePriceNumber) : "Sin precio"}
                   </div>
                   <p className={`form-help ${!hasValidUnitPrice ? "text-red-600" : ""}`}>
@@ -520,7 +520,7 @@ export function CajaClient({
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <label className="form-label">Cliente</label>
-                  <select name="client_id" className="input py-3">
+                  <select name="client_id" className="select-field py-3">
                     <option value="">Sin cliente vinculado</option>
                     {clients.map((client) => (
                       <option key={client.id} value={client.id}>
@@ -531,7 +531,7 @@ export function CajaClient({
                 </div>
                 <div>
                   <label className="form-label">Barbero</label>
-                  <select name="barber_id" className="input py-3">
+                  <select name="barber_id" className="select-field py-3">
                     <option value="">Sin barbero</option>
                     {barbers.map((barber) => (
                       <option key={barber.id} value={barber.id}>
@@ -542,7 +542,7 @@ export function CajaClient({
                 </div>
                 <div>
                   <label className="form-label">Método de pago</label>
-                  <select name="payment_method" defaultValue="cash" className="input py-3">
+                  <select name="payment_method" defaultValue="cash" className="select-field py-3">
                     <option value="cash">Efectivo</option>
                     <option value="card">Tarjeta</option>
                     <option value="bizum">Bizum</option>
@@ -554,7 +554,7 @@ export function CajaClient({
             </div>
 
             <div className="grid gap-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+              <div className="rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
@@ -583,7 +583,7 @@ export function CajaClient({
                   )}
                 </div>
                 {selectedProduct && (
-                  <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                  <div className="mt-4 rounded-2xl border border-[#E7E2D8] bg-white px-4 py-3">
                     <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
                       Margen estimado
                     </p>
@@ -641,7 +641,7 @@ export function CajaClient({
                   min="0"
                   step="0.01"
                   defaultValue="0"
-                  className="input py-3 pl-8"
+                  className="input-field py-3 pl-8"
                 />
               </div>
             </div>
@@ -681,7 +681,7 @@ export function CajaClient({
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="form-label">Cliente</label>
-                    <select name="client_id" className="input py-3">
+                    <select name="client_id" className="select-field py-3">
                       <option value="">Sin cliente vinculado</option>
                       {clients.map((client) => (
                         <option key={client.id} value={client.id}>
@@ -693,7 +693,7 @@ export function CajaClient({
 
                   <div>
                     <label className="form-label">Barbero *</label>
-                    <select name="barber_id" required className="input py-3">
+                    <select name="barber_id" required className="select-field py-3">
                       <option value="">Seleccionar barbero...</option>
                       {barbers.map((barber) => (
                         <option key={barber.id} value={barber.id}>
@@ -715,7 +715,7 @@ export function CajaClient({
                         setSelectedServiceId(event.target.value);
                         setPrice(service ? String(service.price) : "");
                       }}
-                      className="input py-3"
+                      className="input-field py-3"
                     >
                       <option value="">Sin servicio vinculado</option>
                       {services.map((service) => (
@@ -740,7 +740,7 @@ export function CajaClient({
                       value={price}
                       onChange={(event) => setPrice(event.target.value)}
                       placeholder="Ej: 18.00"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
                 </div>
@@ -748,7 +748,7 @@ export function CajaClient({
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div>
                     <label className="form-label">Método de pago *</label>
-                    <select name="payment_method" required defaultValue="cash" className="input py-3">
+                    <select name="payment_method" required defaultValue="cash" className="select-field py-3">
                       <option value="cash">Efectivo</option>
                       <option value="card">Tarjeta</option>
                       <option value="bizum">Bizum</option>
@@ -767,7 +767,7 @@ export function CajaClient({
                       value={discount}
                       onChange={(event) => setDiscount(event.target.value)}
                       placeholder="0.00"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
 
@@ -781,7 +781,7 @@ export function CajaClient({
                       value={tip}
                       onChange={(event) => setTip(event.target.value)}
                       placeholder="0.00"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
                 </div>
@@ -791,7 +791,7 @@ export function CajaClient({
                   <input
                     name="description"
                     placeholder="Ej: Corte + arreglo de barba"
-                    className="input py-3"
+                    className="input-field py-3"
                   />
                 </div>
 
@@ -823,12 +823,12 @@ export function CajaClient({
                         step="0.01"
                         required
                         placeholder="Ej: 12.50"
-                        className="input py-3"
+                        className="input-field py-3"
                       />
                     </div>
                     <div>
                       <label className="form-label">Método</label>
-                      <select name="payment_method" defaultValue="cash" className="input py-3">
+                      <select name="payment_method" defaultValue="cash" className="select-field py-3">
                         <option value="cash">Efectivo</option>
                         <option value="card">Tarjeta</option>
                         <option value="bizum">Bizum</option>
@@ -843,7 +843,7 @@ export function CajaClient({
                     <input
                       name="description"
                       placeholder="Ej: reposición de cuchillas"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
 
@@ -881,7 +881,7 @@ export function CajaClient({
                       value={closingAmount}
                       onChange={(event) => setClosingAmount(event.target.value)}
                       placeholder="0.00"
-                      className="input py-3"
+                      className="input-field py-3"
                     />
                   </div>
 
@@ -904,7 +904,7 @@ export function CajaClient({
                       name="closing_notes"
                       rows={4}
                       placeholder="Ej: Faltan 2 € por cambio entregado manualmente"
-                      className="input resize-none"
+                      className="textarea-field"
                     />
                   </div>
 

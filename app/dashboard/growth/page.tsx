@@ -9,7 +9,7 @@ import {
   canAccessWhatsappIA,
   getBarbershopPlanUsage,
 } from "@/src/lib/plans/limits";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GrowthEngineClient } from "./GrowthEngineClient";
 
 export const dynamic = "force-dynamic";

@@ -152,7 +152,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                     <button
                       type="button"
                       onClick={() => openEdit(b)}
-                      className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+                      className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
                     >
                       <Pencil size={15} />
                     </button>
@@ -198,7 +198,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                     { label: "Comisión", value: b.active ? "60 EUR" : "0 EUR", icon: TrendingUp },
                     { label: "Horas libres", value: b.active ? "3 h" : "-", icon: CalendarClock },
                   ].map(({ label, value, icon: Icon }) => (
-                    <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <div key={label} className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] p-3">
                       <Icon size={14} className="text-[#2563EB]" />
                       <p className="mt-2 text-[10px] font-bold uppercase text-slate-400">{label}</p>
                       <p className="mt-1 text-sm font-black text-[#080A0F]">{value}</p>
@@ -230,7 +230,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E5E7EB] bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-white shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -242,7 +242,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
+                  className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
                 >
                   <X size={18} />
                 </button>
@@ -256,7 +256,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                     required
                     defaultValue={editing?.name ?? ""}
                     placeholder="Ej: Miguel"
-                    className="input py-3"
+                    className="input-field py-3"
                   />
                 </div>
 
@@ -267,7 +267,7 @@ export function BarberosClient({ barbers, barbershopId, planUsage }: Props) {
                     type="tel"
                     defaultValue={editing?.phone ?? ""}
                     placeholder="+34 600 000 000"
-                    className="input py-3"
+                    className="input-field py-3"
                   />
                 </div>
 

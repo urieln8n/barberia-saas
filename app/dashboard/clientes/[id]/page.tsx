@@ -12,7 +12,7 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";

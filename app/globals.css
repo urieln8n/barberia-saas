@@ -6,6 +6,7 @@
 :root {
   color-scheme: light;
 
+  /* ── Neutrals ─────────────────────────────────────────── */
   --ink: #080A0F;
   --carbon: #10131B;
   --slate: #1D2433;
@@ -14,8 +15,19 @@
   --surface: #FFFFFF;
   --surface-elevated: rgba(255, 255, 255, 0.86);
   --muted: #EEF3F8;
+
+  /* ── Borders ──────────────────────────────────────────── */
   --border: #E2E8F0;
   --border-strong: #CAD5E2;
+  --border-warm: #E7E2D8;
+  --border-warm-strong: #D5CEBC;
+
+  /* ── App background (dashboard warm canvas) ───────────── */
+  --app-bg: #F4F1EA;
+  --surface-warm: #FAF8F4;
+  --surface-warm-raised: #FDFBF7;
+
+  /* ── Brand blue (CTA) ─────────────────────────────────── */
   --accent: #2563EB;
   --accent-strong: #1D4ED8;
   --premium-blue: #2563EB;
@@ -26,19 +38,45 @@
   --premium-text: #F8FAFC;
   --premium-text-muted: #94A3B8;
   --cyan: #06B6D4;
-  --success: #10B981;
+
+  /* ── Gold accent (value / premium) ───────────────────── */
   --gold: #D5A84C;
+  --gold-strong: #C9922A;
+  --gold-dark: #8A641F;
+  --gold-tint: rgba(213, 168, 76, 0.10);
+  --gold-border: rgba(213, 168, 76, 0.28);
+
+  /* ── Semantic states ──────────────────────────────────── */
+  --success: #10B981;
+  --success-tint: rgba(16, 185, 129, 0.10);
+  --warning: #D97706;
+  --warning-tint: rgba(217, 119, 6, 0.10);
+  --danger: #E5484D;
+  --danger-tint: rgba(229, 72, 77, 0.10);
   --amber: #D97706;
   --wine: #E5484D;
+
+  /* ── Radii ────────────────────────────────────────────── */
   --radius-card: 24px;
   --radius-control: 14px;
+  --radius-pill: 999px;
+
+  /* ── Shadows ──────────────────────────────────────────── */
   --shadow-card: 0 1px 2px rgba(8, 10, 15, 0.04), 0 22px 70px rgba(15, 23, 42, 0.10);
   --shadow-soft: 0 1px 2px rgba(8, 10, 15, 0.05), 0 12px 34px rgba(15, 23, 42, 0.07);
-  --shadow-glow: 0 18px 60px rgba(37, 99, 235, 0.14);
-  --app-bg: #F4F1EA;
-  --border-warm: #E7E2D8;
-  --surface-warm: #FAF8F4;
   --shadow-warm: 0 1px 3px rgba(8, 10, 15, 0.07), 0 8px 28px rgba(15, 23, 42, 0.09);
+  --shadow-glow: 0 18px 60px rgba(37, 99, 235, 0.14);
+  --shadow-gold: 0 14px 40px rgba(213, 168, 76, 0.18);
+
+  /* ── Form inputs ──────────────────────────────────────── */
+  --input-bg: #FFFFFF;
+  --input-border: #E7E2D8;
+  --input-border-focus: #C9922A;
+  --input-ring: rgba(201, 146, 42, 0.12);
+  --input-text: #080A0F;
+  --input-placeholder: #9CA3AF;
+  --input-radius: 14px;
+  --input-height: 2.625rem; /* 42px — matches min-h-10 */
 }
 
 @layer base {
@@ -163,8 +201,8 @@
   }
   .btn-outline {
     @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-[14px]
-           border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm
-           transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 active:scale-[0.98]
+           border border-[#E7E2D8] bg-white px-4 py-2.5 text-sm font-bold text-[#374151] shadow-sm
+           transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D5CEBC] hover:bg-[#FAF8F4] hover:text-[#111827] active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-ghost {
@@ -179,20 +217,43 @@
            hover:bg-red-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  .input {
-    @apply w-full rounded-[14px] border border-slate-200 bg-white px-4 py-2.5
-           text-sm text-slate-950 placeholder:text-slate-400 outline-none
+  /* ── Form inputs (canonical names) ─────────────────────── */
+  .input-field {
+    @apply w-full rounded-[14px] border border-[#E7E2D8] bg-white px-4 py-2.5
+           text-sm text-[#080A0F] placeholder:text-[#9CA3AF] outline-none
+           transition-all duration-200 min-h-[42px]
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F8F5EF];
+  }
+  .select-field {
+    @apply w-full appearance-none rounded-[14px] border border-[#E7E2D8] bg-white px-4 py-2.5
+           text-sm text-[#080A0F] outline-none cursor-pointer
+           transition-all duration-200 min-h-[42px]
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F8F5EF];
+  }
+  .textarea-field {
+    @apply w-full rounded-[14px] border border-[#E7E2D8] bg-white px-4 py-3
+           text-sm text-[#080A0F] placeholder:text-[#9CA3AF] outline-none resize-y
            transition-all duration-200
-           focus:border-[#C9922A] focus:ring-4 focus:ring-[#C9922A]/10;
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F8F5EF];
+  }
+  /* Legacy alias — kept for backward compatibility */
+  .input {
+    @apply input-field;
   }
   .form-label {
-    @apply mb-1.5 block text-sm font-semibold text-slate-700;
+    @apply mb-1.5 block text-sm font-semibold text-[#374151];
   }
   .form-help {
-    @apply mt-1 text-xs leading-5 text-slate-400;
+    @apply mt-1 text-xs leading-5 text-[#9CA3AF];
   }
   .form-grid {
     @apply grid gap-4 md:grid-cols-2;
+  }
+  .form-field-group {
+    @apply flex flex-col gap-1.5;
   }
   .input-error {
     @apply border-[#E5484D] focus:border-[#E5484D] focus:ring-[#E5484D]/10;

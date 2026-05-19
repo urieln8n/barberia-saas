@@ -228,7 +228,7 @@ export function InventarioClient({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.04 }}
-                  className="flex flex-col gap-3 rounded-[18px] border border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-[18px] border border-[#E7E2D8] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0">
                     <p className="font-black text-[#080A0F]">{product.name}</p>
@@ -272,7 +272,7 @@ export function InventarioClient({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.04 }}
-                  className="flex items-center justify-between gap-3 rounded-[18px] border border-slate-200 bg-slate-50/70 px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-[18px] border border-[#E7E2D8] bg-[#FAF8F4] px-4 py-3"
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F] text-xs font-black text-[#D5A84C]">
@@ -306,7 +306,7 @@ export function InventarioClient({
         }
         bodyClassName="p-0"
       >
-        <div className="grid gap-3 border-b border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_180px_170px_150px]">
+        <div className="grid gap-3 border-b border-[#E7E2D8] bg-white p-4 md:grid-cols-[minmax(220px,1fr)_180px_170px_150px]">
           <label className="relative block">
             <span className="sr-only">Buscar producto</span>
             <Search
@@ -316,7 +316,7 @@ export function InventarioClient({
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              className="input pl-9"
+              className="input-field pl-9"
               placeholder="Buscar por nombre, SKU o proveedor"
             />
           </label>
@@ -326,7 +326,7 @@ export function InventarioClient({
             <select
               value={categoryFilter}
               onChange={(event) => setCategoryFilter(event.target.value)}
-              className="input"
+              className="select-field"
             >
               <option value="all">Todas las categorías</option>
               {categories.map((category) => (
@@ -342,7 +342,7 @@ export function InventarioClient({
             <select
               value={typeFilter}
               onChange={(event) => setTypeFilter(event.target.value as TypeFilter)}
-              className="input"
+              className="select-field"
             >
               <option value="all">Todos los tipos</option>
               <option value="retail">Venta</option>
@@ -355,7 +355,7 @@ export function InventarioClient({
             <select
               value={stockFilter}
               onChange={(event) => setStockFilter(event.target.value as StockFilter)}
-              className="input"
+              className="select-field"
             >
               <option value="all">Todo el stock</option>
               <option value="low">Stock bajo</option>
@@ -413,7 +413,7 @@ export function InventarioClient({
               return (
                 <div
                   key={movement.id}
-                  className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded-2xl border border-[#E7E2D8] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
                     <p className="text-sm font-black text-[#080A0F]">

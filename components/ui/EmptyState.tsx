@@ -30,7 +30,7 @@ export function EmptyState({
     <div className={`flex flex-col items-center justify-center rounded-[24px] border border-dashed px-6 py-10 text-center ${
       dark
         ? "border-white/15 bg-white/[0.04] text-white"
-        : "border-slate-300 bg-slate-50/80 text-slate-950"
+        : "border-[#D5CEBC] bg-[#FAF8F4] text-slate-950"
     } ${className}`}>
       {Icon && (
         <div className={iconClass}>

@@ -14,7 +14,7 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
-import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 

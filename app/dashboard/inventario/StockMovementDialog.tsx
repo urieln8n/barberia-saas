@@ -85,8 +85,8 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
-      <div className="w-full max-w-2xl rounded-[24px] border border-slate-200 bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-5">
+      <div className="w-full max-w-2xl rounded-[24px] border border-[#E7E2D8] bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-[#E7E2D8] px-6 py-5">
           <div>
             <p className="label-section">Movimiento de stock</p>
             <h2 className="section-heading mt-1">{product.name}</h2>
@@ -101,7 +101,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Cerrar movimiento"
-            className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
+            className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-slate-900"
           >
             <X size={18} />
           </button>
@@ -123,7 +123,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
                     className={`rounded-2xl border px-4 py-3 text-left transition-all ${
                       active
                         ? "border-[#C9922A]/40 bg-[#C9922A]/10"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                        : "border-[#E7E2D8] bg-white hover:border-[#D5CEBC] hover:bg-[#FAF8F4]"
                     }`}
                   >
                     <span className="flex items-center gap-2 text-sm font-black text-[#080A0F]">
@@ -154,7 +154,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
                 required
                 value={quantity}
                 onChange={(event) => setQuantity(event.target.value)}
-                className="input"
+                className="input-field"
                 placeholder="0"
               />
               <p className="form-help">
@@ -162,7 +162,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <div className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3">
               <p className="text-[10px] font-black uppercase text-slate-400">
                 Stock resultante
               </p>
@@ -181,7 +181,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
             <textarea
               name="reason"
               rows={3}
-              className="input resize-none"
+              className="textarea-field"
               placeholder="Ej. Reposición semanal, producto usado en servicio, ajuste por recuento..."
             />
           </div>
@@ -192,7 +192,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-[#E7E2D8] pt-5 sm:flex-row sm:justify-end">
             <PrimaryButton type="button" onClick={onClose} variant="secondary">
               Cancelar
             </PrimaryButton>
