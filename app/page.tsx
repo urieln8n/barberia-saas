@@ -170,6 +170,15 @@ const faqs = [
   ["¿El hardware lo vende BarberíaOS?", "No por ahora. Te recomendamos tablet, soporte, impresora o caja si encajan con tu local, pero no prometemos hardware propio."],
 ] as const;
 
+const cityLinks = [
+  { city: "Madrid", slug: "madrid", desc: "Reservas, caja y QR para barberías en Madrid" },
+  { city: "Barcelona", slug: "barcelona", desc: "Software de gestión para barberías en Barcelona" },
+  { city: "Valencia", slug: "valencia", desc: "Agenda y reservas online para barberías en Valencia" },
+  { city: "Sevilla", slug: "sevilla", desc: "Reservas sin comisión para barberías en Sevilla" },
+  { city: "Bilbao", slug: "bilbao", desc: "Panel de barbería con caja e IA en Bilbao" },
+  { city: "Málaga", slug: "malaga", desc: "QR y reservas online para barberías en Málaga" },
+] as const;
+
 const homeJsonLd = [
   {
     "@context": "https://schema.org",
@@ -440,9 +449,8 @@ export default function HomePage() {
               <h1 className="mt-6 text-5xl font-black leading-[0.96] tracking-normal text-white md:text-7xl">
                 Tu barbería ordenada y lista para reservar online en 48h.
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/64">
-                BarberíaOS conecta reservas, agenda, clientes, caja, QR, productos y mensajes de crecimiento
-                para dueños que quieren dejar de depender de WhatsApp, papel o plataformas con comisión.
+              <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">
+                Sin comisión por reserva. Sin app que instalar. Clientes y datos siempre tuyos.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
@@ -467,6 +475,16 @@ export default function HomePage() {
                 <Pill>Activación guiada</Pill>
                 <Pill>Kit QR incluido</Pill>
               </div>
+              <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-white/[0.08] pt-6">
+                {([["24/7", "Reservas abiertas"], ["0%", "Comisión por cita"], ["48h", "Para empezar"]] as const).map(
+                  ([num, label]) => (
+                    <div key={label} className="flex items-baseline gap-1.5">
+                      <span className="text-2xl font-black text-white">{num}</span>
+                      <span className="text-sm text-white/38">{label}</span>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
             <DashboardMockup />
           </div>
@@ -480,14 +498,25 @@ export default function HomePage() {
               text="BarberíaOS está pensado para locales que viven entre WhatsApp, agenda, caja, clientes y productos. El objetivo es simple: que el dueño sepa qué pasa y que el cliente pueda reservar sin fricción."
               center
             />
-            <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {controls.map(([title, text, Icon]) => (
-                <article key={title} className="premium-dark-card rounded-[24px] p-5" data-gsap-premium="feature">
-                  <Icon size={22} className="text-[#38BDF8]" />
-                  <h3 className="mt-5 text-xl font-black text-white">{title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
-                </article>
-              ))}
+            <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-3">
+              {controls.map(([title, text, Icon], i) => {
+                const isGold = i === 0 || i === 3;
+                const stat = i === 0 ? "24/7" : i === 3 ? "1 panel" : null;
+                return (
+                  <article
+                    key={title}
+                    className={`rounded-[24px] p-5 ${i === 0 ? "col-span-2 lg:col-span-1" : ""} ${isGold ? "bento-gold-feature" : "premium-dark-card"}`}
+                    data-gsap-premium="feature"
+                  >
+                    <div className="flex items-start justify-between">
+                      <Icon size={22} className={isGold ? "text-[#D5A84C]" : "text-[#38BDF8]"} />
+                      {stat && <span className="text-xl font-black text-[#D5A84C]/65">{stat}</span>}
+                    </div>
+                    <h3 className="mt-5 text-xl font-black text-white">{title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </Shell>
@@ -688,13 +717,61 @@ export default function HomePage() {
                   key={title}
                   className={`rounded-[28px] border p-6 ${
                     index === 2
-                      ? "border-[#38BDF8]/[0.34] bg-[#2563EB]/[0.12] shadow-[0_24px_72px_rgba(37,99,235,0.14)]"
+                      ? "border-[#D5A84C]/40 bg-[#D5A84C]/[0.05] shadow-[0_24px_72px_rgba(213,168,76,0.10)]"
                       : "border-[#2F6FEB]/[0.16] bg-white/[0.055]"
                   }`}
                 >
-                  <p className={`text-xl font-black ${index === 2 ? "text-[#38BDF8]" : "text-white"}`}>{title}</p>
+                  {index === 2 && (
+                    <span className="mb-3 inline-flex rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2.5 py-0.5 text-[10px] font-black uppercase text-[#D5A84C]">
+                      ✦ Recomendado
+                    </span>
+                  )}
+                  <p className={`text-xl font-black ${index === 2 ? "text-[#D5A84C]" : "text-white"}`}>{title}</p>
                   <p className="mt-3 text-sm leading-7 text-white/58">{text}</p>
                 </article>
+              ))}
+            </div>
+          </div>
+        </Shell>
+
+        <Shell id="ciudades" className="landing-section-graphite border-t border-white/[0.07]">
+          <div className="mx-auto max-w-7xl">
+            <SectionIntro
+              eyebrow="Por ciudad"
+              title="Software para barberías en toda España."
+              text="Agenda, caja, QR y página pública para tu barbería. Sin comisión por reserva, en cualquier ciudad."
+              center
+            />
+            <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {cityLinks.map(({ city, slug, desc }) => (
+                <Link
+                  key={city}
+                  href={`/barberias/${slug}`}
+                  className="group flex items-center justify-between rounded-[20px] border border-white/[0.10] bg-white/[0.04] p-5 transition hover:border-[#D5A84C]/30 hover:bg-[#D5A84C]/[0.04]"
+                >
+                  <div>
+                    <p className="font-black text-white transition group-hover:text-[#D5A84C]">{city}</p>
+                    <p className="mt-1 text-sm text-white/45">{desc}</p>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 text-white/20 transition group-hover:text-[#D5A84C]/60" />
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {([
+                ["Alternativa a Booksy", "/alternativa-booksy-barberias"],
+                ["Agenda online", "/agenda-online-barberia"],
+                ["Software para barberías", "/software-para-barberias"],
+                ["Caja para barberías", "/caja-para-barberias"],
+                ["Reservas online", "/reservas-online-barberia"],
+              ] as const).map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55 transition hover:border-[#38BDF8]/25 hover:text-white"
+                >
+                  {label}
+                </Link>
               ))}
             </div>
           </div>
@@ -748,7 +825,7 @@ export default function HomePage() {
                   key={plan.name}
                   className={`relative flex min-h-full flex-col rounded-[30px] border p-6 ${
                     plan.featured
-                      ? "border-[#38BDF8]/45 bg-gradient-to-b from-white to-[#eef7ff] text-[#080A0F] shadow-[0_26px_96px_rgba(37,99,235,0.18)]"
+                      ? "border-[#D5A84C]/45 bg-gradient-to-b from-[#13100B] to-[#07111f] text-white shadow-[0_26px_96px_rgba(213,168,76,0.12),0_0_0_1px_rgba(213,168,76,0.06)]"
                       : "border-[#2F6FEB]/[0.16] bg-white/[0.055] text-white shadow-[0_22px_72px_rgba(0,0,0,0.20)]"
                   }`}
                 >
@@ -758,31 +835,31 @@ export default function HomePage() {
                     </span>
                   )}
                   <h3 className="text-2xl font-black">{plan.name}</h3>
-                  <p className={`mt-3 min-h-14 text-sm leading-6 ${plan.featured ? "text-slate-500" : "text-white/55"}`}>
+                  <p className={`mt-3 min-h-14 text-sm leading-6 ${plan.featured ? "text-white/60" : "text-white/55"}`}>
                     {plan.description}
                   </p>
                   <div className={`mt-4 rounded-2xl border p-4 ${
-                    plan.featured ? "border-slate-200 bg-slate-50" : "border-white/10 bg-white/[0.045]"
+                    plan.featured ? "border-[#D5A84C]/20 bg-[#D5A84C]/[0.06]" : "border-white/10 bg-white/[0.045]"
                   }`}>
-                    <p className={`text-xs font-black uppercase ${plan.featured ? "text-[#2563EB]" : "text-[#38BDF8]"}`}>
+                    <p className={`text-xs font-black uppercase ${plan.featured ? "text-[#D5A84C]" : "text-[#38BDF8]"}`}>
                       Para quién
                     </p>
-                    <p className={`mt-2 text-sm leading-6 ${plan.featured ? "text-slate-600" : "text-white/62"}`}>
+                    <p className="mt-2 text-sm leading-6 text-white/62">
                       {plan.forWho}
                     </p>
-                    <p className={`mt-3 text-xs font-bold ${plan.featured ? "text-slate-400" : "text-white/38"}`}>
+                    <p className="mt-3 text-xs font-bold text-white/38">
                       {plan.limits}
                     </p>
                   </div>
                   <div className="mt-7 flex items-end gap-1">
                     <span className="text-5xl font-black">{plan.price}</span>
-                    <span className={plan.featured ? "pb-2 text-sm font-bold text-slate-400" : "pb-2 text-sm font-bold text-white/35"}>/mes</span>
+                    <span className="pb-2 text-sm font-bold text-white/35">/mes</span>
                   </div>
-                  <div className={`my-6 h-px ${plan.featured ? "bg-slate-200" : "bg-white/10"}`} />
+                  <div className={`my-6 h-px ${plan.featured ? "bg-[#D5A84C]/20" : "bg-white/10"}`} />
                   <ul className="flex flex-1 flex-col gap-3">
                     {plan.features.map((feature) => (
-                      <li key={feature} className={`flex gap-3 text-sm font-bold leading-6 ${plan.featured ? "text-slate-700" : "text-white/72"}`}>
-                        <CheckCircle2 size={17} className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#2563EB]" : "text-[#38BDF8]"}`} />
+                      <li key={feature} className="flex gap-3 text-sm font-bold leading-6 text-white/72">
+                        <CheckCircle2 size={17} className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#D5A84C]" : "text-[#38BDF8]"}`} />
                         {feature}
                       </li>
                     ))}
@@ -868,7 +945,7 @@ export default function HomePage() {
                 Sistema operativo para barberías: reservas, caja, barberos, productos, marketing e IA en un solo panel.
               </p>
             </div>
-            <div className="grid gap-7 sm:grid-cols-4">
+            <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-5">
               <div>
                 <p className="text-xs font-black uppercase text-white/32">Producto</p>
                 <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Enlaces de producto">
@@ -909,6 +986,19 @@ export default function HomePage() {
                     <li><Link href="/legal/privacidad" className="hover:text-white">Privacidad</Link></li>
                     <li><Link href="/legal/cookies" className="hover:text-white">Cookies</Link></li>
                     <li><Link href="/legal/terminos" className="hover:text-white">Términos</Link></li>
+                  </ul>
+                </nav>
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase text-white/32">Ciudades</p>
+                <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Software por ciudad">
+                  <ul className="flex flex-col gap-2">
+                    <li><Link href="/barberias/madrid" className="hover:text-white">Madrid</Link></li>
+                    <li><Link href="/barberias/barcelona" className="hover:text-white">Barcelona</Link></li>
+                    <li><Link href="/barberias/valencia" className="hover:text-white">Valencia</Link></li>
+                    <li><Link href="/barberias/sevilla" className="hover:text-white">Sevilla</Link></li>
+                    <li><Link href="/barberias/malaga" className="hover:text-white">Málaga</Link></li>
+                    <li><Link href="/alternativa-booksy-barberias" className="hover:text-white">Alt. Booksy</Link></li>
                   </ul>
                 </nav>
               </div>

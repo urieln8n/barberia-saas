@@ -341,6 +341,27 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
+  .bento-gold-feature {
+    border: 1px solid rgba(213, 168, 76, 0.22);
+    background:
+      radial-gradient(circle at 90% 0%, rgba(201, 146, 42, 0.08), transparent 14rem),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.038)),
+      rgba(7, 17, 31, 0.82);
+    box-shadow:
+      0 22px 80px rgba(0, 0, 0, 0.26),
+      0 0 28px rgba(213, 168, 76, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .bento-gold-feature:hover {
+    border-color: rgba(213, 168, 76, 0.35);
+    box-shadow:
+      0 22px 80px rgba(0, 0, 0, 0.26),
+      0 0 32px rgba(213, 168, 76, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
   .premium-blue-card {
     border: 1px solid rgba(56, 189, 248, 0.24);
     background:
