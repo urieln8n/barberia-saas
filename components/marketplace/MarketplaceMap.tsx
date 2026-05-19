@@ -29,6 +29,7 @@ type ShopProps = {
   shopId: string;
   name: string;
   slug: string;
+  public_slug: string | null;
   city: string | null;
   neighborhood: string | null;
   google_maps_url: string | null;
@@ -56,6 +57,7 @@ function shopsToGeoJSON(
           shopId: s.id,
           name: s.public_name,
           slug: s.slug,
+          public_slug: s.public_slug ?? null,
           city: s.city,
           neighborhood: s.neighborhood,
           google_maps_url: s.google_maps_url,
@@ -102,6 +104,10 @@ function createPopupHtml(
   const mapsHref =
     props.google_maps_url ||
     `https://www.google.com/maps?q=${props.latitude},${props.longitude}`;
+  const cityPath = props.city ? encodeURIComponent(props.city.toLowerCase().trim()) : null;
+  const profileHref = cityPath
+    ? `/barberias/${cityPath}/${props.public_slug || props.slug}`
+    : `/r/${props.slug}`;
 
   const featuredBadge = props.featured
     ? `<div style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;color:#8A641F;background:rgba(213,168,76,0.15);border:1px solid rgba(213,168,76,0.3);border-radius:6px;padding:2px 7px;margin-bottom:8px;">★ Destacada</div>`
@@ -113,7 +119,8 @@ function createPopupHtml(
     ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 10px;">${esc(location)}${esc(distStr)}</p>` : ""}
     <div style="display:flex;gap:6px;">
       <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#C9922A;color:#fff;">Reservar →</a>
-      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#F1F5F9;color:#0F1623;">↗</a>
+      <a href="${esc(profileHref)}" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 10px;border-radius:9px;text-decoration:none;background:#F8F5EF;color:#0F1623;">Perfil</a>
+      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 10px;border-radius:9px;text-decoration:none;background:#F1F5F9;color:#0F1623;">↗</a>
     </div>
   </div>`;
 }
@@ -400,6 +407,7 @@ export function MarketplaceMap({
                 shopId: shop.id,
                 name: shop.public_name,
                 slug: shop.slug,
+                public_slug: shop.public_slug ?? null,
                 city: shop.city,
                 neighborhood: shop.neighborhood,
                 google_maps_url: shop.google_maps_url,
@@ -483,9 +491,9 @@ export function MarketplaceMap({
         className={`flex items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 ${className}`}
       >
         <div className="px-6 py-10 text-center">
-          <p className="text-sm font-bold text-neutral-400">Sin ubicaciones en mapa</p>
-          <p className="mt-1 text-xs text-slate-500">
-            Amplía el radio o activa tu ubicación para ver barberías cercanas
+          <p className="text-sm font-bold text-neutral-500">Mapa pendiente de ubicación</p>
+          <p className="mt-1 max-w-xs text-xs leading-5 text-slate-500">
+            El mapa estará disponible cuando las barberías completen coordenadas públicas en su perfil.
           </p>
         </div>
       </div>
