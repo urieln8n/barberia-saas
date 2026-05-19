@@ -5,10 +5,10 @@ import type { InventoryProduct } from "./types";
 
 type Props = {
   products: InventoryProduct[];
-  soldUnitsByProduct: Map<string, number>;
+  soldUnitsByProduct?: Map<string, number>;
   onEdit: (product: InventoryProduct) => void;
   onMovement: (product: InventoryProduct) => void;
-  onSell: (product: InventoryProduct) => void;
+  onSell?: (product: InventoryProduct) => void;
   onToggle: (product: InventoryProduct) => void;
   togglingId: string | null;
 };
@@ -185,7 +185,7 @@ export function ProductTable({
                 {formatPercent(getMargin(product))}
               </td>
               <td className="px-5 py-4 font-black text-[#080A0F]">
-                {soldUnitsByProduct.get(product.id) ?? 0}
+                {soldUnitsByProduct?.get(product.id) ?? 0}
               </td>
               <td className="px-5 py-4">
                 <div className="flex flex-col items-start gap-1.5">
@@ -217,7 +217,7 @@ export function ProductTable({
                   </button>
                   <button
                     type="button"
-                    onClick={() => onSell(product)}
+                    onClick={() => onSell?.(product)}
                     disabled={
                       product.product_type !== "retail" ||
                       !product.is_active ||

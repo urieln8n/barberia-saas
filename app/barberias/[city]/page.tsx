@@ -108,7 +108,7 @@ async function getProfilesByCity(rawCity: string): Promise<BarberiaProfile[]> {
 
     return {
       ...profile,
-      featured: Boolean(profile.is_featured ?? profile.featured),
+      featured: Boolean(profile.featured),
       top_services: services.slice(0, 3).map((service) => ({
         id: service.id,
         name: service.name,
@@ -136,7 +136,7 @@ function buildJsonLd(city: string, profiles: BarberiaProfile[]) {
           "@type": "HairSalon",
           name: profile.public_name,
           url: `${SITE_URL}/barberias/${citySlug(city)}/${getEffectiveProfileSlug(profile)}`,
-          address: [profile.address, profile.neighborhood, profile.city].filter(Boolean).join(", ") || undefined,
+          address: [profile.neighborhood, profile.city].filter(Boolean).join(", ") || undefined,
           telephone: profile.phone ?? profile.whatsapp ?? undefined,
           image: profile.cover_image_url ?? profile.logo_url ?? undefined,
         },
@@ -218,7 +218,7 @@ export default async function BarberiasCityPage({ params }: Props) {
   const withCoords = profiles.filter(
     (profile) => profile.latitude != null && profile.longitude != null && profile.map_visible !== false,
   ).length;
-  const featuredCount = profiles.filter((profile) => profile.is_featured ?? profile.featured).length;
+  const featuredCount = profiles.filter((profile) => profile.featured).length;
   const jsonLd = buildJsonLd(city, profiles);
 
   return (

@@ -41,14 +41,13 @@ export type InventoryMovement = {
   previous_stock: number | null;
   new_stock: number | null;
   reason: string | null;
-  source?: string | null;
+  source?: InventoryMovementSource | null;
   created_at: string;
   created_by: string | null;
   sale_item_id?: string | null;
   cash_session_id?: string | null;
   sale_id?: string | null;
   appointment_id?: string | null;
-  source?: InventoryMovementSource | null;
 };
 
 export type InventorySaleItem = {
