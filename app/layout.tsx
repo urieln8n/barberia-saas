@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { AnalyticsScripts } from "@/components/analytics/AnalyticsScripts";
 import { FloatingWhatsAppButton } from "@/components/landing/FloatingWhatsAppButton";
 import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
@@ -15,12 +16,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(BUSINESS_CONFIG.siteUrl),
-  title: {
-    default: "Software para barberías | Reservas, caja y QR — BarberíaOS",
-    template: "%s | BarberíaOS",
-  },
+  title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
   description:
-    "Software para barberías con reservas online, caja, QR, página pública y control de barberos. Sin comisión por cita. Prueba BarberíaOS sin permanencia.",
+    "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería sin depender de plataformas externas.",
+  alternates: {
+    canonical: BUSINESS_CONFIG.siteUrl,
+  },
   robots: {
     index: true,
     follow: true,
@@ -34,9 +35,9 @@ export const metadata: Metadata = {
     locale: "es_ES",
     url: BUSINESS_CONFIG.siteUrl,
     siteName: BUSINESS_CONFIG.commercialName,
-    title: "Software para barberías | Reservas, caja y QR — BarberíaOS",
+    title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
     description:
-      "Software para barberías con reservas online, caja, QR y página pública. Sin comisión por cita. Sin permanencia.",
+      "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería.",
     images: [
       {
         url: "/opengraph-image",
@@ -49,9 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Software para barberías | Reservas, caja y QR — BarberíaOS",
+    title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
     description:
-      "Software para barberías: reservas online, caja, QR y página pública. Sin comisión. Sin permanencia.",
+      "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería.",
     images: ["/opengraph-image"],
   },
   appleWebApp: {
@@ -80,6 +81,7 @@ export default function RootLayout({
         {children}
         <FloatingWhatsAppButton />
         <CookieConsentBanner />
+        <AnalyticsScripts />
         <Analytics />
       </body>
     </html>

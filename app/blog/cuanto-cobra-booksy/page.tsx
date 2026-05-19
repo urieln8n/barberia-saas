@@ -4,9 +4,9 @@ import { SITE_URL } from "@/src/lib/site-url";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "¿Cuánto cobra Booksy de verdad? Comisiones y alternativas para barberías | BarberíaOS",
+  title: "Cuánto cuesta usar plataformas de reservas para barberías | BarberíaOS",
   description:
-    "Booksy no solo cobra 29€/mes. Descubre cuánto cuestan las comisiones Boost, qué pasa con tus datos de clientes y por qué cada vez más barberías buscan alternativas sin comisiones.",
+    "Guía para entender cuotas, comisiones y dependencia de plataformas de reservas en barberías antes de elegir un sistema propio.",
   keywords: [
     "cuánto cobra booksy",
     "comisiones booksy",
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/blog/cuanto-cobra-booksy` },
   openGraph: {
-    title: "¿Cuánto cobra Booksy de verdad? Comisiones y alternativas para barberías",
+    title: "Cuánto cuesta usar plataformas de reservas para barberías | BarberíaOS",
     description:
-      "Booksy no solo cobra 29€/mes. Descubre cuánto cuestan las comisiones Boost y por qué cada vez más barberías buscan alternativas.",
+      "Guía para entender cuotas, comisiones y dependencia de plataformas de reservas antes de elegir un sistema propio.",
     url: `${SITE_URL}/blog/cuanto-cobra-booksy`,
     type: "article",
     siteName: "BarberíaOS",
@@ -67,6 +67,31 @@ const faqJsonLd = {
   ],
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Inicio",
+      item: SITE_URL,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Blog",
+      item: `${SITE_URL}/blog`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Cuánto cuesta usar plataformas de reservas",
+      item: `${SITE_URL}/blog/cuanto-cobra-booksy`,
+    },
+  ],
+};
+
 export default function CuantoCobraBooksyPage() {
   return (
     <div style={{ background: "#0a0a0a", color: "#fff", fontFamily: "system-ui, sans-serif", lineHeight: "1.7" }}>
@@ -79,6 +104,11 @@ export default function CuantoCobraBooksyPage() {
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* NAV */}
