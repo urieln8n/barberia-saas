@@ -11,9 +11,13 @@ export type SmartAlertItem = {
 
 type SmartAlertsProps = {
   alerts: SmartAlertItem[];
+  maxVisible?: number;
 };
 
-export function SmartAlerts({ alerts }: SmartAlertsProps) {
+export function SmartAlerts({ alerts, maxVisible }: SmartAlertsProps) {
+  const visible = maxVisible != null ? alerts.slice(0, maxVisible) : alerts;
+  const remaining = maxVisible != null ? Math.max(0, alerts.length - maxVisible) : 0;
+
   return (
     <section className="panel">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -28,8 +32,8 @@ export function SmartAlerts({ alerts }: SmartAlertsProps) {
           </p>
         </div>
       </div>
-      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {alerts.map((alert) => {
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {visible.map((alert) => {
           const Icon = alert.icon;
           return (
             <Link
@@ -47,6 +51,11 @@ export function SmartAlerts({ alerts }: SmartAlertsProps) {
           );
         })}
       </div>
+      {remaining > 0 && (
+        <p className="mt-3 text-center text-xs text-neutral-400">
+          +{remaining} señal{remaining !== 1 ? "es" : ""} más disponibles en los módulos de Crecer y Gestión.
+        </p>
+      )}
     </section>
   );
 }

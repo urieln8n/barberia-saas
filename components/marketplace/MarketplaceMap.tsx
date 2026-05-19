@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Map as MapIcon } from "lucide-react";
 import type { Map as MLMap, GeoJSONSource, Popup as MLPopup } from "maplibre-gl";
 import type { BarberiaProfile } from "./BarberiaCard";
 import {
@@ -29,7 +30,6 @@ type ShopProps = {
   shopId: string;
   name: string;
   slug: string;
-  public_slug: string | null;
   city: string | null;
   neighborhood: string | null;
   google_maps_url: string | null;
@@ -57,7 +57,6 @@ function shopsToGeoJSON(
           shopId: s.id,
           name: s.public_name,
           slug: s.slug,
-          public_slug: s.public_slug ?? null,
           city: s.city,
           neighborhood: s.neighborhood,
           google_maps_url: s.google_maps_url,
@@ -104,23 +103,18 @@ function createPopupHtml(
   const mapsHref =
     props.google_maps_url ||
     `https://www.google.com/maps?q=${props.latitude},${props.longitude}`;
-  const cityPath = props.city ? encodeURIComponent(props.city.toLowerCase().trim()) : null;
-  const profileHref = cityPath
-    ? `/barberias/${cityPath}/${props.public_slug || props.slug}`
-    : `/r/${props.slug}`;
 
   const featuredBadge = props.featured
-    ? `<div style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;color:#8A641F;background:rgba(213,168,76,0.15);border:1px solid rgba(213,168,76,0.3);border-radius:6px;padding:2px 7px;margin-bottom:8px;">★ Destacada</div>`
+    ? `<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:900;letter-spacing:0.04em;color:#8A641F;background:rgba(213,168,76,0.14);border:1px solid rgba(213,168,76,0.32);border-radius:20px;padding:2px 8px;margin-bottom:9px;">★&nbsp;Destacada</span>`
     : "";
 
-  return `<div style="font-family:system-ui,-apple-system,sans-serif;padding:6px 2px;min-width:200px;">
-    ${featuredBadge}
-    <p style="font-size:14px;font-weight:900;color:#0F1623;margin:0 0 3px;line-height:1.3;">${esc(props.name)}</p>
-    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 10px;">${esc(location)}${esc(distStr)}</p>` : ""}
+  return `<div style="font-family:system-ui,-apple-system,sans-serif;padding:14px 16px 12px;min-width:220px;max-width:260px;">
+    ${featuredBadge ? `<div>${featuredBadge}</div>` : ""}
+    <p style="font-size:15px;font-weight:900;color:#0b0e17;margin:0 0 3px;line-height:1.25;">${esc(props.name)}</p>
+    ${location || distStr ? `<p style="font-size:11px;color:#64748b;margin:0 0 11px;line-height:1.5;">${esc(location)}${esc(distStr)}</p>` : "<div style='margin-bottom:11px'></div>"}
     <div style="display:flex;gap:6px;">
-      <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px;text-decoration:none;background:#C9922A;color:#fff;">Reservar →</a>
-      <a href="${esc(profileHref)}" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 10px;border-radius:9px;text-decoration:none;background:#F8F5EF;color:#0F1623;">Perfil</a>
-      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:6px 10px;border-radius:9px;text-decoration:none;background:#F1F5F9;color:#0F1623;">↗</a>
+      <a href="/r/${esc(props.slug)}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:7px 14px;border-radius:10px;text-decoration:none;background:#0b0e17;color:#fff;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Reservar →</a>
+      <a href="${esc(mapsHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;padding:7px 12px;border-radius:10px;text-decoration:none;background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;" title="Cómo llegar">↗</a>
     </div>
   </div>`;
 }
@@ -165,11 +159,11 @@ export function MarketplaceMap({
   userLocation,
   className = "",
 }: Props) {
+  const [mapStatus, setMapStatus] = useState<"loading" | "loaded" | "error">("loading");
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<MLMap | null>(null);
   const popupRef     = useRef<MLPopup | null>(null);
-  const [isMapReady, setIsMapReady] = useState(false);
-  const [mapError, setMapError] = useState<string | null>(null);
 
   // Always-fresh refs to avoid stale closures in event handlers
   const onSelectRef     = useRef(onSelectShop);
@@ -188,8 +182,6 @@ export function MarketplaceMap({
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
-    let resizeObserver: ResizeObserver | null = null;
-    let revealTimer: number | null = null;
 
     import("maplibre-gl").then((ml) => {
       if (cancelled || !containerRef.current || mapRef.current) return;
@@ -221,20 +213,15 @@ export function MarketplaceMap({
         zoom: DEFAULT_ZOOM,
       });
 
-      mapRef.current = map;
-      revealTimer = window.setTimeout(() => {
-        if (!cancelled) {
-          setIsMapReady(true);
-          map.resize();
-        }
-      }, 2500);
+      map.addControl(
+        new maplibregl.NavigationControl({
+          showCompass: false,
+          visualizePitch: false,
+        }),
+        "top-right",
+      );
 
-      if ("ResizeObserver" in window) {
-        resizeObserver = new ResizeObserver(() => {
-          map.resize();
-        });
-        resizeObserver.observe(containerRef.current);
-      }
+      mapRef.current = map;
 
       // Generate cluster count images on demand — no external font CDN required
       map.on("styleimagemissing", (e) => {
@@ -246,8 +233,13 @@ export function MarketplaceMap({
         }
       });
 
+      map.on("error", () => {
+        if (!cancelled) setMapStatus("error");
+      });
+
       map.on("load", () => {
         if (cancelled) return;
+        setMapStatus("loaded");
 
         const initShops = shopsRef.current;
 
@@ -407,7 +399,6 @@ export function MarketplaceMap({
                 shopId: shop.id,
                 name: shop.public_name,
                 slug: shop.slug,
-                public_slug: shop.public_slug ?? null,
                 city: shop.city,
                 neighborhood: shop.neighborhood,
                 google_maps_url: shop.google_maps_url,
@@ -442,25 +433,11 @@ export function MarketplaceMap({
           map.setCenter([withCoords[0].longitude!, withCoords[0].latitude!]);
           map.setZoom(SELECTED_ZOOM);
         }
-
-        setIsMapReady(true);
-        map.resize();
-        if (revealTimer !== null) {
-          window.clearTimeout(revealTimer);
-          revealTimer = null;
-        }
       });
-    }).catch(() => {
-      if (!cancelled) {
-        setIsMapReady(true);
-        setMapError("No se pudo cargar el mapa.");
-      }
     });
 
     return () => {
       cancelled = true;
-      if (revealTimer !== null) window.clearTimeout(revealTimer);
-      resizeObserver?.disconnect();
       popupRef.current?.remove();
       mapRef.current?.remove();
       mapRef.current = null;
@@ -488,12 +465,12 @@ export function MarketplaceMap({
   if (!hasMapShops) {
     return (
       <div
-        className={`flex items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 ${className}`}
+        className={`flex items-center justify-center rounded-[20px] border border-dashed border-slate-200 bg-slate-50 ${className}`}
       >
         <div className="px-6 py-10 text-center">
-          <p className="text-sm font-bold text-neutral-500">Mapa pendiente de ubicación</p>
-          <p className="mt-1 max-w-xs text-xs leading-5 text-slate-500">
-            El mapa estará disponible cuando las barberías completen coordenadas públicas en su perfil.
+          <p className="text-sm font-bold text-neutral-400">Sin ubicaciones en el mapa</p>
+          <p className="mt-1 text-xs text-neutral-300">
+            Añade ubicación para verlas en el mapa.
           </p>
         </div>
       </div>
@@ -501,18 +478,15 @@ export function MarketplaceMap({
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl bg-slate-100 ${className}`}>
-      <div ref={containerRef} className="absolute inset-0" />
-      {mapError && (
-        <div className="absolute inset-3 z-10 flex items-center justify-center rounded-2xl border border-amber-200 bg-amber-50/95 px-4 py-3 text-center text-xs font-semibold text-amber-800 shadow-sm">
-          {mapError}
-        </div>
+    <div className={`relative overflow-hidden rounded-3xl ${className}`}>
+      <div ref={containerRef} className="h-full w-full" />
+      {mapStatus === "loading" && (
+        <div className="pointer-events-none absolute inset-0 animate-pulse rounded-3xl bg-slate-100" />
       )}
-      {!isMapReady && !mapError && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-slate-100/80 backdrop-blur-[1px]">
-          <span className="animate-pulse rounded-full border border-white/70 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-500 shadow-sm">
-            Cargando mapa…
-          </span>
+      {mapStatus === "error" && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl bg-slate-50">
+          <MapIcon size={28} className="text-slate-300" />
+          <p className="text-sm font-semibold text-slate-400">No se pudo cargar el mapa</p>
         </div>
       )}
     </div>

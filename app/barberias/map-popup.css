@@ -1,41 +1,99 @@
-/* Premium MapLibre popup overrides */
+/* ── Premium MapLibre popup — light map variant ─────────────────────────── */
 
-.maplibregl-popup-content {
-  border-radius: 16px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.10),
-    0 10px 30px -4px rgba(0, 0, 0, 0.14);
-  padding: 14px 16px 14px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+.maplibregl-popup {
+  max-width: 280px !important;
 }
 
+.maplibregl-popup-content {
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  border: none;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 8px 24px -4px rgba(0, 0, 0, 0.14),
+    0 24px 56px -8px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Close button */
 .maplibregl-popup-close-button {
-  font-size: 18px;
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 22px;
+  height: 22px;
+  font-size: 15px;
+  border-radius: 50%;
+  background: #f1f5f9;
   color: #94a3b8;
-  right: 10px;
-  top: 8px;
-  border-radius: 8px;
-  width: 24px;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  transition: background 0.15s, color 0.15s;
+  z-index: 10;
 }
 .maplibregl-popup-close-button:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: #e2e8f0;
+  color: #334155;
 }
 
-/* Tip / arrow */
+/* Tip arrows — white popup tip */
 .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
   border-top-color: #fff;
 }
 .maplibregl-popup-anchor-top .maplibregl-popup-tip {
   border-bottom-color: #fff;
 }
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: #fff;
+}
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: #fff;
+}
+.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: #fff;
+}
+.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: #fff;
+}
 
-/* Attribution badge */
+/* ── Zoom controls — light premium ────────────────────────────────────── */
+.maplibregl-ctrl-group {
+  border-radius: 12px !important;
+  overflow: hidden;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+.maplibregl-ctrl-group button {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #334155 !important;
+  width: 30px !important;
+  height: 30px !important;
+  transition: background-color 0.15s;
+}
+.maplibregl-ctrl-group button:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── Attribution — minimal on light map ─────────────────────────────── */
 .maplibregl-ctrl-attrib {
-  font-size: 10px;
+  font-size: 9px !important;
+  background: rgba(255, 255, 255, 0.80) !important;
+  color: #64748b !important;
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: #475569 !important;
 }

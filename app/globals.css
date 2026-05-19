@@ -5,6 +5,7 @@
 /* Design tokens */
 :root {
   color-scheme: light;
+  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", system-ui, ui-sans-serif, sans-serif;
 
   /* ── Neutrals ─────────────────────────────────────────── */
   --ink: #080A0F;
@@ -93,8 +94,8 @@
       linear-gradient(225deg, rgba(6, 182, 212, 0.06), transparent 38%),
       linear-gradient(180deg, #FFFFFF 0%, #F7FAFC 48%, #EEF3F8 100%);
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI Variable",
-      "Segoe UI", system-ui, ui-sans-serif, sans-serif;
+    font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont,
+      "Segoe UI Variable", "Segoe UI", system-ui, ui-sans-serif, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv11", "ss01", "kern";

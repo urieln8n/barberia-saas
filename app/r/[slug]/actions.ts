@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
+import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 
 const ACTIVE_STATUSES = ["pending", "scheduled", "confirmed"];
 
@@ -18,6 +19,7 @@ type BookingInput = {
 
 type AvailabilityInput = {
   barbershopId: string;
+  serviceId?: string | null;
   barberId: string | null;
   date: string;
 };
@@ -33,6 +35,7 @@ type ServiceRow = {
 
 type AppointmentAvailabilityRow = {
   start_time: string;
+  end_time: string | null;
   barber_id: string | null;
 };
 
@@ -165,6 +168,7 @@ export async function getUnavailableSlots(
   const supabase = createServiceRoleClient();
 
   const barbershopId = input.barbershopId?.trim();
+  const serviceId = input.serviceId?.trim();
   const date = input.date?.trim();
   let barberId =
     input.barberId && input.barberId !== "any" && input.barberId.trim() !== ""
@@ -178,10 +182,33 @@ export async function getUnavailableSlots(
     };
   }
 
+  let durationMinutes = 30;
+
+  if (serviceId) {
+    const { data: serviceData, error: serviceError } = await supabase
+      .from("services")
+      .select("duration_minutes")
+      .eq("id", serviceId)
+      .eq("barbershop_id", barbershopId)
+      .eq("active", true)
+      .maybeSingle();
+
+    const service = serviceData as ServiceRow | null;
+
+    if (serviceError || !service) {
+      return {
+        unavailableSlots: [],
+        error: "Servicio no disponible.",
+      };
+    }
+
+    durationMinutes = service.duration_minutes ?? 30;
+  }
+
   if (barberId) {
     const { data: appointmentsData, error } = await supabase
       .from("appointments")
-      .select("start_time")
+      .select("start_time, end_time, barber_id")
       .eq("barbershop_id", barbershopId)
       .eq("barber_id", barberId)
       .eq("appointment_date", date)
@@ -194,12 +221,18 @@ export async function getUnavailableSlots(
       };
     }
 
-    const appointments = (appointmentsData ?? []) as { start_time: string }[];
+    const appointments = (appointmentsData ?? []) as AppointmentConflictRow[];
 
     return {
-      unavailableSlots: Array.from(
-        new Set(appointments.map((item) => normalizeTime(item.start_time)))
-      ),
+      unavailableSlots: generateTimeSlots()
+        .map((slot) => slot.time)
+        .filter((slot) => {
+          const slotEnd = addMinutesToTime(slot, durationMinutes);
+
+          return appointments.some((appointment) =>
+            timesOverlap(slot, slotEnd, appointment.start_time, appointment.end_time)
+          );
+        }),
       error: null,
     };
   }
@@ -231,7 +264,7 @@ export async function getUnavailableSlots(
 
   const { data: appointmentsData, error: appointmentsError } = await supabase
     .from("appointments")
-    .select("start_time, barber_id")
+    .select("start_time, end_time, barber_id")
     .eq("barbershop_id", barbershopId)
     .eq("appointment_date", date)
     .in("status", ACTIVE_STATUSES)
@@ -246,28 +279,29 @@ export async function getUnavailableSlots(
 
   const appointments = (appointmentsData ?? []) as AppointmentAvailabilityRow[];
 
-  const busyByTime = new Map<string, Set<string>>();
+  const unavailableSlots = generateTimeSlots()
+    .map((slot) => slot.time)
+    .filter((slot) => {
+      const slotEnd = addMinutesToTime(slot, durationMinutes);
+      const busyBarberIds = new Set<string>();
 
-  for (const appointment of appointments) {
-    if (!appointment.barber_id) continue;
+      for (const appointment of appointments) {
+        if (!appointment.barber_id) continue;
 
-    const time = normalizeTime(appointment.start_time);
-    if (!time) continue;
+        if (
+          timesOverlap(
+            slot,
+            slotEnd,
+            appointment.start_time,
+            appointment.end_time
+          )
+        ) {
+          busyBarberIds.add(appointment.barber_id);
+        }
+      }
 
-    if (!busyByTime.has(time)) {
-      busyByTime.set(time, new Set<string>());
-    }
-
-    busyByTime.get(time)?.add(appointment.barber_id);
-  }
-
-  const unavailableSlots: string[] = [];
-
-  for (const [time, busyBarbers] of busyByTime.entries()) {
-    if (busyBarbers.size >= activeBarbers.length) {
-      unavailableSlots.push(time);
-    }
-  }
+      return busyBarberIds.size >= activeBarbers.length;
+    });
 
   return {
     unavailableSlots: unavailableSlots.sort(),

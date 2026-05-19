@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Circle, Rocket } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Circle, Rocket } from "lucide-react";
 
 export type ActivationChecklistItem = {
   label: string;
@@ -12,13 +15,70 @@ export type ActivationChecklistItem = {
 type ActivationChecklistProps = {
   percent: number;
   items: ActivationChecklistItem[];
+  compact?: boolean;
 };
 
-export function ActivationChecklist({ percent, items }: ActivationChecklistProps) {
+export function ActivationChecklist({ percent, items, compact = false }: ActivationChecklistProps) {
+  const [expanded, setExpanded] = useState(false);
   const nextItem = items.find((item) => !item.done);
+  const doneCount = items.filter((item) => item.done).length;
+
+  if (compact && !expanded) {
+    return (
+      <section className="panel">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/10 px-3 py-1 text-xs font-black text-[#C9922A]">
+              <Rocket size={12} />
+              Activación
+            </div>
+            <span className="text-sm font-bold text-[#080A0F]">
+              {doneCount}/{items.length} pasos completados
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="flex items-center gap-1 text-xs font-bold text-[#C9922A] transition-colors hover:text-[#8A641F]"
+          >
+            Ver pasos <ChevronDown size={13} />
+          </button>
+        </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+          <div
+            className="h-full rounded-full bg-[#C9922A] transition-all duration-500"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+        {percent === 100 ? (
+          <p className="mt-2 text-xs font-bold text-emerald-600">
+            ¡Configuración completa! Tu barbería está lista para recibir reservas.
+          </p>
+        ) : nextItem ? (
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-xs text-neutral-500">Siguiente:</span>
+            <Link href={nextItem.href} className="text-xs font-bold text-[#C9922A] hover:underline">
+              {nextItem.label} →
+            </Link>
+          </div>
+        ) : null}
+      </section>
+    );
+  }
 
   return (
     <section className="section-band overflow-hidden">
+      {compact && (
+        <div className="flex justify-end px-5 pt-4 md:px-6">
+          <button
+            type="button"
+            onClick={() => setExpanded(false)}
+            className="flex items-center gap-1 text-xs font-bold text-neutral-400 transition-colors hover:text-neutral-600"
+          >
+            Colapsar <ChevronUp size={13} />
+          </button>
+        </div>
+      )}
       <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/20 bg-[#C9922A]/10 px-3 py-1 text-xs font-black text-[#C9922A]">
