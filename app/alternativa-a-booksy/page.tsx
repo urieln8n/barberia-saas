@@ -5,9 +5,9 @@ import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 import { SITE_URL } from "@/src/lib/site-url";
 
 export const metadata: Metadata = {
-  title: "Alternativa a Booksy para Barberías sin Comisiones | BarberíaOS",
+  title: "Alternativa a Booksy para barberías | BarberíaOS",
   description:
-    "¿Cansado de pagar el 30% a Booksy por tus propios clientes? BarberíaOS es la alternativa española sin comisiones. Tus clientes, tus datos, tu negocio.",
+    "Compara BarberíaOS con plataformas de reservas externas y centraliza reservas, caja, clientes y QR en tu propio sistema sin comisión por cita.",
   keywords: [
     "alternativa booksy",
     "alternativa booksy barbería",
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/alternativa-a-booksy` },
   openGraph: {
-    title: "Alternativa a Booksy sin comisiones para barberías",
+    title: "Alternativa a Booksy para barberías | BarberíaOS",
     description:
-      "Deja de pagar el 30% por tus propios clientes. BarberíaOS: reservas, caja e IA por un precio fijo mensual.",
+      "Compara BarberíaOS con plataformas externas y centraliza reservas, caja, clientes y QR sin comisión por cita.",
     url: `${SITE_URL}/alternativa-a-booksy`,
     type: "website",
     siteName: "BarberíaOS",
@@ -60,9 +60,60 @@ const faqItems = [
   },
 ];
 
+const alternativaJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Alternativa a Booksy para barberías",
+    description: metadata.description,
+    url: `${SITE_URL}/alternativa-a-booksy`,
+    inLanguage: "es-ES",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "BarberíaOS",
+      url: SITE_URL,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Alternativa a Booksy",
+        item: `${SITE_URL}/alternativa-a-booksy`,
+      },
+    ],
+  },
+];
+
 export default function AlternativaBooksyPage() {
   return (
     <div style={{ background: "#0a0a0a", color: "#fff", fontFamily: "system-ui, sans-serif", lineHeight: "1.6" }}>
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(alternativaJsonLd) }}
+      />
 
       {/* NAV */}
       <nav style={{
@@ -131,7 +182,7 @@ export default function AlternativaBooksyPage() {
             Por qué los barberos están dejando Booksy
           </h2>
           <p style={{ color: "#999", fontSize: "1.05rem", marginBottom: 44, maxWidth: 640 }}>
-            Booksy tiene una puntuación de 3.6/5 en Trustpilot. Estas son las quejas más repetidas de profesionales como tú.
+            Estas son dudas frecuentes de profesionales que comparan una plataforma externa con un sistema propio para su barbería.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
             {[
@@ -149,7 +200,7 @@ export default function AlternativaBooksyPage() {
               },
               {
                 highlight: false, icon: "📉", title: "Soporte que no responde",
-                text: "El 88% de las reseñas negativas en Capterra mencionan el soporte al cliente como \"consistentemente decepcionante\". Cuando algo falla, estás solo.",
+                text: "Cuando algo falla en una plataforma externa, dependes de sus procesos de soporte y de sus tiempos de respuesta.",
               },
               {
                 highlight: false, icon: "⚔️", title: "Compites contra ti mismo",
@@ -260,12 +311,12 @@ export default function AlternativaBooksyPage() {
                   ["IA para recuperar clientes", "✗ No", "✓ Sí (plan Domina)"],
                   ["Configuración inicial", "⚠ Tú solo", "✓ Guiada en 48h"],
                   ["Sin app para el cliente", "✗ Necesita app Booksy", "✓ Solo navegador/link"],
-                  ["Soporte directo", "✗ Lento (Trustpilot 3.6/5)", "✓ WhatsApp directo"],
+                  ["Soporte directo", "⚠ Depende del soporte de la plataforma", "✓ WhatsApp directo"],
                   ["Permanencia mínima", "⚠ Condiciones variables", "✓ Sin permanencia"],
                 ].map(([feature, booksy, bos]) => (
                   <tr key={feature}>
                     <td style={{ padding: "14px 20px", borderBottom: "1px solid #2a2a2a", color: "#f0f0f0", fontWeight: 500 }}>{feature}</td>
-                    <td style={{ padding: "14px 20px", borderBottom: "1px solid #2a2a2a", color: booksy.startsWith("✓") ? "#2ecc71" : booksy.startsWith("⚠") ? "#f39c12" : "#ff6b6b" }}>{booksy}</td>
+                  <td style={{ padding: "14px 20px", borderBottom: "1px solid #2a2a2a", color: booksy.startsWith("✓") ? "#2ecc71" : booksy.startsWith("⚠") ? "#f39c12" : "#ff6b6b" }}>{booksy}</td>
                     <td style={{ padding: "14px 20px", borderBottom: "1px solid #2a2a2a", background: "rgba(201,168,76,0.04)", color: "#2ecc71" }}>{bos}</td>
                   </tr>
                 ))}

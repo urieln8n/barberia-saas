@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description:
     "Software para barberías en Barcelona con reservas online, QR, agenda, caja, clientes y marketing sin comisión por cita.",
   alternates: { canonical: `${BUSINESS_CONFIG.siteUrl}/software-barberias-barcelona` },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function Page() {

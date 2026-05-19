@@ -46,7 +46,7 @@ export const SEO_INTENT_PAGES = [
   {
     path: "/alternativa-booksy-barberias",
     intent: "Alternativa a marketplaces con comisión",
-    status: "publicada",
+    status: "redirigida",
   },
   {
     path: "/barberias",
@@ -66,7 +66,7 @@ export const SEO_INTENT_PAGES = [
   {
     path: "/software-barberias-barcelona",
     intent: "Software para barberías en Barcelona",
-    status: "publicada",
+    status: "noindex-temporal",
   },
   {
     path: "/agenda-online-barberia",

@@ -40,14 +40,14 @@ const DEMO_BOOKING_URL = BUSINESS_CONFIG.demoBookingUrl;
 const DEMO_URL = BUSINESS_CONFIG.demoUrl;
 
 export const metadata: Metadata = {
-  title: "Software para barberías | Reservas, caja, QR e IA",
+  title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
   description:
-    "BarberíaOS conecta reservas online, agenda, caja, clientes, productos, QR, marketing e IA del dueño para barberías. Sin comisión por reserva.",
+    "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería sin depender de plataformas externas.",
   alternates: { canonical: `${BUSINESS_CONFIG.siteUrl}/` },
   openGraph: {
-    title: "Software para barberías | Reservas, caja, QR e IA",
+    title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
     description:
-      "Reservas online, agenda, caja, clientes, productos, QR, marketing e IA del dueño para barberías modernas.",
+      "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería.",
     url: `${BUSINESS_CONFIG.siteUrl}/`,
     siteName: BUSINESS_CONFIG.commercialName,
     type: "website",
@@ -193,6 +193,18 @@ const homeJsonLd = [
       url: `${BUSINESS_CONFIG.siteUrl}/demo`,
       areaServed: "ES",
       availableLanguage: ["es"],
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: BUSINESS_CONFIG.commercialName,
+    url: BUSINESS_CONFIG.siteUrl,
+    inLanguage: "es-ES",
+    publisher: {
+      "@type": "Organization",
+      name: BUSINESS_CONFIG.commercialName,
+      url: BUSINESS_CONFIG.siteUrl,
     },
   },
   {
@@ -447,7 +459,7 @@ export default function HomePage() {
                 SaaS para barberías que quieren vender reservas sin perder control
               </div>
               <h1 className="mt-6 text-5xl font-black leading-[0.96] tracking-normal text-white md:text-7xl">
-                Tu barbería ordenada y lista para reservar online en 48h.
+                Reservas, caja y clientes en un solo sistema para tu barbería.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">
                 Sin comisión por reserva. Sin app que instalar. Clientes y datos siempre tuyos.
