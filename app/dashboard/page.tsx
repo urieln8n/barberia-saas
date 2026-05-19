@@ -20,7 +20,7 @@ import {
   MessageCircle,
   Star,
 } from "lucide-react";
-import { StatCard }   from "@/components/dashboard/StatCard";
+import { StatCard }   from "@/components/ui/StatCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
