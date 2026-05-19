@@ -759,7 +759,9 @@ export default function HomePage() {
             </div>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {([
-                ["Alternativa a Booksy", "/alternativa-booksy-barberias"],
+                ["Alternativa a Booksy", "/alternativa-a-booksy"],
+                ["Calculadora Booksy", "/calculadora-booksy"],
+                ["¿Cuánto cobra Booksy?", "/blog/cuanto-cobra-booksy"],
                 ["Agenda online", "/agenda-online-barberia"],
                 ["Software para barberías", "/software-para-barberias"],
                 ["Caja para barberías", "/caja-para-barberias"],
@@ -773,6 +775,59 @@ export default function HomePage() {
                   {label}
                 </Link>
               ))}
+            </div>
+          </div>
+        </Shell>
+
+        {/* SEO CONVERSION SECTION — Booksy campaign funnel */}
+        <Shell className="landing-section-dark border-t border-white/[0.07]">
+          <div className="mx-auto max-w-7xl">
+            <SectionIntro
+              eyebrow="Sin comisiones"
+              title="¿Cuánto te cuesta realmente depender de otra plataforma?"
+              text="Muchas barberías pagan más de lo que aparece en la factura. Calcula tu coste real con las comisiones incluidas y compara con un precio fijo mensual sin sorpresas."
+              center
+            />
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Link
+                href="/calculadora-booksy"
+                className="premium-dark-card group flex flex-col rounded-[24px] p-6"
+              >
+                <CircleDollarSign size={22} className="text-[#D5A84C]" />
+                <p className="mt-4 text-sm font-black text-white">Calculadora de coste real</p>
+                <p className="mt-2 text-sm leading-6 text-white/50">
+                  Introduce tus reservas y ticket medio. Ve cuánto pagas entre cuota y comisiones vs. precio fijo en BarberíaOS.
+                </p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black text-[#D5A84C]">
+                  Calcular mi coste <ArrowRight size={13} />
+                </span>
+              </Link>
+              <Link
+                href="/alternativa-a-booksy"
+                className="premium-dark-card group flex flex-col rounded-[24px] p-6"
+              >
+                <TrendingUp size={22} className="text-[#D5A84C]" />
+                <p className="mt-4 text-sm font-black text-white">Comparativa directa</p>
+                <p className="mt-2 text-sm leading-6 text-white/50">
+                  Comisiones, propiedad de datos, marketplace, soporte. La comparativa sin letra pequeña entre plataformas externas y BarberíaOS.
+                </p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black text-[#D5A84C]">
+                  Ver comparativa <ArrowRight size={13} />
+                </span>
+              </Link>
+              <Link
+                href="/blog/cuanto-cobra-booksy"
+                className="premium-dark-card group flex flex-col rounded-[24px] p-6 sm:col-span-2 lg:col-span-1"
+              >
+                <BadgeEuro size={22} className="text-[#38BDF8]" />
+                <p className="mt-4 text-sm font-black text-white">Guía: ¿cuánto cobra Booksy de verdad?</p>
+                <p className="mt-2 text-sm leading-6 text-white/50">
+                  Desglose real de comisiones Boost, qué pasa con tus datos y cómo migrar sin perder ningún cliente.
+                </p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black text-[#38BDF8]">
+                  Leer guía <ArrowRight size={13} />
+                </span>
+              </Link>
             </div>
           </div>
         </Shell>
@@ -998,7 +1053,9 @@ export default function HomePage() {
                     <li><Link href="/barberias/valencia" className="hover:text-white">Valencia</Link></li>
                     <li><Link href="/barberias/sevilla" className="hover:text-white">Sevilla</Link></li>
                     <li><Link href="/barberias/malaga" className="hover:text-white">Málaga</Link></li>
-                    <li><Link href="/alternativa-booksy-barberias" className="hover:text-white">Alt. Booksy</Link></li>
+                    <li><Link href="/alternativa-a-booksy" className="hover:text-white">Alt. Booksy</Link></li>
+                    <li><Link href="/calculadora-booksy" className="hover:text-white">Calculadora</Link></li>
+                    <li><Link href="/blog/cuanto-cobra-booksy" className="hover:text-white">Blog Booksy</Link></li>
                   </ul>
                 </nav>
               </div>
