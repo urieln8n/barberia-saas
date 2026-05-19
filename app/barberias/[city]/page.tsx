@@ -43,7 +43,7 @@ function citySlug(value: string) {
 }
 
 function getEffectiveProfileSlug(profile: BarberiaProfile) {
-  return profile.public_slug || profile.slug;
+  return profile.slug;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
