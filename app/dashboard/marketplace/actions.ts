@@ -110,7 +110,7 @@ export async function togglePublished(isPublished: boolean): Promise<ActionResul
   const { supabase, barbershopId } = await getAuth();
   if (!barbershopId) return { error: "No se encontró la barbería." };
 
-  const update: Record<string, boolean> = { is_published: isPublished };
+  const update: { is_published: boolean; marketplace_enabled?: boolean } = { is_published: isPublished };
   if (!isPublished) update.marketplace_enabled = false;
 
   const { error } = await supabase

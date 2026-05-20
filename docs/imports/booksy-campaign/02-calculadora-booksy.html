@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora: ¿Cuánto te cobra Booksy de verdad? | BarberíaOS</title>
+  <meta name="description" content="Calcula exactamente cuánto te está costando Booksy entre cuota mensual y comisiones Boost. Descubre cuánto ahorrarías con BarberíaOS." />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #0a0a0a;
+      --gris-oscuro: #141414;
+      --gris-medio: #1e1e1e;
+      --gris-borde: #2a2a2a;
+      --blanco: #ffffff;
+      --blanco-suave: #f0f0f0;
+      --gris-texto: #999;
+      --dorado: #c9a84c;
+      --dorado-claro: #e8c86d;
+      --rojo: #e63946;
+      --verde: #2ecc71;
+      --naranja: #f39c12;
+    }
+
+    body {
+      background: var(--negro);
+      color: var(--blanco);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid var(--dorado);
+      color: var(--dorado);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .header h1 span { color: var(--dorado); }
+    .header p {
+      color: var(--gris-texto);
+      font-size: 1rem;
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* CALCULADORA */
+    .calc-card {
+      background: var(--gris-oscuro);
+      border: 1px solid var(--gris-borde);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 28px;
+    }
+    .calc-card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--dorado);
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--gris-borde);
+    }
+
+    .input-group {
+      margin-bottom: 22px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--blanco-suave);
+      margin-bottom: 8px;
+    }
+    .input-group .label-hint {
+      font-size: 0.78rem;
+      color: var(--gris-texto);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .input-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--gris-borde);
+      outline: none;
+    }
+    .input-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--dorado);
+      cursor: pointer;
+    }
+    .input-value {
+      background: var(--gris-medio);
+      border: 1px solid var(--gris-borde);
+      color: var(--blanco);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      width: 100px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .toggle-btn {
+      background: var(--gris-medio);
+      border: 1px solid var(--gris-borde);
+      color: var(--gris-texto);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .toggle-btn.active {
+      background: rgba(201,168,76,0.15);
+      border-color: var(--dorado);
+      color: var(--dorado);
+    }
+
+    /* RESULTADOS */
+    .resultados {
+      background: var(--gris-oscuro);
+      border: 1px solid var(--gris-borde);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .resultados-header {
+      background: var(--gris-medio);
+      padding: 18px 36px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gris-texto);
+      border-bottom: 1px solid var(--gris-borde);
+    }
+    .resultado-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 36px;
+      border-bottom: 1px solid var(--gris-borde);
+      gap: 12px;
+    }
+    .resultado-row:last-child { border-bottom: none; }
+    .resultado-label {
+      font-size: 0.92rem;
+      color: var(--gris-texto);
+      max-width: 60%;
+    }
+    .resultado-valor {
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: right;
+    }
+    .resultado-valor.rojo { color: #ff6b6b; }
+    .resultado-valor.verde { color: var(--verde); }
+    .resultado-valor.dorado { color: var(--dorado); font-size: 1.4rem; }
+    .resultado-label.negrita { color: var(--blanco); font-weight: 700; font-size: 1rem; }
+
+    /* VEREDICTO */
+    .veredicto {
+      border-radius: 14px;
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      text-align: center;
+      transition: all 0.4s;
+    }
+    .veredicto.ahorra {
+      background: rgba(46,204,113,0.08);
+      border: 1px solid rgba(46,204,113,0.3);
+    }
+    .veredicto.neutro {
+      background: rgba(243,156,18,0.08);
+      border: 1px solid rgba(243,156,18,0.3);
+    }
+    .veredicto.pierde {
+      background: rgba(230,57,70,0.08);
+      border: 1px solid rgba(230,57,70,0.3);
+    }
+    .veredicto-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+    .veredicto h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .veredicto.ahorra h3 { color: var(--verde); }
+    .veredicto.neutro h3 { color: var(--naranja); }
+    .veredicto.pierde h3 { color: #ff6b6b; }
+    .veredicto p {
+      font-size: 0.92rem;
+      color: var(--gris-texto);
+      line-height: 1.65;
+      max-width: 500px;
+      margin: 0 auto 20px;
+    }
+    .veredicto-ahorro-anual {
+      font-size: 0.8rem;
+      color: var(--gris-texto);
+      margin-bottom: 22px;
+    }
+    .veredicto-ahorro-anual strong { color: var(--verde); font-size: 1rem; }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 40px 36px;
+      background: var(--gris-oscuro);
+      border: 1px solid var(--gris-borde);
+      border-radius: 16px;
+    }
+    .cta-section h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .cta-section p {
+      color: var(--gris-texto);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .btn-cta {
+      display: inline-block;
+      background: var(--dorado);
+      color: var(--negro);
+      padding: 16px 36px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin: 0 8px 10px;
+    }
+    .btn-cta:hover { background: var(--dorado-claro); transform: translateY(-2px); }
+    .btn-cta-sec {
+      display: inline-block;
+      background: transparent;
+      color: var(--blanco);
+      padding: 16px 36px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid var(--gris-borde);
+      transition: all 0.2s;
+      margin: 0 8px 10px;
+    }
+    .btn-cta-sec:hover { border-color: var(--dorado); color: var(--dorado); }
+    .cta-nota {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--gris-texto);
+    }
+
+    /* DESGLOSE VISUAL */
+    .barra-comparativa {
+      margin: 10px 0 0;
+    }
+    .barra-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--gris-texto);
+      margin-bottom: 5px;
+    }
+    .barra-track {
+      background: var(--gris-borde);
+      border-radius: 4px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .barra-fill-booksy {
+      height: 100%;
+      background: linear-gradient(90deg, #e63946, #ff6b6b);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .barra-fill-barberiaos {
+      height: 100%;
+      background: linear-gradient(90deg, var(--dorado), var(--dorado-claro));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    @media (max-width: 560px) {
+      .calc-card, .resultados-header, .resultado-row, .cta-section { padding-left: 20px; padding-right: 20px; }
+      .veredicto { padding: 28px 20px; }
+      .resultado-label { max-width: 55%; font-size: 0.83rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Calculadora gratuita</div>
+    <h1>¿Cuánto te cobra Booksy <span>de verdad</span>?</h1>
+    <p>Más allá de los 29€/mes del plan base. Calcula el coste real incluyendo comisiones Boost y compara con BarberíaOS.</p>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="calc-card">
+    <h2>Tu barbería en números</h2>
+
+    <div class="input-group">
+      <label>Reservas al mes <span class="label-hint">(total entre todos los barberos)</span></label>
+      <div class="input-row">
+        <input type="range" id="reservas" min="10" max="400" step="5" value="80" oninput="calcular()">
+        <div class="input-value" id="val-reservas">80</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Ticket medio por servicio <span class="label-hint">(€)</span></label>
+      <div class="input-row">
+        <input type="range" id="ticket" min="10" max="80" step="1" value="25" oninput="calcular()">
+        <div class="input-value" id="val-ticket">25 €</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>% de reservas que llegan a través de Booksy Boost <span class="label-hint">(clientes nuevos via marketplace)</span></label>
+      <div class="input-row">
+        <input type="range" id="boost-pct" min="0" max="80" step="5" value="25" oninput="calcular()">
+        <div class="input-value" id="val-boost">25%</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>¿Usas Booksy Boost activamente?</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-boost-si" onclick="setBoost(true)">Sí, tengo Boost activo</button>
+        <button class="toggle-btn" id="btn-boost-no" onclick="setBoost(false)">No, solo plan base</button>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Plan de Booksy que tienes <span class="label-hint">(€/mes)</span></label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="plan-base" onclick="setPlan(29,'plan-base')">Base (~29 €)</button>
+        <button class="toggle-btn" id="plan-pro" onclick="setPlan(49,'plan-pro')">Pro (~49 €)</button>
+        <button class="toggle-btn" id="plan-prem" onclick="setPlan(79,'plan-prem')">Premium (~79 €)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="resultados">
+    <div class="resultados-header">Desglose de costes mensual</div>
+
+    <div class="resultado-row">
+      <div class="resultado-label">Cuota mensual Booksy</div>
+      <div class="resultado-valor rojo" id="res-cuota">29 €</div>
+    </div>
+    <div class="resultado-row">
+      <div class="resultado-label">Comisiones Boost (30% × reservas vía Boost)</div>
+      <div class="resultado-valor rojo" id="res-comision">0 €</div>
+    </div>
+    <div class="resultado-row">
+      <div class="resultado-label negrita">Total real que pagas a Booksy / mes</div>
+      <div class="resultado-valor rojo" id="res-total-booksy" style="font-size:1.5rem">29 €</div>
+    </div>
+
+    <div class="resultado-row" style="border-top: 2px solid var(--gris-borde); margin-top: 0;">
+      <div class="resultado-label">BarberíaOS recomendado para tu barbería</div>
+      <div class="resultado-valor dorado" id="res-plan-barberiaos">Arranca — 39 €/mes</div>
+    </div>
+    <div class="resultado-row">
+      <div class="resultado-label negrita" style="color:var(--verde)">Ahorro mensual con BarberíaOS</div>
+      <div class="resultado-valor verde" id="res-ahorro" style="font-size:1.5rem">—</div>
+    </div>
+
+    <!-- BARRAS COMPARATIVAS -->
+    <div style="padding: 24px 36px 28px;">
+      <div class="barra-comparativa">
+        <div class="barra-label">
+          <span>Booksy</span>
+          <span id="barra-booksy-label">29 €/mes</span>
+        </div>
+        <div class="barra-track">
+          <div class="barra-fill-booksy" id="barra-booksy" style="width:40%"></div>
+        </div>
+        <div class="barra-label">
+          <span>BarberíaOS</span>
+          <span id="barra-barberiaos-label">39 €/mes</span>
+        </div>
+        <div class="barra-track">
+          <div class="barra-fill-barberiaos" id="barra-barberiaos" style="width:53%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VEREDICTO -->
+  <div class="veredicto" id="veredicto">
+    <div class="veredicto-emoji" id="veredicto-emoji">🤔</div>
+    <h3 id="veredicto-titulo">Ajusta los datos para ver tu resultado</h3>
+    <p id="veredicto-texto">Mueve los controles de arriba para calcular cuánto te está costando Booksy realmente.</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>¿Listo para dejar de pagar de más?</h3>
+    <p>Empieza gratis. Configuración en 48h. Sin tarjeta, sin permanencia.</p>
+    <a href="https://www.barberiaos.com/#precios" class="btn-cta">Probar BarberíaOS gratis</a>
+    <a href="https://wa.me/34XXXXXXXXX?text=Quiero%20migrar%20de%20Booksy%20a%20BarberíaOS" class="btn-cta-sec">Hablar por WhatsApp</a>
+    <p class="cta-nota">Sin tarjeta de crédito · Sin permanencia · Soporte en español</p>
+  </div>
+
+</div>
+
+<script>
+  let boostActivo = true;
+  let planBooksy = 29;
+
+  function setBoost(val) {
+    boostActivo = val;
+    document.getElementById('btn-boost-si').classList.toggle('active', val);
+    document.getElementById('btn-boost-no').classList.toggle('active', !val);
+    calcular();
+  }
+
+  function setPlan(precio, id) {
+    planBooksy = precio;
+    ['plan-base','plan-pro','plan-prem'].forEach(b => document.getElementById(b).classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    calcular();
+  }
+
+  function calcular() {
+    const reservas = parseInt(document.getElementById('reservas').value);
+    const ticket = parseInt(document.getElementById('ticket').value);
+    const boostPct = parseInt(document.getElementById('boost-pct').value);
+
+    document.getElementById('val-reservas').textContent = reservas;
+    document.getElementById('val-ticket').textContent = ticket + ' €';
+    document.getElementById('val-boost').textContent = boostPct + '%';
+
+    // Cálculo Booksy
+    const reservasBoost = boostActivo ? Math.round(reservas * boostPct / 100) : 0;
+    const comisionBooksy = boostActivo ? Math.round(reservasBoost * ticket * 0.30) : 0;
+    const totalBooksy = planBooksy + comisionBooksy;
+
+    // BarberíaOS recomendado
+    let planBOS, nombrePlanBOS;
+    if (reservas <= 40) {
+      planBOS = 39; nombrePlanBOS = 'Arranca — 39 €/mes';
+    } else if (reservas <= 150) {
+      planBOS = 79; nombrePlanBOS = 'Control — 79 €/mes';
+    } else {
+      planBOS = 149; nombrePlanBOS = 'Domina — 149 €/mes';
+    }
+
+    const ahorro = totalBooksy - planBOS;
+    const ahorroAnual = ahorro * 12;
+
+    // Actualizar UI
+    document.getElementById('res-cuota').textContent = planBooksy + ' €';
+    document.getElementById('res-comision').textContent = comisionBooksy + ' €';
+    document.getElementById('res-total-booksy').textContent = totalBooksy + ' €';
+    document.getElementById('res-plan-barberiaos').textContent = nombrePlanBOS;
+    document.getElementById('barra-booksy-label').textContent = totalBooksy + ' €/mes';
+    document.getElementById('barra-barberiaos-label').textContent = planBOS + ' €/mes';
+
+    if (ahorro > 0) {
+      document.getElementById('res-ahorro').textContent = '+' + ahorro + ' €/mes';
+    } else if (ahorro === 0) {
+      document.getElementById('res-ahorro').textContent = '0 € (empate)';
+    } else {
+      document.getElementById('res-ahorro').textContent = ahorro + ' €/mes';
+    }
+
+    // Barras
+    const maxVal = Math.max(totalBooksy, planBOS, 10);
+    const pctBooksy = Math.min(100, Math.round((totalBooksy / maxVal) * 100));
+    const pctBOS = Math.min(100, Math.round((planBOS / maxVal) * 100));
+    document.getElementById('barra-booksy').style.width = pctBooksy + '%';
+    document.getElementById('barra-barberiaos').style.width = pctBOS + '%';
+
+    // Veredicto
+    const v = document.getElementById('veredicto');
+    const emoji = document.getElementById('veredicto-emoji');
+    const titulo = document.getElementById('veredicto-titulo');
+    const texto = document.getElementById('veredicto-texto');
+
+    v.className = 'veredicto';
+    if (ahorro >= 50) {
+      v.classList.add('ahorra');
+      emoji.textContent = '🎉';
+      titulo.textContent = `Estás perdiendo ${ahorro} €/mes con Booksy`;
+      texto.textContent = `Con tu volumen actual, pagas ${totalBooksy}€/mes a Booksy (cuota + comisiones). BarberíaOS te costaría ${planBOS}€/mes fijo. Son ${ahorro}€ al mes que te quedas tú, no Booksy. Al año: ${ahorroAnual}€.`;
+      // Añadir ahorro anual
+      let ahorroNode = document.getElementById('veredicto-anual');
+      if (!ahorroNode) {
+        ahorroNode = document.createElement('div');
+        ahorroNode.id = 'veredicto-anual';
+        ahorroNode.className = 'veredicto-ahorro-anual';
+        v.appendChild(ahorroNode);
+      }
+      ahorroNode.innerHTML = `Ahorro anual estimado: <strong>+${ahorroAnual} €</strong>`;
+    } else if (ahorro >= 0) {
+      v.classList.add('neutro');
+      emoji.textContent = '⚖️';
+      titulo.textContent = `Coste similar, pero Booksy no es tuyo`;
+      texto.textContent = `Los números son parecidos en tu caso, pero con Booksy tus clientes son de su plataforma. Con BarberíaOS tienes control total de datos, caja, marketing e IA — al mismo precio o menos.`;
+      const old = document.getElementById('veredicto-anual');
+      if (old) old.remove();
+    } else {
+      v.classList.add('pierde');
+      emoji.textContent = '💡';
+      titulo.textContent = `Con tu volumen actual, Booksy es más económico`;
+      texto.textContent = `Para ${reservas} reservas/mes sin Boost activo, el plan base de Booksy resulta más barato. Considera activar BarberíaOS cuando crezcas en volumen, o si valoras tener caja, marketing e IA integrados desde el inicio.`;
+      const old = document.getElementById('veredicto-anual');
+      if (old) old.remove();
+    }
+  }
+
+  // Inicializar
+  calcular();
+</script>
+</body>
+</html>

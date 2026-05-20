@@ -134,8 +134,8 @@ export async function createCashMovement(formData: FormData) {
     amount,
     discount_amount: discountAmount,
     tip_amount: tipAmount,
-    payment_method: paymentMethod,
-    movement_type: movementType,
+    payment_method: paymentMethod as "cash" | "card" | "bizum" | "transfer" | "other",
+    movement_type: movementType as "payment" | "refund" | "expense" | "adjustment",
     description,
   });
 

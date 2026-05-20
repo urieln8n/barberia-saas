@@ -229,7 +229,7 @@ export default async function DashboardPage() {
       )
       .eq("barbershop_id", barbershopId)
       .eq("appointment_date", today)
-      .in("status", ["pending", "scheduled", "confirmed"])
+      .in("status", ["scheduled", "confirmed"] as const)
       .order("start_time", { ascending: true }),
 
     supabase
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
       )
       .eq("barbershop_id", barbershopId)
       .gte("appointment_date", today)
-      .in("status", ["pending", "scheduled", "confirmed"])
+      .in("status", ["scheduled", "confirmed"] as const)
       .order("appointment_date", { ascending: true })
       .order("start_time", { ascending: true })
       .limit(6),

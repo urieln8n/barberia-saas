@@ -100,7 +100,7 @@ async function findAvailableBarber({
       .eq("barber_id", barber.id)
       .eq("appointment_date", appointmentDate)
       .eq("start_time", startTime)
-      .in("status", ["pending", "scheduled", "confirmed"])
+      .in("status", ["scheduled", "confirmed"] as const)
       .maybeSingle();
 
     if (conflictError) {
@@ -199,7 +199,7 @@ export async function createAppointment(formData: FormData) {
       .eq("barber_id", barberId)
       .eq("appointment_date", appointmentDate)
       .eq("start_time", startTime)
-      .in("status", ["pending", "scheduled", "confirmed"])
+      .in("status", ["scheduled", "confirmed"] as const)
       .maybeSingle();
 
     if (conflictError) {
@@ -260,9 +260,10 @@ export async function createAppointment(formData: FormData) {
   return { success: true };
 }
 
+type AppointmentStatus = "scheduled" | "confirmed" | "completed" | "cancelled" | "no_show";
+
 export async function updateAppointmentStatus(id: string, status: string) {
-  const allowedStatus = [
-    "pending",
+  const allowedStatus: AppointmentStatus[] = [
     "scheduled",
     "confirmed",
     "completed",
@@ -270,7 +271,7 @@ export async function updateAppointmentStatus(id: string, status: string) {
     "no_show",
   ];
 
-  if (!allowedStatus.includes(status)) {
+  if (!allowedStatus.includes(status as AppointmentStatus)) {
     return { error: "Estado no válido." };
   }
 
@@ -284,7 +285,7 @@ export async function updateAppointmentStatus(id: string, status: string) {
 
   const { error } = await supabase
     .from("appointments")
-    .update({ status })
+    .update({ status: status as AppointmentStatus })
     .eq("id", id)
     .eq("barbershop_id", barbershopId);
 
