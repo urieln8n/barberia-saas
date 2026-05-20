@@ -39,6 +39,8 @@ const CONTACT_EMAIL = BUSINESS_CONFIG.legalEmail;
 const WHATSAPP_URL = BUSINESS_CONFIG.whatsappUrl;
 const DEMO_BOOKING_URL = BUSINESS_CONFIG.demoBookingUrl;
 const DEMO_URL = BUSINESS_CONFIG.demoUrl;
+const REQUEST_DEMO_URL = "/pedir-demo";
+const CALCULATOR_URL = "/calculadora-booksy";
 
 export const metadata: Metadata = {
   title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
@@ -132,6 +134,58 @@ const comparisons = [
   ["Agenda tradicional", "Apunta citas, pero no conecta clientes, caja, productos ni marketing."],
   ["Plataformas con comisión", "Te dan visibilidad, pero condicionan la relación con el cliente y tus datos."],
   ["BarberíaOS", "Une reservas, caja, clientes, productos, QR, marketing e IA del dueño."],
+] as const;
+
+const threeSteps = [
+  ["1", "Compartes tu enlace o QR."],
+  ["2", "El cliente reserva sin descargar app."],
+  ["3", "Tú controlas agenda, caja, clientes y barberos desde un panel."],
+] as const;
+
+const beforeAfter = [
+  {
+    title: "Antes",
+    points: [
+      "Reservas por mensajes sueltos.",
+      "Caja sin control.",
+      "Clientes perdidos.",
+      "Comisiones o dependencia de plataformas.",
+    ],
+  },
+  {
+    title: "Después",
+    points: [
+      "Link propio.",
+      "QR en local e Instagram.",
+      "Clientes propios.",
+      "Caja y barberos en un panel.",
+      "Marketing Studio para llenar huecos.",
+    ],
+  },
+] as const;
+
+const comparisonRows = [
+  ["Reservas online", "Manual", "Según plataforma", "Sí"],
+  ["Link propio", "No", "Limitado", "Sí"],
+  ["QR propio", "No", "Limitado", "Sí"],
+  ["Control de caja", "No", "Parcial", "Sí"],
+  ["Base de clientes propia", "Dispersa", "Clientes gestionados dentro de la plataforma", "Sí"],
+  ["Control por barbero", "Manual", "Parcial", "Sí"],
+  ["Marketing/retención", "Manual", "Limitado al canal", "Marketing Studio"],
+  ["Comisión por reserva", "No", "Posible comisión en ciertos modelos", "0%"],
+  ["Dependencia de plataforma", "Baja, pero sin sistema", "Mayor dependencia del canal", "Canal propio"],
+  ["Activación guiada", "No", "Variable", "Sí"],
+] as const;
+
+const proofPoints = [
+  "Demo pública funcional",
+  "Dashboard activo",
+  "Reservas online",
+  "QR de reservas",
+  "Caja",
+  "Clientes",
+  "Marketing Studio",
+  "Roadmap: reseñas IA, recepcionista WhatsApp, inventario/caja avanzada",
 ] as const;
 
 const plans = [
@@ -302,19 +356,17 @@ export default function HomePage() {
               <ul className="flex items-center gap-6">
                 <li><Link href="#controla" className="transition hover:text-white">Producto</Link></li>
                 <li><Link href="#activacion" className="transition hover:text-white">Activación</Link></li>
-                <li><Link href="#fundadoras" className="transition hover:text-white">Fundadoras</Link></li>
+                <li><Link href="/barberias-fundadoras" className="transition hover:text-white">Fundadoras</Link></li>
                 <li><Link href="#precios" className="transition hover:text-white">Precios</Link></li>
-                <li><Link href="/demo" className="transition hover:text-white">Demo</Link></li>
+                <li><Link href={CALCULATOR_URL} className="transition hover:text-white">Calculadora</Link></li>
               </ul>
             </nav>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={REQUEST_DEMO_URL}
               className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
             >
               Pedir demo
-            </a>
+            </Link>
           </div>
         </header>
 
@@ -345,21 +397,30 @@ export default function HomePage() {
               </p>
 
               <LandingCTABlock
-                primaryHref={DEMO_URL}
-                primaryLabel="Ver demo interactiva"
-                secondaryHref={WHATSAPP_URL}
-                secondaryLabel="Hablar por WhatsApp"
+                primaryHref={CALCULATOR_URL}
+                primaryLabel="Calcular mi ahorro"
+                secondaryHref={DEMO_BOOKING_URL}
+                secondaryLabel="Ver demo interactiva"
                 className="mt-8"
               />
 
-              <div className="mt-5">
-                <a
-                  href={DEMO_BOOKING_URL}
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
+                <Link
+                  href={REQUEST_DEMO_URL}
                   className="inline-flex items-center gap-2 text-sm font-black text-[#D5A84C] transition hover:text-[#D5A84C]/80"
                 >
-                  <QrCode size={16} />
-                  Probar página pública de reservas
+                  <CalendarCheck2 size={16} />
+                  Pedir diagnóstico gratis
                   <ChevronRight size={15} />
+                </Link>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-black text-white/45 transition hover:text-white"
+                >
+                  <MessageCircle size={16} />
+                  WhatsApp rápido
                 </a>
               </div>
               <div className="mt-8 flex flex-wrap gap-2">
@@ -414,6 +475,69 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Flujo de conversión ───────────────────────────────────────────── */}
+        <Shell className="landing-section-dark">
+          <div className="mx-auto max-w-7xl">
+            <SectionIntro
+              eyebrow="Cómo funciona"
+              title="De Instagram, Google, WhatsApp o QR a una reserva ordenada."
+              text="El flujo comercial es simple: calculas el ahorro, ves la demo pública y pides un diagnóstico si quieres activarlo con acompañamiento."
+              center
+            />
+            <div className="mt-10 grid gap-4 lg:grid-cols-3">
+              {threeSteps.map(([step, text]) => (
+                <article key={step} className="premium-dark-card rounded-[24px] p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#38BDF8]/12 text-lg font-black text-[#38BDF8]">
+                    {step}
+                  </span>
+                  <p className="mt-5 text-lg font-black leading-7 text-white">{text}</p>
+                </article>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <PrimaryButton href={CALCULATOR_URL} variant="premiumBlue" className="min-h-12 px-7">
+                Calcular mi ahorro <ArrowRight size={17} />
+              </PrimaryButton>
+              <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                Ver demo interactiva <QrCode size={17} />
+              </PrimaryButton>
+              <PrimaryButton href={REQUEST_DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                Pedir diagnóstico gratis <ArrowRight size={17} />
+              </PrimaryButton>
+            </div>
+          </div>
+        </Shell>
+
+        {/* ── Antes / Después ───────────────────────────────────────────────── */}
+        <Shell className="landing-section-graphite">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-5 lg:grid-cols-2">
+              {beforeAfter.map((block, index) => (
+                <article
+                  key={block.title}
+                  className={`rounded-[28px] border p-6 md:p-7 ${
+                    index === 1
+                      ? "border-[#38BDF8]/25 bg-[#38BDF8]/[0.06]"
+                      : "border-white/10 bg-white/[0.045]"
+                  }`}
+                >
+                  <h2 className={`text-3xl font-black ${index === 1 ? "text-[#38BDF8]" : "text-white"}`}>
+                    {block.title}
+                  </h2>
+                  <ul className="mt-6 space-y-3">
+                    {block.points.map((point) => (
+                      <li key={point} className="flex gap-3 text-sm font-bold leading-6 text-white/70">
+                        <CheckCircle2 size={16} className={`mt-0.5 shrink-0 ${index === 1 ? "text-[#38BDF8]" : "text-white/35"}`} />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Shell>
+
         {/* ── Activación ─────────────────────────────────────────────────────── */}
         <Shell id="activacion" className="landing-section-dark">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
@@ -424,8 +548,10 @@ export default function HomePage() {
                 text="En una demo validamos si encaja. Si avanzas, dejamos configurado lo esencial: servicios, barberos, enlace de reservas, QR, agenda y primeros materiales para compartir."
               />
               <LandingCTABlock
-                primaryHref={WHATSAPP_URL}
-                secondaryHref={DEMO_URL}
+                primaryHref={REQUEST_DEMO_URL}
+                primaryLabel="Pedir diagnóstico gratis"
+                secondaryHref={DEMO_BOOKING_URL}
+                secondaryLabel="Ver demo interactiva"
                 className="mt-8"
               />
             </div>
@@ -457,9 +583,10 @@ export default function HomePage() {
                 text="El cliente entra desde tu QR o enlace, elige servicio, barbero y hora. Tú ves la reserva en la agenda sin perseguir conversaciones sueltas."
               />
               <LandingCTABlock
-                primaryHref={WHATSAPP_URL}
-                secondaryHref={DEMO_BOOKING_URL}
-                secondaryLabel="Probar reserva pública"
+                primaryHref={DEMO_BOOKING_URL}
+                primaryLabel="Ver demo interactiva"
+                secondaryHref={REQUEST_DEMO_URL}
+                secondaryLabel="Pedir diagnóstico"
                 className="mt-8"
               />
             </div>
@@ -558,6 +685,35 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Prueba operativa ──────────────────────────────────────────────── */}
+        <Shell className="landing-section-dark">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+              <SectionIntro
+                eyebrow="Sistema vivo"
+                title="Un sistema vivo para barberías modernas."
+                text="Producto en construcción real, no humo: puedes abrir la demo pública, ver el flujo de reservas y revisar los módulos operativos sin depender de testimonios inventados."
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                {proofPoints.map((point) => (
+                  <div key={point} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+                    <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-[#38BDF8]" />
+                    <p className="text-sm font-bold leading-6 text-white/74">{point}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <PrimaryButton href={DEMO_BOOKING_URL} variant="premiumBlue" className="min-h-12 px-7">
+                Abrir demo pública <ArrowRight size={17} />
+              </PrimaryButton>
+              <PrimaryButton href={REQUEST_DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
+                Pedir diagnóstico <ArrowRight size={17} />
+              </PrimaryButton>
+            </div>
+          </div>
+        </Shell>
+
         {/* ── Marketing Studio ───────────────────────────────────────────────── */}
         <Shell id="marketing" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
@@ -640,6 +796,25 @@ export default function HomePage() {
                 </article>
               ))}
             </div>
+
+            <div className="mt-8 overflow-x-auto rounded-[28px] border border-white/10 bg-white/[0.04]">
+              <div className="min-w-[760px]">
+              <div className="grid grid-cols-[1.1fr_0.9fr_0.9fr_0.9fr] border-b border-white/10 bg-white/[0.04] text-xs font-black uppercase text-white/45">
+                <div className="p-4">Capacidad</div>
+                <div className="p-4">WhatsApp/Papel</div>
+                <div className="p-4">Marketplace</div>
+                <div className="p-4 text-[#D5A84C]">BarberíaOS</div>
+              </div>
+              {comparisonRows.map(([feature, manual, marketplace, barberiaos]) => (
+                <div key={feature} className="grid grid-cols-[1.1fr_0.9fr_0.9fr_0.9fr] border-b border-white/[0.06] text-sm last:border-b-0">
+                  <div className="p-4 font-black text-white">{feature}</div>
+                  <div className="p-4 text-white/54">{manual}</div>
+                  <div className="p-4 text-white/54">{marketplace}</div>
+                  <div className="p-4 font-bold text-white/78">{barberiaos}</div>
+                </div>
+              ))}
+              </div>
+            </div>
           </div>
         </Shell>
 
@@ -694,8 +869,8 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Sin comisiones"
-              title="¿Cuánto te cuesta realmente depender de otra plataforma?"
-              text="Muchas barberías pagan más de lo que aparece en la factura. Calcula tu coste real con las comisiones incluidas y compara con un precio fijo mensual sin sorpresas."
+              title="Calcula cuánto puedes ahorrar en comisiones y dependencia de plataformas."
+              text="Compara el coste aproximado de trabajar con plataformas y el coste fijo de BarberíaOS. Los cálculos son estimaciones para ayudarte a decidir con más contexto."
               center
             />
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -752,9 +927,10 @@ export default function HomePage() {
                 text="No vamos a inventar casos reales. El programa fundador existe para trabajar con dueños que quieran ordenar reservas, caja y clientes con una activación guiada, feedback directo y condiciones iniciales claras."
               />
               <LandingCTABlock
-                primaryHref={WHATSAPP_URL}
-                primaryLabel="Pedir plaza fundadora"
-                secondaryHref={DEMO_URL}
+                primaryHref="/pedir-demo?interest=barberia-fundadora"
+                primaryLabel="Solicitar plaza fundadora"
+                secondaryHref="/barberias-fundadoras"
+                secondaryLabel="Ver oferta fundadora"
                 className="mt-8"
               />
             </div>
@@ -829,11 +1005,11 @@ export default function HomePage() {
                     ))}
                   </ul>
                   <PrimaryButton
-                    href={plan.featured ? WHATSAPP_URL : DEMO_URL}
+                    href={plan.featured ? REQUEST_DEMO_URL : DEMO_BOOKING_URL}
                     variant={plan.featured ? "premiumBlue" : "ghost"}
                     className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}
                   >
-                    {plan.featured ? "Pedir demo por WhatsApp" : "Ver demo interactiva"}
+                    {plan.featured ? "Pedir diagnóstico gratis" : "Ver demo interactiva"}
                   </PrimaryButton>
                 </article>
               ))}
@@ -877,8 +1053,10 @@ export default function HomePage() {
               Te enseñamos reservas, caja, productos, QR, clientes, Marketing Studio e IA del dueño en un recorrido corto y directo, sin prometer resultados que no se puedan demostrar.
             </p>
             <LandingCTABlock
-              primaryHref={WHATSAPP_URL}
-              secondaryHref={DEMO_URL}
+              primaryHref={REQUEST_DEMO_URL}
+              primaryLabel="Pedir diagnóstico gratis"
+              secondaryHref={CALCULATOR_URL}
+              secondaryLabel="Calcular mi ahorro"
               className="mt-9 justify-center"
             />
           </div>
@@ -920,6 +1098,7 @@ export default function HomePage() {
                     <li><Link href="#controla" className="hover:text-white">Qué controla</Link></li>
                     <li><Link href="#marketing" className="hover:text-white">Marketing Studio</Link></li>
                     <li><Link href="#precios" className="hover:text-white">Precios</Link></li>
+                    <li><Link href="/barberias-fundadoras" className="hover:text-white">Fundadoras</Link></li>
                   </ul>
                 </nav>
               </div>
@@ -938,8 +1117,9 @@ export default function HomePage() {
                 <p className="text-xs font-black uppercase text-white/32">Acciones</p>
                 <nav className="mt-3 text-sm font-bold text-white/52" aria-label="Acciones comerciales">
                   <ul className="flex flex-col gap-2">
-                    <li><Link href="/demo" className="hover:text-white">Ver demo</Link></li>
+                    <li><Link href="/pedir-demo" className="hover:text-white">Pedir demo</Link></li>
                     <li><Link href={DEMO_BOOKING_URL} className="hover:text-white">Crear reserva de prueba</Link></li>
+                    <li><Link href="/calculadora-booksy" className="hover:text-white">Calcular ahorro</Link></li>
                     <li><Link href="/login" className="hover:text-white">Entrar al panel</Link></li>
                     <li><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>
                   </ul>

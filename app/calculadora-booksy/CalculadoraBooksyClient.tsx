@@ -78,10 +78,10 @@ export function CalculadoraBooksyClient() {
             Calculadora gratuita
           </div>
           <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.6rem)", fontWeight: 800, lineHeight: 1.2, marginBottom: 14 }}>
-            ¿Cuánto te cobra Booksy <span style={{ color: "#c9a84c" }}>de verdad</span>?
+            Calcula tu coste aproximado frente a <span style={{ color: "#c9a84c" }}>BarberíaOS</span>
           </h1>
           <p style={{ color: "#999", fontSize: "1rem", maxWidth: 540, margin: "0 auto", lineHeight: 1.65 }}>
-            Más allá de los 29€/mes del plan base. Calcula el coste real incluyendo comisiones Boost y compara con BarberíaOS.
+            Compara el coste aproximado de trabajar con plataformas y el coste fijo de BarberíaOS. Los resultados son estimaciones: cada plataforma, plan y configuración comercial puede variar.
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export function CalculadoraBooksyClient() {
           <div style={{ marginBottom: 22 }}>
             <label style={{ display: "block", fontSize: "0.88rem", fontWeight: 600, color: "#f0f0f0", marginBottom: 8 }}>
               % de reservas vía Booksy Boost{" "}
-              <span style={{ fontSize: "0.78rem", color: "#999", fontWeight: 400 }}>(clientes nuevos via marketplace)</span>
+              <span style={{ fontSize: "0.78rem", color: "#999", fontWeight: 400 }}>(si aplica en tu caso)</span>
             </label>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <input
@@ -211,7 +211,7 @@ export function CalculadoraBooksyClient() {
           </div>
           {[
             { label: "Cuota mensual Booksy", value: `${planBooksy} €`, color: "#ff6b6b", bold: false },
-            { label: "Comisiones Boost (30% × reservas vía Boost)", value: `${comisionBooksy} €`, color: "#ff6b6b", bold: false },
+            { label: "Comisiones estimadas del modelo marketplace", value: `${comisionBooksy} €`, color: "#ff6b6b", bold: false },
           ].map((row) => (
             <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 36px", borderBottom: "1px solid #2a2a2a", gap: 12 }}>
               <div style={{ fontSize: "0.92rem", color: "#999", maxWidth: "60%" }}>{row.label}</div>
@@ -219,7 +219,7 @@ export function CalculadoraBooksyClient() {
             </div>
           ))}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 36px", borderBottom: "1px solid #2a2a2a", gap: 12 }}>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>Total real que pagas a Booksy / mes</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#fff" }}>Coste aproximado de plataforma / mes</div>
             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "#ff6b6b" }}>{totalBooksy} €</div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 36px", borderBottom: "1px solid #2a2a2a", gap: 12, borderTop: "2px solid #2a2a2a" }}>
@@ -256,22 +256,22 @@ export function CalculadoraBooksyClient() {
 
         {/* VEREDICTO */}
         <div style={{ borderRadius: 14, padding: "32px 36px", marginBottom: 28, textAlign: "center", background: vs.bg, border: vs.border }}>
-          <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>
-            {veredicto === "ahorra" ? "🎉" : veredicto === "neutro" ? "⚖️" : "💡"}
+          <div style={{ fontSize: "0.78rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12, color: "#999" }}>
+            {veredicto === "ahorra" ? "Ahorro estimado" : veredicto === "neutro" ? "Coste similar" : "Coste menor"}
           </div>
           <h3 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: 10, color: vs.titleColor }}>
             {veredicto === "ahorra"
-              ? `Estás perdiendo ${ahorro} €/mes con Booksy`
+              ? `Podrías ahorrar ${ahorro} €/mes con un precio fijo`
               : veredicto === "neutro"
-              ? "Coste similar, pero Booksy no es tuyo"
-              : "Con tu volumen actual, Booksy es más económico"}
+              ? "Coste similar, con diferencias de control del canal"
+              : "Con tu volumen actual, una plataforma puede salir más barata"}
           </h3>
           <p style={{ fontSize: "0.92rem", color: "#999", lineHeight: 1.65, maxWidth: 500, margin: "0 auto 20px" }}>
             {veredicto === "ahorra"
-              ? `Con tu volumen actual, pagas ${totalBooksy}€/mes a Booksy (cuota + comisiones). BarberíaOS te costaría ${planBOS.precio}€/mes fijo. Son ${ahorro}€ al mes que te quedas tú, no Booksy.`
+              ? `Con tus datos, el coste aproximado de plataforma sería ${totalBooksy}€/mes. BarberíaOS te costaría ${planBOS.precio}€/mes fijo. Con BarberíaOS tus reservas entran por tu propio canal y tus clientes son tuyos.`
               : veredicto === "neutro"
-              ? "Los números son parecidos en tu caso, pero con Booksy tus clientes son de su plataforma. Con BarberíaOS tienes control total de datos, caja, marketing e IA — al mismo precio o menos."
-              : `Para ${reservas} reservas/mes sin Boost activo, el plan base de Booksy resulta más barato. Considera BarberíaOS cuando crezcas en volumen, o si valoras tener caja, marketing e IA integrados desde el inicio.`}
+              ? "Los números son parecidos. La diferencia está en el canal propio, la caja, clientes, marketing e IA dentro del mismo panel."
+              : `Para ${reservas} reservas/mes y esta configuración, una plataforma puede tener menor coste directo. Considera BarberíaOS si valoras canal propio, caja, clientes y control operativo integrados.`}
           </p>
           {veredicto === "ahorra" && (
             <p style={{ fontSize: "0.8rem", color: "#999", marginBottom: 22 }}>
@@ -282,16 +282,16 @@ export function CalculadoraBooksyClient() {
 
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "40px 36px", background: "#141414", border: "1px solid #2a2a2a", borderRadius: 16 }}>
-          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: 10 }}>¿Listo para dejar de pagar de más?</h3>
+          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: 10 }}>¿Quieres revisar tu caso con datos reales?</h3>
           <p style={{ color: "#999", fontSize: "0.9rem", marginBottom: 24 }}>
-            Empieza gratis. Configuración en 48h. Sin tarjeta, sin permanencia.
+            Pide un diagnóstico y vemos si BarberíaOS encaja con tu volumen, equipo y forma actual de reservar.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href={BUSINESS_CONFIG.demoUrl} style={{
+            <Link href="/pedir-demo" style={{
               display: "inline-block", background: "#c9a84c", color: "#0a0a0a",
               padding: "16px 36px", borderRadius: 8, fontWeight: 700, fontSize: "1rem", textDecoration: "none",
             }}>
-              Probar BarberíaOS gratis
+              Pedir diagnóstico gratis
             </Link>
             <a href={WA_CALC} target="_blank" rel="noopener noreferrer" style={{
               display: "inline-block", background: "transparent", color: "#fff",

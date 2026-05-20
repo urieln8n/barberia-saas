@@ -78,6 +78,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${SITE_URL}/pedir-demo`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/barberias-fundadoras`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/blog/cuanto-cobra-booksy`,
       lastModified: now,
       changeFrequency: "monthly" as const,

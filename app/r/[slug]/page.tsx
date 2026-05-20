@@ -226,6 +226,10 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       )}`
     : null;
   const trackingSource = "direct";
+  const isDemoBarber = barbershop.slug === "demo-barber";
+  const heroDescription =
+    publicProfile?.description ??
+    "Elige servicio, profesional y hora real disponible en menos de un minuto.";
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#080A0F_0%,#111827_32%,#F7F8FB_32.2%,#EEF2F7_100%)] pb-24 text-slate-950 md:pb-12">
@@ -298,8 +302,13 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             Reserva tu cita en {barbershop.name}
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
-            Elige servicio, profesional y hora real disponible en menos de un minuto.
+            {heroDescription}
           </p>
+          {isDemoBarber && (
+            <p className="mt-3 max-w-2xl rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 px-4 py-3 text-sm font-bold leading-6 text-[#F6D98B]">
+              Demo interactiva. Tus clientes reservarían desde Instagram, Google, WhatsApp o QR sin descargar ninguna app.
+            </p>
+          )}
           <a
             href="#reservar"
             className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-5 py-3 text-sm font-black text-[#080A0F] shadow-lg shadow-[#D9B766]/15 transition hover:bg-[#E4C87B]"
@@ -370,7 +379,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               )}
               <p className="flex gap-2 text-neutral-600">
                 <Clock size={15} className="mt-0.5 shrink-0 text-neutral-400" />
-                <span>Horarios disponibles dentro del formulario.</span>
+                <span>{isDemoBarber ? "Lunes a sábado · 10:00–20:00" : "Horarios disponibles dentro del formulario."}</span>
               </p>
               {barbershop.instagram_url && (
                 <a

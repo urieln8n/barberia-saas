@@ -988,8 +988,8 @@ export interface Database {
           email: string | null;
           city: string | null;
           country: string | null;
-          source: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | null;
-          status: "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
+          source: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | "barberiaos.com" | null;
+          status: "new" | "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
           potential_mrr: number | null;
           notes: string | null;
           last_contacted_at: string | null;
@@ -1005,8 +1005,8 @@ export interface Database {
           email?: string | null;
           city?: string | null;
           country?: string | null;
-          source?: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | null;
-          status?: "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
+          source?: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | "barberiaos.com" | null;
+          status?: "new" | "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
           potential_mrr?: number | null;
           notes?: string | null;
           last_contacted_at?: string | null;
@@ -1019,8 +1019,8 @@ export interface Database {
           email?: string | null;
           city?: string | null;
           country?: string | null;
-          source?: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | null;
-          status?: "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
+          source?: "directo" | "instagram" | "referido" | "google" | "linkedin" | "feria" | "otro" | "barberiaos.com" | null;
+          status?: "new" | "nuevo" | "contactado" | "demo_agendada" | "propuesta_enviada" | "trial_activo" | "ganado" | "perdido";
           potential_mrr?: number | null;
           notes?: string | null;
           last_contacted_at?: string | null;

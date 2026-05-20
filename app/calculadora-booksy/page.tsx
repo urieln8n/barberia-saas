@@ -5,12 +5,12 @@ import { CalculadoraBooksyClient } from "./CalculadoraBooksyClient";
 export const metadata: Metadata = {
   title: "Calculadora de costes para barberías | BarberíaOS",
   description:
-    "Calcula el coste mensual de tu sistema de reservas y compara cuotas, comisiones y margen con un modelo fijo para tu barbería.",
+    "Compara el coste aproximado de trabajar con plataformas y el coste fijo de BarberíaOS para reservas, caja, clientes y barberos.",
   alternates: { canonical: `${SITE_URL}/calculadora-booksy` },
   openGraph: {
     title: "Calculadora de costes para barberías | BarberíaOS",
     description:
-      "Calcula tu coste real en Booksy (cuota + comisiones Boost) y compara con BarberíaOS en segundos.",
+      "Calcula una estimación de coste de plataforma y compara con el precio fijo de BarberíaOS.",
     url: `${SITE_URL}/calculadora-booksy`,
     type: "website",
     siteName: "BarberíaOS",

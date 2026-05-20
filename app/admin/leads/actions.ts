@@ -32,12 +32,12 @@ function dbErrorMessage(error: { code?: string; message: string }, fallback: str
 }
 
 const LEAD_STATUSES = [
-  "nuevo", "contactado", "demo_agendada", "propuesta_enviada",
+  "new", "nuevo", "contactado", "demo_agendada", "propuesta_enviada",
   "trial_activo", "ganado", "perdido",
 ] as const;
 
 const LEAD_SOURCES = [
-  "directo", "instagram", "referido", "google", "linkedin", "feria", "otro",
+  "directo", "barberiaos.com", "instagram", "referido", "google", "linkedin", "feria", "otro",
 ] as const;
 
 const LeadSchema = z

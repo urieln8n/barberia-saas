@@ -22,6 +22,7 @@ type Lead = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
+  new:               "Nuevo web",
   nuevo:             "Nuevo",
   contactado:        "Contactado",
   demo_agendada:     "Demo agendada",
@@ -32,6 +33,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
+  new:               "bg-emerald-50 text-emerald-700 border border-emerald-200",
   nuevo:             "bg-neutral-100 text-neutral-600",
   contactado:        "bg-blue-50 text-blue-700 border border-blue-200",
   demo_agendada:     "bg-purple-50 text-purple-700 border border-purple-200",
@@ -43,6 +45,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 const SOURCE_LABELS: Record<string, string> = {
   directo:   "Directo",
+  "barberiaos.com": "barberiaos.com",
   instagram: "Instagram",
   referido:  "Referido",
   google:    "Google",
@@ -51,8 +54,8 @@ const SOURCE_LABELS: Record<string, string> = {
   otro:      "Otro",
 };
 
-const ALL_STATUSES = ["nuevo","contactado","demo_agendada","propuesta_enviada","trial_activo","ganado","perdido"];
-const ALL_SOURCES  = ["directo","instagram","referido","google","linkedin","feria","otro"];
+const ALL_STATUSES = ["new","nuevo","contactado","demo_agendada","propuesta_enviada","trial_activo","ganado","perdido"];
+const ALL_SOURCES  = ["directo","barberiaos.com","instagram","referido","google","linkedin","feria","otro"];
 
 function toDatetimeLocal(iso: string | null): string {
   if (!iso) return "";
