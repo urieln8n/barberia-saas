@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
@@ -182,19 +181,6 @@ export default async function DashboardPage() {
   const weekStart = getWeekStartISO();
   const { start: monthStart, end: monthEnd } = getMonthBoundsISO();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  const dataClient =
-    supabaseUrl && serviceRoleKey
-      ? createServiceClient(supabaseUrl, serviceRoleKey, {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-          },
-        })
-      : supabase;
-
   const [
     barbershopResult,
     todayAppointmentsResult,
@@ -212,13 +198,13 @@ export default async function DashboardPage() {
     noShowsMonthResult,
     confirmedUpcomingResult,
   ] = await Promise.all([
-    dataClient
+    supabase
       .from("barbershops")
       .select("id, name, slug")
       .eq("id", barbershopId)
       .maybeSingle(),
 
-    dataClient
+    supabase
       .from("appointments")
       .select(
         `
@@ -246,7 +232,7 @@ export default async function DashboardPage() {
       .in("status", ["pending", "scheduled", "confirmed"])
       .order("start_time", { ascending: true }),
 
-    dataClient
+    supabase
       .from("appointments")
       .select(
         `
@@ -275,28 +261,28 @@ export default async function DashboardPage() {
       .order("start_time", { ascending: true })
       .limit(6),
 
-    dataClient
+    supabase
       .from("payments")
       .select("amount")
       .eq("barbershop_id", barbershopId)
       .gte("created_at", `${today}T00:00:00`)
       .lte("created_at", `${today}T23:59:59`),
 
-    dataClient
+    supabase
       .from("appointments")
       .select("appointment_date, start_time, status, services(name), barbers(name)")
       .eq("barbershop_id", barbershopId)
       .gte("appointment_date", monthStart)
       .lte("appointment_date", monthEnd),
 
-    dataClient
+    supabase
       .from("barbers")
       .select("id, name")
       .eq("barbershop_id", barbershopId)
       .eq("active", true)
       .order("name", { ascending: true }),
 
-    dataClient
+    supabase
       .from("cash_movements")
       .select(
         "amount, discount_amount, tip_amount, payment_method, movement_type, barber_id, client_id, service_id, services(name)"
@@ -305,7 +291,7 @@ export default async function DashboardPage() {
       .gte("created_at", `${today}T00:00:00`)
       .lte("created_at", `${today}T23:59:59`),
 
-    dataClient
+    supabase
       .from("cash_sessions")
       .select("id, status, opening_amount, opened_at")
       .eq("barbershop_id", barbershopId)
@@ -314,35 +300,35 @@ export default async function DashboardPage() {
       .limit(1)
       .maybeSingle(),
 
-    dataClient
+    supabase
       .from("services")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId)
       .eq("active", true),
 
-    dataClient
+    supabase
       .from("clients")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId),
 
-    dataClient
+    supabase
       .from("clients")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId)
       .gte("visit_count", 2),
 
-    dataClient
+    supabase
       .from("clients")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId)
       .lt("last_visit_at", new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()),
 
-    dataClient
+    supabase
       .from("reviews")
       .select("id", { count: "exact", head: true })
       .eq("business_id", barbershopId),
 
-    dataClient
+    supabase
       .from("appointments")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId)
@@ -350,7 +336,7 @@ export default async function DashboardPage() {
       .lte("appointment_date", monthEnd)
       .eq("status", "no_show"),
 
-    dataClient
+    supabase
       .from("appointments")
       .select("id", { count: "exact", head: true })
       .eq("barbershop_id", barbershopId)
