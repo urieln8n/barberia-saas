@@ -10,8 +10,8 @@ export default function DashboardLoading() {
           <span className="absolute inset-0 animate-ping rounded-[22px] border border-[#C9922A]/40 motion-reduce:animate-none" />
         </div>
         <div className="text-center">
-          <p className="text-base font-black tracking-tight text-[#080A0F]">BarberíaOS</p>
-          <p className="mt-1 text-sm text-neutral-400">Cargando tu centro de control…</p>
+          <p className="text-base font-black tracking-tight text-white">BarberíaOS</p>
+          <p className="mt-1 text-sm text-white/45">Preparando tu centro de control...</p>
         </div>
       </div>
 
@@ -19,8 +19,8 @@ export default function DashboardLoading() {
       <div className="w-full max-w-4xl space-y-4">
         {/* Header skeleton */}
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 animate-pulse rounded-xl bg-neutral-100 motion-reduce:animate-none" />
-          <div className="h-6 w-52 animate-pulse rounded-xl bg-neutral-100 motion-reduce:animate-none" />
+          <div className="premium-skeleton h-8 w-8 rounded-xl" />
+          <div className="premium-skeleton h-6 w-52 rounded-xl" />
         </div>
 
         {/* Stat cards skeleton */}
@@ -28,19 +28,19 @@ export default function DashboardLoading() {
           {[0.95, 0.8, 0.65].map((opacity, i) => (
             <div
               key={i}
-              className="h-24 animate-pulse rounded-[20px] bg-neutral-100 motion-reduce:animate-none"
+              className="premium-skeleton h-24 rounded-[20px]"
               style={{ opacity }}
             />
           ))}
         </div>
 
         {/* Gold progress bar */}
-        <div className="h-1 w-full overflow-hidden rounded-full bg-neutral-100">
+        <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
           <div className="h-full w-1/3 animate-[shimmer_1.8s_ease-in-out_infinite] rounded-full bg-[#C9922A]/40 motion-reduce:animate-none" />
         </div>
 
         {/* Main content skeleton */}
-        <div className="h-44 animate-pulse rounded-[20px] bg-neutral-100 motion-reduce:animate-none" style={{ opacity: 0.7 }} />
+        <div className="premium-skeleton h-44 rounded-[20px]" style={{ opacity: 0.7 }} />
       </div>
     </div>
   );

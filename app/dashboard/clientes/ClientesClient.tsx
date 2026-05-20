@@ -75,7 +75,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       <PageHeader
         eyebrow="Clientes"
         title="Gestión de clientes"
-        description="Segmenta clientes frecuentes, detecta clientes perdidos y activa acciones rápidas."
+        description="Detecta a quién cuidar, a quién recuperar y qué acción tomar después de cada visita."
         action={
           <button
             type="button"
@@ -95,9 +95,10 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       </div>
 
       {insightClient && (
-        <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-5 py-4 text-sm font-semibold leading-6 text-[#8A641F]">
-          Este cliente no viene desde hace 42 días. Puedes enviarle una promoción para volver:{" "}
-          <span className="font-black">{insightClient.name}</span>.
+        <div className="rounded-[22px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#111827_0%,#080A0F_100%)] px-5 py-4 text-sm font-semibold leading-6 text-white/70 shadow-[var(--shadow-soft)]">
+          Oportunidad de recuperación:{" "}
+          <span className="font-black text-[#D5A84C]">{insightClient.name}</span>{" "}
+          lleva más de 42 días sin volver. Envía un WhatsApp corto con una razón para reservar hoy.
         </div>
       )}
 
@@ -106,7 +107,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre, teléfono o email..."
-          className="input-field py-3"
+          className="input-field py-3 shadow-sm"
         />
       )}
 
@@ -126,10 +127,10 @@ export function ClientesClient({ clients, barbershopId }: Props) {
           }
         />
       ) : (
-        <div className="table-shell">
+        <div className="premium-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#E7E2D8] bg-[#F8F5EF]">
+              <thead className="border-b border-slate-200 bg-slate-50">
                 <tr>
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
@@ -138,9 +139,9 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7E2D8]">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="transition-colors hover:bg-[#FAF8F4]">
+                  <tr key={c.id} className="transition-colors hover:bg-slate-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-xs font-bold uppercase text-[#7AA2FF]">

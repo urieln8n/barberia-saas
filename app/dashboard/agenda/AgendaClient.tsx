@@ -93,7 +93,7 @@ function AppointmentCard({
   onStatusChange: (id: string, status: string) => void;
 }) {
   return (
-    <article className="panel">
+    <article className="premium-card p-4 md:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           {showDate ? (
@@ -106,7 +106,7 @@ function AppointmentCard({
               </span>
             </div>
           ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black text-[#111827]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-black text-[#111827] shadow-sm">
               {formatTime(appointment.start_time)}
             </div>
           )}
@@ -158,7 +158,7 @@ function AppointmentCard({
               key={action.status}
               onClick={() => onStatusChange(appointment.id, action.status)}
               disabled={updating === appointment.id}
-              className="rounded-xl border border-[#E7E2D8] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[#FAF8F4] hover:text-[#111827] disabled:opacity-40"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-[#111827] disabled:opacity-40"
             >
               {action.label}
             </button>
@@ -233,14 +233,14 @@ export function AgendaClient({
       <PageHeader
         section="Reservas"
         title="Agenda y reservas"
-        description="Gestiona las citas de tu barbería desde un solo lugar. Aquí puedes ver próximas reservas, horarios, disponibilidad y huecos por barbero."
+        description="Tu día ordenado por hora, barbero y estado. Confirma, completa o mueve citas sin perder contexto."
         action={
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
               type="date"
               value={fecha}
               onChange={(e) => handleDateChange(e.target.value)}
-              className="input-field"
+              className="input-field bg-white/95"
             />
             <PrimaryButton
               type="button"
@@ -292,7 +292,7 @@ export function AgendaClient({
         ) : (
           <div className="grid gap-4 lg:grid-cols-3">
             {appointmentsByBarber.map(({ barber, appointments: barberAppointments, freeSlots }) => (
-              <article key={barber.id} className="rounded-[20px] border border-[#E7E2D8] bg-white p-4 shadow-sm">
+              <article key={barber.id} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black uppercase text-white">
@@ -335,7 +335,7 @@ export function AgendaClient({
                       key={slot}
                       type="button"
                       onClick={() => { setFormError(""); setShowModal(true); }}
-                      className="flex w-full items-center justify-between rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-2 text-left text-sm font-black text-[#8A641F] transition hover:bg-[#D5A84C]/15"
+                    className="flex w-full items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-left text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
                     >
                       <span>{slot} libre</span>
                       <Plus size={14} />

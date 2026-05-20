@@ -47,14 +47,14 @@ export function StatCard({
           ? "border-amber-100 bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFBEB_100%)] shadow-[var(--shadow-warm)] hover:shadow-[var(--shadow-card)]"
           : effectiveTone === "highlight"
             ? "border-[#E7E2D8] bg-[linear-gradient(180deg,#FFFFFF_0%,#F3F7FF_100%)] ring-1 ring-[#2563EB]/10 shadow-[var(--shadow-warm)] hover:shadow-[var(--shadow-card)]"
-            : "border-[#E7E2D8] bg-white shadow-[var(--shadow-warm)] hover:border-[#D5CEBC] hover:shadow-[var(--shadow-card)]";
+            : "border-slate-200/80 bg-white/95 shadow-[var(--shadow-warm)] hover:border-slate-300 hover:shadow-[var(--shadow-card)]";
 
   const topLabel = label ?? title;
   const supportingText = hint ?? description;
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[24px] border p-5 transition-all duration-200 hover:-translate-y-0.5 ${containerClass} ${className}`}
+      className={`group relative overflow-hidden rounded-[22px] border p-5 transition-all duration-200 hover:-translate-y-0.5 ${containerClass} ${className}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-70" />
       <div className="flex items-start justify-between gap-3">

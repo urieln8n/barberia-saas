@@ -24,25 +24,25 @@ export function PageHeader({
   const label = eyebrow ?? section;
   const variantClass =
     variant === "dark"
-      ? "section-band-dark"
+      ? "dashboard-hero"
       : variant === "glass"
-        ? "section-band glass-panel"
-        : "section-band";
+        ? "dashboard-hero dashboard-hero-glass"
+        : "dashboard-hero";
 
   return (
     <section className={`${variantClass} px-5 py-5 md:px-6 ${className}`}>
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
         <div className="min-w-0">
           {label && (
-            <p className={variant === "dark" ? "text-[11px] font-black uppercase text-[#D5A84C]" : "label-section"}>
+            <p className="text-[11px] font-black uppercase text-[#D5A84C]">
               {label}
             </p>
           )}
-          <h1 className={variant === "dark" ? "mt-1.5 text-[clamp(1.75rem,2vw,2.5rem)] font-black text-white" : "page-title"}>
+          <h1 className="mt-1.5 text-[clamp(1.9rem,2.6vw,3rem)] font-black leading-tight text-white">
             {title}
           </h1>
           {description && (
-            <p className={variant === "dark" ? "mt-2 max-w-3xl text-sm leading-6 text-white/60" : "page-description"}>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-white/62">
               {description}
             </p>
           )}

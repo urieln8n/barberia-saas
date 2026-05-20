@@ -59,13 +59,13 @@ function getConsejoIndex(): number {
 
 function ConsejoSemana() {
   return (
-    <div className="flex gap-3 rounded-[20px] border border-amber-100 bg-amber-50/60 px-5 py-4">
+    <div className="flex gap-3 rounded-[22px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#111827_0%,#080A0F_100%)] px-5 py-4 shadow-[var(--shadow-soft)]">
       <Lightbulb size={18} className="mt-0.5 shrink-0 text-[#C9922A]" />
       <div>
         <p className="text-[10px] font-black uppercase tracking-widest text-[#8A641F]">
           Consejo semanal
         </p>
-        <p className="mt-1 text-sm leading-6 text-neutral-700">
+        <p className="mt-1 text-sm leading-6 text-white/70">
           {CONSEJOS[getConsejoIndex()]}
         </p>
       </div>
@@ -158,7 +158,7 @@ function DatosConectados({
   const connectedCount = items.filter((i) => i.status === "connected").length;
 
   return (
-    <div className="rounded-[20px] border border-slate-100 bg-slate-50 px-5 py-4">
+    <div className="premium-card px-5 py-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
           Datos conectados
@@ -171,7 +171,7 @@ function DatosConectados({
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start gap-1.5 rounded-xl border border-slate-100 bg-white px-3 py-2"
+            className="flex items-start gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm"
           >
             <span className="mt-0.5">{statusIcon(item.status)}</span>
             <div className="min-w-0">
@@ -242,7 +242,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div className="flex gap-0 overflow-x-auto border-b border-slate-200">
+      <div className="flex gap-1 overflow-x-auto rounded-[20px] border border-slate-200 bg-white p-1 shadow-sm">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -251,10 +251,10 @@ export function MarketingStudioClient({
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex shrink-0 items-center gap-2 border-b-2 px-5 py-3.5 text-sm font-semibold transition-all duration-150 ${
+              className={`flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all duration-150 ${
                 active
-                  ? "border-[#C9922A] text-[#080A0F]"
-                  : "border-transparent text-neutral-500 hover:text-neutral-800"
+                  ? "bg-[#080A0F] text-white shadow-sm"
+                  : "text-neutral-500 hover:bg-slate-50 hover:text-neutral-800"
               }`}
             >
               <Icon

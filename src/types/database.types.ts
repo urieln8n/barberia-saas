@@ -140,6 +140,95 @@ export interface Database {
         Relationships: [];
       };
 
+      // ── Horarios de barberos ────────────────────────────────
+      barber_schedules: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          barber_id: string;
+          weekday: number;
+          start_time: string;
+          end_time: string;
+          active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          barber_id: string;
+          weekday: number;
+          start_time: string;
+          end_time: string;
+          active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          weekday?: number;
+          start_time?: string;
+          end_time?: string;
+          active?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "barber_schedules_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "barber_schedules_barber_id_fkey";
+            columns: ["barber_id"];
+            isOneToOne: false;
+            referencedRelation: "barbers";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      // ── Cierres y festivos ─────────────────────────────────
+      barbershop_closures: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          closure_date: string;
+          start_time: string | null;
+          end_time: string | null;
+          reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          closure_date: string;
+          start_time?: string | null;
+          end_time?: string | null;
+          reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          closure_date?: string;
+          start_time?: string | null;
+          end_time?: string | null;
+          reason?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "barbershop_closures_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
       // ── Servicios ────────────────────────────────────────────
       services: {
         Row: {
@@ -796,6 +885,49 @@ export interface Database {
         };
         Update: Record<string, never>;
         Relationships: [];
+      };
+
+      // ── Automation events outbox ────────────────────────────
+      automation_events: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          event_type: string;
+          payload: Json;
+          status: "pending" | "processing" | "processed" | "failed";
+          attempts: number;
+          last_error: string | null;
+          processed_at: string | null;
+          created_at: string;
+          idempotency_key: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          event_type: string;
+          payload?: Json;
+          status?: "pending" | "processing" | "processed" | "failed";
+          attempts?: number;
+          last_error?: string | null;
+          processed_at?: string | null;
+          created_at?: string;
+          idempotency_key: string;
+        };
+        Update: {
+          status?: "pending" | "processing" | "processed" | "failed";
+          attempts?: number;
+          last_error?: string | null;
+          processed_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "automation_events_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          }
+        ];
       };
 
       // ── Growth Engine ────────────────────────────────────────

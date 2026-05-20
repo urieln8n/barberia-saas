@@ -228,23 +228,23 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   const trackingSource = "direct";
 
   return (
-    <main className="premium-grid-bg min-h-screen pb-24 text-slate-950 md:pb-12">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#080A0F_0%,#111827_32%,#F7F8FB_32.2%,#EEF2F7_100%)] pb-24 text-slate-950 md:pb-12">
       <TrackPageView
         barbershopId={barbershop.id}
         source={trackingSource}
         city={barbershop.city}
       />
 
-      <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
+      <header className="border-b border-white/10 bg-[#080A0F]/88 text-white backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-sm font-black tracking-wide text-[#D9B766]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 text-sm font-black tracking-wide text-[#D9B766]">
               {getInitials(barbershop.name) || <Scissors size={20} />}
             </div>
             <div className="min-w-0">
-              <p className="truncate font-black text-[#111827]">{barbershop.name}</p>
+              <p className="truncate font-black text-white">{barbershop.name}</p>
               {locationLabel && (
-                <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-neutral-500">
+                <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-white/50">
                   <MapPin size={13} className="shrink-0" />
                   {locationLabel}
                 </p>
@@ -253,7 +253,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 text-xs font-black text-emerald-700">
+            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 text-xs font-black text-emerald-200">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Reserva online disponible
             </span>
@@ -266,7 +266,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-[#111827] transition hover:border-[#D9B766]"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 text-sm font-bold text-white transition hover:border-[#D9B766]/40"
               >
                 <MessageCircle size={15} />
                 WhatsApp
@@ -281,7 +281,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-[#111827] transition hover:border-[#D9B766]"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 text-sm font-bold text-white transition hover:border-[#D9B766]/40"
               >
                 <Map size={15} />
                 Cómo llegar
@@ -291,24 +291,24 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
         </div>
       </header>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-8 lg:px-8">
+      <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 text-white sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-10 lg:px-8">
         <div>
-          <p className="label-section">Reserva pública</p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-black tracking-normal text-[#111827] sm:text-4xl">
+          <p className="text-[11px] font-black uppercase text-[#D9B766]">Reserva pública</p>
+          <h1 className="mt-2 max-w-3xl text-3xl font-black tracking-normal text-white sm:text-4xl">
             Reserva tu cita en {barbershop.name}
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-neutral-600">
-            Elige servicio, barbero y hora disponible en menos de un minuto.
+          <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
+            Elige servicio, profesional y hora real disponible en menos de un minuto.
           </p>
           <a
             href="#reservar"
-            className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#111827] px-5 py-3 text-sm font-black text-white shadow-lg shadow-slate-900/15 transition hover:bg-[#0F172A]"
+            className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-5 py-3 text-sm font-black text-[#080A0F] shadow-lg shadow-[#D9B766]/15 transition hover:bg-[#E4C87B]"
           >
             Reservar ahora <CalendarCheck size={17} />
           </a>
         </div>
 
-        <div className="grid gap-2 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="grid gap-2 rounded-[24px] border border-white/10 bg-white/[0.06] p-4 shadow-sm backdrop-blur">
           {[
             {
               icon: Scissors,
@@ -325,8 +325,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               text: "Horas ocupadas bloqueadas automáticamente",
             },
           ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-3 text-sm text-neutral-600">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F8F5EF] text-[#8A641F]">
+            <div key={text} className="flex items-center gap-3 text-sm text-white/68">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#D9B766]">
                 <Icon size={16} />
               </span>
               <span className="font-semibold">{text}</span>

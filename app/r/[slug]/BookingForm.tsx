@@ -17,6 +17,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
+import {
+  PUBLIC_BOOKING_FALLBACK_END_HOUR,
+  PUBLIC_BOOKING_FALLBACK_START_HOUR,
+  PUBLIC_BOOKING_SLOT_INTERVAL_MINUTES,
+} from "@/src/lib/booking/real-availability";
 import { createPublicBooking, getUnavailableSlots } from "./actions";
 
 type Service = {
@@ -282,16 +287,23 @@ export function BookingForm({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [privacyRead, setPrivacyRead] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
+  const [bookableSlots, setBookableSlots] = useState<string[]>(() =>
+    generateTimeSlots(
+      PUBLIC_BOOKING_FALLBACK_START_HOUR,
+      PUBLIC_BOOKING_FALLBACK_END_HOUR,
+      PUBLIC_BOOKING_SLOT_INTERVAL_MINUTES
+    ).map((slot) => slot.time)
+  );
+  const [closedReason, setClosedReason] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [lastBooking, setLastBooking] = useState<LastBookingStorage | null>(null);
   const [showRepeatPrompt, setShowRepeatPrompt] = useState(false);
-
-  const slots = generateTimeSlots();
 
   const today = (() => {
     const now = new Date();
@@ -303,7 +315,7 @@ export function BookingForm({
 
   const selectedBarberId =
     barber?.id && barber.id !== "any" ? barber.id : null;
-  const visibleSlots = slots.filter((slot) => {
+  const visibleSlots = bookableSlots.filter((slot) => {
     if (date !== today) return true;
 
     const now = new Date();
@@ -311,7 +323,7 @@ export function BookingForm({
       now.getMinutes()
     ).padStart(2, "0")}`;
 
-    return slot.time > currentTime;
+    return slot > currentTime;
   });
 
   useEffect(() => {
@@ -370,6 +382,7 @@ export function BookingForm({
     async function loadAvailability() {
       if (!date || !barber || !service) {
         setUnavailableSlots([]);
+        setClosedReason(null);
         return;
       }
 
@@ -389,11 +402,14 @@ export function BookingForm({
 
       if (result.error) {
         setUnavailableSlots([]);
+        setClosedReason(null);
         setFormError(result.error);
         return;
       }
 
       setUnavailableSlots(result.unavailableSlots);
+      setBookableSlots(result.allSlots);
+      setClosedReason(result.closedReason);
 
       if (time && result.unavailableSlots.includes(time)) {
         setTime("");
@@ -417,11 +433,13 @@ export function BookingForm({
     setName("");
     setPhone("");
     setEmail("");
+    setWebsite("");
     setPrivacyRead(false);
     setMarketingConsent(false);
     setSaving(false);
     setCheckingAvailability(false);
     setUnavailableSlots([]);
+    setClosedReason(null);
     setFormError(null);
   }
 
@@ -443,6 +461,7 @@ export function BookingForm({
     setDate("");
     setTime("");
     setUnavailableSlots([]);
+    setClosedReason(null);
     setFormError(null);
     setShowRepeatPrompt(false);
     setStep(3);
@@ -470,6 +489,9 @@ export function BookingForm({
       time,
       name: name.trim(),
       phone: phone.trim(),
+      email: email.trim(),
+      privacyAccepted: privacyRead,
+      website,
     });
 
     setSaving(false);
@@ -619,6 +641,7 @@ export function BookingForm({
                   setDate("");
                   setTime("");
                   setUnavailableSlots([]);
+                  setClosedReason(null);
                   setFormError(null);
                   setStep(3);
                 }}
@@ -646,6 +669,7 @@ export function BookingForm({
                     setDate("");
                     setTime("");
                     setUnavailableSlots([]);
+                    setClosedReason(null);
                     setFormError(null);
                     setStep(3);
                   }}
@@ -686,6 +710,7 @@ export function BookingForm({
                 setDate(e.target.value);
                 setTime("");
                 setUnavailableSlots([]);
+                setClosedReason(null);
                 setFormError(null);
               }}
               className="input mt-1 py-3"
@@ -709,13 +734,19 @@ export function BookingForm({
                   </p>
                 )}
 
+                {closedReason && (
+                  <p className="mt-3 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800">
+                    Cerrado: {closedReason}
+                  </p>
+                )}
+
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
                   {visibleSlots.map((slot) => {
-                    const isUnavailable = unavailableSlots.includes(slot.time);
+                    const isUnavailable = unavailableSlots.includes(slot);
 
                     return (
                       <button
-                        key={slot.time}
+                        key={slot}
                         type="button"
                         disabled={checkingAvailability || isUnavailable}
                         onClick={() => {
@@ -726,19 +757,19 @@ export function BookingForm({
                             return;
                           }
 
-                          setTime(slot.time);
+                          setTime(slot);
                           setFormError(null);
                           setStep(4);
                         }}
                         className={`min-h-12 rounded-xl border py-2 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
-                          : time === slot.time
+                          : time === slot
                             ? "border-[#111827] bg-[#111827] text-white"
                             : "border-neutral-200 hover:border-[#111827] hover:bg-neutral-50"
                         }`}
                       >
-                        <span>{slot.time}</span>
+                        <span>{slot}</span>
                         {isUnavailable && (
                           <span className="block text-[10px] no-underline">
                             Ocupado
@@ -779,6 +810,17 @@ export function BookingForm({
             />
 
             <div className="mt-5 grid gap-4">
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="booking-website">Website</label>
+                <input
+                  id="booking-website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  autoComplete="off"
+                  tabIndex={-1}
+                />
+              </div>
+
               {/* Nombre */}
               <div>
                 <label className="mb-1 block text-sm font-semibold text-neutral-700">
@@ -886,10 +928,15 @@ export function BookingForm({
             <div className="mt-5 hidden md:block">
               <button
                 type="button"
-                disabled={!name.trim() || !phone.trim()}
+                disabled={!name.trim() || !phone.trim() || !privacyRead}
                 onClick={() => {
                   if (!name.trim() || !phone.trim()) {
                     setFormError("Añade tu nombre y WhatsApp para continuar.");
+                    return;
+                  }
+
+                  if (!privacyRead) {
+                    setFormError("Debes aceptar la política de privacidad.");
                     return;
                   }
 
@@ -1039,10 +1086,15 @@ export function BookingForm({
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#E5E7EB] bg-white px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.10)] md:hidden">
           <button
             type="button"
-            disabled={!name.trim() || !phone.trim()}
+            disabled={!name.trim() || !phone.trim() || !privacyRead}
             onClick={() => {
               if (!name.trim() || !phone.trim()) {
                 setFormError("Añade tu nombre y WhatsApp para continuar.");
+                return;
+              }
+
+              if (!privacyRead) {
+                setFormError("Debes aceptar la política de privacidad.");
                 return;
               }
 
