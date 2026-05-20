@@ -27,11 +27,12 @@ export function EmptyState({
         : "metric-icon bg-[#C9922A]/10";
 
   return (
-    <div className={`flex flex-col items-center justify-center rounded-[24px] border border-dashed px-6 py-10 text-center ${
+    <div className={`relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] border border-dashed px-6 py-10 text-center ${
       dark
         ? "border-white/15 bg-white/[0.04] text-white"
-        : "border-[#D5CEBC] bg-[#FAF8F4] text-slate-950"
+        : "border-slate-200 bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] text-slate-950 shadow-sm"
     } ${className}`}>
+      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/45 to-transparent" />
       {Icon && (
         <div className={iconClass}>
           <Icon size={22} className={tone === "success" ? "text-emerald-600" : dark ? "text-white" : "text-[#C9922A]"} />

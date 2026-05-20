@@ -19,11 +19,29 @@ export default async function BarberosPage() {
     .eq("barbershop_id", barbershopId)
     .order("created_at", { ascending: true });
 
+  const [{ data: schedules }, { data: closures }] = await Promise.all([
+    supabase
+      .from("barber_schedules")
+      .select("id, barber_id, weekday, start_time, end_time, active")
+      .eq("barbershop_id", barbershopId)
+      .order("weekday", { ascending: true })
+      .order("start_time", { ascending: true }),
+    supabase
+      .from("barbershop_closures")
+      .select("id, closure_date, start_time, end_time, reason")
+      .eq("barbershop_id", barbershopId)
+      .gte("closure_date", new Date().toISOString().slice(0, 10))
+      .order("closure_date", { ascending: true })
+      .limit(12),
+  ]);
+
   const planUsage = await getBarbershopPlanUsage(supabase, barbershopId);
 
   return (
     <BarberosClient
       barbers={barbers ?? []}
+      schedules={schedules ?? []}
+      closures={closures ?? []}
       barbershopId={barbershopId}
       planUsage={planUsage}
     />

@@ -136,7 +136,7 @@ function QuickAction({
       href={href}
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
-      className="flex min-h-[92px] items-start gap-3 rounded-[18px] border border-[#E7E2D8] bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-[#2563EB]/30 hover:bg-[#FAF8F4]"
+      className="quick-action-card flex min-h-[92px] items-start gap-3 text-left"
     >
       <span className="metric-icon h-9 w-9 rounded-2xl bg-[#2563EB]/10">
         <Icon size={16} className="text-[#2563EB]" />
@@ -321,13 +321,13 @@ export function CajaClient({
       <PageHeader
         section="Caja"
         title="Caja diaria"
-        description="Control operativo del día: servicios, productos, gastos, efectivo esperado y cierre."
+        description="Cobra rápido, controla efectivo y cierra el día con menos dudas."
       >
         {session && (
-          <div className="rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
-            Hoy empezaste con <span className="font-black text-[#080A0F]">{formatCurrency(Number(session.opening_amount))}</span> en caja.
-            Has cobrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.totalSold)}</span> y registrado <span className="font-black text-[#080A0F]">{formatCurrency(totals.expenses)}</span> en gastos.
-            Cierre estimado: <span className="font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</span>.
+          <div className="rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-semibold leading-6 text-white/70">
+            Inicio <span className="font-black text-white">{formatCurrency(Number(session.opening_amount))}</span> ·
+            cobrado <span className="font-black text-white">{formatCurrency(totals.totalSold)}</span> ·
+            cierre estimado <span className="font-black text-[#D5A84C]">{formatCurrency(totals.expectedCash)}</span>.
           </div>
         )}
       </PageHeader>
