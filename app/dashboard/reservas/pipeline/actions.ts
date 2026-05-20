@@ -6,7 +6,7 @@ import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 
-const ALLOWED_STATUS = ["pending", "scheduled", "confirmed", "completed", "cancelled", "no_show"] as const;
+const ALLOWED_STATUS = ["scheduled", "confirmed", "completed", "cancelled", "no_show"] as const;
 
 export async function updatePipelineAppointmentStatus(formData: FormData) {
   const id = String(formData.get("appointment_id") ?? "").trim();
@@ -34,7 +34,7 @@ export async function updatePipelineAppointmentStatus(formData: FormData) {
   const supabase = createServiceRoleClient();
   await supabase
     .from("appointments")
-    .update({ status })
+    .update({ status: status as (typeof ALLOWED_STATUS)[number] })
     .eq("id", id)
     .eq("barbershop_id", barbershopId);
 

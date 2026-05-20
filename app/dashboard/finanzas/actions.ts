@@ -24,7 +24,7 @@ export async function createExpense(formData: FormData) {
   const { error } = await supabase.from("expenses").insert({
     barbershop_id: barbershopId,
     amount,
-    category,
+    category: category as "alquiler" | "productos" | "herramientas" | "marketing" | "nomina" | "otros",
     description,
     expense_date,
   });

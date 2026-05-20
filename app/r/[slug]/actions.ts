@@ -5,7 +5,7 @@ import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 
-const ACTIVE_STATUSES = ["pending", "scheduled", "confirmed"];
+const ACTIVE_STATUSES = ["scheduled", "confirmed"] as const;
 
 type BookingInput = {
   barbershopId: string;

@@ -31,7 +31,7 @@ export default async function SuscripcionesPage() {
   const subscriptions = (rawSubs ?? []).map((s) => {
     const bs = s.barbershops as { name: string } | null;
     const { barbershops: _, ...rest } = s;
-    return { ...rest, barbershop_name: bs?.name ?? null };
+    return { ...rest, barbershop_name: bs?.name ?? undefined };
   });
 
   // MRR = only active subscriptions

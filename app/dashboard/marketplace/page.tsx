@@ -226,7 +226,7 @@ export default async function MarketplacePage() {
   const city = profile?.city || currentBarbershop?.city || null;
   const neighborhood = profile?.neighborhood ?? null;
   const planName = subscription?.plan_name ?? "starter";
-  const isPremiumPlan = planName === "premium" || planName === "custom";
+  const isPremiumPlan = planName === "premium";
   const isGrowthOrAbove = planName === "growth" || isPremiumPlan;
 
   const data: MarketplacePageData = {

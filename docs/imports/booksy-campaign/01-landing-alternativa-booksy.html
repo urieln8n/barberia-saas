@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alternativa a Booksy para Barberías sin Comisiones | BarberíaOS</title>
+  <meta name="description" content="Cansado de pagar el 30% a Booksy por tus propios clientes? BarberíaOS es la alternativa española sin comisiones. Tus clientes, tus datos, tu negocio. Prueba gratis 14 días." />
+  <meta name="keywords" content="alternativa booksy, alternativa booksy barbería, software barbería sin comisiones, dejar booksy, migrar booksy, agenda online barbería españa" />
+  <link rel="canonical" href="https://www.barberiaos.com/alternativa-a-booksy" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Alternativa a Booksy sin comisiones para barberías" />
+  <meta property="og:description" content="Deja de pagar el 30% por tus propios clientes. BarberíaOS: reservas, caja e IA por un precio fijo mensual." />
+  <meta property="og:url" content="https://www.barberiaos.com/alternativa-a-booksy" />
+  <meta property="og:type" content="website" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --negro: #0a0a0a;
+      --gris-oscuro: #141414;
+      --gris-medio: #1e1e1e;
+      --gris-borde: #2a2a2a;
+      --blanco: #ffffff;
+      --blanco-suave: #f0f0f0;
+      --gris-texto: #999;
+      --dorado: #c9a84c;
+      --dorado-claro: #e8c86d;
+      --rojo-booksy: #e63946;
+      --verde: #2ecc71;
+    }
+
+    body {
+      background: var(--negro);
+      color: var(--blanco);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      border-bottom: 1px solid var(--gris-borde);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dorado);
+      text-decoration: none;
+    }
+    .nav-cta {
+      background: var(--dorado);
+      color: var(--negro);
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--dorado-claro); }
+
+    /* HERO */
+    .hero {
+      padding: 90px 5% 70px;
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid var(--dorado);
+      color: var(--dorado);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 22px;
+      color: var(--blanco);
+    }
+    .hero h1 span { color: var(--dorado); }
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--gris-texto);
+      max-width: 620px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--blanco-suave); }
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--dorado);
+      color: var(--negro);
+      padding: 16px 34px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--dorado-claro); transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--blanco);
+      padding: 16px 34px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      text-decoration: none;
+      border: 1px solid var(--gris-borde);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--dorado); color: var(--dorado); }
+
+    .hero-nota {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: var(--gris-texto);
+    }
+
+    /* PAIN SECTION */
+    .pain {
+      background: var(--gris-oscuro);
+      border-top: 1px solid var(--gris-borde);
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 70px 5%;
+    }
+    .pain-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dorado);
+      margin-bottom: 12px;
+    }
+    .pain h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .pain-intro {
+      color: var(--gris-texto);
+      font-size: 1.05rem;
+      margin-bottom: 44px;
+      max-width: 640px;
+    }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .pain-card {
+      background: var(--gris-medio);
+      border: 1px solid var(--gris-borde);
+      border-radius: 10px;
+      padding: 26px;
+    }
+    .pain-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .pain-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--blanco);
+    }
+    .pain-card p {
+      font-size: 0.88rem;
+      color: var(--gris-texto);
+      line-height: 1.6;
+    }
+    .pain-card.highlight {
+      border-color: var(--rojo-booksy);
+      background: rgba(230,57,70,0.06);
+    }
+    .pain-card.highlight h3 { color: #ff6b6b; }
+
+    /* CALCULO REAL */
+    .calculo {
+      padding: 80px 5%;
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .calculo h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .calculo-sub {
+      color: var(--gris-texto);
+      margin-bottom: 44px;
+      font-size: 1.05rem;
+    }
+    .calculo-box {
+      background: var(--gris-oscuro);
+      border: 1px solid var(--gris-borde);
+      border-radius: 14px;
+      padding: 40px;
+      text-align: left;
+    }
+    .calculo-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gris-borde);
+      font-size: 0.95rem;
+    }
+    .calculo-row:last-child { border-bottom: none; }
+    .calculo-label { color: var(--gris-texto); }
+    .calculo-value { font-weight: 700; font-size: 1.05rem; }
+    .calculo-value.red { color: #ff6b6b; }
+    .calculo-value.green { color: var(--verde); }
+    .calculo-value.gold { color: var(--dorado); font-size: 1.3rem; }
+    .calculo-note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--gris-texto);
+      font-style: italic;
+    }
+    .calculo-ejemplo {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-top: 24px;
+      font-size: 0.92rem;
+      color: var(--blanco-suave);
+      line-height: 1.7;
+    }
+    .calculo-ejemplo strong { color: var(--dorado); }
+
+    /* COMPARATIVA */
+    .comparativa {
+      background: var(--gris-oscuro);
+      border-top: 1px solid var(--gris-borde);
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 80px 5%;
+    }
+    .comparativa-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .comparativa h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .comparativa-sub {
+      color: var(--gris-texto);
+      text-align: center;
+      margin-bottom: 50px;
+      font-size: 1rem;
+    }
+    .tabla-comparativa {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.93rem;
+    }
+    .tabla-comparativa th {
+      padding: 14px 20px;
+      text-align: left;
+      background: var(--gris-medio);
+      border-bottom: 2px solid var(--gris-borde);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tabla-comparativa th.col-barberiaos {
+      background: rgba(201,168,76,0.1);
+      color: var(--dorado);
+      border-bottom-color: var(--dorado);
+    }
+    .tabla-comparativa td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--gris-borde);
+      color: var(--gris-texto);
+      vertical-align: middle;
+    }
+    .tabla-comparativa tr:last-child td { border-bottom: none; }
+    .tabla-comparativa td.feature { color: var(--blanco-suave); font-weight: 500; }
+    .tabla-comparativa td.barberiaos-col {
+      background: rgba(201,168,76,0.04);
+    }
+    .check { color: var(--verde); font-size: 1.1rem; }
+    .cross { color: #ff6b6b; font-size: 1.1rem; }
+    .warning { color: #f39c12; font-size: 1rem; }
+
+    /* MIGRATION STEPS */
+    .migracion {
+      padding: 80px 5%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .migracion h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .migracion-sub {
+      color: var(--gris-texto);
+      text-align: center;
+      margin-bottom: 50px;
+      font-size: 1rem;
+    }
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .step {
+      display: flex;
+      gap: 26px;
+      align-items: flex-start;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--gris-borde);
+      position: relative;
+    }
+    .step:last-child { border-bottom: none; }
+    .step-number {
+      background: var(--dorado);
+      color: var(--negro);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 0.9rem;
+      color: var(--gris-texto);
+      line-height: 1.6;
+    }
+    .step-tag {
+      display: inline-block;
+      background: rgba(46,204,113,0.1);
+      color: var(--verde);
+      border: 1px solid rgba(46,204,113,0.3);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    /* TRUST / RAZONES */
+    .razones {
+      background: var(--gris-oscuro);
+      border-top: 1px solid var(--gris-borde);
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 80px 5%;
+    }
+    .razones-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .razones h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+    .razones-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .razon-card {
+      background: var(--gris-medio);
+      border: 1px solid var(--gris-borde);
+      border-radius: 12px;
+      padding: 30px;
+    }
+    .razon-numero {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--dorado);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .razon-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .razon-card p {
+      font-size: 0.87rem;
+      color: var(--gris-texto);
+      line-height: 1.65;
+    }
+
+    /* FAQ */
+    .faq {
+      padding: 80px 5%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .faq h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 44px;
+      text-align: center;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--gris-borde);
+    }
+    .faq-pregunta {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--blanco);
+      text-align: left;
+      padding: 22px 0;
+      font-size: 0.97rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq-pregunta .arrow {
+      color: var(--dorado);
+      font-size: 1.2rem;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .faq-pregunta.open .arrow { transform: rotate(180deg); }
+    .faq-respuesta {
+      display: none;
+      padding: 0 0 22px;
+      font-size: 0.9rem;
+      color: var(--gris-texto);
+      line-height: 1.7;
+    }
+    .faq-respuesta.open { display: block; }
+
+    /* CTA FINAL */
+    .cta-final {
+      padding: 100px 5%;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .cta-final h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 18px;
+      line-height: 1.2;
+    }
+    .cta-final h2 span { color: var(--dorado); }
+    .cta-final p {
+      color: var(--gris-texto);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .cta-final-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-final-nota {
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--gris-texto);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--gris-oscuro);
+      border-top: 1px solid var(--gris-borde);
+      padding: 40px 5%;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dorado);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 12px;
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: var(--gris-texto);
+    }
+    footer a { color: var(--gris-texto); text-decoration: none; }
+    footer a:hover { color: var(--dorado); }
+
+    /* WHATSAPP FLOAT */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #25D366;
+      color: white;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      z-index: 999;
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 340px; text-align: center; }
+      .calculo-box { padding: 24px 18px; }
+      .tabla-comparativa { font-size: 0.8rem; }
+      .tabla-comparativa th, .tabla-comparativa td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.barberiaos.com" class="nav-logo">BarberíaOS</a>
+  <a href="https://www.barberiaos.com/#precios" class="nav-cta">Probar gratis</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Alternativa a Booksy para barberías</div>
+  <h1>Deja de pagar el 30% por <span>tus propios clientes</span></h1>
+  <p class="hero-sub">
+    Booksy cobra comisión incluso por clientes que <strong>ya son tuyos</strong>.<br>
+    BarberíaOS es un precio fijo mensual. Sin comisiones. Sin marketplace. <strong>Tus clientes son tuyos.</strong>
+  </p>
+  <div class="hero-ctas">
+    <a href="https://www.barberiaos.com/#precios" class="btn-primary">Probar BarberíaOS gratis</a>
+    <a href="#comparativa" class="btn-secondary">Ver comparativa completa</a>
+  </div>
+  <p class="hero-nota">Sin tarjeta de crédito · Sin permanencia · Configuración en 48h</p>
+</section>
+
+<!-- PAIN: LO QUE BOOKSY NO TE DICE -->
+<section class="pain">
+  <div class="pain-inner">
+    <p class="section-label">Lo que Booksy no te dice en la letra pequeña</p>
+    <h2>Por qué los barberos están dejando Booksy</h2>
+    <p class="pain-intro">Booksy tiene una puntuación de 3.6/5 en Trustpilot. Estas son las quejas más repetidas de profesionales como tú.</p>
+
+    <div class="pain-grid">
+      <div class="pain-card highlight">
+        <div class="icon">💸</div>
+        <h3>El 30% por "tus" clientes</h3>
+        <p>Booksy cobra hasta un 30% de comisión en la primera reserva de clientes que llegan por Boost — incluyendo clientes que te encontraron en Google Maps o Instagram, no a través de ellos.</p>
+      </div>
+      <div class="pain-card highlight">
+        <div class="icon">🔗</div>
+        <h3>Tu cliente pasa a ser de Booksy</h3>
+        <p>Los datos de tus clientes están en la plataforma de Booksy. Si mañana sube las tarifas o cierras tu cuenta, pierdes el historial y el contacto directo con cada cliente.</p>
+      </div>
+      <div class="pain-card highlight">
+        <div class="icon">🚪</div>
+        <h3>Difícil salir sin consecuencias</h3>
+        <p>Varios barberos reportan que al darse de baja de Booksy, quedó un enlace de Booksy anclado en sus reservas de Google que no podían eliminar. Trampa digital.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">📉</div>
+        <h3>Soporte que no responde</h3>
+        <p>El 88% de las reseñas negativas en Capterra mencionan el soporte al cliente como "consistentemente decepcionante". Cuando algo falla, estás solo.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">⚔️</div>
+        <h3>Compites contra ti mismo</h3>
+        <p>En el marketplace de Booksy, tu barbería aparece junto a la de al lado. El cliente compara precios y elige al más barato. Tú pagas para que te busquen a ti o a la competencia.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">💳</div>
+        <h3>Cobros confusos y opacos</h3>
+        <p>Usuarios reportan que la plataforma intentó cobrar comisiones en reservas de clientes propios que llegaron a través de su web personal, sin pasar por el marketplace.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÁLCULO REAL -->
+<section class="calculo">
+  <p class="section-label">El coste real</p>
+  <h2>Cuánto te está costando Booksy de verdad</h2>
+  <p class="calculo-sub">Más allá de los 29€/mes del plan base, el modelo de Booksy penaliza a quien crece.</p>
+
+  <div class="calculo-box">
+    <div class="calculo-row">
+      <span class="calculo-label">Plan mensual Booksy (base)</span>
+      <span class="calculo-value red">~29 €/mes</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label">Comisión Boost (30% × 20 clientes nuevos × 25€ ticket)</span>
+      <span class="calculo-value red">+ 150 €/mes</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label">Horas perdidas en soporte e incidencias</span>
+      <span class="calculo-value red">+ tiempo no medido</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label">Clientes que no vuelven por reservar en plataforma genérica</span>
+      <span class="calculo-value red">+ fuga silenciosa</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label" style="color: var(--blanco); font-weight: 700;">Coste real mensual estimado</span>
+      <span class="calculo-value red" style="font-size: 1.5rem;">179 €+/mes</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label" style="color: var(--blanco); font-weight: 700;">BarberíaOS Control (todo incluido)</span>
+      <span class="calculo-value gold">79 €/mes</span>
+    </div>
+    <div class="calculo-row">
+      <span class="calculo-label" style="color: var(--verde); font-weight: 700;">Ahorro estimado mensual</span>
+      <span class="calculo-value green" style="font-size: 1.4rem;">+100 €/mes</span>
+    </div>
+
+    <div class="calculo-ejemplo">
+      <strong>Ejemplo real:</strong> Una barbería con 3 barberos, 80 reservas/mes y ticket medio de 28€ que usa Boost en Booksy paga aproximadamente <strong>~220€/mes</strong> entre cuota y comisiones. Con BarberíaOS Control paga <strong>79€ fijos</strong>. La diferencia se convierte en margen, en sueldo o en inversión en tu propio marketing.
+    </div>
+    <p class="calculo-note">* Cálculo orientativo basado en el modelo de comisiones Boost de Booksy y ticket medio estimado. Confirma en tu demo.</p>
+  </div>
+</section>
+
+<!-- COMPARATIVA -->
+<section class="comparativa" id="comparativa">
+  <div class="comparativa-inner">
+    <p class="section-label" style="text-align:center">Comparativa directa</p>
+    <h2>BarberíaOS vs Booksy</h2>
+    <p class="comparativa-sub">Sin letra pequeña. Sin asteriscos. Las diferencias que importan.</p>
+
+    <table class="tabla-comparativa">
+      <thead>
+        <tr>
+          <th style="width:34%">Característica</th>
+          <th>Booksy</th>
+          <th class="col-barberiaos">BarberíaOS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feature">Comisión por reserva</td>
+          <td><span class="cross">✗</span> Hasta 30% (Boost)</td>
+          <td class="barberiaos-col"><span class="check">✓</span> 0% siempre</td>
+        </tr>
+        <tr>
+          <td class="feature">Tus clientes son tuyos</td>
+          <td><span class="cross">✗</span> En plataforma Booksy</td>
+          <td class="barberiaos-col"><span class="check">✓</span> 100% tuyos</td>
+        </tr>
+        <tr>
+          <td class="feature">Marketplace con competencia</td>
+          <td><span class="cross">✗</span> Sí, compites en precio</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Tu página privada</td>
+        </tr>
+        <tr>
+          <td class="feature">Precio fijo mensual</td>
+          <td><span class="warning">⚠</span> Plan + comisiones variables</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Fijo, sin sorpresas</td>
+        </tr>
+        <tr>
+          <td class="feature">Caja e ingresos integrados</td>
+          <td><span class="cross">✗</span> Limitado</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Caja diaria completa</td>
+        </tr>
+        <tr>
+          <td class="feature">Marketing Studio incluido</td>
+          <td><span class="cross">✗</span> No</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Sí (plan Control+)</td>
+        </tr>
+        <tr>
+          <td class="feature">IA para recuperar clientes</td>
+          <td><span class="cross">✗</span> No</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Sí (plan Domina)</td>
+        </tr>
+        <tr>
+          <td class="feature">Configuración inicial</td>
+          <td><span class="warning">⚠</span> Tú solo</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Guiada en 48h</td>
+        </tr>
+        <tr>
+          <td class="feature">Sin app para el cliente</td>
+          <td><span class="cross">✗</span> Necesita app Booksy</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Solo navegador/link</td>
+        </tr>
+        <tr>
+          <td class="feature">Soporte directo</td>
+          <td><span class="cross">✗</span> Lento (Trustpilot 3.6/5)</td>
+          <td class="barberiaos-col"><span class="check">✓</span> WhatsApp directo</td>
+        </tr>
+        <tr>
+          <td class="feature">Permanencia mínima</td>
+          <td><span class="warning">⚠</span> Condiciones variables</td>
+          <td class="barberiaos-col"><span class="check">✓</span> Sin permanencia</td>
+        </tr>
+        <tr>
+          <td class="feature">Precio desde</td>
+          <td>~29 €/mes + comisiones</td>
+          <td class="barberiaos-col" style="color:var(--dorado); font-weight:700;">39 €/mes todo incluido</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MIGRACIÓN -->
+<section class="migracion">
+  <p class="section-label" style="text-align:center">Migración sin dolor</p>
+  <h2>Cambia de Booksy a BarberíaOS en 48h</h2>
+  <p class="migracion-sub">No perderás tus clientes. Nosotros nos encargamos de la transición.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Demo gratuita <span class="step-tag">Día 1 — 30 min</span></h3>
+        <p>Nos cuentas cómo funciona tu barbería ahora mismo: cuántos barberos, qué servicios, cómo gestionas las reservas. Sin compromiso.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Configuramos tu barbería <span class="step-tag">Día 1 — nosotros lo hacemos</span></h3>
+        <p>Subimos tus servicios, barberos, horarios y precios. Generamos tu link público y QR de reservas personalizados.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Exportas tus clientes de Booksy <span class="step-tag">Día 2 — 10 minutos</span></h3>
+        <p>Desde Booksy puedes exportar tu lista de clientes en CSV. Te explicamos exactamente cómo hacerlo y los importamos en BarberíaOS. Cero pérdida de datos.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Cambias el link de reservas <span class="step-tag">Día 2 — 5 minutos</span></h3>
+        <p>Actualizas el link en tu bio de Instagram, WhatsApp y Google. A partir de ese momento las reservas nuevas llegan a BarberíaOS, sin comisiones.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <h3>Cancelas Booksy cuando quieras</h3>
+        <p>Una vez que ves que BarberíaOS funciona, cancelas Booksy. Sin urgencia. Sin presión. A tu ritmo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RAZONES -->
+<section class="razones">
+  <div class="razones-inner">
+    <h2>Por qué los barberos eligen BarberíaOS</h2>
+    <div class="razones-grid">
+      <div class="razon-card">
+        <div class="razon-numero">0%</div>
+        <h3>Cero comisiones, siempre</h3>
+        <p>No importa cuántos clientes reserves este mes. El precio es fijo. Si creces, no pagas más por reservas.</p>
+      </div>
+      <div class="razon-card">
+        <div class="razon-numero">48h</div>
+        <h3>Operativo desde el primer día</h3>
+        <p>Te configuramos nosotros: servicios, barberos, QR y link público. Tú solo revisas y empiezas a recibir reservas.</p>
+      </div>
+      <div class="razon-card">
+        <div class="razon-numero">100%</div>
+        <h3>Tus datos, siempre tuyos</h3>
+        <p>Historial de clientes, reservas y caja. Todo tuyo, exportable, sin rehenes. Si algún día te vas, te llevas todo.</p>
+      </div>
+      <div class="razon-card">
+        <div class="razon-numero">1</div>
+        <h3>Un sistema, no seis herramientas</h3>
+        <p>Reservas, caja, clientes, equipo, marketing e IA en un solo panel. Sin integraciones rotas ni Excel paralelos.</p>
+      </div>
+      <div class="razon-card">
+        <div class="razon-numero">ES</div>
+        <h3>Software español para barberías españolas</h3>
+        <p>Hecho en España, soporte en español por WhatsApp, precios en euros, sin conversiones ni burocracia anglosajona.</p>
+      </div>
+      <div class="razon-card">
+        <div class="razon-numero">∞</div>
+        <h3>Sin permanencia, sin trampa</h3>
+        <p>Cancela el mes que quieras sin penalizaciones. Sabemos que si funcionamos, te quedas. No necesitamos encerrarte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <h2>Preguntas frecuentes sobre la migración desde Booksy</h2>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Pierdo mis clientes al migrar de Booksy a BarberíaOS?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      No. Booksy te permite exportar tu base de clientes en formato CSV desde el panel de administración. Nosotros te ayudamos a importarlos en BarberíaOS. No pierdes ningún contacto, ningún historial que hayas guardado.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Mis clientes tienen que instalar alguna app?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      No. Con BarberíaOS reservan desde el navegador de su móvil usando tu link público o tu QR. Sin app, sin registro obligatorio, sin fricciones. Más fácil que Booksy para el cliente.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Puedo usar BarberíaOS aunque ya tenga web propia?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      Sí. BarberíaOS tiene un widget instalable en una línea de código para que el botón de reservas aparezca en tu web actual. También tienes una página pública propia con tu dominio de barbería.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Cuánto tiempo tarda la configuración?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      48 horas desde que empezamos. El día 1 configuramos barbería, servicios, barberos y QR. El día 2 revisamos la agenda, la caja básica y hacemos las primeras pruebas de reserva. Tú solo supervisas.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Hay permanencia o contrato mínimo?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      No. Pagas mes a mes y cancelas cuando quieras sin penalización. Puedes empezar con el plan Arranca y subir cuando lo necesites.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Es más caro que Booksy?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      El plan Arranca empieza en 39€/mes. El plan base de Booksy está en ~29€/mes, pero a eso le sumas las comisiones Boost (hasta el 30% por reserva). La mayoría de barberías que usan Boost activamente acaban pagando más de 150-200€/mes. Con BarberíaOS sabes exactamente lo que pagas cada mes.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-pregunta" onclick="toggleFaq(this)">
+      ¿Qué pasa con el enlace de Booksy en mi Google Business?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-respuesta">
+      Es uno de los problemas documentados de Booksy: cuando te das de baja, puede quedar un enlace de reservas de Booksy anclado en tu ficha de Google. Te ayudamos a gestionarlo: te explicamos exactamente cómo reclamar y actualizar tu ficha de Google Business para que el enlace apunte a BarberíaOS.
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2>Empieza hoy. <span>Sin Booksy, sin comisiones.</span></h2>
+  <p>Tus clientes son tuyos. Tu caja es tuya. Tu negocio no tiene por qué financiar el marketplace de otra empresa. Prueba BarberíaOS gratis y comprueba la diferencia en 48 horas.</p>
+  <div class="cta-final-btns">
+    <a href="https://www.barberiaos.com/#precios" class="btn-primary">Activar mi barbería gratis</a>
+    <a href="https://wa.me/34XXXXXXXXX?text=Hola,%20vengo%20de%20la%20página%20de%20alternativa%20a%20Booksy%20y%20quiero%20migrar%20mi%20barbería" class="btn-secondary">Hablar por WhatsApp</a>
+  </div>
+  <p class="cta-final-nota">Sin tarjeta · Sin permanencia · Configuración en 48h · Soporte en español</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://www.barberiaos.com" class="footer-logo">BarberíaOS</a>
+  <p>© 2026 BarberíaOS · <a href="/aviso-legal">Aviso legal</a> · <a href="/privacidad">Privacidad</a> · <a href="mailto:hola@barberiaos.com">hola@barberiaos.com</a></p>
+  <p style="margin-top:8px">
+    <a href="/agenda-online-barberia">Agenda online barbería</a> ·
+    <a href="/alternativa-a-booksy">Alternativa a Booksy</a> ·
+    <a href="/software-gestion-barberia">Software gestión barbería</a>
+  </p>
+</footer>
+
+<!-- WHATSAPP FLOTANTE -->
+<a href="https://wa.me/34XXXXXXXXX?text=Hola,%20quiero%20saber%20más%20sobre%20BarberíaOS" class="wa-float" title="Hablar por WhatsApp">💬</a>
+
+<script>
+  function toggleFaq(btn) {
+    const respuesta = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    // Cerrar todos
+    document.querySelectorAll('.faq-pregunta').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.faq-respuesta').forEach(r => r.classList.remove('open'));
+    // Abrir el actual si estaba cerrado
+    if (!isOpen) {
+      btn.classList.add('open');
+      respuesta.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -11,14 +11,11 @@ import {
   CircleDollarSign,
   Clock3,
   Crown,
-  Gauge,
   Instagram,
   Megaphone,
   MessageCircle,
-  PackageCheck,
   Printer,
   QrCode,
-  ReceiptText,
   ScanBarcode,
   Scissors,
   Sparkles,
@@ -31,7 +28,11 @@ import {
 } from "lucide-react";
 import { LandingExperience, MotionSection } from "@/components/landing/PremiumLandingMotion";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { ProductMockupCard } from "@/components/ui/ProductMockupCard";
+import { SectionIntro } from "@/components/landing/SectionIntro";
+import { DashboardMockup } from "@/components/landing/DashboardMockup";
+import { PublicBookingMockup } from "@/components/landing/PublicBookingMockup";
+import { LandingCTABlock } from "@/components/landing/LandingCTABlock";
+import { FAQAccordion } from "@/components/landing/FAQAccordion";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 const CONTACT_EMAIL = BUSINESS_CONFIG.legalEmail;
@@ -250,31 +251,13 @@ const homeJsonLd = [
   },
 ];
 
+// ── Local layout helpers ───────────────────────────────────────────────────────
+
 function Shell({ children, className = "", ...props }: HTMLAttributes<HTMLElement>) {
   return (
     <MotionSection className={`px-5 py-16 md:py-24 lg:px-8 ${className}`} {...props}>
       {children}
     </MotionSection>
-  );
-}
-
-function SectionIntro({
-  eyebrow,
-  title,
-  text,
-  center = false,
-}: {
-  eyebrow: string;
-  title: string;
-  text?: string;
-  center?: boolean;
-}) {
-  return (
-    <div className={center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
-      <p className="text-xs font-black uppercase text-[#38BDF8]">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-black leading-[1.05] text-white md:text-5xl">{title}</h2>
-      {text && <p className="mt-5 text-base leading-8 text-white/60">{text}</p>}
-    </div>
   );
 }
 
@@ -286,133 +269,27 @@ function Pill({ children }: { children: string }) {
   );
 }
 
-function DashboardMockup() {
-  const appointments = [
-    ["09:30", "Corte + barba", "Dani", "Confirmada"],
-    ["10:45", "Degradado", "Leo", "En silla"],
-    ["12:00", "Hueco libre", "Marco", "Compartir"],
-  ] as const;
-
-  return (
-    <ProductMockupCard dark className="premium-mockup relative mx-auto w-full max-w-4xl rounded-[30px]">
-      <div className="rounded-[24px] border border-[#38BDF8]/[0.16] bg-[#0b1019]/[0.88] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:p-5">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
-          <div>
-            <p className="text-xs font-black uppercase text-[#38BDF8]">BarberíaOS</p>
-            <h3 className="mt-1 text-xl font-black text-white md:text-2xl">Panel demo del dueño</h3>
-          </div>
-          <div className="rounded-full border border-[#38BDF8]/25 bg-[#38BDF8]/10 px-3 py-1 text-xs font-black text-[#BDEBFF]">
-            Datos de ejemplo
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {[
-            ["Reservas hoy", "31", CalendarCheck2],
-            ["Caja estimada", "1.248 €", ReceiptText],
-            ["Productos", "186 €", PackageCheck],
-            ["Ocupación", "87%", Gauge],
-          ].map(([label, value, Icon]) => {
-            const TypedIcon = Icon as typeof CalendarCheck2;
-            return (
-              <div key={label as string} className="rounded-2xl border border-[#38BDF8]/[0.16] bg-white/[0.07] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] font-black uppercase text-white/[0.38]">{label as string}</p>
-                  <TypedIcon size={14} className="text-[#38BDF8]" />
-                </div>
-                <p className="mt-3 text-2xl font-black text-white">{value as string}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="rounded-2xl border border-[#2F6FEB]/20 bg-[#07111f]/75 p-4 shadow-[0_18px_55px_rgba(0,0,0,0.22)]">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-sm font-black text-white">Agenda conectada</p>
-              <QrCode size={16} className="text-[#38BDF8]" />
-            </div>
-            <div className="space-y-2">
-              {appointments.map(([time, service, barber, status]) => (
-                <div key={`${time}-${service}`} className="grid grid-cols-[52px_1fr] gap-3 rounded-xl border border-white/[0.12] bg-white/[0.065] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:grid-cols-[58px_1fr_auto]">
-                  <p className="text-sm font-black text-[#38BDF8]">{time}</p>
-                  <div>
-                    <p className="text-sm font-black text-white">{service}</p>
-                    <p className="mt-0.5 text-xs text-white/42">{barber}</p>
-                  </div>
-                  <span className="hidden rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-bold text-white/60 sm:inline-flex">
-                    {status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-4">
-            <div className="premium-blue-panel rounded-2xl p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-black text-white">Marketing Studio</p>
-                <TrendingUp size={16} className="text-[#38BDF8]" />
-              </div>
-              <p className="mt-3 text-3xl font-black text-white">14 clientes</p>
-              <p className="mt-1 text-xs leading-5 text-white/55">ejemplo de clientes a recuperar.</p>
-            </div>
-            <div className="rounded-2xl border border-[#38BDF8]/[0.18] bg-[#2563EB]/[0.08] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_16px_44px_rgba(37,99,235,0.10)]">
-              <p className="text-sm font-black text-white">IA del dueño</p>
-              <p className="mt-3 text-sm leading-6 text-white/58">
-                "Tienes huecos mañana entre 16:00 y 18:00. Publica oferta de barba + corte y escribe a clientes de alta frecuencia."
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ProductMockupCard>
-  );
-}
-
-function PublicBookingMockup() {
-  return (
-    <div className="premium-mockup rounded-[28px] border p-4">
-      <div className="rounded-[24px] border border-[#38BDF8]/[0.16] bg-[#07111f]/[0.78] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-[0_12px_30px_rgba(37,99,235,0.30)]">
-              <Scissors size={19} />
-            </div>
-            <div>
-              <p className="font-black text-white">Demo Barber Studio</p>
-              <p className="text-xs text-white/42">Ejemplo de página pública</p>
-            </div>
-          </div>
-          <QrCode className="text-[#38BDF8]" size={26} />
-        </div>
-        <div className="mt-5 space-y-2">
-          {["Corte premium", "Corte + barba", "Arreglo de barba"].map((service, index) => (
-            <div key={service} className="flex items-center justify-between rounded-2xl border border-white/[0.12] bg-white/[0.065] p-3">
-              <div>
-                <p className="text-sm font-black text-white">{service}</p>
-                <p className="text-xs text-white/40">{index === 0 ? "30 min" : "45 min"}</p>
-              </div>
-              <span className="text-sm font-black text-[#38BDF8]">{index === 0 ? "18 €" : "24 €"}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#38BDF8] via-[#2563EB] to-[#1D4ED8] px-4 py-3 text-center text-sm font-black text-white shadow-[0_16px_38px_rgba(37,99,235,0.34)]">
-          Ver flujo de reserva
-        </div>
-      </div>
-    </div>
-  );
-}
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
     <LandingExperience>
+      {/* Skip navigation for accessibility */}
+      <a
+        href="#contenido-principal"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-[#2563EB] focus:px-4 focus:py-2 focus:text-sm focus:font-black focus:text-white"
+      >
+        Saltar al contenido
+      </a>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
-      <div className="landing-canvas text-white">
+
+      <div id="contenido-principal" className="landing-canvas text-white">
+
+        {/* ── Header ─────────────────────────────────────────────────────────── */}
         <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070d]/82 px-5 backdrop-blur-xl lg:px-8">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
             <Link href="/" className="inline-flex items-center gap-3">
@@ -441,6 +318,7 @@ export default function HomePage() {
           </div>
         </header>
 
+        {/* ── Hero ───────────────────────────────────────────────────────────── */}
         <section className="relative overflow-hidden px-5 pb-16 pt-12 md:pb-24 md:pt-20 lg:px-8" data-gsap-premium="hero">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/40 to-transparent" />
           <div className="premium-hero-glow" aria-hidden="true" />
@@ -458,20 +336,22 @@ export default function HomePage() {
                 <Crown size={14} className="text-[#D5A84C]" />
                 SaaS para barberías que quieren vender reservas sin perder control
               </div>
-              <h1 className="mt-6 text-5xl font-black leading-[0.96] tracking-normal text-white md:text-7xl">
-                Reservas, caja y clientes en un solo sistema para tu barbería.
+              <h1 className="mt-6 text-4xl font-black leading-[0.96] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                Reservas, caja y control de barberos en un solo panel.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">
-                Sin comisión por reserva. Sin app que instalar. Clientes y datos siempre tuyos.
+                Reservas online desde tu QR o enlace, clientes propios, caja diaria sin papel y{" "}
+                <span className="font-black text-[#D5A84C]">0% de comisión</span> por cada cita.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
-                  Pedir demo por WhatsApp <MessageCircle size={17} />
-                </PrimaryButton>
-                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Ver demo interactiva <ArrowRight size={17} />
-                </PrimaryButton>
-              </div>
+
+              <LandingCTABlock
+                primaryHref={DEMO_URL}
+                primaryLabel="Ver demo interactiva"
+                secondaryHref={WHATSAPP_URL}
+                secondaryLabel="Hablar por WhatsApp"
+                className="mt-8"
+              />
+
               <div className="mt-5">
                 <a
                   href={DEMO_BOOKING_URL}
@@ -483,7 +363,7 @@ export default function HomePage() {
                 </a>
               </div>
               <div className="mt-8 flex flex-wrap gap-2">
-                <Pill>Sin comisión por reserva</Pill>
+                <Pill>0% comisión por reserva</Pill>
                 <Pill>Activación guiada</Pill>
                 <Pill>Kit QR incluido</Pill>
               </div>
@@ -491,8 +371,8 @@ export default function HomePage() {
                 {([["24/7", "Reservas abiertas"], ["0%", "Comisión por cita"], ["48h", "Para empezar"]] as const).map(
                   ([num, label]) => (
                     <div key={label} className="flex items-baseline gap-1.5">
-                      <span className="text-2xl font-black text-white">{num}</span>
-                      <span className="text-sm text-white/38">{label}</span>
+                      <span className={`text-2xl font-black ${num === "0%" ? "text-[#D5A84C]" : "text-white"}`}>{num}</span>
+                      <span className={`text-sm ${num === "0%" ? "text-[#D5A84C]/60" : "text-white/38"}`}>{label}</span>
                     </div>
                   )
                 )}
@@ -502,6 +382,7 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── Qué controla ───────────────────────────────────────────────────── */}
         <Shell id="controla" className="landing-section-graphite border-t border-white/10">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
@@ -533,6 +414,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Activación ─────────────────────────────────────────────────────── */}
         <Shell id="activacion" className="landing-section-dark">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
@@ -541,14 +423,11 @@ export default function HomePage() {
                 title="No compras solo una herramienta: sales con tu barbería configurada."
                 text="En una demo validamos si encaja. Si avanzas, dejamos configurado lo esencial: servicios, barberos, enlace de reservas, QR, agenda y primeros materiales para compartir."
               />
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
-                  Pedir demo por WhatsApp <MessageCircle size={17} />
-                </PrimaryButton>
-                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Ver demo interactiva
-                </PrimaryButton>
-              </div>
+              <LandingCTABlock
+                primaryHref={WHATSAPP_URL}
+                secondaryHref={DEMO_URL}
+                className="mt-8"
+              />
             </div>
             <div className="grid gap-3">
               {activationSteps.map(([step, text]) => (
@@ -568,6 +447,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Reservas con QR ────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
@@ -576,19 +456,18 @@ export default function HomePage() {
                 title="Tu mostrador, espejo e Instagram pueden mandar reservas al mismo sistema."
                 text="El cliente entra desde tu QR o enlace, elige servicio, barbero y hora. Tú ves la reserva en la agenda sin perseguir conversaciones sueltas."
               />
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
-                  Pedir demo por WhatsApp
-                </PrimaryButton>
-                <PrimaryButton href={DEMO_BOOKING_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Probar reserva pública
-                </PrimaryButton>
-              </div>
+              <LandingCTABlock
+                primaryHref={WHATSAPP_URL}
+                secondaryHref={DEMO_BOOKING_URL}
+                secondaryLabel="Probar reserva pública"
+                className="mt-8"
+              />
             </div>
             <PublicBookingMockup />
           </div>
         </Shell>
 
+        {/* ── BarberíaOS Kit ─────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
@@ -597,18 +476,11 @@ export default function HomePage() {
                 title="Del software al local: QR, carteles, mensajes y setup recomendado."
                 text="El Kit convierte BarberíaOS en algo visible dentro de la barbería. Incluye QR de reservas, materiales descargables, mensajes para WhatsApp e Instagram, checklist de activación y recomendaciones de tablet, impresora o caja si encajan con tu operación."
               />
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
-                  Pedir demo por WhatsApp <MessageCircle size={17} />
-                </PrimaryButton>
-                <a
-                  href={DEMO_URL}
-                  className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-7 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
-                >
-                  Ver demo interactiva
-                  <ArrowRight size={17} />
-                </a>
-              </div>
+              <LandingCTABlock
+                primaryHref={WHATSAPP_URL}
+                secondaryHref={DEMO_URL}
+                className="mt-8"
+              />
             </div>
 
             <div className="grid gap-4">
@@ -616,7 +488,7 @@ export default function HomePage() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-black uppercase text-[#38BDF8]">Kit incluido en la activación</p>
-                    <h3 className="mt-2 text-2xl font-black text-white">Materiales para pasar de “tengo software” a “mis clientes reservan”.</h3>
+                    <h3 className="mt-2 text-2xl font-black text-white">Materiales para pasar de "tengo software" a "mis clientes reservan".</h3>
                   </div>
                   <QrCode size={34} className="shrink-0 text-[#38BDF8]" />
                 </div>
@@ -653,6 +525,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Operating blocks ───────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-5 lg:grid-cols-3">
@@ -685,6 +558,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Marketing Studio ───────────────────────────────────────────────── */}
         <Shell id="marketing" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
@@ -716,6 +590,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Comparativa ────────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
@@ -723,7 +598,29 @@ export default function HomePage() {
               title="La diferencia no es tener reservas. Es tener el negocio conectado."
               center
             />
-            <div className="mt-10 grid gap-4 lg:grid-cols-3">
+
+            {/* Sin comisión — callout gold agresivo */}
+            <div className="mt-10 rounded-[28px] border border-[#D5A84C]/25 bg-gradient-to-r from-[#D5A84C]/[0.07] via-[#D5A84C]/[0.03] to-transparent p-5 shadow-[0_0_60px_rgba(213,168,76,0.07),inset_0_1px_0_rgba(213,168,76,0.12)] md:p-7">
+              <div className="flex flex-col items-center gap-5 text-center md:flex-row md:text-left">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 shadow-[0_0_24px_rgba(213,168,76,0.10)]">
+                  <CircleDollarSign size={26} className="text-[#D5A84C]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg font-black text-white md:text-xl">
+                    0€ de comisión por reserva. Para siempre.
+                  </p>
+                  <p className="mt-1.5 text-sm leading-6 text-white/54">
+                    BarberíaOS cobra un precio mensual fijo. Sin porcentajes, sin sorpresas al final del mes. Tus ingresos son completamente tuyos.
+                  </p>
+                </div>
+                <div className="shrink-0 rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-6 py-4 text-center shadow-[0_0_30px_rgba(213,168,76,0.08)]">
+                  <p className="text-4xl font-black text-[#D5A84C]">0%</p>
+                  <p className="mt-0.5 text-xs font-bold text-white/45">comisión</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
               {comparisons.map(([title, text], index) => (
                 <article
                   key={title}
@@ -746,6 +643,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Por ciudad ─────────────────────────────────────────────────────── */}
         <Shell id="ciudades" className="landing-section-graphite border-t border-white/[0.07]">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
@@ -791,7 +689,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        {/* SEO CONVERSION SECTION — Booksy campaign funnel */}
+        {/* ── SEO conversion — Booksy campaign funnel ────────────────────────── */}
         <Shell className="landing-section-dark border-t border-white/[0.07]">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
@@ -844,6 +742,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Programa Fundadoras ────────────────────────────────────────────── */}
         <Shell id="fundadoras" className="landing-section-dark">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
@@ -852,14 +751,12 @@ export default function HomePage() {
                 title="Estamos abriendo plazas para barberías que quieren implantarlo con acompañamiento."
                 text="No vamos a inventar casos reales. El programa fundador existe para trabajar con dueños que quieran ordenar reservas, caja y clientes con una activación guiada, feedback directo y condiciones iniciales claras."
               />
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-7">
-                  Pedir plaza fundadora <MessageCircle size={17} />
-                </PrimaryButton>
-                <PrimaryButton href={DEMO_URL} variant="ghost" className="premium-cta-glass min-h-12 px-7 hover:bg-white/[0.12] hover:text-white">
-                  Ver demo interactiva
-                </PrimaryButton>
-              </div>
+              <LandingCTABlock
+                primaryHref={WHATSAPP_URL}
+                primaryLabel="Pedir plaza fundadora"
+                secondaryHref={DEMO_URL}
+                className="mt-8"
+              />
             </div>
             <div className="premium-blue-panel rounded-[30px] p-6">
               <p className="text-xs font-black uppercase text-[#38BDF8]">Qué incluye</p>
@@ -878,6 +775,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Precios ────────────────────────────────────────────────────────── */}
         <Shell id="precios" className="landing-section-dark">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
@@ -892,14 +790,17 @@ export default function HomePage() {
                   key={plan.name}
                   className={`relative flex min-h-full flex-col rounded-[30px] border p-6 ${
                     plan.featured
-                      ? "border-[#D5A84C]/45 bg-gradient-to-b from-[#13100B] to-[#07111f] text-white shadow-[0_26px_96px_rgba(213,168,76,0.12),0_0_0_1px_rgba(213,168,76,0.06)]"
-                      : "border-[#2F6FEB]/[0.16] bg-white/[0.055] text-white shadow-[0_22px_72px_rgba(0,0,0,0.20)]"
+                      ? "border-[#D5A84C]/40 bg-gradient-to-b from-[#16110A] to-[#07111f] text-white shadow-[0_32px_96px_rgba(213,168,76,0.14),0_0_0_1px_rgba(213,168,76,0.08),inset_0_1px_0_rgba(213,168,76,0.14)]"
+                      : "border-[#2F6FEB]/[0.16] bg-white/[0.045] text-white shadow-[0_22px_72px_rgba(0,0,0,0.20)]"
                   }`}
                 >
                   {plan.featured && (
-                    <span className="absolute right-5 top-5 rounded-full bg-[#D5A84C] px-3 py-1 text-xs font-black text-[#080A0F]">
-                      Más equilibrado
-                    </span>
+                    <>
+                      <div className="absolute inset-x-0 top-0 h-px rounded-t-[30px] bg-gradient-to-r from-transparent via-[#D5A84C]/70 to-transparent" />
+                      <span className="absolute right-5 top-5 rounded-full bg-[#D5A84C] px-3 py-1 text-xs font-black text-[#080A0F]">
+                        Más elegido
+                      </span>
+                    </>
                   )}
                   <h3 className="text-2xl font-black">{plan.name}</h3>
                   <p className={`mt-3 min-h-14 text-sm leading-6 ${plan.featured ? "text-white/60" : "text-white/55"}`}>
@@ -911,12 +812,8 @@ export default function HomePage() {
                     <p className={`text-xs font-black uppercase ${plan.featured ? "text-[#D5A84C]" : "text-[#38BDF8]"}`}>
                       Para quién
                     </p>
-                    <p className="mt-2 text-sm leading-6 text-white/62">
-                      {plan.forWho}
-                    </p>
-                    <p className="mt-3 text-xs font-bold text-white/38">
-                      {plan.limits}
-                    </p>
+                    <p className="mt-2 text-sm leading-6 text-white/62">{plan.forWho}</p>
+                    <p className="mt-3 text-xs font-bold text-white/38">{plan.limits}</p>
                   </div>
                   <div className="mt-7 flex items-end gap-1">
                     <span className="text-5xl font-black">{plan.price}</span>
@@ -931,7 +828,11 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                  <PrimaryButton href={plan.featured ? WHATSAPP_URL : DEMO_URL} variant={plan.featured ? "premiumBlue" : "ghost"} className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}>
+                  <PrimaryButton
+                    href={plan.featured ? WHATSAPP_URL : DEMO_URL}
+                    variant={plan.featured ? "premiumBlue" : "ghost"}
+                    className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}
+                  >
                     {plan.featured ? "Pedir demo por WhatsApp" : "Ver demo interactiva"}
                   </PrimaryButton>
                 </article>
@@ -943,6 +844,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Después de la demo ─────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
@@ -963,6 +865,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── CTA final ──────────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="premium-blue-panel mx-auto max-w-5xl rounded-[32px] p-7 text-center md:p-12">
             <BadgeEuro className="mx-auto text-[#38BDF8]" size={34} />
@@ -973,32 +876,29 @@ export default function HomePage() {
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/62">
               Te enseñamos reservas, caja, productos, QR, clientes, Marketing Studio e IA del dueño en un recorrido corto y directo, sin prometer resultados que no se puedan demostrar.
             </p>
-            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <PrimaryButton href={WHATSAPP_URL} variant="premiumBlue" className="min-h-12 px-8">
-                Pedir demo por WhatsApp <MessageCircle size={17} />
-              </PrimaryButton>
-              <a
-                href={DEMO_URL}
-                className="premium-cta-glass inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] px-8 text-sm font-black transition hover:bg-white/[0.12] hover:text-white"
-              >
-                Ver demo interactiva
-                <ArrowRight size={17} />
-              </a>
+            <LandingCTABlock
+              primaryHref={WHATSAPP_URL}
+              secondaryHref={DEMO_URL}
+              className="mt-9 justify-center"
+            />
+          </div>
+        </Shell>
+
+        {/* ── FAQ ────────────────────────────────────────────────────────────── */}
+        <Shell className="landing-section-dark">
+          <div className="mx-auto max-w-5xl">
+            <SectionIntro
+              eyebrow="Preguntas frecuentes"
+              title="Respuestas antes de pedir demo."
+              center
+            />
+            <div className="mt-10">
+              <FAQAccordion items={faqs} dark />
             </div>
           </div>
         </Shell>
 
-        <Shell className="landing-section-dark pt-0">
-          <div className="mx-auto grid max-w-5xl gap-3">
-            {faqs.map(([question, answer]) => (
-              <article key={question} className="rounded-[22px] border border-[#2F6FEB]/[0.16] bg-white/[0.055] p-5 shadow-[0_18px_54px_rgba(0,0,0,0.18)]">
-                <h3 className="font-black text-white">{question}</h3>
-                <p className="mt-2 text-sm leading-7 text-white/55">{answer}</p>
-              </article>
-            ))}
-          </div>
-        </Shell>
-
+        {/* ── Footer ─────────────────────────────────────────────────────────── */}
         <footer className="border-t border-white/10 bg-gradient-to-br from-[#05070d] via-[#07111f] to-[#02030a] px-5 py-10 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-sm">
@@ -1077,6 +977,7 @@ export default function HomePage() {
             © {new Date().getFullYear()} BarberíaOS. Contacto: {CONTACT_EMAIL}
           </div>
         </footer>
+
       </div>
     </LandingExperience>
   );

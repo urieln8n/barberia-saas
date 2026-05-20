@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripe } from "@/src/lib/stripe/server";
 import { syncStripeSubscriptionToSupabase } from "@/src/lib/stripe/sync-subscription";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import type { Json } from "@/src/types/database.types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -13,7 +14,7 @@ async function recordStripeEvent(event: Stripe.Event) {
   const { error } = await supabase.from("stripe_events").insert({
     id: event.id,
     type: event.type,
-    payload: event as unknown as Record<string, unknown>,
+    payload: event as unknown as Json,
   });
 
   if (error?.code === "23505") {

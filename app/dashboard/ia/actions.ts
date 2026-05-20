@@ -294,7 +294,7 @@ async function collectMetrics(barbershopId: string): Promise<OwnerAIMetrics> {
     topProducts,
     topServices,
     topBarbers,
-    reviewsPending: (reviewsResult.data ?? []).filter((review) => review.status !== "published").length,
+    reviewsPending: (reviewsResult.data ?? []).filter((review) => review.status === "pending").length,
   };
 }
 

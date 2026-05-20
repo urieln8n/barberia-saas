@@ -27,7 +27,7 @@ export async function createPayment(formData: FormData) {
   const { error } = await supabase.from("payments").insert({
     barbershop_id: barbershopId,
     amount,
-    method,
+    method: method as "cash" | "card" | "bizum" | "transfer" | "other",
     notes,
     client_id,
     status: "paid",
