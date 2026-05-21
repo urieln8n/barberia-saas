@@ -361,12 +361,20 @@ export default function HomePage() {
                 <li><Link href={CALCULATOR_URL} className="transition hover:text-white">Calculadora</Link></li>
               </ul>
             </nav>
-            <Link
-              href={REQUEST_DEMO_URL}
-              className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
-            >
-              Pedir demo
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="rounded-2xl px-4 py-2 text-sm font-black text-white/70 transition hover:text-white"
+              >
+                Entrar al panel
+              </Link>
+              <Link
+                href={REQUEST_DEMO_URL}
+                className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
+              >
+                Pedir demo
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -388,7 +396,7 @@ export default function HomePage() {
                 <Crown size={14} className="text-[#D5A84C]" />
                 SaaS para barberías que quieren vender reservas sin perder control
               </div>
-              <h1 className="mt-6 text-4xl font-black leading-[0.96] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="mt-6 max-w-full text-3xl font-black leading-[1.02] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 Reservas, caja y control de barberos en un solo panel.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">
@@ -444,7 +452,7 @@ export default function HomePage() {
         </section>
 
         {/* ── Qué controla ───────────────────────────────────────────────────── */}
-        <Shell id="controla" className="landing-section-graphite border-t border-white/10">
+        <Shell id="controla" className="landing-section-light border-t border-white/10">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Qué controla BarberíaOS"
@@ -476,7 +484,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Flujo de conversión ───────────────────────────────────────────── */}
-        <Shell className="landing-section-dark">
+        <Shell className="landing-section-light">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Cómo funciona"
@@ -509,7 +517,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Antes / Después ───────────────────────────────────────────────── */}
-        <Shell className="landing-section-graphite">
+        <Shell className="landing-section-light">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-5 lg:grid-cols-2">
               {beforeAfter.map((block, index) => (
@@ -574,7 +582,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Reservas con QR ────────────────────────────────────────────────── */}
-        <Shell className="landing-section-graphite">
+        <Shell className="landing-section-light">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <SectionIntro
@@ -595,7 +603,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── BarberíaOS Kit ─────────────────────────────────────────────────── */}
-        <Shell className="landing-section-graphite">
+        <Shell className="landing-section-light">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <SectionIntro
@@ -715,7 +723,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Marketing Studio ───────────────────────────────────────────────── */}
-        <Shell id="marketing" className="landing-section-dark">
+        <Shell id="marketing" className="landing-section-light">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
               <SectionIntro
@@ -747,7 +755,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Comparativa ────────────────────────────────────────────────────── */}
-        <Shell className="landing-section-graphite">
+        <Shell className="landing-section-light">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Comparativa honesta"
@@ -819,7 +827,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── Por ciudad ─────────────────────────────────────────────────────── */}
-        <Shell id="ciudades" className="landing-section-graphite border-t border-white/[0.07]">
+        <Shell id="ciudades" className="landing-section-light border-t border-white/[0.07]">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Por ciudad"
@@ -865,7 +873,7 @@ export default function HomePage() {
         </Shell>
 
         {/* ── SEO conversion — Booksy campaign funnel ────────────────────────── */}
-        <Shell className="landing-section-dark border-t border-white/[0.07]">
+        <Shell className="landing-section-light border-t border-white/[0.07]">
           <div className="mx-auto max-w-7xl">
             <SectionIntro
               eyebrow="Sin comisiones"
