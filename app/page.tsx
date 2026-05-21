@@ -361,12 +361,20 @@ export default function HomePage() {
                 <li><Link href={CALCULATOR_URL} className="transition hover:text-white">Calculadora</Link></li>
               </ul>
             </nav>
-            <Link
-              href={REQUEST_DEMO_URL}
-              className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
-            >
-              Pedir demo
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="rounded-2xl px-4 py-2 text-sm font-black text-white/70 transition hover:text-white"
+              >
+                Entrar al panel
+              </Link>
+              <Link
+                href={REQUEST_DEMO_URL}
+                className="hidden rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/18 sm:inline-flex"
+              >
+                Pedir demo
+              </Link>
+            </div>
           </div>
         </header>
 

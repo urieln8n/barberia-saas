@@ -28,6 +28,7 @@ import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist"
 import { GrowthScoreCard } from "@/components/dashboard/GrowthScoreCard";
 import { SmartAlerts } from "@/components/dashboard/SmartAlerts";
 import { WelcomePanel } from "@/components/dashboard/WelcomePanel";
+import { QuickActionsRow } from "@/components/dashboard/QuickActionsRow";
 import {
   PremiumDashboardItem,
   PremiumDashboardMotion,
@@ -344,6 +345,17 @@ export default async function DashboardPage() {
       .eq("status", "confirmed"),
   ]);
 
+  // ── Data for QuickActionsRow (services list for panel, barbers reused from activeBarbersResult) ──
+  const quickServicesResult = await supabase
+    .from("services")
+    .select("id, name, duration_minutes, price")
+    .eq("barbershop_id", barbershopId)
+    .eq("active", true)
+    .order("name", { ascending: true });
+
+  const quickServices = ((quickServicesResult.data as { id: string; name: string; duration_minutes: number | null; price: number | null }[]) ?? []);
+  const quickBarbers = ((activeBarbersResult.data as { id: string; name: string }[]) ?? []);
+
   const barbershop = barbershopResult.data;
   const todayAppointments = ((todayAppointmentsResult.data as any[]) ?? []).map(
     normalizeAppointment
@@ -652,7 +664,7 @@ export default async function DashboardPage() {
             <h1 className="mt-3 text-3xl font-black tracking-tight text-[#111111] md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-500">
+            <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">
               Lo importante de hoy en una sola vista: agenda, caja, huecos, clientes para recuperar y equipo activo.
             </p>
           </div>
@@ -680,7 +692,10 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="section-band p-5 md:p-6">
+      {/* ── Quick Actions Row ── */}
+      <QuickActionsRow services={quickServices} barbers={quickBarbers} />
+
+      <section className="section-band-dark p-5 md:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">Panel de Hoy</p>
@@ -706,9 +721,8 @@ export default async function DashboardPage() {
             icon={CalendarCheck}
             iconBg="bg-[#C9922A]/10"
             iconColor="text-[#C9922A]"
-            tone="dark"
             footer={
-              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-[#D5A84C]">
+              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-sm font-black text-[#B98B2F]">
                 Abrir agenda <ArrowRight size={12} />
               </Link>
             }
@@ -783,7 +797,7 @@ export default async function DashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
         <div className="panel overflow-hidden p-0">
-          <div className="border-b border-slate-200 bg-slate-50/80 px-5 py-4 md:px-6">
+          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
@@ -792,7 +806,7 @@ export default async function DashboardPage() {
                   Primer vistazo para saber quién llega, a qué hora y con qué barbero.
                 </p>
               </div>
-              <Link href="/dashboard/reservas" className="btn-outline min-h-0 px-3 py-2">
+              <Link href="/dashboard/reservas" className="btn-outline px-4 py-2.5">
                 Ver reservas <ArrowRight size={14} />
               </Link>
             </div>
@@ -812,21 +826,21 @@ export default async function DashboardPage() {
               />
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-white/10">
               {todayAppointments.slice(0, 5).map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="grid gap-3 bg-white p-4 transition-colors hover:bg-slate-50/80 sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
+                  className="grid gap-3 bg-[#182033] p-4 transition-colors hover:bg-[#1D263A] sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
                 >
                   <div className="inline-flex w-fit items-center gap-2 rounded-2xl bg-[#080A0F] px-3 py-2 text-white">
                     <Clock size={14} className="text-[#D5A84C]" />
                     <span className="text-sm font-black">{formatTime(appointment.start_time)}</span>
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate font-black text-[#111827]">
+                    <p className="truncate font-black text-white">
                       {appointment.clients?.name ?? "Cliente sin nombre"}
                     </p>
-                    <p className="mt-0.5 text-xs leading-5 text-slate-500">
+                    <p className="mt-0.5 text-xs leading-5 text-slate-300">
                       {appointment.services?.name ?? "Servicio sin definir"} · {appointment.barbers?.name ?? "Sin barbero"}
                     </p>
                   </div>
@@ -843,7 +857,7 @@ export default async function DashboardPage() {
               <div>
                 <p className="text-xs font-black uppercase text-[#D5A84C]">Caja del día</p>
                 <p className="mt-2 text-4xl font-black leading-none text-white">{formatCurrency(salesToday)}</p>
-                <p className="mt-2 text-sm leading-6 text-white/55">
+                <p className="mt-2 text-base leading-7 text-slate-300">
                   {cashSessionOpen ? "Sesión abierta. Mantén cobros y efectivo sincronizados." : "La caja está cerrada. Abre sesión para controlar efectivo y descuadres."}
                 </p>
               </div>
@@ -853,11 +867,11 @@ export default async function DashboardPage() {
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
-                <p className="text-[10px] font-bold uppercase text-white/35">Clientes atendidos</p>
+                <p className="text-xs font-bold uppercase text-slate-300">Clientes atendidos</p>
                 <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
-                <p className="text-[10px] font-bold uppercase text-white/35">Efectivo</p>
+                <p className="text-xs font-bold uppercase text-slate-300">Efectivo</p>
                 <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
               </div>
             </div>
@@ -893,14 +907,14 @@ export default async function DashboardPage() {
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {recommendedActions.map((action) => (
-            <div key={action} className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 text-sm font-semibold leading-6 text-neutral-700">
+            <div key={action} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-sm font-semibold leading-6 text-slate-300">
               {action}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="section-band overflow-hidden">
+      <section className="section-band-dark overflow-hidden">
         <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="label-section">Huecos libres</p>
@@ -910,13 +924,13 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-bold uppercase text-slate-400">Total huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#080A0F]">{totalFreeSlotsToday}</p>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+              <p className="text-xs font-black uppercase text-slate-300">Total huecos</p>
+              <p className="mt-1 text-2xl font-black text-white">{totalFreeSlotsToday}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-bold uppercase text-slate-400">Más huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#080A0F]">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+              <p className="text-xs font-black uppercase text-slate-300">Más huecos</p>
+              <p className="mt-1 text-2xl font-black text-white">
                 {barberWithMostSlots?.barberName ?? "—"}
               </p>
             </div>
@@ -944,15 +958,15 @@ export default async function DashboardPage() {
 
         {/* Próximas citas */}
         <div className="panel overflow-hidden p-0">
-          <div className="border-b border-[#E7E2D8] bg-[#FDFBF7] px-5 py-4 md:px-6">
+          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="section-heading">Próximas citas</h2>
-              <p className="text-sm text-neutral-500">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
+              <p className="text-base leading-7 text-slate-300">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
             </div>
             <Link
               href="/dashboard/agenda"
-              className="btn-outline min-h-0 px-3 py-2"
+              className="btn-outline px-4 py-2.5"
             >
               Abrir agenda <ArrowRight size={14} />
             </Link>
@@ -976,11 +990,11 @@ export default async function DashboardPage() {
             />
             </div>
           ) : (
-            <div className="flex flex-col divide-y divide-[#E7E2D8]">
+            <div className="flex flex-col divide-y divide-white/10">
               {upcomingAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="flex items-start gap-3 bg-white p-4 transition-colors hover:bg-[#FDFBF7] md:px-6"
+                  className="flex items-start gap-3 bg-[#182033] p-4 transition-colors hover:bg-[#1D263A] md:px-6"
                 >
                   <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111111] text-center">
                     <span className="text-[9px] font-bold uppercase text-[#D9B766]">
@@ -993,16 +1007,16 @@ export default async function DashboardPage() {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold leading-tight text-[#111827]">
+                      <p className="font-bold leading-tight text-white">
                         {appointment.clients?.name ?? "Cliente sin nombre"}
                       </p>
                       <StatusBadge status={appointment.status} />
                     </div>
-                    <p className="mt-0.5 text-xs text-neutral-500">
+                    <p className="mt-1 text-sm text-slate-300">
                       {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}
                     </p>
                     {appointment.clients?.phone && (
-                      <p className="mt-0.5 text-xs text-neutral-400">{appointment.clients.phone}</p>
+                      <p className="mt-0.5 text-xs font-medium text-slate-400">{appointment.clients.phone}</p>
                     )}
                   </div>
                 </article>
@@ -1051,7 +1065,7 @@ export default async function DashboardPage() {
 
           {/* Acciones rápidas */}
           <div className="panel">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-neutral-400">Acciones rápidas</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Acciones rápidas</p>
             <div className="mt-3 grid gap-1.5">
               {[
                 { href: "/dashboard/clientes",  label: "Clientes",  icon: Users      },
@@ -1062,11 +1076,11 @@ export default async function DashboardPage() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:border-[#E7E2D8] hover:bg-[#F8F5EF] hover:text-[#111827]"
+                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-300 transition-colors hover:border-white/10 hover:bg-white/[0.07] hover:text-white"
                 >
-                  <Icon size={15} className="shrink-0 text-neutral-400" />
+                  <Icon size={15} className="shrink-0 text-slate-400" />
                   {label}
-                  <span className="ml-auto text-neutral-300">→</span>
+                  <span className="ml-auto text-slate-500">→</span>
                 </Link>
               ))}
             </div>
