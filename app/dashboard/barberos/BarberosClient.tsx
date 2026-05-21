@@ -408,7 +408,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                   ].map(({ label, value, icon: Icon }) => (
                     <div key={label} className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] p-3">
                       <Icon size={14} className="text-[#2563EB]" />
-                      <p className="mt-2 text-[10px] font-bold uppercase text-slate-400">{label}</p>
+                      <p className="mt-2 text-[10px] font-bold uppercase text-slate-500">{label}</p>
                       <p className="mt-1 text-sm font-black text-[#080A0F]">{value}</p>
                     </div>
                   ))}

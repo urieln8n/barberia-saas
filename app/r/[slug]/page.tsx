@@ -232,23 +232,23 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
     "Elige servicio, profesional y hora real disponible en menos de un minuto.";
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#080A0F_0%,#111827_32%,#F7F8FB_32.2%,#EEF2F7_100%)] pb-24 text-slate-950 md:pb-12">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_12%_0%,rgba(37,99,235,0.18),transparent_28rem),radial-gradient(circle_at_88%_5%,rgba(212,175,102,0.14),transparent_24rem),linear-gradient(180deg,#050A14_0%,#07101F_48%,#0B1220_100%)] pb-24 text-white md:pb-12">
       <TrackPageView
         barbershopId={barbershop.id}
         source={trackingSource}
         city={barbershop.city}
       />
 
-      <header className="border-b border-white/10 bg-[#080A0F]/88 text-white backdrop-blur">
+      <header className="border-b border-white/10 bg-[#07101F]/88 text-white shadow-sm backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 text-sm font-black tracking-wide text-[#D9B766]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/35 bg-[#D9B766]/15 text-sm font-black tracking-wide text-[#8A641F]">
               {getInitials(barbershop.name) || <Scissors size={20} />}
             </div>
             <div className="min-w-0">
               <p className="truncate font-black text-white">{barbershop.name}</p>
               {locationLabel && (
-                <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-white/50">
+                <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm font-medium text-slate-300">
                   <MapPin size={13} className="shrink-0" />
                   {locationLabel}
                 </p>
@@ -257,7 +257,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 text-xs font-black text-emerald-200">
+            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-xs font-black text-emerald-700">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Reserva online disponible
             </span>
@@ -270,7 +270,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 text-sm font-bold text-white transition hover:border-[#D9B766]/40"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 text-sm font-bold text-[#111827] shadow-sm transition hover:border-[#D9B766]/60 hover:bg-[#F6F1E8]"
               >
                 <MessageCircle size={15} />
                 WhatsApp
@@ -285,7 +285,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 text-sm font-bold text-white transition hover:border-[#D9B766]/40"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 text-sm font-bold text-[#111827] shadow-sm transition hover:border-[#D9B766]/60 hover:bg-[#F6F1E8]"
               >
                 <Map size={15} />
                 Cómo llegar
@@ -297,27 +297,27 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
       <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 text-white sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-10 lg:px-8">
         <div>
-          <p className="text-[11px] font-black uppercase text-[#D9B766]">Reserva pública</p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-black tracking-normal text-white sm:text-4xl">
+          <p className="text-xs font-black uppercase text-[#D9B766]">Reserva pública</p>
+          <h1 className="mt-2 max-w-3xl text-4xl font-black tracking-normal text-white sm:text-5xl">
             Reserva tu cita en {barbershop.name}
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
             {heroDescription}
           </p>
           {isDemoBarber && (
-            <p className="mt-3 max-w-2xl rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 px-4 py-3 text-sm font-bold leading-6 text-[#F6D98B]">
+            <p className="mt-3 max-w-2xl rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 px-4 py-3 text-sm font-bold leading-6 text-[#F6E2A6]">
               Demo interactiva. Tus clientes reservarían desde Instagram, Google, WhatsApp o QR sin descargar ninguna app.
             </p>
           )}
           <a
             href="#reservar"
-            className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D9B766] px-5 py-3 text-sm font-black text-[#080A0F] shadow-lg shadow-[#D9B766]/15 transition hover:bg-[#E4C87B]"
+            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF66] px-6 py-3 text-base font-black text-[#050A14] shadow-lg shadow-[#D4AF66]/20 transition hover:bg-[#E4C87B]"
           >
             Reservar ahora <CalendarCheck size={17} />
           </a>
         </div>
 
-        <div className="grid gap-2 rounded-[24px] border border-white/10 bg-white/[0.06] p-4 shadow-sm backdrop-blur">
+        <div className="grid gap-3 rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] p-5 text-slate-950 shadow-[var(--shadow-soft)]">
           {[
             {
               icon: Scissors,
@@ -334,8 +334,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               text: "Horas ocupadas bloqueadas automáticamente",
             },
           ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-3 text-sm text-white/68">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#D9B766]">
+            <div key={text} className="flex items-center gap-3 text-base text-slate-700">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D9B766]/15 text-[#8A641F]">
                 <Icon size={16} />
               </span>
               <span className="font-semibold">{text}</span>
@@ -359,9 +359,9 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
         </section>
 
         <aside className="space-y-4 md:sticky md:top-6 md:self-start">
-          <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-[2rem] border border-black/5 bg-[#FAF8F4] p-5 shadow-[var(--shadow-soft)]">
             <p className="label-section">Información</p>
-            <div className="mt-4 space-y-3 text-sm">
+            <div className="mt-4 space-y-3 text-base">
               {location && (
                 <p className="flex gap-2 text-neutral-600">
                   <MapPin size={15} className="mt-0.5 shrink-0 text-neutral-400" />
@@ -415,9 +415,9 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
           </section>
 
-          <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-[2rem] border border-black/5 bg-[#FAF8F4] p-5 shadow-[var(--shadow-soft)]">
             <p className="label-section">Cancelación</p>
-            <p className="mt-2 text-sm leading-6 text-neutral-600">
+            <p className="mt-2 text-base leading-7 text-slate-600">
               Si necesitas cambiar o cancelar tu cita, contacta directamente con la
               barbería por teléfono o WhatsApp.
             </p>

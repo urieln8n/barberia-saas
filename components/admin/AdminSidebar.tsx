@@ -18,17 +18,17 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-slate-800 bg-[#0F172A] shadow-sm print:hidden">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-black/5 bg-white/92 shadow-[0_18px_50px_rgba(15,23,42,0.12)] backdrop-blur-xl print:hidden">
       {/* Brand */}
-      <div className="flex h-16 items-center gap-2.5 border-b border-white/10 px-5">
-        <span className="h-8 w-8 rounded-xl border border-white/15 bg-[#2F6FEB]" />
+      <div className="flex h-16 items-center gap-2.5 border-b border-black/5 px-5">
+        <span className="h-9 w-9 rounded-2xl border border-[#D4AF66]/35 bg-[#D4AF66]/15 shadow-sm" />
         <div className="min-w-0">
-          <span className="block text-sm font-black uppercase tracking-[0.2em] text-white">
+          <span className="block text-sm font-black uppercase tracking-[0.2em] text-[#050A14]">
             Admin
           </span>
-          <span className="block text-[11px] font-medium text-slate-400">Founder CRM</span>
+          <span className="block text-xs font-bold text-slate-600">Founder CRM</span>
         </div>
-        <span className="ml-auto rounded-full bg-[#2F6FEB]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-200">
+        <span className="ml-auto rounded-full border border-[#D4AF66]/25 bg-[#D4AF66]/12 px-2 py-0.5 text-xs font-black uppercase tracking-wide text-[#8A641F]">
           Founder
         </span>
       </div>
@@ -41,13 +41,13 @@ export function AdminSidebar() {
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
+            className={`flex min-h-11 items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold transition-colors ${
                 active
-                  ? "border border-white/10 bg-white/10 text-white"
-                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  ? "border border-[#D4AF66]/30 bg-[#D4AF66]/15 text-[#050A14] shadow-sm"
+                  : "text-slate-600 hover:bg-[#F8F5EF] hover:text-[#050A14]"
               }`}
             >
-              <Icon size={16} className={active ? "text-blue-200" : ""} />
+              <Icon size={17} className={active ? "text-[#8A641F]" : "text-slate-500"} />
               {label}
             </Link>
           );
@@ -55,10 +55,10 @@ export function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-white/10 px-3 py-3">
+      <div className="border-t border-black/5 px-3 py-3">
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
+          className="flex min-h-11 items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-slate-600 transition-colors hover:bg-[#F8F5EF] hover:text-[#050A14]"
         >
           <LogOut size={16} />
           Volver al dashboard

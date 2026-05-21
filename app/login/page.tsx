@@ -106,13 +106,13 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-[#2F6FEB] text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#2563EB]/15 bg-[#2563EB] text-white shadow-[0_14px_34px_rgba(37,99,235,0.26)]">
             <Scissors size={20} />
           </div>
-          <span className="text-xl font-bold text-white">BarberiaOS</span>
+          <span className="text-xl font-black text-[#050A14]">BarberíaOS</span>
         </div>
 
-        <div className="rounded-2xl border border-[#E6E6E2] bg-white p-8 shadow-2xl">
+        <div className="rounded-[2rem] border border-black/5 bg-white p-7 shadow-[var(--shadow-card)] md:p-8">
           <div className="mb-6 rounded-2xl border border-[#DDE7FB] bg-[#F8FAFC] p-4">
             <p className="text-xs font-black uppercase text-[#2563EB]">Acceso al producto</p>
             <h1 className="mt-1 text-2xl font-black text-[#111827]">
@@ -255,12 +255,12 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-sm text-white/55">
-          <Link href="/" className="font-semibold text-white/80 hover:text-white">
+        <p className="mt-6 text-center text-sm text-slate-600">
+          <Link href="/" className="font-bold text-[#2563EB] hover:text-[#1D4ED8]">
             Volver a la landing
           </Link>{" "}
           ·{" "}
-          <Link href="/legal" className="font-semibold text-white/80 hover:text-white">
+          <Link href="/legal" className="font-bold text-slate-700 hover:text-[#050A14]">
             Centro legal
           </Link>
         </p>

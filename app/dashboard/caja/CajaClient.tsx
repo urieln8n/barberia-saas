@@ -142,8 +142,8 @@ function QuickAction({
         <Icon size={16} className="text-[#2563EB]" />
       </span>
       <span className="min-w-0">
-        <span className="block text-sm font-black text-[#080A0F]">{label}</span>
-        <span className="mt-0.5 block text-xs leading-5 text-slate-500">{description}</span>
+        <span className="block text-sm font-black text-white">{label}</span>
+        <span className="mt-0.5 block text-xs leading-5 text-slate-300">{description}</span>
       </span>
     </motion.a>
   );
@@ -377,19 +377,19 @@ export function CajaClient({
             animate={{ opacity: 1, y: 0 }}
             className="rounded-[22px] border border-[#111827] bg-[linear-gradient(135deg,#080A0F_0%,#111827_58%,#1D4ED8_130%)] p-5 text-white shadow-[0_24px_70px_rgba(8,10,15,0.24)]"
           >
-            <p className="text-xs font-black uppercase text-white/45">Balance operativo</p>
+            <p className="text-xs font-black uppercase text-white/68">Balance operativo</p>
             <p className="mt-3 text-4xl font-black leading-none">{formatCurrency(totals.balanceFinal)}</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-[11px] font-bold uppercase text-white/45">Servicios</p>
+                <p className="text-xs font-black uppercase text-white/68">Servicios</p>
                 <p className="mt-1 text-lg font-black">{formatCurrency(totals.serviceRevenue)}</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-[11px] font-bold uppercase text-white/45">Productos</p>
+                <p className="text-xs font-black uppercase text-white/68">Productos</p>
                 <p className="mt-1 text-lg font-black">{formatCurrency(totals.productRevenue)}</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-[11px] font-bold uppercase text-white/45">Gastos</p>
+                <p className="text-xs font-black uppercase text-white/68">Gastos</p>
                 <p className="mt-1 text-lg font-black">{formatCurrency(totals.expenses)}</p>
               </div>
             </div>
@@ -398,7 +398,7 @@ export function CajaClient({
             <div className="rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase text-slate-400">Efectivo esperado</p>
+                  <p className="text-xs font-black uppercase text-slate-500">Efectivo esperado</p>
                   <p className="mt-1 text-2xl font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</p>
                 </div>
                 <Banknote size={20} className="text-[#8A641F]" />
@@ -557,7 +557,7 @@ export function CajaClient({
               <div className="rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
                       Total
                     </p>
                     <p className="mt-1 text-3xl font-black text-[#080A0F]">
@@ -583,8 +583,8 @@ export function CajaClient({
                   )}
                 </div>
                 {selectedProduct && (
-                  <div className="mt-4 rounded-2xl border border-[#E7E2D8] bg-white px-4 py-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+                <div className="mt-4 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
                       Margen estimado
                     </p>
                     <p
@@ -632,7 +632,7 @@ export function CajaClient({
             <div>
               <label className="form-label">Importe inicial</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-neutral-400">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">
                   €
                 </span>
                 <input
@@ -862,7 +862,7 @@ export function CajaClient({
                   <input type="hidden" name="cash_session_id" value={session.id} />
 
                   <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-neutral-400">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
                       Efectivo esperado
                     </p>
                     <p className="mt-2 text-3xl font-black text-[#111827]">
@@ -933,7 +933,7 @@ export function CajaClient({
             description="Cobros registrados en la caja abierta."
             bodyClassName="p-0"
             action={
-              <span className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-500">
+              <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-semibold text-slate-300">
                 {movements.length} movimientos
               </span>
             }
@@ -949,7 +949,7 @@ export function CajaClient({
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-[#E7E2D8] bg-[#FDFBF7]">
+                  <thead className="border-b border-white/10 bg-white/[0.05]">
                     <tr>
                       <th className="table-header-cell">Hora</th>
                       <th className="table-header-cell">Cliente</th>
@@ -961,16 +961,16 @@ export function CajaClient({
                       <th className="table-header-cell text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E7E2D8]">
+                  <tbody className="divide-y divide-white/10">
                     {movements.map((movement) => (
-                      <tr key={movement.id} className="bg-white transition-colors hover:bg-[#FDFBF7]">
-                        <td className="table-cell text-neutral-500">
+                      <tr key={movement.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
+                        <td className="table-cell text-slate-500">
                           {new Date(movement.created_at).toLocaleTimeString("es-ES", {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="table-cell font-semibold text-[#111827]">
+                        <td className="table-cell font-semibold text-white">
                           {movement.clients?.name ?? "—"}
                         </td>
                         <td className="table-cell">{movement.barbers?.name ?? "—"}</td>
@@ -982,7 +982,7 @@ export function CajaClient({
                         </td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.amount))}</td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.tip_amount))}</td>
-                        <td className="table-cell text-right font-black text-[#111827]">
+                        <td className="table-cell text-right font-black text-white">
                           {formatCurrency(movementTotal(movement))}
                         </td>
                       </tr>

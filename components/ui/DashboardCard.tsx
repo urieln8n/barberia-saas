@@ -23,7 +23,7 @@ export function DashboardCard({
     variant === "dark"
       ? "dashboard-card premium-dark"
       : variant === "muted"
-        ? "dashboard-card bg-slate-50"
+        ? "dashboard-card bg-[#F6F1E8] text-slate-950"
         : variant === "glass"
           ? "dashboard-card glass-panel"
           : "dashboard-card";
@@ -31,16 +31,16 @@ export function DashboardCard({
   return (
     <section className={`${wrapperClass} overflow-hidden ${className}`}>
       {(title || description || action) && (
-        <div className={variant === "dark" ? "border-b border-white/10 px-5 py-4 md:px-6" : "border-b border-slate-200 px-5 py-4 md:px-6"}>
+        <div className={variant === "dark" || variant === "default" || variant === "glass" ? "border-b border-white/10 px-5 py-4 md:px-6" : "border-b border-[#D5CEBC] px-5 py-4 md:px-6"}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               {title && (
-                <h2 className={variant === "dark" ? "text-lg font-black text-white" : "text-lg font-black text-[#080A0F]"}>
+                <h2 className={variant === "dark" || variant === "default" || variant === "glass" ? "text-lg font-black text-white" : "text-lg font-black text-[#080A0F]"}>
                   {title}
                 </h2>
               )}
               {description && (
-                <p className={variant === "dark" ? "mt-1 text-sm leading-6 text-white/55" : "mt-1 text-sm leading-6 text-slate-500"}>
+                <p className={variant === "dark" || variant === "default" || variant === "glass" ? "mt-1 text-sm leading-6 text-slate-300" : "mt-1 text-sm leading-6 text-slate-600"}>
                   {description}
                 </p>
               )}

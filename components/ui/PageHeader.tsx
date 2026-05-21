@@ -7,7 +7,7 @@ type PageHeaderProps = {
   description?: string;
   action?: ReactNode;
   children?: ReactNode;
-  variant?: "default" | "dark" | "glass";
+  variant?: "default" | "dark" | "light" | "glass";
   className?: string;
 };
 
@@ -22,27 +22,27 @@ export function PageHeader({
   className = "",
 }: PageHeaderProps) {
   const label = eyebrow ?? section;
-  const variantClass =
-    variant === "dark"
-      ? "dashboard-hero"
-      : variant === "glass"
-        ? "dashboard-hero dashboard-hero-glass"
-        : "dashboard-hero";
+  const isLight = variant === "light";
+  const variantClass = isLight
+    ? "rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] shadow-[var(--shadow-warm)]"
+    : variant === "glass"
+      ? "dashboard-hero dashboard-hero-glass"
+      : "dashboard-hero";
 
   return (
-    <section className={`${variantClass} px-5 py-5 md:px-6 ${className}`}>
+    <section className={`${variantClass} px-5 py-6 md:px-7 md:py-7 ${className}`}>
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
         <div className="min-w-0">
           {label && (
-            <p className="text-[11px] font-black uppercase text-[#D5A84C]">
+            <p className={isLight ? "text-xs font-black uppercase text-[#B98B2F]" : "text-xs font-black uppercase text-[#D4AF66]"}>
               {label}
             </p>
           )}
-          <h1 className="mt-1.5 text-[clamp(1.9rem,2.6vw,3rem)] font-black leading-tight text-white">
+          <h1 className={isLight ? "mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-slate-950" : "mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-white"}>
             {title}
           </h1>
           {description && (
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-white/62">
+            <p className={isLight ? "mt-3 max-w-3xl text-base leading-7 text-slate-600" : "mt-3 max-w-3xl text-base leading-7 text-slate-300"}>
               {description}
             </p>
           )}

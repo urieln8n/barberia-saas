@@ -55,21 +55,21 @@ function AvailabilityCard({ item }: { item: BarberAvailabilityItem }) {
 
           <div className="mt-4 flex flex-wrap gap-2">
             {visibleSlots.length === 0 ? (
-              <span className="rounded-full border border-neutral-200 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-500">
+              <span className="rounded-full border border-neutral-200 bg-neutral-100 px-3 py-2 text-xs font-semibold text-neutral-600">
                 Sin huecos libres
               </span>
             ) : (
               visibleSlots.map((slot) => (
                 <span
                   key={slot}
-                  className="rounded-full border border-[#C89B3C]/25 bg-[#C89B3C]/10 px-3 py-1.5 text-xs font-black text-[#8A641F]"
+                  className="rounded-full border border-[#C89B3C]/25 bg-[#C89B3C]/10 px-3 py-2 text-xs font-black text-[#8A641F]"
                 >
                   {slot}
                 </span>
               ))
             )}
             {remainingSlots > 0 && (
-              <span className="rounded-full border border-[#E7E2D8] bg-white px-3 py-1.5 text-xs font-semibold text-neutral-400">
+              <span className="rounded-full border border-[#E7E2D8] bg-white px-3 py-2 text-xs font-semibold text-neutral-500">
                 +{remainingSlots} más
               </span>
             )}

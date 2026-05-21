@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect, useRef, type FormEvent } from "react"
-import { X, User, Scissors, Calendar, Clock, FileText, CreditCard } from "lucide-react"
+import { X, User, Scissors, Calendar, FileText, CreditCard } from "lucide-react"
 import { LoadingButton } from "@/components/ui/LoadingButton"
 import { createQuickBooking } from "@/app/dashboard/actions/createQuickBooking"
 import { useActionToast } from "@/components/ui/ActionToast"
@@ -210,7 +210,7 @@ export function QuickBookingPanel({
             onClick={() => !isSubmitting && onOpenChange(false)}
             disabled={isSubmitting}
             aria-label="Cerrar panel"
-            className="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#D5CEBC] bg-white text-slate-500 transition-all duration-150 hover:border-[#C9922A]/40 hover:bg-[#FAF8F4] hover:text-[#080A0F] disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D5CEBC] bg-white text-slate-500 transition-all duration-150 hover:border-[#C9922A]/40 hover:bg-[#FAF8F4] hover:text-[#080A0F] disabled:opacity-40"
           >
             <X size={16} />
           </button>
@@ -271,7 +271,7 @@ export function QuickBookingPanel({
 
             <div className="form-field-group">
               <label htmlFor="qb-email" className="form-label">
-                Email <span className="text-xs font-normal text-slate-400">(opcional)</span>
+                Email <span className="text-xs font-normal text-slate-500">(opcional)</span>
               </label>
               <input
                 id="qb-email"
@@ -398,7 +398,7 @@ export function QuickBookingPanel({
                 <span className="flex items-center gap-1.5">
                   <FileText size={12} />
                   Notas internas
-                  <span className="text-xs font-normal text-slate-400">(opcional)</span>
+                  <span className="text-xs font-normal text-slate-500">(opcional)</span>
                 </span>
               </label>
               <textarea

@@ -95,9 +95,9 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       </div>
 
       {insightClient && (
-        <div className="rounded-[22px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#111827_0%,#080A0F_100%)] px-5 py-4 text-sm font-semibold leading-6 text-white/70 shadow-[var(--shadow-soft)]">
+        <div className="rounded-[24px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#F8F3EA_0%,#FEF3C7_100%)] px-5 py-4 text-sm font-semibold leading-6 text-slate-700 shadow-[var(--shadow-soft)]">
           Oportunidad de recuperación:{" "}
-          <span className="font-black text-[#D5A84C]">{insightClient.name}</span>{" "}
+          <span className="font-black text-[#8A641F]">{insightClient.name}</span>{" "}
           lleva más de 42 días sin volver. Envía un WhatsApp corto con una razón para reservar hoy.
         </div>
       )}
@@ -128,9 +128,14 @@ export function ClientesClient({ clients, barbershopId }: Props) {
         />
       ) : (
         <div className="premium-card overflow-hidden">
+          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
+            <p className="label-section">CRM</p>
+            <h2 className="section-heading mt-1">Base de clientes</h2>
+            <p className="section-subtext">Contacto, última visita y acciones rápidas de retención.</p>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50">
+              <thead className="border-b border-white/10 bg-white/[0.05]">
                 <tr>
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
@@ -139,43 +144,43 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/10">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="transition-colors hover:bg-slate-50">
+                  <tr key={c.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-xs font-bold uppercase text-[#7AA2FF]">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-xs font-black uppercase text-[#D4AF66]">
                           {c.name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#111827]">{c.name}</p>
-                          {c.notes && <p className="text-xs text-neutral-400">{c.notes}</p>}
+                          <p className="font-black text-white">{c.name}</p>
+                          {c.notes && <p className="text-xs font-medium text-slate-500">{c.notes}</p>}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         {c.phone && (
-                          <span className="flex items-center gap-1.5 text-sm text-neutral-600">
+                          <span className="flex items-center gap-1.5 text-sm text-slate-300">
                             <Phone size={12} /> {c.phone}
                           </span>
                         )}
                         {c.email && (
-                          <span className="flex items-center gap-1.5 text-xs text-neutral-400">
+                          <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                             <Mail size={12} /> {c.email}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-500">
+                    <td className="px-6 py-4 text-sm font-medium text-slate-300">
                       {c.last_visit_at
                         ? new Date(c.last_visit_at).toLocaleDateString("es-ES")
-                        : <span className="text-neutral-300">—</span>}
+                        : <span className="text-slate-500">—</span>}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">
-                        <p className="font-black text-[#080A0F]">-- EUR</p>
-                        <p className="text-xs text-neutral-400">Favorito: Corte</p>
+                        <p className="font-black text-white">-- EUR</p>
+                        <p className="text-xs font-medium text-slate-500">Favorito: Corte</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -185,7 +190,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                             href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-green-50 hover:text-green-700"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-emerald-500/10 hover:text-emerald-300"
                             title="Enviar WhatsApp"
                           >
                             <MessageCircle size={15} />
@@ -193,14 +198,14 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         )}
                         <button
                           type="button"
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-white/10 hover:text-white"
                           title="Pedir reseña"
                         >
                           <Star size={15} />
                         </button>
                         <button
                           type="button"
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-amber-50 hover:text-amber-700"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
                           title="Reactivar cliente"
                         >
                           <RotateCcw size={15} />
@@ -208,7 +213,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         <button
                           type="button"
                           onClick={() => openEdit(c)}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-white/10 hover:text-white"
                         >
                           <Pencil size={15} />
                         </button>
@@ -216,7 +221,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                           type="button"
                           onClick={() => handleDelete(c.id)}
                           disabled={deleting === c.id}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-red-500/10 hover:text-red-300 disabled:opacity-40"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -228,7 +233,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
             </table>
           </div>
           {filtered.length === 0 && search && (
-            <p className="px-6 py-8 text-center text-sm text-neutral-400">
+            <p className="px-6 py-8 text-center text-sm font-medium text-slate-500">
               Sin resultados para &quot;{search}&quot;
             </p>
           )}
@@ -238,7 +243,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] text-slate-950 shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>

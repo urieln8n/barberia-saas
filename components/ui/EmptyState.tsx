@@ -29,8 +29,8 @@ export function EmptyState({
   return (
     <div className={`relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] border border-dashed px-6 py-10 text-center ${
       dark
-        ? "border-white/15 bg-white/[0.04] text-white"
-        : "border-slate-200 bg-[linear-gradient(180deg,#FFFFFF_0%,#F8FAFC_100%)] text-slate-950 shadow-sm"
+        ? "border-white/15 bg-white/[0.06] text-white"
+        : "border-amber-200/40 bg-[linear-gradient(180deg,#F8F3EA_0%,#F3EDE1_100%)] text-slate-950 shadow-[var(--shadow-soft)]"
     } ${className}`}>
       <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/45 to-transparent" />
       {Icon && (
@@ -38,8 +38,8 @@ export function EmptyState({
           <Icon size={22} className={tone === "success" ? "text-emerald-600" : dark ? "text-white" : "text-[#C9922A]"} />
         </div>
       )}
-      <p className={dark ? "mt-4 font-bold text-white" : "mt-4 font-bold text-slate-800"}>{title}</p>
-      <p className={dark ? "mt-1 max-w-md text-sm leading-6 text-white/55" : "mt-1 max-w-md text-sm leading-6 text-slate-500"}>
+      <p className={dark ? "mt-4 text-xl font-black text-white" : "mt-4 text-xl font-black text-slate-950"}>{title}</p>
+      <p className={dark ? "mt-2 max-w-md text-base leading-7 text-slate-300" : "mt-2 max-w-md text-base leading-7 text-slate-600"}>
         {description}
       </p>
       {action && <div className="mt-5">{action}</div>}

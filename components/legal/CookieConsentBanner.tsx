@@ -77,15 +77,15 @@ export function CookieConsentBanner() {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[80] px-4 pb-4 sm:px-5">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(8,10,15,0.24)]">
+    <div className="fixed bottom-0 left-4 right-4 z-[80] pb-4 sm:left-5 sm:right-5">
+      <div className="mx-auto w-full max-w-5xl overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(8,10,15,0.24)]">
         <div className="grid gap-5 p-5 md:grid-cols-[1fr_auto] md:p-6">
           <div>
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#2563EB]/10 text-[#2563EB]">
                 <ShieldCheck size={18} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-base font-black text-[#080A0F]">Privacidad y cookies</h2>
                 <p className="mt-1 text-sm leading-6 text-slate-600">
                   Usamos cookies necesarias para que BarberiaOS funcione. Las cookies de preferencias, analiticas o marketing solo se activaran si las aceptas.

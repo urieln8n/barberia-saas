@@ -62,7 +62,7 @@ function ConsejoSemana() {
     <div className="flex gap-3 rounded-[22px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#111827_0%,#080A0F_100%)] px-5 py-4 shadow-[var(--shadow-soft)]">
       <Lightbulb size={18} className="mt-0.5 shrink-0 text-[#C9922A]" />
       <div>
-        <p className="text-[10px] font-black uppercase tracking-widest text-[#8A641F]">
+        <p className="text-xs font-black uppercase tracking-wide text-[#D4AF66]">
           Consejo semanal
         </p>
         <p className="mt-1 text-sm leading-6 text-white/70">
@@ -160,10 +160,10 @@ function DatosConectados({
   return (
     <div className="premium-card px-5 py-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+        <p className="text-xs font-black uppercase tracking-wide text-slate-500">
           Datos conectados
         </p>
-        <span className="text-xs font-semibold text-neutral-400">
+        <span className="text-xs font-bold text-slate-500">
           {connectedCount}/{items.length}
         </span>
       </div>
@@ -171,20 +171,20 @@ function DatosConectados({
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm"
+            className="flex items-start gap-1.5 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 shadow-sm"
           >
             <span className="mt-0.5">{statusIcon(item.status)}</span>
             <div className="min-w-0">
-              <p className="text-[11px] font-bold text-[#080A0F]">
+              <p className="text-xs font-bold text-white">
                 {item.label}
               </p>
-              <p className="truncate text-[10px] text-neutral-400">
+              <p className="truncate text-xs text-slate-300">
                 {item.detail}
               </p>
               {item.href && item.status === "pending" && (
                 <a
                   href={item.href}
-                  className="text-[10px] font-semibold text-[#C9922A] underline"
+                  className="text-xs font-bold text-[#B98B2F] underline"
                 >
                   Configurar →
                 </a>
@@ -242,7 +242,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div className="flex gap-1 overflow-x-auto rounded-[20px] border border-slate-200 bg-white p-1 shadow-sm">
+      <div className="flex gap-1 overflow-x-auto rounded-[20px] border border-white/10 bg-[#151D2E] p-1 shadow-sm">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -254,12 +254,12 @@ export function MarketingStudioClient({
               className={`flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all duration-150 ${
                 active
                   ? "bg-[#080A0F] text-white shadow-sm"
-                  : "text-neutral-500 hover:bg-slate-50 hover:text-neutral-800"
+                  : "text-slate-300 hover:bg-white/[0.07] hover:text-white"
               }`}
             >
               <Icon
                 size={16}
-                className={active ? "text-[#C9922A]" : "text-neutral-400"}
+                className={active ? "text-[#C9922A]" : "text-slate-400"}
               />
               {tab.label}
             </button>

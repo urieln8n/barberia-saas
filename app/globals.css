@@ -299,8 +299,9 @@
   }
   .btn-danger {
     @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl
-           bg-[#E5484D] px-4 py-2.5 text-base font-bold text-white transition-all duration-150
-           hover:bg-red-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+           bg-[#E5484D] px-4 py-2.5 text-base font-bold text-white shadow-[0_8px_22px_rgba(229,72,77,0.22)]
+           transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-[0_12px_30px_rgba(229,72,77,0.30)] active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   /* ── Form inputs (canonical names) ─────────────────────── */
@@ -474,6 +475,7 @@
   }
   .section-band .section-heading,
   .section-band-dark .section-heading,
+  .dashboard-hero .section-heading,
   .premium-card .section-heading,
   .dashboard-card .section-heading,
   .panel .section-heading,
@@ -482,12 +484,14 @@
   }
   .section-band .section-subtext,
   .section-band-dark .section-subtext,
+  .dashboard-hero .section-subtext,
   .premium-card .section-subtext,
   .dashboard-card .section-subtext,
   .panel .section-subtext,
   .bento-card .section-subtext {
     @apply text-slate-300;
   }
+  .section-band .form-label,
   .section-band-dark .form-label,
   .premium-card .form-label,
   .dashboard-card .form-label,

@@ -42,9 +42,9 @@ export function SmartAlerts({ alerts, maxVisible }: SmartAlertsProps) {
               className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 transition-colors hover:border-[#D9B766]/50 hover:bg-white"
             >
               <Icon size={18} className="text-[#8A641F]" />
-              <p className="mt-3 text-sm font-black text-[#111827]">{alert.title}</p>
-              <p className="mt-1 text-xs leading-5 text-neutral-500">{alert.description}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-black text-[#C9922A]">
+              <p className="mt-3 text-base font-black text-[#111827]">{alert.title}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-600">{alert.description}</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-sm font-black text-[#B98B2F]">
                 Ver acción <ArrowRight size={12} />
               </span>
             </Link>

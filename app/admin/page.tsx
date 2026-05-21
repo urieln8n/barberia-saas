@@ -184,7 +184,7 @@ const FUNNEL_BARS: { key: string; color: string }[] = [
 ];
 
 const PRIORITY_COLORS: Record<string, string> = {
-  baja: "text-neutral-400", media: "text-amber-600", alta: "text-orange-600", urgente: "text-red-600",
+  baja: "text-slate-500", media: "text-amber-600", alta: "text-orange-600", urgente: "text-red-600",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -253,54 +253,56 @@ export default async function AdminPage() {
       )}
 
       {/* Header ─────────────────────────────────────────────────────────────── */}
-      <div className="flex items-end justify-between">
+      <div className="rounded-[2rem] border border-black/5 bg-white p-6 text-[#050A14] shadow-[var(--shadow-card)] md:p-7">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="label-section">BarberiaOS</p>
-          <h1 className="mt-1 text-3xl font-black text-[#111827]">Admin creador</h1>
-          <p className="mt-1 capitalize text-sm text-neutral-400">
+          <p className="text-xs font-black uppercase text-[#D4AF66]">BarberiaOS</p>
+          <h1 className="mt-1 text-4xl font-black text-[#050A14]">Admin creador</h1>
+          <p className="mt-2 max-w-3xl capitalize text-base leading-7 text-slate-600">
             Barberías registradas, MRR estimado, pruebas activas, leads y actividad reciente · {today}
           </p>
         </div>
         <Link
           href="/admin/leads"
-          className="btn-dark"
+          className="btn-gold"
         >
           <Zap size={14} /> Nuevo lead
         </Link>
+        </div>
       </div>
 
       {/* Revenue KPIs ───────────────────────────────────────────────────────── */}
       <div>
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Revenue</p>
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">Revenue</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-[var(--shadow-warm)]">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
               <DollarSign size={16} className="text-[#2F6FEB]" />
             </div>
-            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.mrrEstimado)}</p>
-            <p className="mt-0.5 text-xs font-semibold text-neutral-500">MRR real</p>
-            <p className="mt-1 text-[11px] text-neutral-400">Suscripciones activas · sin Stripe todavía</p>
+            <p className="text-4xl font-black text-[#111827]">{fmtEur(m.mrrEstimado)}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-600">MRR real</p>
+            <p className="mt-1 text-xs text-slate-500">Suscripciones activas · sin Stripe todavía</p>
           </div>
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-[var(--shadow-warm)]">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-green-50">
               <TrendingUp size={16} className="text-green-600" />
             </div>
-            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.pipelineValue)}</p>
-            <p className="mt-0.5 text-xs font-semibold text-neutral-500">Pipeline abierto (deals)</p>
-            <p className="mt-1 text-[11px] text-neutral-400">
+            <p className="text-4xl font-black text-[#111827]">{fmtEur(m.pipelineValue)}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-600">Pipeline abierto (deals)</p>
+            <p className="mt-1 text-xs text-slate-500">
               + {fmtEur(m.pipelineLeads)} en leads activos
             </p>
           </div>
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="rounded-[2rem] border border-black/5 bg-white p-5 shadow-[var(--shadow-warm)]">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
               <Calendar size={16} className="text-blue-500" />
             </div>
-            <p className="text-2xl font-black text-[#111827]">{fmtEur(m.ingresosMes)}</p>
-            <p className="mt-0.5 text-xs font-semibold text-neutral-500">Actividad de pagos (mes)</p>
-            <p className="mt-1 text-[11px] text-neutral-400">Pagos registrados por barberías este mes</p>
+            <p className="text-4xl font-black text-[#111827]">{fmtEur(m.ingresosMes)}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-600">Actividad de pagos (mes)</p>
+            <p className="mt-1 text-xs text-slate-500">Pagos registrados por barberías este mes</p>
           </div>
 
         </div>
@@ -308,28 +310,28 @@ export default async function AdminPage() {
 
       {/* Customer health ────────────────────────────────────────────────────── */}
       <div>
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Estado de clientes</p>
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">Estado de clientes</p>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
           {[
             { label: "Barberías activas", value: m.totalBarbershops,            icon: Store,       color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Demos agendadas",   value: m.leadsByStatus.demo_agendada,  icon: Calendar,    color: "text-purple-600", bg: "bg-purple-50"     },
             { label: "Trials activos",    value: m.leadsByStatus.trial_activo,   icon: Target,      color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
             { label: "Clientes ganados",  value: m.leadsByStatus.ganado,         icon: CheckSquare, color: "text-green-600",  bg: "bg-green-50"      },
-            { label: "En riesgo",         value: m.atRiskLeads.length,           icon: AlertTriangle, color: m.atRiskLeads.length > 0 ? "text-red-500" : "text-neutral-400", bg: m.atRiskLeads.length > 0 ? "bg-red-50" : "bg-neutral-100" },
+            { label: "En riesgo",         value: m.atRiskLeads.length,           icon: AlertTriangle, color: m.atRiskLeads.length > 0 ? "text-red-500" : "text-slate-500", bg: m.atRiskLeads.length > 0 ? "bg-red-50" : "bg-neutral-100" },
           ].map(({ label, value, icon: Icon, color, bg }) => (
-            <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div key={label} className="rounded-[24px] border border-black/5 bg-white p-4 shadow-[var(--shadow-soft)]">
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
                 <Icon size={14} className={color} />
               </div>
               <p className="text-xl font-black text-[#111827]">{value}</p>
-              <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
+              <p className="mt-0.5 text-xs font-bold text-slate-600">{label}</p>
             </div>
           ))}
         </div>
       </div>
 
       <div>
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Producto SaaS</p>
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">Producto SaaS</p>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { label: "Plan activo", value: "Fundador", icon: Zap, color: "text-[#8A641F]", bg: "bg-[#D5A84C]/10" },
@@ -337,12 +339,12 @@ export default async function AdminPage() {
             { label: "Reservas totales", value: m.totalAppointments, icon: Calendar, color: "text-green-600", bg: "bg-green-50" },
             { label: "Estado de pago", value: m.mrrEstimado > 0 ? "Activo" : "Pendiente", icon: DollarSign, color: m.mrrEstimado > 0 ? "text-green-600" : "text-amber-600", bg: m.mrrEstimado > 0 ? "bg-green-50" : "bg-amber-50" },
           ].map(({ label, value, icon: Icon, color, bg }) => (
-            <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div key={label} className="rounded-[24px] border border-black/5 bg-white p-4 shadow-[var(--shadow-soft)]">
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
                 <Icon size={14} className={color} />
               </div>
               <p className="text-xl font-black text-[#111827]">{value}</p>
-              <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
+              <p className="mt-0.5 text-xs font-bold text-slate-600">{label}</p>
             </div>
           ))}
         </div>
@@ -350,7 +352,7 @@ export default async function AdminPage() {
 
       {/* Activity KPIs ──────────────────────────────────────────────────────── */}
       <div>
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Actividad</p>
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">Actividad</p>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { label: "Leads totales",     value: m.totalLeads,        icon: Users,       color: "text-blue-600",   bg: "bg-blue-50"       },
@@ -358,12 +360,12 @@ export default async function AdminPage() {
             { label: "Tareas pendientes", value: m.pendingTasks,       icon: CheckSquare, color: "text-orange-500", bg: "bg-orange-50"     },
             { label: "Barberos totales",  value: m.totalBarbers,       icon: Users,       color: "text-[#2F6FEB]",  bg: "bg-[#2F6FEB]/10"  },
           ].map(({ label, value, icon: Icon, color, bg }) => (
-            <div key={label} className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div key={label} className="rounded-[24px] border border-black/5 bg-white p-4 shadow-[var(--shadow-soft)]">
               <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${bg}`}>
                 <Icon size={14} className={color} />
               </div>
               <p className="text-xl font-black text-[#111827]">{value}</p>
-              <p className="mt-0.5 text-[11px] font-semibold text-neutral-500">{label}</p>
+              <p className="mt-0.5 text-xs font-bold text-slate-600">{label}</p>
             </div>
           ))}
         </div>
@@ -376,13 +378,13 @@ export default async function AdminPage() {
             <p className="label-section">CRM</p>
             <h2 className="mt-0.5 font-black text-[#111827]">Embudo de leads</h2>
           </div>
-          <Link href="/admin/leads" className="flex items-center gap-1 text-xs font-semibold text-neutral-500 transition-colors hover:text-[#111827]">
+          <Link href="/admin/leads" className="flex items-center gap-1 text-sm font-bold text-slate-600 transition-colors hover:text-[#111827]">
             Ver todos <ChevronRight size={13} />
           </Link>
         </div>
 
         {m.totalLeads === 0 ? (
-          <p className="text-sm text-neutral-400">Sin leads todavía. <Link href="/admin/leads" className="font-semibold text-[#111827] underline underline-offset-2">Añadir primer lead →</Link></p>
+          <p className="text-sm font-medium text-slate-500">Sin leads todavía. <Link href="/admin/leads" className="font-bold text-[#111827] underline underline-offset-2">Añadir primer lead →</Link></p>
         ) : (
           <div className="space-y-2.5">
             {FUNNEL_BARS.map(({ key, color }) => {
@@ -419,18 +421,18 @@ export default async function AdminPage() {
             </Link>
           </div>
           {m.recentLeads.length === 0 ? (
-            <p className="p-5 text-sm text-neutral-400">Sin leads todavía.</p>
+            <p className="p-5 text-sm font-medium text-slate-500">Sin leads todavía.</p>
           ) : (
             <ul className="divide-y divide-[#E5E7EB]">
               {m.recentLeads.map(lead => (
                 <li key={lead.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F8FAFC]">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-bold text-[#111827]">{lead.business_name}</p>
-                    <p className="text-xs text-neutral-400">
+                    <p className="text-xs font-medium text-slate-500">
                       {lead.contact_name ?? "Sin contacto"} · {fmt(lead.created_at)}
                     </p>
                   </div>
-                  <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${LEAD_STATUS_COLORS[lead.status] ?? "bg-neutral-100 text-neutral-500"}`}>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${LEAD_STATUS_COLORS[lead.status] ?? "bg-neutral-100 text-neutral-500"}`}>
                     {LEAD_STATUS_LABELS[lead.status] ?? lead.status}
                   </span>
                 </li>
@@ -448,14 +450,14 @@ export default async function AdminPage() {
             </Link>
           </div>
           {m.topOpenDeals.length === 0 ? (
-            <p className="p-5 text-sm text-neutral-400">Sin deals abiertos. <Link href="/admin/deals" className="font-semibold text-[#111827] underline underline-offset-2">Crear deal →</Link></p>
+            <p className="p-5 text-sm font-medium text-slate-500">Sin deals abiertos. <Link href="/admin/deals" className="font-bold text-[#111827] underline underline-offset-2">Crear deal →</Link></p>
           ) : (
             <ul className="divide-y divide-[#E5E7EB]">
               {m.topOpenDeals.map(deal => (
                 <li key={deal.id} className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-[#F8FAFC]">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-bold text-[#111827]">{deal.title}</p>
-                    <p className="text-xs text-neutral-400">
+                    <p className="text-xs font-medium text-slate-500">
                       {STAGE_LABELS[deal.stage] ?? deal.stage} · cierre {fmt(deal.expected_close_date)}
                     </p>
                   </div>
@@ -472,7 +474,7 @@ export default async function AdminPage() {
 
       {/* Overdue tasks ──────────────────────────────────────────────────────── */}
       {m.overdueTasks.length > 0 && (
-        <div className="rounded-2xl border border-red-200 bg-white shadow-sm">
+        <div className="rounded-[24px] border border-red-200 bg-white shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between border-b border-red-100 bg-red-50 px-5 py-4 rounded-t-2xl">
             <div className="flex items-center gap-2">
               <Clock size={15} className="text-red-500" />
@@ -487,7 +489,7 @@ export default async function AdminPage() {
               <li key={task.id} className="flex items-center justify-between gap-3 px-5 py-3">
                 <p className="text-sm font-semibold text-[#111827]">{task.title}</p>
                 <div className="flex shrink-0 items-center gap-2">
-                  <span className={`text-xs font-bold uppercase ${PRIORITY_COLORS[task.priority] ?? "text-neutral-400"}`}>
+                  <span className={`text-xs font-bold uppercase ${PRIORITY_COLORS[task.priority] ?? "text-slate-500"}`}>
                     {task.priority}
                   </span>
                   <span className="text-xs text-red-500">{fmt(task.due_date)}</span>
@@ -500,7 +502,7 @@ export default async function AdminPage() {
 
       {/* Quick actions ──────────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-5">
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Acciones rápidas</p>
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-slate-500">Acciones rápidas</p>
         <div className="flex flex-wrap gap-2">
           {[
             { href: "/admin/leads",  label: "Nuevo lead",       primary: true  },
@@ -524,7 +526,7 @@ export default async function AdminPage() {
 
       {/* Pending modules notice ─────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Métricas pendientes de implementar</p>
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Métricas pendientes de implementar</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {[
             "Churn rate (tabla subscriptions canceladas por período)",
@@ -533,12 +535,12 @@ export default async function AdminPage() {
             "Coste de adquisición (CAC)",
             "Stripe Billing (facturación automática)",
           ].map(label => (
-            <span key={label} className="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs text-neutral-400">
+            <span key={label} className="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs font-medium text-slate-500">
               {label}
             </span>
           ))}
         </div>
-        <p className="mt-3 text-xs text-neutral-400">
+        <p className="mt-3 text-xs font-medium text-slate-500">
           El MRR proviene de la tabla <code className="rounded bg-neutral-100 px-1 font-mono text-xs">subscriptions</code> donde <code className="rounded bg-neutral-100 px-1 font-mono text-xs">status = active</code>. Trials, pausados y cancelados no cuentan.
         </p>
       </div>

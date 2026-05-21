@@ -84,14 +84,14 @@ const demoNotes = [
 
 export default function DemoPage() {
   return (
-    <main className="min-h-screen bg-[#F7FAFC] px-5 py-8 text-[#080A0F] lg:px-8">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_15%_0%,rgba(37,99,235,0.12),transparent_28rem),radial-gradient(circle_at_90%_10%,rgba(212,175,102,0.16),transparent_24rem),linear-gradient(180deg,#FFFFFF_0%,#FAF8F4_48%,#F1ECE3_100%)] px-5 py-8 text-[#050A14] lg:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="inline-flex items-center gap-3" aria-label="Volver a BarberíaOS">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-[#D5A84C]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FAF8F4] text-[#B98B2F]">
               <Scissors size={18} />
             </span>
-            <span className="font-black">BarberíaOS</span>
+            <span className="font-black text-[#050A14]">BarberíaOS</span>
           </Link>
           <nav aria-label="Acciones de demo">
             <ul className="flex flex-wrap gap-2">
@@ -110,7 +110,7 @@ export default function DemoPage() {
           </nav>
         </header>
 
-        <section className="mt-12 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[var(--shadow-card)]">
+        <section className="mt-12 overflow-hidden rounded-[2rem] border border-black/5 bg-white shadow-[var(--shadow-card)]">
           <div className="grid gap-0 lg:grid-cols-[0.96fr_1.04fr]">
             <div className="p-6 md:p-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#2563EB]/15 bg-[#2563EB]/10 px-4 py-2 text-xs font-black uppercase text-[#2563EB]">
@@ -152,7 +152,7 @@ export default function DemoPage() {
                 ))}
               </div>
             </div>
-            <div className="border-t border-slate-200 bg-[#080A0F] p-6 text-white lg:border-l lg:border-t-0 md:p-10">
+            <div className="border-t border-black/5 bg-[linear-gradient(135deg,#101827_0%,#1D2433_100%)] p-6 text-white lg:border-l lg:border-t-0 md:p-10">
               <div className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div>
@@ -184,7 +184,7 @@ export default function DemoPage() {
 
         <section className="mt-8 grid gap-4 md:grid-cols-3">
           {outcomes.map(([title, text]) => (
-            <article key={title} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-soft)]">
+            <article key={title} className="rounded-[24px] border border-black/5 bg-white p-5 shadow-[var(--shadow-soft)]">
               <h2 className="text-lg font-black">{title}</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
             </article>
@@ -207,7 +207,7 @@ export default function DemoPage() {
               return (
                 <article
                   key={step.title}
-                  className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[var(--shadow-card)]"
+                  className="rounded-[2rem] border border-black/5 bg-[#FAF8F4] p-6 shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:border-amber-200/60 hover:shadow-[var(--shadow-card)]"
                 >
                   <div className="metric-icon bg-[#2563EB]/10 text-[#2563EB]">
                     <Icon size={18} />
