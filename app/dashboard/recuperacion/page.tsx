@@ -126,7 +126,7 @@ export default function RecuperacionPage() {
             </div>
           </div>
           <div className="border-t border-[#E7E2D8] bg-[#FDFBF7] p-5 md:p-7 lg:border-l lg:border-t-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">
               Criterio MVP
             </p>
             <div className="mt-3 rounded-[18px] border border-[#E7E2D8] bg-white p-4 shadow-sm">
@@ -168,7 +168,7 @@ export default function RecuperacionPage() {
                   <p className="mt-1 text-sm text-neutral-500">
                     {client.lastService} · {client.lastVisit} · ticket medio {client.value}
                   </p>
-                  <p className="mt-1 text-xs text-neutral-400">{client.phone}</p>
+                  <p className="mt-1 text-xs text-neutral-500">{client.phone}</p>
                 </div>
                 <a
                   href={`https://wa.me/${client.phone.replace(/\D/g, "")}?text=${recoveryMessage}`}

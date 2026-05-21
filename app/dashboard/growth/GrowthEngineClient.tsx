@@ -444,7 +444,7 @@ export function GrowthEngineClient({
                   : "border-transparent text-slate-500 hover:text-slate-900"
               }`}
             >
-              <Icon size={16} className={active ? "text-[#C9922A]" : "text-slate-400"} />
+              <Icon size={16} className={active ? "text-[#C9922A]" : "text-slate-500"} />
               {tab.label}
             </button>
           );
@@ -456,7 +456,7 @@ export function GrowthEngineClient({
           {metrics.map(([label, value, Icon]) => (
             <div key={String(label)} className="metric-card">
               <Icon size={18} className="text-[#C9922A]" />
-              <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-slate-400">{label}</p>
+              <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-slate-500">{label}</p>
               <p className="mt-1 text-3xl font-black text-[#080A0F]">{value}</p>
             </div>
           ))}
@@ -552,7 +552,7 @@ export function GrowthEngineClient({
       {activeTab === "plantillas" && (
         <section className="space-y-4">
           <div className="panel">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">Variables soportadas</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Variables soportadas</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {variables.map((variable) => <span key={variable} className="badge-neutral font-mono">{variable}</span>)}
             </div>
@@ -663,7 +663,7 @@ export function GrowthEngineClient({
               ["Plan requerido", "Pro para manual, Growth para CRM avanzado, Premium para ADS"],
             ].map(([label, value]) => (
               <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">{label}</p>
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">{label}</p>
                 <p className="mt-1 break-words text-sm font-bold text-[#080A0F]">{value}</p>
               </div>
             ))}

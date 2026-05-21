@@ -246,17 +246,17 @@ export function BarberiaOSKitClient({
               >
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                    item.done ? "bg-[#2563EB] text-white" : "bg-slate-100 text-slate-400"
+                    item.done ? "bg-[#2563EB] text-white" : "bg-slate-100 text-slate-500"
                   }`}
                 >
                   <Check size={15} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-black text-[#111827]">{item.label}</p>
-                  <p className="text-xs font-semibold text-slate-400">{item.detail}</p>
+                  <p className="text-xs font-semibold text-slate-500">{item.detail}</p>
                 </div>
                 {!item.done && (
-                  <span className="rounded-full border border-slate-200 px-2 py-1 text-[10px] font-black uppercase text-slate-400">
+                  <span className="rounded-full border border-slate-200 px-2 py-1 text-[10px] font-black uppercase text-slate-500">
                     Pendiente
                   </span>
                 )}

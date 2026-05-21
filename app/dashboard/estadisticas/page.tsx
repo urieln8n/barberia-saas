@@ -151,17 +151,17 @@ export default async function EstadisticasPage() {
 
                   <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                      <p className="text-[10px] font-black uppercase text-slate-400">Próximo hueco</p>
+                      <p className="text-[10px] font-black uppercase text-slate-500">Próximo hueco</p>
                       <p className="mt-1 text-lg font-black text-[#080A0F]">
                         {item.nextAvailableSlot ?? "Completo"}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                      <p className="text-[10px] font-black uppercase text-slate-400">Huecos hoy</p>
+                      <p className="text-[10px] font-black uppercase text-slate-500">Huecos hoy</p>
                       <p className="mt-1 text-lg font-black text-[#080A0F]">{item.freeSlots.length}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                      <p className="text-[10px] font-black uppercase text-slate-400">Ocupación</p>
+                      <p className="text-[10px] font-black uppercase text-slate-500">Ocupación</p>
                       <p className="mt-1 text-lg font-black text-[#080A0F]">{item.occupancyPercent}%</p>
                     </div>
                   </div>

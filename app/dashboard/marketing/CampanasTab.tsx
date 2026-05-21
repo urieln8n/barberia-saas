@@ -357,11 +357,11 @@ function CampanaCard({
             >
               {badge.label}
             </span>
-            <span className="text-xs text-neutral-400">
+            <span className="text-xs text-neutral-500">
               {canalLabel[campana.canal]}
             </span>
             {campana.fechaFin && (
-              <span className="flex items-center gap-1 text-xs text-neutral-400">
+              <span className="flex items-center gap-1 text-xs text-neutral-500">
                 <Calendar size={11} />
                 hasta {campana.fechaFin}
               </span>
@@ -519,7 +519,7 @@ export function CampanasTab({
           </div>
           <div>
             <p className="font-black text-[#080A0F]">Nueva campaña</p>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-500">
               Rellena los datos y genera el texto
             </p>
           </div>
@@ -575,7 +575,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Descuento{" "}
-              <span className="font-normal text-neutral-400">(opcional)</span>
+              <span className="font-normal text-neutral-500">(opcional)</span>
             </label>
             <div className="relative">
               <input
@@ -604,7 +604,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Servicio objetivo{" "}
-              <span className="font-normal text-neutral-400">(opcional)</span>
+              <span className="font-normal text-neutral-500">(opcional)</span>
             </label>
 
             {services.length > 0 && !isCustomService ? (
@@ -643,7 +643,7 @@ export function CampanasTab({
                   </button>
                 )}
                 {services.length === 0 && (
-                  <p className="text-[11px] text-neutral-400">
+                  <p className="text-[11px] text-neutral-500">
                     <a
                       href="/dashboard/servicios"
                       className="underline hover:text-[#C9922A]"
@@ -661,7 +661,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Barbero{" "}
-              <span className="font-normal text-neutral-400">(opcional)</span>
+              <span className="font-normal text-neutral-500">(opcional)</span>
             </label>
             {barbers.length > 0 ? (
               <select
@@ -689,7 +689,7 @@ export function CampanasTab({
                     setDraft({ ...draft, barber: e.target.value })
                   }
                 />
-                <p className="text-[11px] text-neutral-400">
+                <p className="text-[11px] text-neutral-500">
                   <a
                     href="/dashboard/barberos"
                     className="underline hover:text-[#C9922A]"
@@ -836,7 +836,7 @@ export function CampanasTab({
               <Tag size={15} className="text-[#C9922A]" />
               <p className="font-black text-[#080A0F]">Campañas guardadas</p>
             </div>
-            <span className="text-xs text-neutral-400">
+            <span className="text-xs text-neutral-500">
               {campanas.length} campaña
               {campanas.length !== 1 ? "s" : ""}
             </span>

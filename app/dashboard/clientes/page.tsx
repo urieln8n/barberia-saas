@@ -614,7 +614,7 @@ export default async function ClientesPage() {
                             {client.name}
                           </Link>
                           {client.email && (
-                            <p className="text-xs text-neutral-400">
+                            <p className="text-xs text-neutral-500">
                               {client.email}
                             </p>
                           )}
@@ -627,7 +627,7 @@ export default async function ClientesPage() {
                         <td className="px-4 py-4 text-neutral-600">
                           <p>{formatDate(client.lastAppointmentDate)}</p>
                           {client.lastAppointmentTime && (
-                            <p className="text-xs text-neutral-400">
+                            <p className="text-xs text-neutral-500">
                               {formatTime(client.lastAppointmentTime)}
                             </p>
                           )}
@@ -664,7 +664,7 @@ export default async function ClientesPage() {
                               )}
                             />
                           ) : (
-                            <span className="text-xs text-neutral-400">
+                            <span className="text-xs text-neutral-500">
                               Sin enlace público
                             </span>
                           )}

@@ -362,33 +362,33 @@ export default async function CustomerDetailPage({ params }: Props) {
               <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Nombre</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Nombre</p>
                     <p className="mt-1 font-black text-[#111827]">{clientRow.name}</p>
                   </div>
                   <div className="rounded-2xl border border-[#E7E2D8] bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Cliente desde</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Cliente desde</p>
                     <p className="mt-1 font-semibold text-[#111827]">{formatDate(clientRow.created_at)}</p>
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-[#E7E2D8] bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Teléfono</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Teléfono</p>
                     <p className="mt-1 font-semibold text-[#111827]">{clientRow.phone ?? "Sin teléfono"}</p>
                   </div>
                   <div className="rounded-2xl border border-[#E7E2D8] bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Email</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Email</p>
                     <p className="mt-1 font-semibold text-[#111827]">{clientRow.email ?? "Sin email"}</p>
                   </div>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-[#E7E2D8] bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Barbero favorito</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Barbero favorito</p>
                     <p className="mt-1 font-semibold text-[#111827]">{favoriteBarber?.name ?? "No inferido"}</p>
                   </div>
                   <div className="rounded-2xl border border-[#E7E2D8] bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Servicio base</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Servicio base</p>
                     <p className="mt-1 font-semibold text-[#111827]">{lastService?.name ?? "Sin servicio"}</p>
                   </div>
                 </div>

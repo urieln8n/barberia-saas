@@ -175,7 +175,7 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
             {result.insights.map((insight) => (
               <article key={`${insight.label}-${insight.value}`} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
                 <Sparkles size={17} className="text-[#C9922A]" />
-                <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-400">{insight.label}</p>
+                <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-500">{insight.label}</p>
                 <p className="mt-1 text-2xl font-black text-[#080A0F]">{insight.value}</p>
                 <p className="mt-2 text-sm leading-6 text-neutral-500">{insight.description}</p>
               </article>

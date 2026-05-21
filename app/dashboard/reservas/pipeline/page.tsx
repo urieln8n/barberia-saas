@@ -150,7 +150,7 @@ export default async function PipelineReservasPage() {
           ["No asistio", countByStatus.get("no_show") ?? 0],
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-400">{label}</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-500">{label}</p>
             <p className="mt-2 text-3xl font-black text-[#080A0F]">{value}</p>
           </div>
         ))}

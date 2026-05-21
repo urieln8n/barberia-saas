@@ -98,7 +98,7 @@ export function QRClient({ name, slug }: Props) {
 
           <div className="text-center">
             <p className="font-black text-[#111827]">{name}</p>
-            <p className="mt-0.5 text-xs text-neutral-400">Escanear para reservar</p>
+            <p className="mt-0.5 text-xs text-neutral-500">Escanear para reservar</p>
           </div>
 
           <div className="grid w-full gap-2">

@@ -299,7 +299,7 @@ export function InventarioClient({
         title="Productos"
         description={`${filteredProducts.length} de ${products.length} productos visibles.`}
         action={
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
             <Filter size={14} />
             Filtros activos
           </div>
@@ -432,7 +432,7 @@ export function InventarioClient({
                     <p className="text-xs font-semibold text-slate-500">
                       {movement.previous_stock ?? "-"} → {movement.new_stock ?? "-"}
                     </p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-slate-500">
                       {formatDate(movement.created_at)}
                     </p>
                   </div>

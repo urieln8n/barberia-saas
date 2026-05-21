@@ -32,7 +32,7 @@ export function SectionCard({
         ? "premium-card-muted"
         : variant === "glass"
           ? "premium-card glass-panel"
-          : "section-band-dark";
+          : "rounded-[2rem] border border-amber-200/40 bg-[#F8F3EA] text-slate-950 shadow-[var(--shadow-soft)]";
 
   return (
     <section className={`${variantClass} overflow-hidden p-0 ${className}`}>

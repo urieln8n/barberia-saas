@@ -177,17 +177,17 @@ export function ProductSaleDialog({
 
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-400">Total venta</p>
+              <p className="text-[10px] font-black uppercase text-slate-500">Total venta</p>
               <p className="mt-2 text-2xl font-black text-[#080A0F]">{formatCurrency(total)}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-400">Margen estimado</p>
+              <p className="text-[10px] font-black uppercase text-slate-500">Margen estimado</p>
               <p className="mt-2 text-2xl font-black text-[#080A0F]">
                 {estimatedProfit === null ? "Sin coste configurado" : formatCurrency(estimatedProfit)}
               </p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-400">Stock posterior</p>
+              <p className="text-[10px] font-black uppercase text-slate-500">Stock posterior</p>
               <p className={`mt-2 text-2xl font-black ${stockAfter < product.min_stock ? "text-amber-700" : "text-[#080A0F]"}`}>
                 {Number.isFinite(stockAfter) ? stockAfter : product.current_stock}
               </p>

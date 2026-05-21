@@ -259,7 +259,7 @@ export default async function ReviewsDashboardPage() {
                 Abrir enlace configurado <ExternalLink size={13} />
               </a>
             ) : (
-              <p className="text-xs text-neutral-400">
+              <p className="text-xs text-neutral-500">
                 Sin URL de Google configurada. Las valoraciones positivas mostrarán solo el agradecimiento.
               </p>
             )}
@@ -305,7 +305,7 @@ export default async function ReviewsDashboardPage() {
                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(review.status)}`}>
                           {statusLabel(review.status)}
                         </span>
-                        <span className="text-xs font-semibold text-neutral-400">
+                        <span className="text-xs font-semibold text-neutral-500">
                           {formatDate(review.created_at)}
                         </span>
                       </div>
@@ -325,7 +325,7 @@ export default async function ReviewsDashboardPage() {
                           {review.rating}/5 estrellas
                         </p>
                       ) : (
-                        <p className="mt-3 text-sm font-semibold text-neutral-400">
+                        <p className="mt-3 text-sm font-semibold text-neutral-500">
                           Enlace pendiente de valoración
                         </p>
                       )}
@@ -345,7 +345,7 @@ export default async function ReviewsDashboardPage() {
                     </div>
 
                     <div className="lg:w-80">
-                      <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">
+                      <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">
                         Enlace privado
                       </p>
                       <a

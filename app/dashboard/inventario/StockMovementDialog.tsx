@@ -163,7 +163,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
             </div>
 
             <div className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-400">
+              <p className="text-[10px] font-black uppercase text-slate-500">
                 Stock resultante
               </p>
               <p

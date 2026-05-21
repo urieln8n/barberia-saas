@@ -126,12 +126,12 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
             <table className="w-full text-sm">
               <thead className="border-b border-[#E5E7EB] bg-[#F8FAFC]/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Hora</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Cliente</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Método</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-400">Notas</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-400">Importe</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-400"></th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-500">Hora</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-500">Cliente</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-500">Método</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-neutral-500">Notas</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-500">Importe</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-neutral-500"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E5E7EB]">
@@ -148,7 +148,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                         {METHOD_LABEL[p.method] ?? p.method}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-400">{p.notes ?? "—"}</td>
+                    <td className="px-6 py-4 text-sm text-neutral-500">{p.notes ?? "—"}</td>
                     <td className="px-6 py-4 text-right font-black text-[#111827]">{p.amount.toFixed(2)} €</td>
                     <td className="px-6 py-4 text-right">
                       <button

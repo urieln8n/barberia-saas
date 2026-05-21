@@ -452,7 +452,7 @@ function CategorySection({ categoryKey, checks }: { categoryKey: CategoryKey; ch
           ))}
         </div>
       ) : (
-        <p className="py-4 text-center text-sm text-slate-400">Sin datos para esta señal.</p>
+        <p className="py-4 text-center text-sm text-slate-500">Sin datos para esta señal.</p>
       )}
     </div>
   );
@@ -520,7 +520,7 @@ function HistoryRow({
       <span className="min-w-0 flex-1 truncate font-mono text-xs text-slate-600" title={entry.website_url}>
         {entry.website_url}
       </span>
-      <div className="flex items-center gap-1.5 text-xs text-slate-400">
+      <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <Clock size={11} />
         {date} · {time}
       </div>
@@ -1029,7 +1029,7 @@ export function SecurityAuditClient({ history }: { history: AuditHistoryEntry[] 
                 )}
               </button>
             </div>
-            <p className="text-xs text-slate-400">Acepta URLs públicas con http:// o https://.</p>
+            <p className="text-xs text-slate-500">Acepta URLs públicas con http:// o https://.</p>
           </div>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/5 px-4 py-3 transition hover:border-[#C9922A]/35 hover:bg-[#C9922A]/10">

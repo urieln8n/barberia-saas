@@ -130,7 +130,7 @@ export function FinanzasClient({
             : "border-red-100 bg-red-50"
         }`}>
           <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Beneficio est.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Beneficio est.</p>
             <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
               beneficio >= 0 ? "bg-emerald-100" : "bg-red-100"
             }`}>
@@ -163,7 +163,7 @@ export function FinanzasClient({
             {[34, 58, 42, 75, 61, 88, 52, 69, 94, 73, 46, 82].map((height, index) => (
               <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2">
                 <span className="w-full rounded-t-xl bg-[#2563EB]" style={{ height: `${height}%`, opacity: 0.35 + index * 0.04 }} />
-                <span className="text-[10px] font-bold text-slate-400">{index + 1}</span>
+                <span className="text-[10px] font-bold text-slate-500">{index + 1}</span>
               </div>
             ))}
           </div>
@@ -181,7 +181,7 @@ export function FinanzasClient({
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="rounded-2xl border border-slate-200 bg-white p-4">
                 <Icon size={17} className="text-[#2563EB]" />
-                <p className="mt-3 text-xs font-bold uppercase text-slate-400">{label}</p>
+                <p className="mt-3 text-xs font-bold uppercase text-slate-500">{label}</p>
                 <p className="mt-1 font-black text-[#080A0F]">{value}</p>
               </div>
             ))}
@@ -318,7 +318,7 @@ export function FinanzasClient({
                     {expense.description && (
                       <p className="truncate text-xs text-neutral-500">{expense.description}</p>
                     )}
-                    <p className="mt-0.5 text-xs text-neutral-400">
+                    <p className="mt-0.5 text-xs text-neutral-500">
                       {new Date(expense.expense_date + "T00:00:00").toLocaleDateString("es-ES", {
                         day: "numeric",
                         month: "short",
@@ -347,7 +347,7 @@ export function FinanzasClient({
         )}
       </SectionCard>
 
-      <p className="text-center text-xs text-neutral-400">
+      <p className="text-center text-xs text-neutral-500">
         Ingresos = pagos con estado &quot;cobrado&quot; · Beneficio = Ingresos − Gastos del mes
       </p>
 

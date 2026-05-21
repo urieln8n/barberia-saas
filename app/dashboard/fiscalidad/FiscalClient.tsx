@@ -133,7 +133,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
             </button>
           ))}
         </div>
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-neutral-500">
           {quarter.period} · {year} · Plazo: {quarter.deadline}
           {quarter.nextYear ? ` de ${deadlineYear}` : ""}
         </p>
@@ -142,7 +142,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
       {/* ── KPI cards ── */}
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ingresos</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Ingresos</p>
           <p className="mt-3 text-3xl font-black text-neutral-950">{fmt(d.ingresos)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-emerald-600">
             <TrendingUp size={11} /> Pagos cobrados
@@ -150,7 +150,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
         </div>
 
         <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Gastos</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Gastos</p>
           <p className="mt-3 text-3xl font-black text-neutral-950">{fmt(d.gastos)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-amber-600">
             <TrendingDown size={11} /> Gastos registrados
@@ -160,7 +160,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
         <div className={`rounded-2xl border p-5 shadow-sm ${
           d.beneficio >= 0 ? "border-emerald-100 bg-emerald-50" : "border-red-100 bg-red-50"
         }`}>
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Beneficio est.</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Beneficio est.</p>
           <p className={`mt-3 text-3xl font-black ${d.beneficio >= 0 ? "text-emerald-700" : "text-red-700"}`}>
             {d.beneficio >= 0 ? "+" : ""}{fmt(d.beneficio)} €
           </p>
@@ -170,7 +170,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
         </div>
 
         <div className="rounded-2xl border border-orange-100 bg-orange-50 p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">IVA neto est.</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">IVA neto est.</p>
           <p className="mt-3 text-3xl font-black text-orange-700">{fmt(d.ivaNeto)} €</p>
           <p className="mt-1 flex items-center gap-1 text-xs text-orange-600">
             <Calculator size={11} /> Repercutido − soportado
@@ -182,7 +182,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
       <div className="mt-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
         <div className="border-b border-neutral-100 px-6 py-4">
           <h2 className="font-black text-neutral-900">Estimación fiscal del trimestre</h2>
-          <p className="mt-0.5 text-xs text-neutral-400">
+          <p className="mt-0.5 text-xs text-neutral-500">
             Precios con IVA incluido al 21% · Estimación directa simplificada
           </p>
         </div>
@@ -197,7 +197,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
                 <p className={`text-sm ${highlight ? "font-black text-neutral-900" : "font-semibold text-neutral-700"}`}>
                   {label}
                 </p>
-                <p className="text-xs text-neutral-400">{note}</p>
+                <p className="text-xs text-neutral-500">{note}</p>
               </div>
               <p className={`shrink-0 font-black ${highlight ? "text-base text-neutral-950" : "text-sm text-neutral-950"}`}>
                 {fmtDec(value)} €
@@ -213,7 +213,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
           <Clock size={16} className="text-neutral-400" />
           <div>
             <h2 className="font-black text-neutral-900">Recordatorios de modelos</h2>
-            <p className="text-xs text-neutral-400">Solo aplica si eres autónomo en estimación directa</p>
+            <p className="text-xs text-neutral-500">Solo aplica si eres autónomo en estimación directa</p>
           </div>
         </div>
 
@@ -229,12 +229,12 @@ export function FiscalClient({ payments, expenses, year }: Props) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-neutral-900">{name}</p>
-                  <p className="text-xs text-neutral-400">Trimestre {selectedQ} · {period}</p>
+                  <p className="text-xs text-neutral-500">Trimestre {selectedQ} · {period}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold text-neutral-700">{quarter.deadline}</p>
-                <p className="text-xs text-neutral-400">{deadlineYear}</p>
+                <p className="text-xs text-neutral-500">{deadlineYear}</p>
               </div>
             </div>
           ))}
@@ -246,12 +246,12 @@ export function FiscalClient({ payments, expenses, year }: Props) {
               </div>
               <div>
                 <p className="text-sm font-semibold text-neutral-700">Resumen anual IVA</p>
-                <p className="text-xs text-neutral-400">Anual · Todo el año {year}</p>
+                <p className="text-xs text-neutral-500">Anual · Todo el año {year}</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-xs font-bold text-neutral-500">30 de enero</p>
-              <p className="text-xs text-neutral-400">{year + 1}</p>
+              <p className="text-xs text-neutral-500">{year + 1}</p>
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
       <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-6 text-center">
         <Download size={22} className="mx-auto text-neutral-300" />
         <p className="mt-2 font-black text-neutral-500">Resumen para tu gestor</p>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-neutral-500">
           Usa el desglose de esta pantalla como base para revisar el trimestre con tu asesor fiscal.
         </p>
         <button
@@ -273,7 +273,7 @@ export function FiscalClient({ payments, expenses, year }: Props) {
         </button>
       </div>
 
-      <p className="mt-4 text-center text-xs text-neutral-400">
+      <p className="mt-4 text-center text-xs text-neutral-500">
         Estimación orientativa · Datos de tus registros · Consulta siempre con tu gestor fiscal
       </p>
     </>

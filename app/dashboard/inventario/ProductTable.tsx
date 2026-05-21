@@ -64,7 +64,7 @@ export function ProductTable({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-black text-[#080A0F]">{product.name}</p>
-                <p className="mt-0.5 text-xs text-slate-400">
+                <p className="mt-0.5 text-xs text-slate-500">
                   {product.sku ? `SKU ${product.sku}` : "Sin SKU"}
                   {product.supplier ? ` · ${product.supplier}` : ""}
                 </p>
@@ -73,15 +73,15 @@ export function ProductTable({
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-400">Stock</p>
+                <p className="text-[11px] font-bold uppercase text-slate-500">Stock</p>
                 <p className="mt-1 font-black text-[#080A0F]">{product.current_stock}</p>
               </div>
               <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-400">Venta</p>
+                <p className="text-[11px] font-bold uppercase text-slate-500">Venta</p>
                 <p className="mt-1 font-black text-[#080A0F]">{formatCurrency(product.sale_price)}</p>
               </div>
               <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-400">Margen</p>
+                <p className="text-[11px] font-bold uppercase text-slate-500">Margen</p>
                 <p className="mt-1 font-black text-[#080A0F]">{formatPercent(getMargin(product))}</p>
               </div>
             </div>
@@ -154,7 +154,7 @@ export function ProductTable({
                   </span>
                   <div className="min-w-0">
                     <p className="font-black text-[#080A0F]">{product.name}</p>
-                    <p className="mt-0.5 text-xs text-slate-400">
+                    <p className="mt-0.5 text-xs text-slate-500">
                       {product.sku ? `SKU ${product.sku}` : "Sin SKU"}
                       {product.supplier ? ` · ${product.supplier}` : ""}
                     </p>

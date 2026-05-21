@@ -182,7 +182,7 @@ export default async function AutomatizacionesPage() {
         ] satisfies [string, number, LucideIcon][]).map(([label, value, Icon]) => (
           <div key={String(label)} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
             <Icon size={18} className="text-[#C9922A]" />
-            <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-400">{label}</p>
+            <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-500">{label}</p>
             <p className="mt-1 text-3xl font-black text-[#080A0F]">{value}</p>
           </div>
         ))}
@@ -230,11 +230,11 @@ export default async function AutomatizacionesPage() {
                   <textarea name="template" rows={3} defaultValue={rule.template ?? ""} className="input resize-none py-3" />
                 </div>
                 <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-400">Vista previa segura</p>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-500">Vista previa segura</p>
                   <p className="mt-2 text-sm font-semibold leading-6 text-neutral-700">{preview || "Sin plantilla configurada."}</p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs font-semibold text-neutral-400">
+                  <p className="text-xs font-semibold text-neutral-500">
                     Ultima ejecucion: {rule.last_run_at ? new Date(rule.last_run_at).toLocaleString("es-ES") : "Nunca"}
                   </p>
                   <button type="submit" className={rule.is_active ? "btn-outline" : "btn-dark"}>

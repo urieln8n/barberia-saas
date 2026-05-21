@@ -69,20 +69,20 @@ export default async function AjustesPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Nombre</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Nombre</p>
             <p className="mt-1 font-semibold text-[#111827]">{barbershop?.name ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Ciudad</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Ciudad</p>
             <p className="mt-1 font-semibold text-[#111827]">{barbershop?.city ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Slug / URL</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Slug / URL</p>
             <p className="mt-1 font-mono text-sm text-neutral-700">{barbershop?.slug ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">ID de barbería</p>
-            <p className="mt-1 font-mono text-xs text-neutral-400">{barbershopId}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">ID de barbería</p>
+            <p className="mt-1 font-mono text-xs text-neutral-500">{barbershopId}</p>
           </div>
         </div>
 

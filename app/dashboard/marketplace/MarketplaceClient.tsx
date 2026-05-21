@@ -232,7 +232,7 @@ function Field({
         placeholder={placeholder}
         className="input"
       />
-      {hint && <p className="text-xs leading-5 text-slate-400">{hint}</p>}
+      {hint && <p className="text-xs leading-5 text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -252,7 +252,7 @@ function MetricCard({
     <article className="rounded-2xl border border-[#E7E2D8] bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <IconPill icon={Icon} className="bg-[#F8F5EF] text-[#8A641F]" />
-        <p className="text-right text-[10px] font-black uppercase text-slate-400">30 días</p>
+        <p className="text-right text-[10px] font-black uppercase text-slate-500">30 días</p>
       </div>
       <p className="mt-4 text-2xl font-black tabular-nums text-[#080A0F]">{value}</p>
       <p className="mt-1 text-sm font-bold text-[#080A0F]">{label}</p>
@@ -277,7 +277,7 @@ function ProfileScoreCard({ data }: { data: MarketplacePageData }) {
         </div>
         <div className="rounded-3xl border border-[#E7E2D8] bg-[#F8F5EF] p-5 text-center">
           <p className={`text-4xl font-black tabular-nums ${scoreTone}`}>{score}</p>
-          <p className="mt-1 text-xs font-black uppercase text-slate-400">
+          <p className="mt-1 text-xs font-black uppercase text-slate-500">
             {data.health.completed} de {data.health.total} listos
           </p>
         </div>
