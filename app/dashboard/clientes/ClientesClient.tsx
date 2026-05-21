@@ -128,14 +128,14 @@ export function ClientesClient({ clients, barbershopId }: Props) {
         />
       ) : (
         <div className="premium-card overflow-hidden">
-          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
+          <div className="border-b border-white/[0.15] bg-white/[0.07] px-5 py-4 md:px-6">
             <p className="label-section">CRM</p>
             <h2 className="section-heading mt-1">Base de clientes</h2>
             <p className="section-subtext">Contacto, última visita y acciones rápidas de retención.</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-white/10 bg-white/[0.05]">
+              <thead className="border-b border-white/[0.15] bg-white/[0.07]">
                 <tr>
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
@@ -144,7 +144,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
+              <tbody className="divide-y divide-white/[0.15]">
                 {filtered.map((c) => (
                   <tr key={c.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
                     <td className="px-6 py-4">

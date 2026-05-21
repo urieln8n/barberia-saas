@@ -933,7 +933,7 @@ export function CajaClient({
             description="Cobros registrados en la caja abierta."
             bodyClassName="p-0"
             action={
-              <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-semibold text-slate-300">
+              <span className="rounded-full border border-[#D5CEBC] bg-[#F0EAE0] px-3 py-1 text-xs font-semibold text-slate-600">
                 {movements.length} movimientos
               </span>
             }
@@ -949,7 +949,7 @@ export function CajaClient({
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-white/10 bg-white/[0.05]">
+                  <thead className="border-b border-[#E7E2D8] bg-[#F3EDE1]">
                     <tr>
                       <th className="table-header-cell">Hora</th>
                       <th className="table-header-cell">Cliente</th>

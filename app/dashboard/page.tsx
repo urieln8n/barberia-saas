@@ -88,12 +88,6 @@ function formatTime(time?: string | null) {
   return time.slice(0, 5);
 }
 
-function formatDate(date: string) {
-  return new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
-    day: "2-digit",
-    month: "short",
-  });
-}
 
 function getWeekStartISO() {
   const now = new Date();
@@ -797,7 +791,7 @@ export default async function DashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
         <div className="panel overflow-hidden p-0">
-          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
+          <div className="border-b border-amber-200/20 bg-white/[0.08] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
@@ -826,7 +820,7 @@ export default async function DashboardPage() {
               />
             </div>
           ) : (
-            <div className="divide-y divide-white/10">
+            <div className="divide-y divide-white/[0.18]">
               {todayAppointments.slice(0, 5).map((appointment) => (
                 <article
                   key={appointment.id}
@@ -866,11 +860,11 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+              <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-3">
                 <p className="text-xs font-bold uppercase text-slate-300">Clientes atendidos</p>
                 <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+              <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-3">
                 <p className="text-xs font-bold uppercase text-slate-300">Efectivo</p>
                 <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
               </div>
@@ -907,7 +901,7 @@ export default async function DashboardPage() {
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {recommendedActions.map((action) => (
-            <div key={action} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-sm font-semibold leading-6 text-slate-300">
+            <div key={action} className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-4 text-sm font-semibold leading-6 text-slate-300">
               {action}
             </div>
           ))}
@@ -924,11 +918,11 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+            <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] px-4 py-3">
               <p className="text-xs font-black uppercase text-slate-300">Total huecos</p>
               <p className="mt-1 text-2xl font-black text-white">{totalFreeSlotsToday}</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+            <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] px-4 py-3">
               <p className="text-xs font-black uppercase text-slate-300">Más huecos</p>
               <p className="mt-1 text-2xl font-black text-white">
                 {barberWithMostSlots?.barberName ?? "—"}
@@ -958,7 +952,7 @@ export default async function DashboardPage() {
 
         {/* Próximas citas */}
         <div className="panel overflow-hidden p-0">
-          <div className="border-b border-white/10 bg-white/[0.05] px-5 py-4 md:px-6">
+          <div className="border-b border-amber-200/20 bg-white/[0.08] px-5 py-4 md:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="section-heading">Próximas citas</h2>
@@ -990,7 +984,7 @@ export default async function DashboardPage() {
             />
             </div>
           ) : (
-            <div className="flex flex-col divide-y divide-white/10">
+            <div className="flex flex-col divide-y divide-white/[0.18]">
               {upcomingAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
@@ -1041,7 +1035,7 @@ export default async function DashboardPage() {
             </p>
               </div>
             </div>
-            <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3">
+            <div className="mt-4 rounded-xl border border-amber-200/30 bg-white/[0.08] px-4 py-3">
               <p className="break-all font-mono text-xs font-semibold text-white/75">
                 {publicBookingFullUrl}
               </p>

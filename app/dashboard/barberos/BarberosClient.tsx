@@ -238,7 +238,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
             closures.map((closure) => (
               <div
                 key={closure.id}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-[#E7E2D8] bg-white px-4 py-3"
+                className="flex items-center justify-between gap-3 rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="font-black text-[#111827]">
@@ -294,8 +294,8 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
             {barbers.map((b) => (
               <article
                 key={b.id}
-                className={`rounded-[18px] border bg-white p-5 shadow-sm transition-opacity ${
-                  !b.active ? "border-neutral-200 opacity-60" : "border-[#E7E2D8]"
+                className={`rounded-[18px] border p-5 shadow-sm transition-opacity ${
+                  !b.active ? "border-neutral-200 bg-[#FDFBF7] opacity-60" : "border-[#E7E2D8] bg-[#FAF8F4]"
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -306,17 +306,19 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                     <button
                       type="button"
                       onClick={() => openEdit(b)}
+                      aria-label={`Editar ${b.name}`}
                       className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
                     >
-                      <Pencil size={15} />
+                      <Pencil size={15} aria-hidden="true" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(b.id)}
                       disabled={deleting === b.id}
+                      aria-label={`Eliminar ${b.name}`}
                       className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={15} aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -370,7 +372,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                       return (
                         <div
                           key={day.value}
-                          className="grid grid-cols-[52px_1fr_1fr] items-center gap-2 rounded-xl bg-white p-2 text-sm"
+                          className="grid grid-cols-[52px_1fr_1fr] items-center gap-2 rounded-xl bg-[#F8F5EF] p-2 text-sm"
                         >
                           <label className="flex items-center gap-2 font-bold text-neutral-700">
                             <input
@@ -443,7 +445,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -464,8 +466,9 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="form-label">Nombre *</label>
+                  <label htmlFor="barber-name" className="form-label">Nombre *</label>
                   <input
+                    id="barber-name"
                     name="name"
                     required
                     defaultValue={editing?.name ?? ""}
@@ -475,8 +478,9 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                 </div>
 
                 <div>
-                  <label className="form-label">Teléfono (opcional)</label>
+                  <label htmlFor="barber-phone" className="form-label">Teléfono (opcional)</label>
                   <input
+                    id="barber-phone"
                     name="phone"
                     type="tel"
                     defaultValue={editing?.phone ?? ""}

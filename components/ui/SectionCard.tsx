@@ -37,7 +37,7 @@ export function SectionCard({
   return (
     <section className={`${variantClass} overflow-hidden p-0 ${className}`}>
       {hasHeader && (
-        <div className={isDark ? "border-b border-white/10 bg-white/[0.05] px-5 py-5 md:px-6" : "border-b border-black/5 bg-[#F3EDE1]/70 px-5 py-5 md:px-6"}>
+        <div className={isDark ? "border-b border-amber-200/20 bg-white/[0.07] px-5 py-5 md:px-6" : "border-b border-[#DDD5C2] bg-[#F0EAE0] px-5 py-5 md:px-6"}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               {title && (

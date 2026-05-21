@@ -171,7 +171,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl bg-[#FAF8F4] shadow-2xl">
             <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
             <div className="p-8">
               <div className="flex items-center justify-between">
@@ -191,8 +191,9 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="form-label">Importe (€) *</label>
+                  <label htmlFor="pago-amount" className="form-label">Importe (€) *</label>
                   <input
+                    id="pago-amount"
                     name="amount"
                     type="number"
                     min="0.01"
@@ -204,8 +205,9 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 </div>
 
                 <div>
-                  <label className="form-label">Método de pago *</label>
+                  <label htmlFor="pago-method" className="form-label">Método de pago *</label>
                   <select
+                    id="pago-method"
                     name="method"
                     required
                     className="input py-3"
@@ -219,8 +221,9 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 </div>
 
                 <div>
-                  <label className="form-label">Cliente (opcional)</label>
+                  <label htmlFor="pago-client" className="form-label">Cliente (opcional)</label>
                   <select
+                    id="pago-client"
                     name="client_id"
                     className="input py-3"
                   >
@@ -232,8 +235,9 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 </div>
 
                 <div>
-                  <label className="form-label">Notas (opcional)</label>
+                  <label htmlFor="pago-notes" className="form-label">Notas (opcional)</label>
                   <input
+                    id="pago-notes"
                     name="notes"
                     placeholder="Ej: Corte + barba"
                     className="input py-3"

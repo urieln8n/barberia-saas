@@ -242,7 +242,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       <header className="border-b border-white/10 bg-[#07101F]/88 text-white shadow-sm backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/35 bg-[#D9B766]/15 text-sm font-black tracking-wide text-[#8A641F]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/45 bg-[#D9B766]/20 text-sm font-black tracking-wide text-[#D9B766]">
               {getInitials(barbershop.name) || <Scissors size={20} />}
             </div>
             <div className="min-w-0">

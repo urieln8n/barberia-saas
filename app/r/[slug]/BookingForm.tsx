@@ -698,11 +698,12 @@ export function BookingForm({
               description="Selecciona un día y después una hora disponible."
             />
 
-            <label className="mt-4 block text-sm font-semibold text-neutral-700">
+            <label htmlFor="booking-date" className="mt-4 block text-sm font-semibold text-neutral-700">
               Día
             </label>
 
             <input
+              id="booking-date"
               type="date"
               min={today}
               value={date}
@@ -729,7 +730,7 @@ export function BookingForm({
                 </div>
 
                 {formError && (
-                  <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+                  <p role="alert" className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
                     {formError}
                   </p>
                 )}
@@ -823,10 +824,11 @@ export function BookingForm({
 
               {/* Nombre */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-name" className="mb-1 block text-sm font-semibold text-neutral-700">
                   Nombre completo *
                 </label>
                 <input
+                  id="booking-name"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -834,18 +836,20 @@ export function BookingForm({
                   }}
                   placeholder="Ej: Carlos García"
                   autoComplete="name"
+                  aria-required="true"
                   className="input py-3"
                 />
               </div>
 
               {/* Teléfono */}
               <div>
-                <label className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-phone" className="mb-1 block text-sm font-semibold text-neutral-700">
                   Teléfono *
                 </label>
                 <div className="relative">
-                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
                   <input
+                    id="booking-phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => {
@@ -854,6 +858,7 @@ export function BookingForm({
                     }}
                     placeholder="+34 600 000 000"
                     autoComplete="tel"
+                    aria-required="true"
                     className="input py-3 pl-10"
                   />
                 </div>
@@ -861,15 +866,16 @@ export function BookingForm({
 
               {/* Email opcional */}
               <div>
-                <label className="mb-1 flex items-center gap-2 text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-email" className="mb-1 flex items-center gap-2 text-sm font-semibold text-neutral-700">
                   Email
                     <span className="rounded-xl bg-neutral-100 px-2 py-0.5 text-xs font-bold text-slate-500">
                     opcional
                   </span>
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
                   <input
+                    id="booking-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -919,7 +925,7 @@ export function BookingForm({
 
             {/* Error */}
             {formError && (
-              <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+              <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
                 {formError}
               </p>
             )}
@@ -986,7 +992,7 @@ export function BookingForm({
             </div>
 
             {formError && (
-              <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+              <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
                 {formError}
               </p>
             )}

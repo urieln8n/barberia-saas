@@ -230,13 +230,13 @@
     @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-sm;
   }
   .card-dark {
-    @apply rounded-[2rem] border border-white/10 bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.28)];
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.28)];
   }
   .panel {
-    @apply rounded-[2rem] border border-white/10 bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
   }
   .panel-compact {
-    @apply rounded-2xl border border-white/10 bg-[#182033] p-4 text-white shadow-sm;
+    @apply rounded-2xl border border-white/[0.15] bg-[#182033] p-4 text-white shadow-sm;
   }
   .metric-card {
     @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] p-5 text-slate-950 shadow-[var(--shadow-warm)] transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300/60 hover:shadow-[var(--shadow-card)];
@@ -245,16 +245,16 @@
     @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-[0_1px_2px_rgba(5,10,20,0.07)];
   }
   .bento-card {
-    @apply rounded-[2rem] border border-white/10 bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
   }
   .dashboard-card {
-    @apply rounded-[2rem] border border-white/10 bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
   }
   .glass-panel {
-    @apply border border-white/10 bg-[#151D2E]/90 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur-xl;
+    @apply border border-white/[0.15] bg-[#151D2E]/90 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur-xl;
   }
   .premium-dark {
-    @apply border border-white/10 bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
+    @apply border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
   }
 
   .btn {
@@ -433,13 +433,13 @@
     position: relative;
     overflow: hidden;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     background:
-      linear-gradient(135deg, rgba(213, 168, 76, 0.10), transparent 34%),
+      linear-gradient(135deg, rgba(213, 168, 76, 0.12), transparent 34%),
       linear-gradient(145deg, #050A14 0%, #0B1220 48%, #151D2E 100%);
     box-shadow:
       0 24px 80px rgba(2, 6, 23, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 rgba(255, 255, 255, 0.10);
   }
   .dashboard-hero::after {
     content: "";
@@ -454,7 +454,7 @@
       linear-gradient(145deg, #050A14 0%, #151D2E 100%);
   }
   .premium-card {
-    @apply rounded-[2rem] border border-white/10 bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur;
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur;
   }
   .premium-card-muted {
     @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-[0_1px_2px_rgba(5,10,20,0.04),0_12px_34px_rgba(15,23,42,0.07)];
@@ -466,16 +466,16 @@
     animation: premium-skeleton 1.5s ease-in-out infinite;
   }
   .quick-action-card {
-    @apply rounded-[24px] border border-white/10 bg-[#151D2E] p-4 text-white shadow-[0_18px_58px_rgba(5,10,20,0.26)] transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-200/30 hover:shadow-[0_24px_72px_rgba(5,10,20,0.32)];
+    @apply rounded-[24px] border border-white/[0.15] bg-[#151D2E] p-4 text-white shadow-[0_18px_58px_rgba(5,10,20,0.26)] transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-200/35 hover:shadow-[0_24px_72px_rgba(5,10,20,0.32)];
   }
   .surface-frame {
     @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-[var(--shadow-warm)];
   }
   .section-band {
-    @apply rounded-[2rem] border border-white/10 bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
   }
   .section-band-dark {
-    @apply rounded-[2rem] border border-white/10 bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
+    @apply rounded-[2rem] border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
   }
   .section-band .section-heading,
   .section-band-dark .section-heading,
@@ -493,7 +493,7 @@
   .dashboard-card .section-subtext,
   .panel .section-subtext,
   .bento-card .section-subtext {
-    @apply text-slate-300;
+    @apply text-slate-200;
   }
   .section-band .form-label,
   .section-band-dark .form-label,
@@ -520,7 +520,7 @@
   .premium-card .table-cell,
   .dashboard-card .table-cell,
   .panel .table-cell {
-    @apply text-slate-300;
+    @apply text-slate-200;
   }
   .surface-frame .section-heading,
   .premium-card-muted .section-heading,
@@ -579,14 +579,14 @@
 
   .landing-section-dark {
     background:
-      radial-gradient(circle at 88% 8%, rgba(56, 189, 248, 0.12), transparent 28rem),
+      radial-gradient(circle at 88% 8%, rgba(56, 189, 248, 0.09), transparent 28rem),
       linear-gradient(135deg, #0B1220 0%, #111827 54%, #070B14 100%);
   }
 
   .landing-section-graphite {
     background:
-      radial-gradient(circle at 8% 100%, rgba(56, 189, 248, 0.14), transparent 30rem),
-      linear-gradient(135deg, #101827 0%, #111827 48%, #0B1220 100%);
+      radial-gradient(circle at 8% 100%, rgba(213, 168, 76, 0.05), transparent 30rem),
+      linear-gradient(135deg, #040810 0%, #060D1B 48%, #030710 100%);
   }
 
   .landing-section-light {

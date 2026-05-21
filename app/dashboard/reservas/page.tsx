@@ -21,7 +21,7 @@ export default function ReservasPage() {
         }
       />
 
-      <div className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[#DDE7FB] bg-[#F5F8FF] shadow-sm">
         <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
         <div className="grid gap-6 p-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
@@ -72,7 +72,7 @@ export default function ReservasPage() {
             text: "Cada reserva crea o actualiza el cliente para mantener tu base de datos ordenada.",
           },
         ].map(({ icon: Icon, title, text }) => (
-          <div key={title} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div key={title} className="rounded-2xl border border-amber-200/40 bg-[#FAF7F2] p-5 shadow-sm">
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
               <Icon size={18} className="text-[#2F6FEB]" />
             </div>
@@ -82,7 +82,7 @@ export default function ReservasPage() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-5">
+      <div className="rounded-2xl border border-amber-200/30 bg-[#F8F5EF] p-5">
         <div className="flex items-start gap-3">
           <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#2F6FEB]" />
           <div>

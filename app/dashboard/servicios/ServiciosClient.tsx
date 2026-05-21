@@ -169,17 +169,19 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                         <button
                           type="button"
                           onClick={() => openEdit(s)}
+                          aria-label={`Editar ${s.name}`}
                           className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
                         >
-                          <Pencil size={15} />
+                          <Pencil size={15} aria-hidden="true" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDelete(s.id)}
                           disabled={deleting === s.id}
+                          aria-label={`Eliminar ${s.name}`}
                           className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
                         >
-                          <Trash2 size={15} />
+                          <Trash2 size={15} aria-hidden="true" />
                         </button>
                       </div>
                     </td>
@@ -194,7 +196,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-white shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] shadow-2xl">
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -215,8 +217,9 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
 
               <form action={handleSubmit} className="mt-6 flex flex-col gap-4">
                 <div>
-                  <label className="form-label">Nombre *</label>
+                  <label htmlFor="svc-name" className="form-label">Nombre *</label>
                   <input
+                    id="svc-name"
                     name="name"
                     required
                     defaultValue={editing?.name ?? ""}
@@ -227,8 +230,9 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="form-label">Precio (€) *</label>
+                    <label htmlFor="svc-price" className="form-label">Precio (€) *</label>
                     <input
+                      id="svc-price"
                       name="price"
                       type="number"
                       min="0"
@@ -240,8 +244,9 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                     />
                   </div>
                   <div>
-                    <label className="form-label">Duración (min) *</label>
+                    <label htmlFor="svc-duration" className="form-label">Duración (min) *</label>
                     <input
+                      id="svc-duration"
                       name="duration_minutes"
                       type="number"
                       min="5"
@@ -255,8 +260,9 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                 </div>
 
                 <div>
-                  <label className="form-label">Descripción (opcional)</label>
+                  <label htmlFor="svc-description" className="form-label">Descripción (opcional)</label>
                   <input
+                    id="svc-description"
                     name="description"
                     defaultValue={editing?.description ?? ""}
                     placeholder="Ej: Incluye lavado y secado"

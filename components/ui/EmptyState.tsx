@@ -29,7 +29,7 @@ export function EmptyState({
   return (
     <div className={`relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] border border-dashed px-6 py-10 text-center ${
       dark
-        ? "border-white/15 bg-white/[0.06] text-white"
+        ? "border-white/25 bg-white/[0.08] text-white"
         : "border-amber-200/40 bg-[linear-gradient(180deg,#F8F3EA_0%,#F3EDE1_100%)] text-slate-950 shadow-[var(--shadow-soft)]"
     } ${className}`}>
       <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/45 to-transparent" />
