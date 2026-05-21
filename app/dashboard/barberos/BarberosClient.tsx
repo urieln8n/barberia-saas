@@ -455,6 +455,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                 <button
                   type="button"
                   onClick={closeModal}
+                  aria-label="Cerrar"
                   className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
                 >
                   <X size={18} />

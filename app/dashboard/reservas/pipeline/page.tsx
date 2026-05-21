@@ -61,6 +61,13 @@ function whatsappHref(phone: string | null, name: string) {
   return `https://wa.me/${digits}?text=${message}`;
 }
 
+const STATUS_ARIA_LABELS: Record<string, string> = {
+  confirmed: "Confirmar cita",
+  completed: "Marcar completada",
+  no_show:   "No asistió",
+  cancelled: "Cancelar cita",
+};
+
 function StatusButton({ appointmentId, status, children }: { appointmentId: string; status: string; children: React.ReactNode }) {
   return (
     <form action={updatePipelineAppointmentStatus}>
@@ -68,6 +75,7 @@ function StatusButton({ appointmentId, status, children }: { appointmentId: stri
       <input type="hidden" name="status" value={status} />
       <button
         type="submit"
+        aria-label={STATUS_ARIA_LABELS[status] ?? status}
         className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#E7E2D8] bg-white text-neutral-500 transition hover:border-[#C9922A]/40 hover:bg-[#C9922A]/5 hover:text-[#8A641F]"
       >
         {children}
@@ -207,7 +215,7 @@ export default async function PipelineReservasPage() {
                               <StatusButton appointmentId={appointment.id} status="completed"><Scissors size={14} /></StatusButton>
                               <StatusButton appointmentId={appointment.id} status="no_show"><X size={14} /></StatusButton>
                               {wa && (
-                                <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700">
+                                <a href={wa} target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700">
                                   <MessageCircle size={14} />
                                 </a>
                               )}

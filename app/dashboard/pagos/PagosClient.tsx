@@ -182,6 +182,7 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
+                  aria-label="Cerrar"
                   className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
                 >
                   <X size={18} />

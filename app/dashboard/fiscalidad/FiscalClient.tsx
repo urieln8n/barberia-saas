@@ -115,10 +115,13 @@ export function FiscalClient({ payments, expenses, year }: Props) {
 
       {/* ── Selector trimestre ── */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex gap-1.5 rounded-2xl border border-neutral-200 bg-white p-1.5">
+        <div role="tablist" className="flex gap-1.5 rounded-2xl border border-neutral-200 bg-white p-1.5">
           {QUARTERS.map(({ q, label }) => (
             <button
               key={q}
+              type="button"
+              role="tab"
+              aria-selected={selectedQ === q}
               onClick={() => setSelectedQ(q)}
               className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition ${
                 selectedQ === q

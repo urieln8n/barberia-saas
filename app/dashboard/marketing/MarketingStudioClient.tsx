@@ -242,7 +242,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div className="flex gap-1 overflow-x-auto rounded-[20px] border border-white/10 bg-[#151D2E] p-1 shadow-sm">
+      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-white/10 bg-[#151D2E] p-1 shadow-sm">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -250,6 +250,8 @@ export function MarketingStudioClient({
             <button
               key={tab.id}
               type="button"
+              role="tab"
+              aria-selected={active}
               onClick={() => setActiveTab(tab.id)}
               className={`flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all duration-150 ${
                 active

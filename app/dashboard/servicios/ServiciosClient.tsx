@@ -206,6 +206,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                 <button
                   type="button"
                   onClick={closeModal}
+                  aria-label="Cerrar"
                   className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
                 >
                   <X size={18} />

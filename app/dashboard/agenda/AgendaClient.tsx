@@ -426,6 +426,7 @@ export function AgendaClient({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
+                  aria-label="Cerrar"
                   className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
                 >
                   <X size={18} />

@@ -134,6 +134,10 @@
     color: var(--ink);
   }
 
+  button, [role="button"] {
+    cursor: pointer;
+  }
+
   *:focus-visible {
     outline: 2px solid var(--premium-blue);
     outline-offset: 2px;
