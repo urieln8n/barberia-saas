@@ -33,6 +33,7 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
+  Sparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -85,6 +86,7 @@ const tabItems: Record<TabId, NavItem[]> = {
     { href: "/dashboard/marketing",        label: "Marketing Studio", icon: Megaphone                   },
     { href: "/dashboard/resenas",          label: "Reseñas",          icon: Star                        },
     { href: "/dashboard/recuperacion",     label: "Clientes perdidos",icon: RotateCcw                  },
+    { href: "/dashboard/agents",            label: "Agentes IA",       icon: Sparkles,   badge: "Nuevo"  },
     { href: "/dashboard/automatizaciones", label: "Automatizaciones", icon: Workflow,   badge: "Pro"    },
     { href: "/dashboard/ia",               label: "IA del Dueño",     icon: Bot,        badge: "IA"     },
     { href: "/dashboard/kit",              label: "BarberíaOS Kit",   icon: PackageCheck, badge: "Kit" },
@@ -125,6 +127,7 @@ const groupedMobileNav: MobileNavGroup[] = [
   {
     title: "Crecimiento",
     items: [
+      { href: "/dashboard/agents", label: "Agentes IA", icon: Sparkles, badge: "Nuevo" },
       { href: "/dashboard/marketing", label: "Marketing Studio", icon: Megaphone },
       { href: "/dashboard/growth", label: "Growth", icon: Rocket, badge: "Growth" },
       { href: "/dashboard/resenas", label: "Reseñas", icon: Star },
