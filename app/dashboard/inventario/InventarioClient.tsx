@@ -275,7 +275,7 @@ export function InventarioClient({
                   className="flex items-center justify-between gap-3 rounded-[18px] border border-[#E7E2D8] bg-[#FAF8F4] px-4 py-3"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F] text-xs font-black text-[#D5A84C]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-xs font-black text-[#C9922A]">
                       {index + 1}
                     </span>
                     <div className="min-w-0">

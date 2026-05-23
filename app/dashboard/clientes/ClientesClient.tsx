@@ -128,14 +128,14 @@ export function ClientesClient({ clients, barbershopId }: Props) {
         />
       ) : (
         <div className="premium-card overflow-hidden">
-          <div className="border-b border-white/[0.15] bg-white/[0.07] px-5 py-4 md:px-6">
+          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
             <p className="label-section">CRM</p>
             <h2 className="section-heading mt-1">Base de clientes</h2>
             <p className="section-subtext">Contacto, última visita y acciones rápidas de retención.</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-white/[0.15] bg-white/[0.07]">
+              <thead className="border-b border-slate-100 bg-slate-50">
                 <tr>
                   <th className="table-header-cell">Cliente</th>
                   <th className="table-header-cell">Contacto</th>
@@ -144,16 +144,16 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.15]">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((c) => (
-                  <tr key={c.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
+                  <tr key={c.id} className="bg-white transition-colors hover:bg-slate-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-xs font-black uppercase text-[#D4AF66]">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-100 text-xs font-black uppercase text-[#C9922A]">
                           {c.name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-black text-white">{c.name}</p>
+                          <p className="font-black text-slate-900">{c.name}</p>
                           {c.notes && <p className="text-xs font-medium text-slate-500">{c.notes}</p>}
                         </div>
                       </div>
@@ -161,7 +161,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         {c.phone && (
-                          <span className="flex items-center gap-1.5 text-sm text-slate-300">
+                          <span className="flex items-center gap-1.5 text-sm text-slate-600">
                             <Phone size={12} /> {c.phone}
                           </span>
                         )}
@@ -172,14 +172,14 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-slate-300">
+                    <td className="px-6 py-4 text-sm font-medium text-slate-600">
                       {c.last_visit_at
                         ? new Date(c.last_visit_at).toLocaleDateString("es-ES")
-                        : <span className="text-slate-500">—</span>}
+                        : <span className="text-slate-400">—</span>}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">
-                        <p className="font-black text-white">-- EUR</p>
+                        <p className="font-black text-slate-900">-- EUR</p>
                         <p className="text-xs font-medium text-slate-500">Favorito: Corte</p>
                       </div>
                     </td>
@@ -190,7 +190,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                             href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-emerald-500/10 hover:text-emerald-300"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
                             title="Enviar WhatsApp"
                           >
                             <MessageCircle size={15} />
@@ -198,7 +198,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         )}
                         <button
                           type="button"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-white/10 hover:text-white"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
                           title="Pedir reseña"
                         >
                           <Star size={15} />
@@ -213,7 +213,7 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                         <button
                           type="button"
                           onClick={() => openEdit(c)}
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-white/10 hover:text-white"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
                         >
                           <Pencil size={15} />
                         </button>

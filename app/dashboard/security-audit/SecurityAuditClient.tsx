@@ -245,8 +245,8 @@ export function AuditSignalCard({
   return (
     <div className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F]">
-          <Icon size={17} className="text-[#D5A84C]" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
+          <Icon size={17} className="text-[#C9922A]" />
         </div>
         <div className="min-w-0">
           <h3 className="text-sm font-black text-[#080A0F]">{title}</h3>
@@ -290,8 +290,8 @@ function CategoryScoreGrid({ scores }: { scores: ShieldCategoryScores }) {
         return (
           <div key={key} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F]">
-                <Icon size={16} className="text-[#D5A84C]" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
+                <Icon size={16} className="text-[#C9922A]" />
               </div>
               <span className={`rounded-full border px-2 py-0.5 text-xs font-black ${theme.text} ${theme.bg}`}>
                 {score}
@@ -431,8 +431,8 @@ function CategorySection({ categoryKey, checks }: { categoryKey: CategoryKey; ch
   return (
     <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-soft)]">
       <div className="mb-4 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#080A0F]">
-          <Icon size={16} className="text-[#D5A84C]" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+          <Icon size={16} className="text-[#C9922A]" />
         </div>
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -777,17 +777,17 @@ function CommercialCtaCard({
 
   return (
     <div className={`rounded-[24px] border p-5 shadow-[var(--shadow-soft)] md:p-6 ${
-      isCritical ? "border-[#C9922A]/30 bg-[#080A0F] text-white" : "border-slate-200 bg-white"
+      isCritical ? "border-amber-200 bg-amber-50 text-slate-900" : "border-slate-200 bg-white"
     }`}>
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
-          <p className={isCritical ? "text-[11px] font-black uppercase text-[#D5A84C]" : "label-section"}>
+          <p className="label-section">
             Siguiente paso recomendado
           </p>
-          <h3 className={`mt-1 text-xl font-black ${isCritical ? "text-white" : "text-[#080A0F]"}`}>
+          <h3 className="mt-1 text-xl font-black text-slate-900">
             {cta.title}
           </h3>
-          <p className={`mt-2 text-sm leading-6 ${isCritical ? "text-white/70" : "text-slate-500"}`}>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
             {cta.description}
           </p>
         </div>

@@ -149,7 +149,7 @@ export function ProductTable({
             <tr key={product.id} className="transition-colors hover:bg-[#FAF8F4]">
               <td className="px-5 py-4">
                 <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F]">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
                     <Package size={15} className="text-[#C9922A]" />
                   </span>
                   <div className="min-w-0">
