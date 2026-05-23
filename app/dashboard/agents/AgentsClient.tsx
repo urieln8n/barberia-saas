@@ -29,6 +29,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { runAgentAction } from "./actions";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -60,6 +61,7 @@ type Agent = {
   metrics?: { label: string; value: string }[];
   preview?: string;
   previewLabel?: string;
+  runnable?: boolean;
 };
 
 const AGENTS: Agent[] = [
@@ -98,6 +100,7 @@ const AGENTS: Agent[] = [
     ],
     previewLabel: "Mensaje de recuperación personalizado",
     preview: "Hola [Nombre] 👋 Te echamos de menos en [Barbería]. ¿Te apetece un corte esta semana? Reserva aquí: [link]. Solo 2 min.",
+    runnable: true,
   },
   {
     id: "huecos",
@@ -276,16 +279,40 @@ const PHASES = [
 function AgentCard({ agent }: { agent: Agent }) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [livePreview, setLivePreview] = useState<string | null>(null);
+  const [liveCount, setLiveCount] = useState<number | null>(null);
+  const [runError, setRunError] = useState<string | null>(null);
   const Icon = agent.icon;
   const status = STATUS_CONFIG[agent.status];
   const plan = PLAN_CONFIG[agent.plan];
   const isLocked = agent.status === "coming_soon";
+  const displayPreview = livePreview ?? agent.preview;
 
   function handleCopy() {
-    if (!agent.preview) return;
-    navigator.clipboard.writeText(agent.preview);
+    if (!displayPreview) return;
+    navigator.clipboard.writeText(displayPreview);
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
+  }
+
+  async function handleRun() {
+    setRunning(true);
+    setRunError(null);
+    try {
+      const result = await runAgentAction(agent.id);
+      if (result.ok && result.preview) {
+        setLivePreview(result.preview);
+        setLiveCount(result.count ?? null);
+        setExpanded(true);
+      } else {
+        setRunError(result.error ?? "Error desconocido.");
+      }
+    } catch {
+      setRunError("Error ejecutando el agente.");
+    } finally {
+      setRunning(false);
+    }
   }
 
   return (
@@ -334,35 +361,46 @@ function AgentCard({ agent }: { agent: Agent }) {
       {/* Metrics (active/beta only) */}
       {!isLocked && agent.metrics && agent.metrics.length > 0 && (
         <div className="mx-5 grid grid-cols-2 gap-2 pb-3">
-          {agent.metrics.map((m) => (
-            <div
-              key={m.label}
-              className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-center"
-            >
-              <p className="text-sm font-black text-slate-900">{m.value}</p>
-              <p className="text-[10px] font-medium text-slate-500">{m.label}</p>
-            </div>
-          ))}
+          {agent.metrics.map((m) => {
+            const isCountMetric = agent.runnable && m.label === "Clientes en riesgo";
+            const displayValue = isCountMetric && liveCount !== null ? String(liveCount) : m.value;
+            return (
+              <div
+                key={m.label}
+                className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-center"
+              >
+                <p className={`text-sm font-black ${isCountMetric && liveCount !== null && liveCount > 0 ? "text-amber-700" : "text-slate-900"}`}>
+                  {displayValue}
+                </p>
+                <p className="text-[10px] font-medium text-slate-500">{m.label}</p>
+              </div>
+            );
+          })}
         </div>
       )}
 
+      {/* Run error */}
+      {runError && (
+        <p className="mx-5 mb-3 rounded-xl bg-red-50 px-3 py-2 text-xs text-red-700">{runError}</p>
+      )}
+
       {/* Preview expandible */}
-      {!isLocked && agent.preview && (
+      {!isLocked && displayPreview && (
         <div className="mx-5 pb-3">
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
             className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-left text-xs font-semibold text-slate-600 transition-colors hover:border-slate-200 hover:bg-white"
           >
-            {agent.previewLabel ?? "Ver ejemplo"}
+            {livePreview ? "Mensaje generado · listo para copiar" : (agent.previewLabel ?? "Ver ejemplo")}
             <ChevronRight
               size={13}
               className={`text-slate-400 transition-transform duration-150 ${expanded ? "rotate-90" : ""}`}
             />
           </button>
           {expanded && (
-            <div className="mt-2 rounded-2xl border border-slate-100 bg-slate-50 p-3">
-              <p className="text-xs leading-5 text-slate-700">{agent.preview}</p>
+            <div className={`mt-2 rounded-2xl border p-3 ${livePreview ? "border-amber-100 bg-amber-50" : "border-slate-100 bg-slate-50"}`}>
+              <p className="text-xs leading-5 text-slate-700">{displayPreview}</p>
               <button
                 type="button"
                 onClick={handleCopy}
@@ -387,7 +425,22 @@ function AgentCard({ agent }: { agent: Agent }) {
           <span className="flex items-center gap-1 text-[11px] text-slate-400">
             <Lock size={10} /> Próximamente
           </span>
-        ) : agent.preview ? (
+        ) : agent.runnable ? (
+          <button
+            type="button"
+            onClick={handleRun}
+            disabled={running}
+            className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#C9922A]/30 bg-[#C9922A]/10 px-3 py-1.5 text-xs font-black text-[#8A641F] transition-colors hover:bg-[#C9922A]/20 disabled:cursor-wait disabled:opacity-60"
+          >
+            {running ? (
+              <><Zap size={12} className="animate-pulse" /> Ejecutando...</>
+            ) : livePreview ? (
+              <><Check size={12} className="text-emerald-600" /> Listo · Re-ejecutar</>
+            ) : (
+              <><Play size={12} /> Ejecutar agente</>
+            )}
+          </button>
+        ) : displayPreview ? (
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
