@@ -6,6 +6,7 @@ import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { runRetencionAgent } from "@/src/lib/agents/agents/retencion";
 import { runHuecosAgent } from "@/src/lib/agents/agents/huecos";
 import { runResenasAgent } from "@/src/lib/agents/agents/resenas";
+import { runMarketingAgent } from "@/src/lib/agents/agents/marketing";
 
 export type AgentRunResult = {
   ok: boolean;
@@ -48,6 +49,11 @@ export async function runAgentAction(agentId: string): Promise<AgentRunResult> {
     if (agentId === "resenas") {
       const result = await runResenasAgent(supabase, barbershopId);
       return { ok: true, preview: result.preview, count: result.completedToday };
+    }
+
+    if (agentId === "marketing") {
+      const result = await runMarketingAgent(supabase, barbershopId, slug);
+      return { ok: true, preview: result.preview, count: result.postsGenerated };
     }
 
     return { ok: false, error: "Agente no disponible todavía." };

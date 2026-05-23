@@ -141,6 +141,10 @@ const AGENTS: Agent[] = [
       { label: "Posts generados", value: "—" },
       { label: "Canales cubiertos", value: "3" },
     ],
+    previewLabel: "Pack de contenido semanal",
+    preview: "💬 WHATSAPP\nEsta semana en [Barbería]... Reserva tu corte: [link]\n\n📸 INSTAGRAM\n✂️ [Servicio] disponible. Reserva aquí → [link]\n\n🎬 STORIES\n¿Ya tienes tu corte esta semana? 👇",
+    runnable: true,
+    liveMetricLabel: "Posts generados",
   },
   {
     id: "recepcionista",
