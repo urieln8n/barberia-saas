@@ -62,6 +62,7 @@ type Agent = {
   preview?: string;
   previewLabel?: string;
   runnable?: boolean;
+  liveMetricLabel?: string;
 };
 
 const AGENTS: Agent[] = [
@@ -82,6 +83,8 @@ const AGENTS: Agent[] = [
     ],
     previewLabel: "Mensaje de solicitud listo para enviar",
     preview: "Hola [Nombre] 💈 Gracias por tu visita en [Barbería]. Si tienes 1 minuto, tu reseña nos ayuda mucho: [link Google]. ¡Hasta pronto!",
+    runnable: true,
+    liveMetricLabel: "Solicitudes generadas",
   },
   {
     id: "retencion",
@@ -101,6 +104,7 @@ const AGENTS: Agent[] = [
     previewLabel: "Mensaje de recuperación personalizado",
     preview: "Hola [Nombre] 👋 Te echamos de menos en [Barbería]. ¿Te apetece un corte esta semana? Reserva aquí: [link]. Solo 2 min.",
     runnable: true,
+    liveMetricLabel: "Clientes en riesgo",
   },
   {
     id: "huecos",
@@ -117,8 +121,10 @@ const AGENTS: Agent[] = [
       { label: "Huecos detectados hoy", value: "—" },
       { label: "Ingreso potencial", value: "—" },
     ],
-    previewLabel: "Copy para Instagram Stories",
+    previewLabel: "Copy para WhatsApp o Stories",
     preview: "🪒 Hoy quedan 2 huecos en [Barbería]. ¿Te lo reservo? Elige hora aquí → [link]. Responde este mensaje o entra directamente.",
+    runnable: true,
+    liveMetricLabel: "Huecos detectados hoy",
   },
   {
     id: "marketing",
@@ -362,14 +368,15 @@ function AgentCard({ agent }: { agent: Agent }) {
       {!isLocked && agent.metrics && agent.metrics.length > 0 && (
         <div className="mx-5 grid grid-cols-2 gap-2 pb-3">
           {agent.metrics.map((m) => {
-            const isCountMetric = agent.runnable && m.label === "Clientes en riesgo";
-            const displayValue = isCountMetric && liveCount !== null ? String(liveCount) : m.value;
+            const isLiveMetric = agent.liveMetricLabel && m.label === agent.liveMetricLabel;
+            const displayValue = isLiveMetric && liveCount !== null ? String(liveCount) : m.value;
+            const isHighlighted = isLiveMetric && liveCount !== null && liveCount > 0;
             return (
               <div
                 key={m.label}
                 className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-center"
               >
-                <p className={`text-sm font-black ${isCountMetric && liveCount !== null && liveCount > 0 ? "text-amber-700" : "text-slate-900"}`}>
+                <p className={`text-sm font-black ${isHighlighted ? "text-amber-700" : "text-slate-900"}`}>
                   {displayValue}
                 </p>
                 <p className="text-[10px] font-medium text-slate-500">{m.label}</p>
