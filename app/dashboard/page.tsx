@@ -791,7 +791,7 @@ export default async function DashboardPage() {
 
       <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
         <div className="surface-frame overflow-hidden p-0">
-          <div className="border-b border-[#DDD5C2] bg-[#F0EAE0] px-5 py-4 md:px-6">
+          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
@@ -813,28 +813,28 @@ export default async function DashboardPage() {
                 title="Hoy no hay reservas activas"
                 description="Comparte tu enlace público o revisa los huecos libres para empujar una campaña rápida por WhatsApp."
                 action={
-                  <Link href="/dashboard/huecos" className="btn-dark">
+                  <Link href="/dashboard/huecos" className="btn-primary">
                     <Clock size={15} /> Ver huecos libres
                   </Link>
                 }
               />
             </div>
           ) : (
-            <div className="divide-y divide-white/[0.18]">
+            <div className="divide-y divide-slate-100">
               {todayAppointments.slice(0, 5).map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="grid gap-3 bg-[#182033] p-4 transition-colors hover:bg-[#1D263A] sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
+                  className="grid gap-3 bg-white p-4 transition-colors hover:bg-slate-50 sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
                 >
-                  <div className="inline-flex w-fit items-center gap-2 rounded-2xl bg-[#080A0F] px-3 py-2 text-white">
-                    <Clock size={14} className="text-[#D5A84C]" />
+                  <div className="inline-flex w-fit items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900">
+                    <Clock size={14} className="text-[#C9922A]" />
                     <span className="text-sm font-black">{formatTime(appointment.start_time)}</span>
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate font-black text-white">
+                    <p className="truncate font-black text-slate-900">
                       {appointment.clients?.name ?? "Cliente sin nombre"}
                     </p>
-                    <p className="mt-0.5 text-xs leading-5 text-slate-300">
+                    <p className="mt-0.5 text-xs leading-5 text-slate-500">
                       {appointment.services?.name ?? "Servicio sin definir"} · {appointment.barbers?.name ?? "Sin barbero"}
                     </p>
                   </div>
@@ -850,7 +850,7 @@ export default async function DashboardPage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="label-section">Caja del día</p>
-                <p className="mt-2 text-4xl font-black leading-none text-[#111827]">{formatCurrency(salesToday)}</p>
+                <p className="mt-2 text-4xl font-black leading-none text-slate-900">{formatCurrency(salesToday)}</p>
                 <p className="mt-2 text-base leading-7 text-slate-600">
                   {cashSessionOpen ? "Sesión abierta. Mantén cobros y efectivo sincronizados." : "La caja está cerrada. Abre sesión para controlar efectivo y descuadres."}
                 </p>
@@ -860,13 +860,13 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-3">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
                 <p className="text-xs font-bold uppercase text-slate-600">Clientes atendidos</p>
-                <p className="mt-1 text-2xl font-black text-[#111827]">{clientsAttendedToday}</p>
+                <p className="mt-1 text-2xl font-black text-slate-900">{clientsAttendedToday}</p>
               </div>
-              <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-3">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
                 <p className="text-xs font-bold uppercase text-slate-600">Efectivo</p>
-                <p className="mt-1 text-2xl font-black text-[#111827]">{cashPaymentsCount}</p>
+                <p className="mt-1 text-2xl font-black text-slate-900">{cashPaymentsCount}</p>
               </div>
             </div>
           </div>
@@ -901,7 +901,7 @@ export default async function DashboardPage() {
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {recommendedActions.map((action) => (
-            <div key={action} className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-4 text-sm font-semibold leading-6 text-slate-700">
+            <div key={action} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm font-semibold leading-6 text-slate-700">
               {action}
             </div>
           ))}
@@ -918,13 +918,13 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
-            <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] px-4 py-3">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
               <p className="text-xs font-black uppercase text-slate-600">Total huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#111827]">{totalFreeSlotsToday}</p>
+              <p className="mt-1 text-2xl font-black text-slate-900">{totalFreeSlotsToday}</p>
             </div>
-            <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] px-4 py-3">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
               <p className="text-xs font-black uppercase text-slate-600">Más huecos</p>
-              <p className="mt-1 text-2xl font-black text-[#111827]">
+              <p className="mt-1 text-2xl font-black text-slate-900">
                 {barberWithMostSlots?.barberName ?? "—"}
               </p>
             </div>
@@ -952,7 +952,7 @@ export default async function DashboardPage() {
 
         {/* Próximas citas */}
         <div className="surface-frame overflow-hidden p-0">
-          <div className="border-b border-[#DDD5C2] bg-[#F0EAE0] px-5 py-4 md:px-6">
+          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="section-heading">Próximas citas</h2>
@@ -976,7 +976,7 @@ export default async function DashboardPage() {
               action={
                 <Link
                   href="/dashboard/qr"
-                  className="btn-dark"
+                  className="btn-primary"
                 >
                   <QrCode size={15} /> Ver QR de reservas
                 </Link>
@@ -984,29 +984,29 @@ export default async function DashboardPage() {
             />
             </div>
           ) : (
-            <div className="flex flex-col divide-y divide-white/[0.18]">
+            <div className="flex flex-col divide-y divide-slate-100">
               {upcomingAppointments.map((appointment) => (
                 <article
                   key={appointment.id}
-                  className="flex items-start gap-3 bg-[#182033] p-4 transition-colors hover:bg-[#1D263A] md:px-6"
+                  className="flex items-start gap-3 bg-white p-4 transition-colors hover:bg-slate-50 md:px-6"
                 >
-                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111111] text-center">
-                    <span className="text-[9px] font-bold uppercase text-[#D9B766]">
+                  <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-center">
+                    <span className="text-[9px] font-bold uppercase text-[#C9922A]">
                       {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
                     </span>
-                    <span className="text-base font-black text-white">
+                    <span className="text-base font-black text-slate-900">
                       {new Date(appointment.appointment_date + "T00:00:00").getDate()}
                     </span>
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold leading-tight text-white">
+                      <p className="font-bold leading-tight text-slate-900">
                         {appointment.clients?.name ?? "Cliente sin nombre"}
                       </p>
                       <StatusBadge status={appointment.status} />
                     </div>
-                    <p className="mt-1 text-sm text-slate-300">
+                    <p className="mt-1 text-sm text-slate-600">
                       {appointment.services?.name ?? "—"} · {appointment.barbers?.name ?? "Sin barbero"} · {formatTime(appointment.start_time)}
                     </p>
                     {appointment.clients?.phone && (
@@ -1023,20 +1023,20 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4">
 
           {/* Link de reservas */}
-          <div className="section-band-dark p-5 md:p-6">
+          <div className="surface-frame p-5 md:p-6">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#D9B766]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
                 <QrCode size={18} />
               </div>
               <div>
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Tu link de reservas</p>
-            <p className="mt-2 text-sm leading-6 text-white/65">
+            <p className="label-section">Tu link de reservas</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
               Compártelo en Instagram, WhatsApp, Google o imprímelo en un QR para tu local.
             </p>
               </div>
             </div>
-            <div className="mt-4 rounded-xl border border-amber-200/30 bg-white/[0.08] px-4 py-3">
-              <p className="break-all font-mono text-xs font-semibold text-white/75">
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <p className="break-all font-mono text-xs font-semibold text-slate-700">
                 {publicBookingFullUrl}
               </p>
             </div>
@@ -1050,7 +1050,7 @@ export default async function DashboardPage() {
               <Link
                 href={publicBookingUrl}
                 target="_blank"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-4 py-2.5 text-sm font-bold text-white transition-all duration-150 hover:bg-white/10 active:scale-[0.98]"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-700 transition-all duration-150 hover:bg-slate-100 active:scale-[0.98]"
               >
                 Abrir página pública <ArrowRight size={15} />
               </Link>
@@ -1070,7 +1070,7 @@ export default async function DashboardPage() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-amber-200/40 hover:bg-[#F0EAE0] hover:text-[#111827]"
+                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
                 >
                   <Icon size={15} className="shrink-0 text-slate-500" />
                   {label}

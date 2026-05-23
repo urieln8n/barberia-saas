@@ -224,37 +224,37 @@
 @layer components {
 
   .card {
-    @apply rounded-[2rem] border border-white/10 bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.28)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .card-ghost {
-    @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-sm;
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .card-dark {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.28)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .panel {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
+    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:p-6;
   }
   .panel-compact {
-    @apply rounded-2xl border border-white/[0.15] bg-[#182033] p-4 text-white shadow-sm;
+    @apply rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm;
   }
   .metric-card {
-    @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] p-5 text-slate-950 shadow-[var(--shadow-warm)] transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300/60 hover:shadow-[var(--shadow-card)];
+    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md;
   }
   .metric-icon {
     @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-[0_1px_2px_rgba(5,10,20,0.07)];
   }
   .bento-card {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] p-5 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] md:p-6;
+    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:p-6;
   }
   .dashboard-card {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .glass-panel {
-    @apply border border-white/[0.15] bg-[#151D2E]/90 text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur-xl;
+    @apply border border-slate-200 bg-white/95 text-slate-900 shadow-sm backdrop-blur-xl;
   }
   .premium-dark {
-    @apply border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
+    @apply border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
 
   .btn {
@@ -298,7 +298,7 @@
   .btn-ghost {
     @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl
            px-4 py-2.5 text-base font-bold text-slate-500 transition-all duration-200
-           hover:bg-white/10 hover:text-white active:scale-[0.98]
+           hover:bg-slate-100 hover:text-slate-700 active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-danger {
@@ -310,25 +310,25 @@
 
   /* ── Form inputs (canonical names) ─────────────────────── */
   .input-field {
-    @apply w-full rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3
-           text-base text-[#050A14] placeholder:text-[#94A3B8] outline-none
+    @apply w-full rounded-2xl border border-[#E2E8F0] bg-white px-4 py-3
+           text-base text-[#0F172A] placeholder:text-[#94A3B8] outline-none
            transition-all duration-200 min-h-11
-           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
-           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F3EDE1];
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.10)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-slate-50;
   }
   .select-field {
-    @apply w-full appearance-none rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3
-           text-base text-[#050A14] outline-none cursor-pointer
+    @apply w-full appearance-none rounded-2xl border border-[#E2E8F0] bg-white px-4 py-3
+           text-base text-[#0F172A] outline-none cursor-pointer
            transition-all duration-200 min-h-11
-           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
-           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F3EDE1];
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.10)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-slate-50;
   }
   .textarea-field {
-    @apply w-full rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3
-           text-base text-[#050A14] placeholder:text-[#94A3B8] outline-none resize-y
+    @apply w-full rounded-2xl border border-[#E2E8F0] bg-white px-4 py-3
+           text-base text-[#0F172A] placeholder:text-[#94A3B8] outline-none resize-y
            transition-all duration-200
-           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.12)]
-           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-[#F3EDE1];
+           focus:border-[#C9922A] focus:ring-4 focus:ring-[rgba(201,146,42,0.10)]
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:bg-slate-50;
   }
   /* Legacy alias — kept for backward compatibility */
   .input {
@@ -382,10 +382,10 @@
     @apply mx-auto w-full max-w-5xl space-y-5 px-0;
   }
   .page-title {
-    @apply mt-1.5 text-[clamp(2rem,3vw,3rem)] font-black text-white;
+    @apply mt-1.5 text-[clamp(2rem,3vw,3rem)] font-black text-[#0F172A];
   }
   .page-description {
-    @apply mt-2 max-w-3xl text-base leading-7 text-slate-300;
+    @apply mt-2 max-w-3xl text-base leading-7 text-slate-600;
   }
   .section-heading {
     @apply text-xl font-black text-slate-950;
@@ -394,7 +394,7 @@
     @apply mt-1 text-base leading-7 text-slate-600;
   }
   .table-shell {
-    @apply overflow-hidden rounded-[24px] border border-[#D5CEBC] bg-[#F8F3EA] text-slate-950 shadow-[var(--shadow-warm)];
+    @apply overflow-hidden rounded-[24px] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .table-header-cell {
     @apply px-5 py-3 text-left text-xs font-black uppercase text-slate-500;
@@ -406,76 +406,52 @@
     @apply flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition-all duration-200;
   }
   .premium-grid-bg {
-    background:
-      radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.10), transparent 28rem),
-      radial-gradient(circle at 86% 18%, rgba(212, 175, 102, 0.13), transparent 24rem),
-      linear-gradient(180deg, #08111F 0%, #0B1828 48%, #0F1E30 100%);
+    background: #F8FAFC;
   }
   .dashboard-premium-bg {
-    background:
-      radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.12), transparent 30rem),
-      radial-gradient(circle at 92% 10%, rgba(212, 175, 102, 0.14), transparent 26rem),
-      linear-gradient(180deg, #08111F 0%, #0B1828 48%, #0F1E30 100%);
-  }
-  .dashboard-premium-bg .bg-white {
-    background-color: #F8F3EA !important;
-  }
-  .dashboard-premium-bg .bg-slate-50,
-  .dashboard-premium-bg .bg-gray-50,
-  .dashboard-premium-bg .bg-zinc-50 {
-    background-color: #F3EDE1 !important;
-  }
-  .dashboard-premium-bg .text-black,
-  .dashboard-premium-bg .text-gray-800 {
-    color: #0B1220 !important;
+    background: #F8FAFC;
   }
   .dashboard-hero {
     position: relative;
     overflow: hidden;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background:
-      linear-gradient(135deg, rgba(213, 168, 76, 0.12), transparent 34%),
-      linear-gradient(145deg, #050A14 0%, #0B1220 48%, #151D2E 100%);
-    box-shadow:
-      0 24px 80px rgba(2, 6, 23, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    border: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 4px 16px rgba(15, 23, 42, 0.05);
   }
   .dashboard-hero::after {
     content: "";
     position: absolute;
     inset: auto 0 0 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(213, 168, 76, 0.55), transparent);
+    background: linear-gradient(90deg, transparent, rgba(201, 146, 42, 0.30), transparent);
   }
   .dashboard-hero-glass {
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)),
-      linear-gradient(145deg, #050A14 0%, #151D2E 100%);
+    background: #F8FAFC;
   }
   .premium-card {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)] backdrop-blur;
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .premium-card-muted {
-    @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-[0_1px_2px_rgba(5,10,20,0.04),0_12px_34px_rgba(15,23,42,0.07)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .premium-skeleton {
-    @apply animate-pulse bg-white/10 motion-reduce:animate-none;
-    background-image: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.15), rgba(255,255,255,0.06));
+    @apply animate-pulse bg-slate-100 motion-reduce:animate-none;
+    background-image: linear-gradient(90deg, #F1F5F9, #E2E8F0, #F1F5F9);
     background-size: 200% 100%;
     animation: premium-skeleton 1.5s ease-in-out infinite;
   }
   .quick-action-card {
-    @apply rounded-[24px] border border-white/[0.15] bg-[#151D2E] p-4 text-white shadow-[0_18px_58px_rgba(5,10,20,0.26)] transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-200/35 hover:shadow-[0_24px_72px_rgba(5,10,20,0.32)];
+    @apply rounded-[24px] border border-slate-200 bg-white p-4 text-slate-900 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md;
   }
   .surface-frame {
-    @apply rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] text-slate-950 shadow-[var(--shadow-warm)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .section-band {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#151D2E] text-white shadow-[0_24px_80px_rgba(5,10,20,0.30)];
+    @apply rounded-[2rem] border border-slate-200 bg-slate-50 text-slate-900 shadow-sm;
   }
   .section-band-dark {
-    @apply rounded-[2rem] border border-white/[0.15] bg-[#111827] text-white shadow-[0_24px_80px_rgba(5,10,20,0.32)];
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .section-band .section-heading,
   .section-band-dark .section-heading,
@@ -483,8 +459,13 @@
   .premium-card .section-heading,
   .dashboard-card .section-heading,
   .panel .section-heading,
-  .bento-card .section-heading {
-    @apply text-white;
+  .bento-card .section-heading,
+  .surface-frame .section-heading,
+  .premium-card-muted .section-heading,
+  .card-ghost .section-heading,
+  .metric-card .section-heading,
+  .card.section-heading {
+    @apply text-slate-900;
   }
   .section-band .section-subtext,
   .section-band-dark .section-subtext,
@@ -492,48 +473,11 @@
   .premium-card .section-subtext,
   .dashboard-card .section-subtext,
   .panel .section-subtext,
-  .bento-card .section-subtext {
-    @apply text-slate-200;
-  }
-  .section-band .form-label,
-  .section-band-dark .form-label,
-  .premium-card .form-label,
-  .dashboard-card .form-label,
-  .panel .form-label,
-  .bento-card .form-label {
-    @apply text-slate-200;
-  }
-  .section-band-dark .form-help,
-  .premium-card .form-help,
-  .dashboard-card .form-help,
-  .panel .form-help,
-  .bento-card .form-help {
-    @apply text-slate-400;
-  }
-  .section-band-dark .table-header-cell,
-  .premium-card .table-header-cell,
-  .dashboard-card .table-header-cell,
-  .panel .table-header-cell {
-    @apply text-slate-300;
-  }
-  .section-band-dark .table-cell,
-  .premium-card .table-cell,
-  .dashboard-card .table-cell,
-  .panel .table-cell {
-    @apply text-slate-200;
-  }
-  .surface-frame .section-heading,
-  .premium-card-muted .section-heading,
-  .card-ghost .section-heading,
-  .metric-card .section-heading,
-  .section-band-light .section-heading {
-    @apply text-slate-950;
-  }
+  .bento-card .section-subtext,
   .surface-frame .section-subtext,
   .premium-card-muted .section-subtext,
   .card-ghost .section-subtext,
-  .metric-card .section-subtext,
-  .section-band-light .section-subtext {
+  .metric-card .section-subtext {
     @apply text-slate-600;
   }
   .section-kicker {
@@ -726,16 +670,16 @@
     @apply w-full border-collapse text-left text-sm;
   }
   .data-table thead {
-    @apply border-b border-[#E7E2D8] bg-[#F8F5EF]/80 text-xs font-black uppercase text-slate-500;
+    @apply border-b border-slate-200 bg-slate-50/80 text-xs font-black uppercase text-slate-500;
   }
   .data-table th {
     @apply px-5 py-3 font-black;
   }
   .data-table td {
-    @apply border-b border-[#F0EBE3] px-5 py-4 text-slate-700;
+    @apply border-b border-slate-100 px-5 py-4 text-slate-700;
   }
   .data-table tbody tr {
-    @apply transition-colors hover:bg-[#F8F5EF]/70;
+    @apply transition-colors hover:bg-slate-50;
   }
 }
 

@@ -76,13 +76,13 @@ export function QRClient({ name, slug }: Props) {
       />
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-amber-200/40 bg-[#FAF8F4] p-6 shadow-[var(--shadow-card)] lg:w-96 lg:shrink-0">
+        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm lg:w-96 lg:shrink-0">
           <div className="flex w-full items-start justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">QR</p>
               <h2 className="mt-0.5 font-black text-[#111827]">QR de reservas</h2>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#111827] text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
               <QrCode size={18} />
             </div>
           </div>
@@ -116,7 +116,7 @@ export function QRClient({ name, slug }: Props) {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="rounded-2xl border border-amber-200/40 bg-[#FAF8F4] p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Enlace público</p>
             <h2 className="mt-0.5 font-black text-[#111827]">Tu enlace de reservas</h2>
             <p className="mt-1 text-sm text-neutral-500">
@@ -271,7 +271,7 @@ function ChannelCard({
   code?: boolean;
 }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-2xl border border-amber-200/40 bg-[#FAF8F4] p-5 shadow-sm">
+    <div className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex gap-3">
         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconClassName}`}>
           <Icon size={18} />

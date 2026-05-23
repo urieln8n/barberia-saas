@@ -171,7 +171,7 @@ function DatosConectados({
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start gap-1.5 rounded-xl border border-amber-200/40 bg-[#F0EAE0] px-3 py-2 shadow-sm"
+            className="flex items-start gap-1.5 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 shadow-sm"
           >
             <span className="mt-0.5">{statusIcon(item.status)}</span>
             <div className="min-w-0">
@@ -242,7 +242,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-amber-200/40 bg-[#F0EAE0] p-1 shadow-sm">
+      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-slate-200 bg-slate-100 p-1 shadow-sm">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;

@@ -324,10 +324,10 @@ export function CajaClient({
         description="Cobra rápido, controla efectivo y cierra el día con menos dudas."
       >
         {session && (
-          <div className="rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-semibold leading-6 text-white/70">
-            Inicio <span className="font-black text-white">{formatCurrency(Number(session.opening_amount))}</span> ·
-            cobrado <span className="font-black text-white">{formatCurrency(totals.totalSold)}</span> ·
-            cierre estimado <span className="font-black text-[#D5A84C]">{formatCurrency(totals.expectedCash)}</span>.
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold leading-6 text-slate-600">
+            Inicio <span className="font-black text-slate-900">{formatCurrency(Number(session.opening_amount))}</span> ·
+            cobrado <span className="font-black text-slate-900">{formatCurrency(totals.totalSold)}</span> ·
+            cierre estimado <span className="font-black text-[#C9922A]">{formatCurrency(totals.expectedCash)}</span>.
           </div>
         )}
       </PageHeader>
@@ -395,13 +395,13 @@ export function CajaClient({
             </div>
           </motion.div>
           <div className="grid gap-3">
-            <div className="rounded-[22px] border border-[#E7E2D8] bg-[#F8F5EF] p-4">
+            <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-black uppercase text-slate-500">Efectivo esperado</p>
-                  <p className="mt-1 text-2xl font-black text-[#080A0F]">{formatCurrency(totals.expectedCash)}</p>
+                  <p className="mt-1 text-2xl font-black text-slate-900">{formatCurrency(totals.expectedCash)}</p>
                 </div>
-                <Banknote size={20} className="text-[#8A641F]" />
+                <Banknote size={20} className="text-[#C9922A]" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -961,16 +961,16 @@ export function CajaClient({
                       <th className="table-header-cell text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.15]">
+                  <tbody className="divide-y divide-slate-100">
                     {movements.map((movement) => (
-                      <tr key={movement.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
+                      <tr key={movement.id} className="bg-white transition-colors hover:bg-slate-50">
                         <td className="table-cell text-slate-500">
                           {new Date(movement.created_at).toLocaleTimeString("es-ES", {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="table-cell font-semibold text-white">
+                        <td className="table-cell font-semibold text-slate-900">
                           {movement.clients?.name ?? "—"}
                         </td>
                         <td className="table-cell">{movement.barbers?.name ?? "—"}</td>
@@ -982,7 +982,7 @@ export function CajaClient({
                         </td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.amount))}</td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.tip_amount))}</td>
-                        <td className="table-cell text-right font-black text-white">
+                        <td className="table-cell text-right font-black text-slate-900">
                           {formatCurrency(movementTotal(movement))}
                         </td>
                       </tr>

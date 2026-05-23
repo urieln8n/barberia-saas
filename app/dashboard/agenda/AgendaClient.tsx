@@ -97,26 +97,26 @@ function AppointmentCard({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           {showDate ? (
-            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#111827]">
-              <span className="text-[9px] font-bold uppercase text-[#7AA2FF]">
+            <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border border-slate-100 bg-slate-50">
+              <span className="text-[9px] font-bold uppercase text-[#C9922A]">
                 {new Date(appointment.appointment_date + "T00:00:00").toLocaleDateString("es-ES", { month: "short" })}
               </span>
-              <span className="text-sm font-black text-white">
+              <span className="text-sm font-black text-slate-900">
                 {new Date(appointment.appointment_date + "T00:00:00").getDate()}
               </span>
             </div>
           ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#D5CEBC] bg-[#F8F3EA] text-sm font-black text-[#111827] shadow-sm">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm font-black text-slate-900 shadow-sm">
               {formatTime(appointment.start_time)}
             </div>
           )}
 
           <div className="min-w-0">
-            <p className="font-bold text-white">
+            <p className="font-bold text-slate-900">
               {appointment.clients?.name ?? "Cliente sin nombre"}
             </p>
 
-              <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-slate-300">
+              <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-slate-600">
               <span className="flex items-center gap-1">
                 <Scissors size={12} />
                 {appointment.services?.name ?? "Servicio no definido"}
@@ -158,7 +158,7 @@ function AppointmentCard({
               key={action.status}
               onClick={() => onStatusChange(appointment.id, action.status)}
               disabled={updating === appointment.id}
-              className="min-h-10 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-sm font-bold text-slate-200 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-40"
+              className="min-h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-40"
             >
               {action.label}
             </button>
@@ -292,15 +292,15 @@ export function AgendaClient({
         ) : (
           <div className="grid gap-4 lg:grid-cols-3">
             {appointmentsByBarber.map(({ barber, appointments: barberAppointments, freeSlots }) => (
-              <article key={barber.id} className="rounded-[20px] border border-white/10 bg-white/[0.06] p-4 shadow-sm">
+              <article key={barber.id} className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black uppercase text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-100 bg-slate-100 text-sm font-black uppercase text-slate-900">
                       {barber.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-black text-white">{barber.name}</h3>
-                      <p className="text-xs font-semibold text-slate-300">
+                      <h3 className="font-black text-slate-900">{barber.name}</h3>
+                      <p className="text-xs font-semibold text-slate-500">
                         {barberAppointments.length} citas · {freeSlots.length} huecos visibles
                       </p>
                     </div>
@@ -312,7 +312,7 @@ export function AgendaClient({
 
                 <div className="mt-4 space-y-2">
                   {barberAppointments.slice(0, 4).map((appointment) => (
-                    <div key={appointment.id} className="rounded-2xl border border-white/10 bg-[#182033] px-3 py-2">
+                    <div key={appointment.id} className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-mono text-xs font-black text-[#2563EB]">
                           {formatTime(appointment.start_time)}
@@ -321,10 +321,10 @@ export function AgendaClient({
                           {STATUS_LABEL[appointment.status] ?? appointment.status}
                         </StatusBadge>
                       </div>
-                      <p className="mt-1 truncate text-sm font-bold text-white">
+                      <p className="mt-1 truncate text-sm font-bold text-slate-900">
                         {appointment.clients?.name ?? "Cliente sin nombre"}
                       </p>
-                      <p className="text-xs text-slate-300">
+                      <p className="text-xs text-slate-500">
                         {appointment.services?.name ?? "Servicio no definido"}
                       </p>
                     </div>

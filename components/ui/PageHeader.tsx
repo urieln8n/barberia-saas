@@ -22,27 +22,24 @@ export function PageHeader({
   className = "",
 }: PageHeaderProps) {
   const label = eyebrow ?? section;
-  const isLight = variant === "light";
-  const variantClass = isLight
-    ? "rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] shadow-[var(--shadow-warm)]"
-    : variant === "glass"
-      ? "dashboard-hero dashboard-hero-glass"
-      : "dashboard-hero";
+  const variantClass = variant === "glass"
+    ? "dashboard-hero dashboard-hero-glass"
+    : "dashboard-hero";
 
   return (
     <section className={`${variantClass} px-5 py-6 md:px-7 md:py-7 ${className}`}>
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
         <div className="min-w-0">
           {label && (
-            <p className={isLight ? "text-xs font-black uppercase text-[#B98B2F]" : "text-xs font-black uppercase text-[#D4AF66]"}>
+            <p className="text-xs font-black uppercase text-[#C9922A]">
               {label}
             </p>
           )}
-          <h1 className={isLight ? "mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-slate-950" : "mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-white"}>
+          <h1 className="mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-slate-900">
             {title}
           </h1>
           {description && (
-            <p className={isLight ? "mt-3 max-w-3xl text-base leading-7 text-slate-600" : "mt-3 max-w-3xl text-base leading-7 text-slate-300"}>
+            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
               {description}
             </p>
           )}
