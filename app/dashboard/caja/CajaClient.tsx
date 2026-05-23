@@ -961,7 +961,7 @@ export function CajaClient({
                       <th className="table-header-cell text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10">
+                  <tbody className="divide-y divide-white/[0.15]">
                     {movements.map((movement) => (
                       <tr key={movement.id} className="bg-[#182033] transition-colors hover:bg-[#1D263A]">
                         <td className="table-cell text-slate-500">

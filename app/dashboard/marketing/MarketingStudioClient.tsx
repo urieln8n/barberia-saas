@@ -158,12 +158,12 @@ function DatosConectados({
   const connectedCount = items.filter((i) => i.status === "connected").length;
 
   return (
-    <div className="premium-card px-5 py-4">
+    <div className="surface-frame px-5 py-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs font-black uppercase tracking-wide text-slate-500">
+        <p className="label-section">
           Datos conectados
         </p>
-        <span className="text-xs font-bold text-slate-500">
+        <span className="text-xs font-bold text-slate-600">
           {connectedCount}/{items.length}
         </span>
       </div>
@@ -171,14 +171,14 @@ function DatosConectados({
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start gap-1.5 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 shadow-sm"
+            className="flex items-start gap-1.5 rounded-xl border border-amber-200/40 bg-[#F0EAE0] px-3 py-2 shadow-sm"
           >
             <span className="mt-0.5">{statusIcon(item.status)}</span>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-white">
+              <p className="text-xs font-bold text-slate-950">
                 {item.label}
               </p>
-              <p className="truncate text-xs text-slate-300">
+              <p className="truncate text-xs text-slate-600">
                 {item.detail}
               </p>
               {item.href && item.status === "pending" && (
@@ -242,7 +242,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-white/10 bg-[#151D2E] p-1 shadow-sm">
+      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-amber-200/40 bg-[#F0EAE0] p-1 shadow-sm">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -255,8 +255,8 @@ export function MarketingStudioClient({
               onClick={() => setActiveTab(tab.id)}
               className={`flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all duration-150 ${
                 active
-                  ? "bg-[#080A0F] text-white shadow-sm"
-                  : "text-slate-300 hover:bg-white/[0.07] hover:text-white"
+                  ? "bg-white text-[#111827] shadow-sm"
+                  : "text-slate-600 hover:bg-white hover:text-[#111827]"
               }`}
             >
               <Icon

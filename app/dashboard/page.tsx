@@ -648,7 +648,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
 
       {/* ── Hero ── */}
-      <section className="section-band overflow-hidden">
+      <section className="surface-frame overflow-hidden">
         <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#C89B3C]/20 bg-[#C89B3C]/10 px-3 py-1 text-xs font-bold text-[#8A641F]">
@@ -689,7 +689,7 @@ export default async function DashboardPage() {
       {/* ── Quick Actions Row ── */}
       <QuickActionsRow services={quickServices} barbers={quickBarbers} />
 
-      <section className="section-band-dark p-5 md:p-6">
+      <section className="surface-frame p-5 md:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">Panel de Hoy</p>
@@ -790,8 +790,8 @@ export default async function DashboardPage() {
       </PremiumDashboardMotion>
 
       <section className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
-        <div className="panel overflow-hidden p-0">
-          <div className="border-b border-amber-200/20 bg-white/[0.08] px-5 py-4 md:px-6">
+        <div className="surface-frame overflow-hidden p-0">
+          <div className="border-b border-[#DDD5C2] bg-[#F0EAE0] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
@@ -846,12 +846,12 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid gap-5">
-          <div className="section-band-dark p-5 md:p-6">
+          <div className="surface-frame p-5 md:p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-black uppercase text-[#D5A84C]">Caja del día</p>
-                <p className="mt-2 text-4xl font-black leading-none text-white">{formatCurrency(salesToday)}</p>
-                <p className="mt-2 text-base leading-7 text-slate-300">
+                <p className="label-section">Caja del día</p>
+                <p className="mt-2 text-4xl font-black leading-none text-[#111827]">{formatCurrency(salesToday)}</p>
+                <p className="mt-2 text-base leading-7 text-slate-600">
                   {cashSessionOpen ? "Sesión abierta. Mantén cobros y efectivo sincronizados." : "La caja está cerrada. Abre sesión para controlar efectivo y descuadres."}
                 </p>
               </div>
@@ -860,18 +860,18 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-3">
-                <p className="text-xs font-bold uppercase text-slate-300">Clientes atendidos</p>
-                <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
+              <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-3">
+                <p className="text-xs font-bold uppercase text-slate-600">Clientes atendidos</p>
+                <p className="mt-1 text-2xl font-black text-[#111827]">{clientsAttendedToday}</p>
               </div>
-              <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-3">
-                <p className="text-xs font-bold uppercase text-slate-300">Efectivo</p>
-                <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
+              <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-3">
+                <p className="text-xs font-bold uppercase text-slate-600">Efectivo</p>
+                <p className="mt-1 text-2xl font-black text-[#111827]">{cashPaymentsCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="panel">
+          <div className="surface-frame">
             <p className="label-section">Clientes para recuperar</p>
             <h2 className="section-heading mt-1">{dormantClientsCount} podrían volver</h2>
             <p className="section-subtext">
@@ -886,7 +886,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="panel">
+      <section className="surface-frame">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="label-section">Recomendación de BarberíaOS IA</p>
@@ -901,14 +901,14 @@ export default async function DashboardPage() {
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {recommendedActions.map((action) => (
-            <div key={action} className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-4 text-sm font-semibold leading-6 text-slate-300">
+            <div key={action} className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-4 text-sm font-semibold leading-6 text-slate-700">
               {action}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="section-band-dark overflow-hidden">
+      <section className="surface-frame overflow-hidden">
         <div className="grid gap-5 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="label-section">Huecos libres</p>
@@ -918,13 +918,13 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[auto_auto_auto] sm:items-center">
-            <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] px-4 py-3">
-              <p className="text-xs font-black uppercase text-slate-300">Total huecos</p>
-              <p className="mt-1 text-2xl font-black text-white">{totalFreeSlotsToday}</p>
+            <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] px-4 py-3">
+              <p className="text-xs font-black uppercase text-slate-600">Total huecos</p>
+              <p className="mt-1 text-2xl font-black text-[#111827]">{totalFreeSlotsToday}</p>
             </div>
-            <div className="rounded-2xl border border-white/[0.18] bg-white/[0.10] px-4 py-3">
-              <p className="text-xs font-black uppercase text-slate-300">Más huecos</p>
-              <p className="mt-1 text-2xl font-black text-white">
+            <div className="rounded-2xl border border-amber-200/40 bg-[#F0EAE0] px-4 py-3">
+              <p className="text-xs font-black uppercase text-slate-600">Más huecos</p>
+              <p className="mt-1 text-2xl font-black text-[#111827]">
                 {barberWithMostSlots?.barberName ?? "—"}
               </p>
             </div>
@@ -951,12 +951,12 @@ export default async function DashboardPage() {
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
 
         {/* Próximas citas */}
-        <div className="panel overflow-hidden p-0">
-          <div className="border-b border-amber-200/20 bg-white/[0.08] px-5 py-4 md:px-6">
+        <div className="surface-frame overflow-hidden p-0">
+          <div className="border-b border-[#DDD5C2] bg-[#F0EAE0] px-5 py-4 md:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="section-heading">Próximas citas</h2>
-              <p className="text-base leading-7 text-slate-300">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
+              <p className="text-base leading-7 text-slate-600">Reservas activas desde hoy, ordenadas por fecha y hora.</p>
             </div>
             <Link
               href="/dashboard/agenda"
@@ -1058,8 +1058,8 @@ export default async function DashboardPage() {
           </div>
 
           {/* Acciones rápidas */}
-          <div className="panel">
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#D9B766]">Acciones rápidas</p>
+          <div className="surface-frame">
+            <p className="label-section">Acciones rápidas</p>
             <div className="mt-3 grid gap-1.5">
               {[
                 { href: "/dashboard/clientes",  label: "Clientes",  icon: Users      },
@@ -1070,11 +1070,11 @@ export default async function DashboardPage() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-300 transition-colors hover:border-white/10 hover:bg-white/[0.07] hover:text-white"
+                  className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-amber-200/40 hover:bg-[#F0EAE0] hover:text-[#111827]"
                 >
-                  <Icon size={15} className="shrink-0 text-slate-400" />
+                  <Icon size={15} className="shrink-0 text-slate-500" />
                   {label}
-                  <span className="ml-auto text-slate-500">→</span>
+                  <span className="ml-auto text-slate-400">→</span>
                 </Link>
               ))}
             </div>

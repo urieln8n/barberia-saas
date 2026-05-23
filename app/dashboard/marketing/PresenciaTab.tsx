@@ -135,7 +135,7 @@ export function PresenciaTab() {
   return (
     <div className="space-y-5">
       {/* Global progress */}
-      <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-[20px] border border-amber-200/40 bg-[#FAF8F4] p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-black text-[#080A0F]">Presencia online completa</p>
@@ -170,10 +170,10 @@ export function PresenciaTab() {
           return (
             <div
               key={cl.id}
-              className="flex flex-col rounded-[20px] border border-slate-200 bg-white shadow-sm"
+              className="flex flex-col rounded-[20px] border border-amber-200/40 bg-[#FAF8F4] shadow-sm"
             >
               {/* Header */}
-              <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+              <div className="flex items-center gap-3 border-b border-[#E7E2D8] px-5 py-4">
                 <div className={`flex h-9 w-9 items-center justify-center rounded-xl border ${cl.iconBg}`}>
                   <Icon size={16} className={cl.accentColor} />
                 </div>
@@ -184,7 +184,7 @@ export function PresenciaTab() {
               </div>
 
               {/* Items */}
-              <ul className="flex flex-1 flex-col divide-y divide-slate-50 px-2 py-2">
+              <ul className="flex flex-1 flex-col divide-y divide-[#F0EAE0] px-2 py-2">
                 {cl.items.map((item) => {
                   const isChecked = checked.has(item.id);
                   return (
@@ -192,7 +192,7 @@ export function PresenciaTab() {
                       <button
                         type="button"
                         onClick={() => toggle(item.id)}
-                        className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-100 hover:bg-slate-50 ${
+                        className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-100 hover:bg-[#F0EAE0] ${
                           isChecked ? "opacity-60" : ""
                         }`}
                       >

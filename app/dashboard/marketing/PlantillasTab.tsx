@@ -265,7 +265,7 @@ function VarChip({
       className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs transition-all duration-150 ${
         copied
           ? "border-emerald-200 bg-emerald-50"
-          : "border-slate-200 bg-white hover:border-[#C9922A]/30 hover:bg-[#C9922A]/5"
+          : "border-amber-200/40 bg-[#FAF8F4] hover:border-[#C9922A]/30 hover:bg-[#C9922A]/5"
       }`}
     >
       <span
@@ -417,7 +417,7 @@ export function PlantillasTab({
       )}
 
       {/* Stats */}
-      <div className="rounded-[20px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+      <div className="rounded-[20px] border border-amber-200/40 bg-[#FAF8F4] px-5 py-4 shadow-sm">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
             <p className="font-black text-[#080A0F]">
@@ -492,7 +492,7 @@ export function PlantillasTab({
           return (
             <div
               key={p.id}
-              className="flex flex-col rounded-[20px] border border-slate-200 bg-white shadow-sm transition-shadow duration-150 hover:shadow-md"
+              className="flex flex-col rounded-[20px] border border-amber-200/40 bg-[#FAF8F4] shadow-sm transition-shadow duration-150 hover:shadow-md"
             >
               {/* Card header */}
               <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
