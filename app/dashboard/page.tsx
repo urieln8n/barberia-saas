@@ -18,6 +18,7 @@ import {
   Megaphone,
   MessageCircle,
   Star,
+  Sparkles,
 } from "lucide-react";
 import { StatCard }   from "@/components/ui/StatCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -652,14 +653,14 @@ export default async function DashboardPage() {
         <div className="grid gap-6 p-5 md:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#C89B3C]/20 bg-[#C89B3C]/10 px-3 py-1 text-xs font-bold text-[#8A641F]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#16A34A]" />
-              Panel principal
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#16A34A]" />
+              Sistema operativo activo
             </div>
             <h1 className="mt-3 text-3xl font-black tracking-tight text-[#111111] md:text-4xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
             <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">
-              Lo importante de hoy en una sola vista: agenda, caja, huecos, clientes para recuperar y equipo activo.
+              Agenda, caja, huecos y clientes en una vista. Tus agentes IA trabajan en segundo plano mientras tú cortas.
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[440px]">
@@ -689,13 +690,36 @@ export default async function DashboardPage() {
       {/* ── Quick Actions Row ── */}
       <QuickActionsRow services={quickServices} barbers={quickBarbers} />
 
+      {/* ── AaaS Agents teaser ── */}
+      <Link
+        href="/dashboard/agents"
+        className="group flex cursor-pointer items-center justify-between gap-4 rounded-[24px] border border-[#D5A84C]/20 bg-[linear-gradient(135deg,#0f172a_0%,#1e293b_100%)] px-5 py-4 shadow-sm transition-all hover:border-[#D5A84C]/40 hover:shadow-md"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#C9922A]/30 bg-[#C9922A]/10">
+            <Sparkles size={16} className="text-[#C9922A]" />
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest text-[#D4AF66]">
+              Agentes IA activos
+            </p>
+            <p className="text-sm font-semibold text-white/80">
+              4 agentes analizando tu barbería ahora mismo — Retención, Huecos, Reseñas, Marketing
+            </p>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white/70 transition-colors group-hover:bg-white/10">
+          Ver agentes <ArrowRight size={13} />
+        </div>
+      </Link>
+
       <section className="surface-frame p-5 md:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">Panel de Hoy</p>
             <h2 className="section-heading mt-1">Control operativo</h2>
             <p className="section-subtext">
-              Reservas, caja, huecos, clientes y barberos ordenados para entender el día en menos de 5 segundos.
+              Reservas, caja, huecos, clientes y barberos en menos de 5 segundos.
             </p>
           </div>
           <Link href="/dashboard/ia" className="btn-outline">
@@ -810,12 +834,17 @@ export default async function DashboardPage() {
             <div className="p-5 md:p-6">
               <EmptyState
                 icon={CalendarCheck}
-                title="Hoy no hay reservas activas"
-                description="Comparte tu enlace público o revisa los huecos libres para empujar una campaña rápida por WhatsApp."
+                title="Sin reservas activas hoy"
+                description="Usa el Agente Huecos para generar el copy de Instagram y WhatsApp en segundos, o comparte tu QR de reservas."
                 action={
-                  <Link href="/dashboard/huecos" className="btn-primary">
-                    <Clock size={15} /> Ver huecos libres
-                  </Link>
+                  <div className="flex flex-wrap gap-2">
+                    <Link href="/dashboard/agents" className="btn-primary">
+                      <Sparkles size={15} /> Agente Huecos IA
+                    </Link>
+                    <Link href="/dashboard/huecos" className="btn-outline">
+                      <Clock size={15} /> Ver huecos
+                    </Link>
+                  </div>
                 }
               />
             </div>

@@ -78,12 +78,12 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
       <section className="section-band-dark p-5 md:p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D9B766]">IA del Dueño</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D9B766]">Agente IA · Copiloto</p>
             <h1 className="mt-3 text-3xl font-black text-white md:text-4xl">
-              Pregunta qué está pasando en tu barbería
+              Tu IA analiza la barbería y te dice qué hacer
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">
-              Recibe acciones para vender más, llenar huecos, recuperar clientes, controlar caja y mover productos.
+              Pregunta cualquier cosa sobre tu negocio: huecos, clientes perdidos, qué promover esta semana o cuánto puedes facturar. La IA usa tus datos reales.
             </p>
           </div>
           <span className={openAIConfigured ? "badge-success" : "badge-warning"}>

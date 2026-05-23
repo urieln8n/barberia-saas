@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { CalendarPlus, User, DollarSign, Clock } from "lucide-react"
+import { CalendarPlus, User, DollarSign, Clock, Sparkles } from "lucide-react"
 import { QuickBookingPanel } from "@/components/dashboard/QuickBookingPanel"
 import Link from "next/link"
 
@@ -59,6 +59,14 @@ export function QuickActionsRow({ services, barbers }: Props) {
             <Link href="/dashboard/huecos" className="btn-outline">
               <Clock size={15} />
               Ver huecos
+            </Link>
+
+            <Link
+              href="/dashboard/agents"
+              className="inline-flex items-center gap-2 rounded-2xl border border-[#C9922A]/30 bg-[#C9922A]/10 px-4 py-2.5 text-sm font-semibold text-[#8A641F] transition-colors hover:bg-[#C9922A]/20"
+            >
+              <Sparkles size={15} className="text-[#C9922A]" />
+              Agentes IA
             </Link>
           </div>
         </div>

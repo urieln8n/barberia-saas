@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Phone, Mail, StickyNote, Users, MessageCircle, RotateCcw, Star, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Plus, Pencil, Trash2, X, Phone, Mail, StickyNote, Users, MessageCircle, RotateCcw, Star, Sparkles, ArrowRight } from "lucide-react";
 import { createClient_, updateClient_, deleteClient_ } from "./actions";
 import { PageHeader }  from "@/components/ui/PageHeader";
 import { EmptyState }  from "@/components/ui/EmptyState";
@@ -95,10 +96,22 @@ export function ClientesClient({ clients, barbershopId }: Props) {
       </div>
 
       {insightClient && (
-        <div className="rounded-[24px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#F8F3EA_0%,#FEF3C7_100%)] px-5 py-4 text-sm font-semibold leading-6 text-slate-700 shadow-[var(--shadow-soft)]">
-          Oportunidad de recuperación:{" "}
-          <span className="font-black text-[#8A641F]">{insightClient.name}</span>{" "}
-          lleva más de 42 días sin volver. Envía un WhatsApp corto con una razón para reservar hoy.
+        <div className="flex flex-col gap-3 rounded-[24px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#F8F3EA_0%,#FEF3C7_100%)] px-5 py-4 shadow-[var(--shadow-soft)] sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#C9922A]/10">
+              <RotateCcw size={15} className="text-[#C9922A]" />
+            </div>
+            <p className="text-sm font-semibold leading-6 text-slate-700">
+              <span className="font-black text-[#8A641F]">{insightClient.name}</span>{" "}
+              lleva más de 42 días sin volver. El Agente Retención IA genera su WhatsApp en segundos.
+            </p>
+          </div>
+          <Link
+            href="/dashboard/agents"
+            className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border border-[#C9922A]/30 bg-white px-3 py-2 text-xs font-bold text-[#8A641F] transition-colors hover:bg-[#C9922A]/10"
+          >
+            <Sparkles size={13} /> Agente Retención <ArrowRight size={11} />
+          </Link>
         </div>
       )}
 
@@ -196,20 +209,20 @@ export function ClientesClient({ clients, barbershopId }: Props) {
                             <MessageCircle size={15} />
                           </a>
                         )}
-                        <button
-                          type="button"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                          title="Pedir reseña"
+                        <Link
+                          href="/dashboard/agents"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-yellow-50 hover:text-yellow-600"
+                          title="Pedir reseña — Agente Reseñas IA"
                         >
                           <Star size={15} />
-                        </button>
-                        <button
-                          type="button"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
-                          title="Reactivar cliente"
+                        </Link>
+                        <Link
+                          href="/dashboard/agents"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition-colors hover:bg-[#C9922A]/10 hover:text-[#C9922A]"
+                          title="Reactivar con Agente Retención IA"
                         >
                           <RotateCcw size={15} />
-                        </button>
+                        </Link>
                         <button
                           type="button"
                           onClick={() => openEdit(c)}
