@@ -280,12 +280,22 @@ export default async function ReviewsDashboardPage() {
         </div>
 
         {reviews.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-8 text-center">
-            <Star size={24} className="mx-auto text-neutral-300" />
-            <p className="mt-3 font-bold text-neutral-800">Todavía no hay reseñas</p>
-            <p className="mx-auto mt-1 max-w-xl text-sm leading-6 text-neutral-500">
-              Crea tu primer enlace y envíalo manualmente por WhatsApp después de una cita. Las respuestas aparecerán aquí.
+          <div className="mt-6 rounded-[24px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white">
+              <Star size={20} className="text-[#C9922A]" />
+            </div>
+            <p className="mt-4 font-black text-slate-900">Sin reseñas todavía</p>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
+              Las reseñas de Google determinan si te encuentran o te ignoran. Activa el Agente Reseñas IA para generar solicitudes personalizadas después de cada cita.
             </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <a
+                href="/dashboard/agents"
+                className="inline-flex items-center gap-2 rounded-xl border border-[#C9922A]/30 bg-[#C9922A]/10 px-4 py-2 text-sm font-bold text-[#8A641F] transition-colors hover:bg-[#C9922A]/20"
+              >
+                <Star size={14} /> Agente Reseñas IA
+              </a>
+            </div>
           </div>
         ) : (
           <div className="mt-6 grid gap-3">

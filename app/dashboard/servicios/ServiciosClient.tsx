@@ -116,8 +116,8 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
       {services.length === 0 ? (
         <EmptyState
           icon={Scissors}
-          title="Configura tu primer servicio"
-          description="Añade cortes, barba, combos y precios para activar las reservas online. Ejemplo: Corte premium, Corte + barba o Arreglo de barba."
+          title="Crea tu catálogo de servicios"
+          description="Sin servicios no hay reservas online. Añade tus cortes, barba y combos con precio y duración — BarberíaOS organiza los turnos y los agentes IA usan estos datos para generar campañas automáticas."
           action={
             <PrimaryButton
               type="button"

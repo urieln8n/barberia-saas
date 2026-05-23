@@ -850,13 +850,15 @@ export function CampanasTab({
       )}
 
       {campanas.length === 0 && !preview && (
-        <div className="rounded-[20px] border border-dashed border-slate-200 py-10 text-center">
-          <Megaphone size={28} className="mx-auto text-slate-200" />
-          <p className="mt-3 text-sm font-bold text-neutral-400">
-            Aún no hay campañas guardadas
+        <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50 py-10 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white">
+            <Megaphone size={18} className="text-[#C9922A]" />
+          </div>
+          <p className="mt-4 text-sm font-black text-slate-900">
+            Sin campañas todavía
           </p>
-          <p className="mt-1 text-xs text-neutral-300">
-            Genera tu primera campaña con el formulario de arriba
+          <p className="mx-auto mt-2 max-w-sm px-4 text-xs leading-5 text-slate-500">
+            Genera tu primera campaña arriba. BarberíaOS usa tus datos reales — servicios, huecos y clientes — para que el texto convierta de verdad.
           </p>
         </div>
       )}

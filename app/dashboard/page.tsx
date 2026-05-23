@@ -589,30 +589,36 @@ export default async function DashboardPage() {
   );
   const smartAlerts = [
     {
-      title: `Tienes ${dormantClientsCount} clientes dormidos`,
+      title: dormantClientsCount > 0
+        ? `${dormantClientsCount} clientes sin volver en +45 días`
+        : "Sin clientes dormidos detectados",
       description:
         dormantClientsCount > 0
-          ? "Llevan más de 45 días sin volver. Puedes lanzar una campaña de recuperación."
-          : "Aún no hay clientes dormidos detectados con la información actual.",
-      href: "/dashboard/recuperacion",
+          ? "El Agente Retención IA genera su WhatsApp personalizado en segundos. El 30% vuelve con un mensaje bien redactado."
+          : "Cuando tengas clientes con más de 45 días sin visita, el Agente Retención IA los detectará aquí.",
+      href: dormantClientsCount > 0 ? "/dashboard/agents" : "/dashboard/clientes",
       icon: Users,
     },
     {
-      title: `${confirmedUpcomingCount} citas futuras confirmadas`,
+      title: confirmedUpcomingCount > 0
+        ? `${confirmedUpcomingCount} citas futuras confirmadas`
+        : "Sin citas confirmadas próximas",
       description:
         confirmedUpcomingCount > 0
-          ? "Mantén las confirmaciones al día para reducir olvidos y cambios de última hora."
-          : "Revisa las próximas reservas y confirma las citas pendientes.",
+          ? "Agenda activa. Cuando terminen las citas de hoy, el Agente Reseñas IA tendrá solicitudes listas para enviar."
+          : "Revisa las reservas pendientes y confirma para reducir no-shows.",
       href: "/dashboard/agenda",
       icon: CalendarCheck,
     },
     {
-      title: `${totalFreeSlotsToday} huecos libres hoy`,
+      title: totalFreeSlotsToday > 0
+        ? `${totalFreeSlotsToday} huecos libres hoy`
+        : "Agenda completa hoy",
       description:
         totalFreeSlotsToday > 0
-          ? "Comparte disponibilidad por WhatsApp o lanza una promoción rápida."
-          : "Hoy no hay huecos libres detectados en la disponibilidad actual.",
-      href: "/dashboard/huecos",
+          ? "El Agente Huecos IA genera el copy de Instagram Stories y WhatsApp en 10 segundos para llenar esos huecos."
+          : "Sin huecos libres detectados. Buen ritmo — revisa próximos días para anticiparte.",
+      href: totalFreeSlotsToday > 0 ? "/dashboard/agents" : "/dashboard/huecos",
       icon: Clock,
     },
     {
@@ -635,12 +641,14 @@ export default async function DashboardPage() {
       icon: Star,
     },
     {
-      title: "Primera promoción",
+      title: totalClientsCount > 0
+        ? `Agente Marketing listo — ${totalClientsCount} clientes en tu base`
+        : "Activa el Marketing Studio IA",
       description:
         totalClientsCount > 0
-          ? "Usa tu base de clientes para empujar horas flojas sin depender solo de Instagram."
-          : "Cuando tengas clientes registrados podrás lanzar promociones más segmentadas.",
-      href: "/dashboard/marketing",
+          ? "El Agente Marketing Studio genera tu plan de contenido semanal usando tus servicios y datos reales. Sin copywriting manual."
+          : "Cuando tengas clientes y servicios registrados, el Agente Marketing genera campañas personalizadas automáticamente.",
+      href: "/dashboard/agents",
       icon: Megaphone,
     },
   ];

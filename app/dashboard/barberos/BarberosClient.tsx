@@ -272,8 +272,8 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
       {barbers.length === 0 ? (
         <EmptyState
           icon={User}
-          title="Sin barberos todavía"
-          description="Añade tu primer barbero para poder organizar reservas por profesional. Ejemplo: Carlos atiende cortes, Miguel barba y Andrés degradados."
+          title="Añade tu equipo"
+          description="Cada barbero tiene su agenda y sus reservas propias. Sin barberos configurados, los agentes IA no pueden detectar huecos ni optimizar tu ocupación diaria."
           action={
             <PrimaryButton
               type="button"
