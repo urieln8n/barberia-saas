@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Chrome, Scissors } from "lucide-react";
+import { ArrowRight, Chrome } from "lucide-react";
+import { BarberiasOSIsotipo } from "@/components/ui/BarberiasOSLogo";
 import { supabase } from "@/src/lib/supabase/client";
 
 export default function LoginPage() {
@@ -106,9 +107,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#2563EB]/15 bg-[#2563EB] text-white shadow-[0_14px_34px_rgba(37,99,235,0.26)]">
-            <Scissors size={20} />
-          </div>
+          <BarberiasOSIsotipo size={44} />
           <span className="text-xl font-black text-[#050A14]">BarberíaOS</span>
         </div>
 

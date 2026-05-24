@@ -1,12 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#0a0a0a"/>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#0A0A0A"/>
+  <!-- Thin gold ring -->
+  <circle cx="256" cy="256" r="235" fill="none" stroke="#D4AF37" stroke-width="8" opacity="0.45"/>
+  <!-- Bold B letterform -->
   <text
     x="256"
-    y="340"
+    y="338"
     text-anchor="middle"
     fill="white"
-    font-size="280"
+    font-size="286"
     font-weight="900"
     font-family="Arial Black, Arial, sans-serif"
   >B</text>
+  <!-- Diagonal gold accent stroke — inside circle boundary -->
+  <line x1="102" y1="410" x2="410" y2="102" stroke="#D4AF37" stroke-width="10" stroke-linecap="round" opacity="0.75"/>
 </svg>

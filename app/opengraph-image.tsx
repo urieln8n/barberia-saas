@@ -75,16 +75,19 @@ export default function Image() {
             style={{
               width: 56,
               height: 56,
-              borderRadius: 16,
-              background: "rgba(201,146,42,0.15)",
-              border: "1px solid rgba(201,146,42,0.35)",
+              borderRadius: "50%",
+              background: "#0A0A0A",
+              border: "1.5px solid rgba(212,175,55,0.45)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 28,
+              fontSize: 32,
+              fontWeight: 900,
+              color: "white",
+              fontFamily: "Arial Black, Arial, sans-serif",
             }}
           >
-            ✂
+            B
           </div>
           <span style={{ fontSize: 38, fontWeight: 900, color: "#C9922A" }}>BarberíaOS</span>
         </div>

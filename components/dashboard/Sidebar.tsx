@@ -38,6 +38,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { BarberiasOSIsotipo } from "@/components/ui/BarberiasOSLogo";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -405,9 +406,7 @@ export default function Sidebar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/[0.09] px-4 shadow-[0_2px_28px_rgba(5,10,20,0.38)] backdrop-blur-xl md:hidden" style={{ background: "linear-gradient(135deg, rgba(15,32,64,0.97) 0%, rgba(8,17,30,0.97) 100%)" }}>
         <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D4AF66]/40 bg-[#D4AF66]/18 shadow-[0_0_16px_rgba(212,175,102,0.16)]">
-            <Scissors size={16} className="text-[#D4AF66]" />
-          </div>
+          <BarberiasOSIsotipo size={40} />
           <span className="font-black tracking-tight text-white">BarberíaOS</span>
         </Link>
         <button
@@ -590,9 +589,7 @@ export default function Sidebar() {
         {collapsed ? (
           <div className="mb-3 flex justify-center">
             <Link href="/dashboard" title="BarberíaOS — Inicio">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D4AF66]/40 bg-[#D4AF66]/15 shadow-[0_0_18px_rgba(212,175,102,0.18)]">
-                <Scissors size={15} className="text-[#D4AF66]" />
-              </div>
+              <BarberiasOSIsotipo size={40} />
             </Link>
           </div>
         ) : (
@@ -601,9 +598,7 @@ export default function Sidebar() {
             style={{ background: "linear-gradient(135deg, rgba(212,175,102,0.08) 0%, rgba(255,255,255,0.03) 100%)" }}
           >
             <Link href="/dashboard" className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF66]/40 bg-[#D4AF66]/18 shadow-[0_0_20px_rgba(212,175,102,0.20)]">
-                <Scissors size={15} className="text-[#D4AF66]" />
-              </div>
+              <BarberiasOSIsotipo size={40} className="shrink-0" />
               <div className="min-w-0">
                 <span className="block text-[15px] font-black leading-none tracking-tight text-white">BarberíaOS</span>
                 <span className="mt-1 flex items-center gap-1.5">
