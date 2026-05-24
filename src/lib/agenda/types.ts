@@ -90,3 +90,48 @@ export type AgendaRecommendation = {
   href: string;
   tone: "gold" | "blue" | "green" | "red";
 };
+
+export type AgendaView = "day" | "week" | "month" | "barbers" | "opportunities";
+
+export type MonthDay = {
+  iso: string;
+  dayNumber: number;
+  isToday: boolean;
+  isCurrentMonth: boolean;
+  appointmentCount: number;
+  estimatedRevenue: number;
+  newClients: number;
+  completedCount: number;
+  cancelledCount: number;
+  occupancyLevel: "high" | "medium" | "low" | "empty";
+};
+
+export type BarberWorkload = {
+  barber: AgendaBarber;
+  todayAppointments: number;
+  weekAppointments: number;
+  estimatedRevenue: number;
+  freeSlots: number;
+  occupancyPct: number;
+  topService: string | null;
+  nextAppointment: AgendaAppointment | null;
+  isLowOccupancy: boolean;
+};
+
+export type AgendaOpportunity = {
+  id: string;
+  type: "free_slots" | "low_day" | "low_barber" | "pending" | "review" | "new_client" | "lounge" | "marketing";
+  title: string;
+  description: string;
+  impact: string;
+  cta: string;
+  href: string;
+  tone: "gold" | "blue" | "green" | "red";
+};
+
+export type MonthData = {
+  monthDays: MonthDay[];
+  totalAppointments: number;
+  totalRevenue: number;
+  bestDay: MonthDay | null;
+};
