@@ -26,6 +26,7 @@ import {
   Store,
   TrendingUp,
   Wrench,
+  type LucideIcon,
 } from "lucide-react";
 import {
   toggleMarketplace,
@@ -135,7 +136,7 @@ function StatusBadge({ children, tone }: { children: string; tone: "green" | "am
   );
 }
 
-function IconPill({ icon: Icon, className = "" }: { icon: ElementType; className?: string }) {
+function IconPill({ icon: Icon, className = "" }: { icon: LucideIcon; className?: string }) {
   return (
     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${className}`}>
       <Icon size={17} />
@@ -243,7 +244,7 @@ function MetricCard({
   value,
   helper,
 }: {
-  icon: ElementType;
+  icon: LucideIcon;
   label: string;
   value: string | number;
   helper: string;

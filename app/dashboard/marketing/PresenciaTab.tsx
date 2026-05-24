@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Circle, Globe, Instagram, MessageCircle } from "lucide-react";
+import { CheckCircle2, Circle, Globe, Instagram, MessageCircle, type LucideIcon } from "lucide-react";
 
 type CheckItem = {
   id: string;
@@ -13,7 +13,7 @@ type Plataforma = "google" | "instagram" | "whatsapp";
 
 type Checklist = {
   id: Plataforma;
-  icon: React.ElementType;
+  icon: LucideIcon;
   titulo: string;
   accentColor: string;
   iconBg: string;

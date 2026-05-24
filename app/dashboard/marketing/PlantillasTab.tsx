@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Check, MessageCircle, Instagram, Hash, AlertCircle } from "lucide-react";
+import { Copy, Check, MessageCircle, Instagram, Hash, AlertCircle, type LucideIcon } from "lucide-react";
 import {
   resolveMarketingTemplate,
   getUnresolvedPlaceholders,
@@ -192,7 +192,7 @@ const plantillas: Plantilla[] = [
 
 const canalConfig: Record<
   Canal,
-  { label: string; icon: React.ElementType; color: string; bg: string }
+  { label: string; icon: LucideIcon; color: string; bg: string }
 > = {
   whatsapp:  { label: "WhatsApp",  icon: MessageCircle, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-100"  },
   instagram: { label: "Instagram", icon: Instagram,     color: "text-pink-600",    bg: "bg-pink-50 border-pink-100"         },

@@ -27,6 +27,7 @@ import {
   Zap,
   Clock,
   TrendingUp,
+  type LucideIcon,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { runAgentAction } from "./actions";
@@ -52,7 +53,7 @@ type Agent = {
   name: string;
   tagline: string;
   description: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   status: AgentStatus;
   plan: AgentPlan;
   phase: AgentPhase;
@@ -232,7 +233,7 @@ function ValueMetric({
   value,
   sub,
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   value: string;
   sub: string;
@@ -523,7 +524,7 @@ export function AgentsClient({
       scroll: "premium",
     },
   ].filter(Boolean) as {
-    icon: React.ElementType;
+    icon: LucideIcon;
     color: string;
     bg: string;
     border: string;

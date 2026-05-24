@@ -34,6 +34,12 @@ import { PublicBookingMockup } from "@/components/landing/PublicBookingMockup";
 import { LandingCTABlock } from "@/components/landing/LandingCTABlock";
 import { FAQAccordion } from "@/components/landing/FAQAccordion";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { Hero3DBarberia } from "@/components/landing/Hero3DBarberia";
+import { QRBookingSection } from "@/components/landing/QRBookingSection";
+import { AgendaPreviewSection } from "@/components/landing/AgendaPreviewSection";
+import { CashCounterSection } from "@/components/landing/CashCounterSection";
+import { ActivationTimeline } from "@/components/landing/ActivationTimeline";
+import { PremiumPricingSection } from "@/components/landing/PremiumPricingSection";
 
 const CONTACT_EMAIL = BUSINESS_CONFIG.legalEmail;
 const WHATSAPP_URL = BUSINESS_CONFIG.whatsappUrl;
@@ -378,78 +384,8 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* ── Hero ───────────────────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden px-5 pb-16 pt-12 md:pb-24 md:pt-20 lg:px-8" data-gsap-premium="hero">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/40 to-transparent" />
-          <div className="premium-hero-glow" aria-hidden="true" />
-          <div className="gold-particles" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/[0.07] px-3 py-1.5 text-xs font-black text-[#D5A84C]/90">
-                <Crown size={14} className="text-[#D5A84C]" />
-                SaaS para barberías que quieren vender reservas sin perder control
-              </div>
-              <h1 className="mt-6 text-4xl font-black leading-[0.96] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                Reservas, caja y control de barberos en un solo panel.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">
-                Reservas online desde tu QR o enlace, clientes propios, caja diaria sin papel y{" "}
-                <span className="font-black text-[#D5A84C]">0% de comisión</span> por cada cita.
-              </p>
-
-              <LandingCTABlock
-                primaryHref={CALCULATOR_URL}
-                primaryLabel="Calcular mi ahorro"
-                secondaryHref={DEMO_BOOKING_URL}
-                secondaryLabel="Ver demo interactiva"
-                className="mt-8"
-              />
-
-              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
-                <Link
-                  href={REQUEST_DEMO_URL}
-                  className="inline-flex items-center gap-2 text-sm font-black text-[#D5A84C] transition hover:text-[#D5A84C]/80"
-                >
-                  <CalendarCheck2 size={16} />
-                  Pedir diagnóstico gratis
-                  <ChevronRight size={15} />
-                </Link>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-black text-white/45 transition hover:text-white"
-                >
-                  <MessageCircle size={16} />
-                  WhatsApp rápido
-                </a>
-              </div>
-              <div className="mt-8 flex flex-wrap gap-2">
-                <Pill>0% comisión por reserva</Pill>
-                <Pill>Activación guiada</Pill>
-                <Pill>Kit QR incluido</Pill>
-              </div>
-              <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-white/[0.08] pt-6">
-                {([["24/7", "Reservas abiertas"], ["0%", "Comisión por cita"], ["48h", "Para empezar"]] as const).map(
-                  ([num, label]) => (
-                    <div key={label} className="flex items-baseline gap-1.5">
-                      <span className={`text-2xl font-black ${num === "0%" ? "text-[#D5A84C]" : "text-white"}`}>{num}</span>
-                      <span className={`text-sm ${num === "0%" ? "text-[#D5A84C]/60" : "text-white/38"}`}>{label}</span>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-            <DashboardMockup />
-          </div>
-        </section>
+        {/* ── Hero — Premium 3D ──────────────────────────────────────────────── */}
+        <Hero3DBarberia />
 
         {/* ── Qué controla ───────────────────────────────────────────────────── */}
         <Shell id="controla" className="landing-section-graphite border-t border-white/10">
@@ -482,6 +418,12 @@ export default function HomePage() {
             </div>
           </div>
         </Shell>
+
+        {/* ── QR Booking flow — Premium animated section ──────────────────────── */}
+        <QRBookingSection id="funciona" />
+
+        {/* ── Agenda Preview ──────────────────────────────────────────────────── */}
+        <AgendaPreviewSection />
 
         {/* ── Flujo de conversión ───────────────────────────────────────────── */}
         <Shell className="landing-section-dark">
@@ -754,6 +696,9 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── Cash counter — animated revenue section ─────────────────────────── */}
+        <CashCounterSection />
+
         {/* ── Comparativa ────────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
           <div className="mx-auto max-w-7xl">
@@ -959,74 +904,7 @@ export default function HomePage() {
           </div>
         </Shell>
 
-        {/* ── Precios ────────────────────────────────────────────────────────── */}
-        <Shell id="precios" className="landing-section-dark">
-          <div className="mx-auto max-w-7xl">
-            <SectionIntro
-              eyebrow="Planes"
-              title="Precios claros para empezar sin comisión por reserva."
-              text="Planes pensados por fase de negocio. Todos incluyen página pública, QR de reservas y activación asistida; eliges según equipo, caja, marketing y soporte que necesitas."
-              center
-            />
-            <div className="mt-10 grid gap-5 lg:grid-cols-3">
-              {plans.map((plan) => (
-                <article
-                  key={plan.name}
-                  className={`relative flex min-h-full flex-col rounded-[30px] border p-6 ${
-                    plan.featured
-                      ? "border-[#D5A84C]/40 bg-gradient-to-b from-[#16110A] to-[#07111f] text-white shadow-[0_32px_96px_rgba(213,168,76,0.14),0_0_0_1px_rgba(213,168,76,0.08),inset_0_1px_0_rgba(213,168,76,0.14)]"
-                      : "border-[#2F6FEB]/[0.16] bg-white/[0.045] text-white shadow-[0_22px_72px_rgba(0,0,0,0.20)]"
-                  }`}
-                >
-                  {plan.featured && (
-                    <>
-                      <div className="absolute inset-x-0 top-0 h-px rounded-t-[30px] bg-gradient-to-r from-transparent via-[#D5A84C]/70 to-transparent" />
-                      <span className="absolute right-5 top-5 rounded-full bg-[#D5A84C] px-3 py-1 text-xs font-black text-[#080A0F]">
-                        Más elegido
-                      </span>
-                    </>
-                  )}
-                  <h3 className="text-2xl font-black">{plan.name}</h3>
-                  <p className={`mt-3 min-h-14 text-sm leading-6 ${plan.featured ? "text-white/60" : "text-white/55"}`}>
-                    {plan.description}
-                  </p>
-                  <div className={`mt-4 rounded-2xl border p-4 ${
-                    plan.featured ? "border-[#D5A84C]/20 bg-[#D5A84C]/[0.06]" : "border-white/10 bg-white/[0.045]"
-                  }`}>
-                    <p className={`text-xs font-black uppercase ${plan.featured ? "text-[#D5A84C]" : "text-[#38BDF8]"}`}>
-                      Para quién
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-white/62">{plan.forWho}</p>
-                    <p className="mt-3 text-xs font-bold text-white/38">{plan.limits}</p>
-                  </div>
-                  <div className="mt-7 flex items-end gap-1">
-                    <span className="text-5xl font-black">{plan.price}</span>
-                    <span className="pb-2 text-sm font-bold text-white/35">/mes</span>
-                  </div>
-                  <div className={`my-6 h-px ${plan.featured ? "bg-[#D5A84C]/20" : "bg-white/10"}`} />
-                  <ul className="flex flex-1 flex-col gap-3">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex gap-3 text-sm font-bold leading-6 text-white/72">
-                        <CheckCircle2 size={17} className={`mt-0.5 shrink-0 ${plan.featured ? "text-[#D5A84C]" : "text-[#38BDF8]"}`} />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <PrimaryButton
-                    href={plan.featured ? REQUEST_DEMO_URL : DEMO_BOOKING_URL}
-                    variant={plan.featured ? "premiumBlue" : "ghost"}
-                    className={`mt-8 min-h-12 w-full ${plan.featured ? "" : "premium-cta-glass hover:bg-white/[0.12] hover:text-white"}`}
-                  >
-                    {plan.featured ? "Pedir diagnóstico gratis" : "Ver demo interactiva"}
-                  </PrimaryButton>
-                </article>
-              ))}
-            </div>
-            <p className="mx-auto mt-6 max-w-3xl text-center text-xs font-semibold leading-5 text-white/42">
-              Precios orientativos para España, sin comisión por reserva. IVA, condiciones finales y alcance de activación se confirman en la demo según el tamaño de la barbería.
-            </p>
-          </div>
-        </Shell>
+        {/* ── Precios — replaced by PremiumPricingSection below ──────────────── */}
 
         {/* ── Después de la demo ─────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">
@@ -1048,6 +926,12 @@ export default function HomePage() {
             </div>
           </div>
         </Shell>
+
+        {/* ── Activation timeline — 24h flow ───────────────────────────────────── */}
+        <ActivationTimeline />
+
+        {/* ── Premium Pricing ──────────────────────────────────────────────────── */}
+        <PremiumPricingSection />
 
         {/* ── CTA final ──────────────────────────────────────────────────────── */}
         <Shell className="landing-section-graphite">

@@ -115,7 +115,7 @@ type Props = {
 
 type MetricItem = [string, string | number, LucideIcon];
 
-const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
+const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
   { id: "resumen", label: "Resumen", icon: Rocket },
   { id: "leads", label: "Leads", icon: Users },
   { id: "campanas", label: "Campañas", icon: Megaphone },

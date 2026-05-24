@@ -10,6 +10,7 @@ import {
   AlertCircle,
   MinusCircle,
   History,
+  type LucideIcon,
 } from "lucide-react";
 import { PlantillasTab } from "./PlantillasTab";
 import { PresenciaTab } from "./PresenciaTab";
@@ -201,7 +202,7 @@ function DatosConectados({
 
 type TabId = "plantillas" | "presencia" | "campanas" | "historial";
 
-const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
+const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
   { id: "plantillas", label: "Plantillas",       icon: FileText  },
   { id: "presencia",  label: "Presencia Online", icon: Globe     },
   { id: "campanas",   label: "Campañas",          icon: Megaphone },

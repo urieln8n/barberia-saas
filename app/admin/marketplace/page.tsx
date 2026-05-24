@@ -11,6 +11,7 @@ import {
   TrendingUp,
   MapPin,
   ChevronLeft,
+  type LucideIcon,
 } from "lucide-react";
 
 type ShopRow = {
@@ -218,7 +219,7 @@ function KpiCard({
   value,
   gold,
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   value: number;
   gold?: boolean;
