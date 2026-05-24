@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { LoungePromotion, PublicLoungeService } from "@/src/lib/lounge/get-public-lounge-data";
 import type { LoungeInteractionType } from "@/src/lib/lounge/track-interaction";
+import { LoungeScanTracker } from "@/components/lounge/LoungeScanTracker";
 
 type Props = {
   barbershopName: string;
@@ -77,6 +78,9 @@ export function LoungePage({
 
   return (
     <main className="min-h-screen bg-[#F8F8F6] pb-24">
+      {/* ── QR scan tracker (invisible) ── */}
+      <LoungeScanTracker slug={barbershopSlug} />
+
       {/* ── Header ── */}
       <header
         className="border-b border-[#D5A84C]/20 px-4 py-4 text-center"

@@ -1329,6 +1329,116 @@ export interface Database {
         Relationships: [];
       };
 
+      // ── Lounge: settings ────────────────────────────────────
+      lounge_settings: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          welcome_title: string | null;
+          welcome_description: string | null;
+          show_products: boolean;
+          show_promos: boolean;
+          show_booking: boolean;
+          show_reviews: boolean;
+          show_whatsapp: boolean;
+          show_instagram: boolean;
+          google_review_url: string | null;
+          whatsapp_url: string | null;
+          instagram_url: string | null;
+          share_message: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          welcome_title?: string | null;
+          welcome_description?: string | null;
+          show_products?: boolean;
+          show_promos?: boolean;
+          show_booking?: boolean;
+          show_reviews?: boolean;
+          show_whatsapp?: boolean;
+          show_instagram?: boolean;
+          google_review_url?: string | null;
+          whatsapp_url?: string | null;
+          instagram_url?: string | null;
+          share_message?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["lounge_settings"]["Insert"]>;
+        Relationships: [];
+      };
+
+      // ── Lounge: promotions ───────────────────────────────────
+      lounge_promotions: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          title: string;
+          description: string | null;
+          price_label: string | null;
+          cta_label: string;
+          active: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          title: string;
+          description?: string | null;
+          price_label?: string | null;
+          cta_label?: string;
+          active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["lounge_promotions"]["Insert"]>;
+        Relationships: [];
+      };
+
+      // ── Lounge: interactions (tracking) ─────────────────────
+      lounge_interactions: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          type:
+            | "qr_scan"
+            | "booking_click"
+            | "product_interest"
+            | "upgrade_interest"
+            | "promo_click"
+            | "review_click"
+            | "whatsapp_click"
+            | "share_click";
+          payload: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          type:
+            | "qr_scan"
+            | "booking_click"
+            | "product_interest"
+            | "upgrade_interest"
+            | "promo_click"
+            | "review_click"
+            | "whatsapp_click"
+            | "share_click";
+          payload?: Json;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["lounge_interactions"]["Insert"]>;
+        Relationships: [];
+      };
+
       // ── Security audits (Shield) ─────────────────────────────
       security_audits: {
         Row: {
@@ -1455,8 +1565,11 @@ export type Subscription     = TableRow<"subscriptions">;
 export type Review           = TableRow<"reviews">;
 export type InventoryProduct = TableRow<"inventory_products">;
 export type AutomationRule   = TableRow<"automation_rules">;
-export type GrowthCampaign   = TableRow<"growth_campaigns">;
-export type GrowthLead       = TableRow<"growth_leads">;
+export type GrowthCampaign      = TableRow<"growth_campaigns">;
+export type GrowthLead          = TableRow<"growth_leads">;
+export type LoungeSettings      = TableRow<"lounge_settings">;
+export type LoungePromotion     = TableRow<"lounge_promotions">;
+export type LoungeInteraction   = TableRow<"lounge_interactions">;
 
 // ── Status unions (reutilizables sin importar la row entera) ─────────────────
 

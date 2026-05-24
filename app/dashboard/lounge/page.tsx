@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import dynamicImport from "next/dynamic";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import {
   ArrowRight,
+  Bot,
   ExternalLink,
   MessageCircle,
   Package,
@@ -18,7 +20,13 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getLoungeSettings } from "@/src/lib/lounge/get-lounge-settings";
-import { getLoungeMetrics } from "@/src/lib/lounge/get-lounge-metrics";
+import { getLoungeMetrics, getLoungeDailyMetrics } from "@/src/lib/lounge/get-lounge-metrics";
+import { getLoungePromotions } from "@/src/lib/lounge/promotions";
+
+const LoungeMetricsChart = dynamicImport(
+  () => import("@/components/lounge/LoungeMetricsChart"),
+  { ssr: false }
+);
 
 export const dynamic = "force-dynamic";
 
@@ -45,21 +53,16 @@ export default async function LoungePage() {
   const loungePublicUrl = slug ? `${siteUrl}/lounge/${slug}` : null;
   const hasLounge = Boolean(slug);
 
-  // Load real lounge settings and metrics
-  const [loungeSettings, loungeMetrics] = await Promise.all([
-    getLoungeSettings(barbershopId),
-    getLoungeMetrics(barbershopId),
-  ]);
+  // Load real lounge settings, metrics, and promotions
+  const [loungeSettings, loungeMetrics, loungeDailyData, loungePromotions] =
+    await Promise.all([
+      getLoungeSettings(barbershopId),
+      getLoungeMetrics(barbershopId),
+      getLoungeDailyMetrics(barbershopId),
+      getLoungePromotions(supabase, barbershopId),
+    ]);
 
   const isLoungeActive = loungeSettings?.is_active ?? null;
-
-  const REAL_METRICS = [
-    { label: "Escaneos QR este mes", value: loungeMetrics.qr_scan, hint: loungeMetrics.qr_scan === 0 ? "Activa el Lounge para empezar" : "escaneos registrados" },
-    { label: "Clicks en Reservar", value: loungeMetrics.booking_click, hint: loungeMetrics.booking_click === 0 ? "Conecta el QR del Lounge" : "veces pulsado" },
-    { label: "Clicks en Productos", value: loungeMetrics.product_interest, hint: loungeMetrics.product_interest === 0 ? "Añade productos destacados" : "intereses registrados" },
-    { label: "Clicks en WhatsApp", value: loungeMetrics.whatsapp_click, hint: loungeMetrics.whatsapp_click === 0 ? "Activa el botón de contacto" : "contactos por WhatsApp" },
-    { label: "Clicks en Reseñas", value: loungeMetrics.review_click, hint: loungeMetrics.review_click === 0 ? "Activa el link de Google" : "visitas a Google" },
-  ];
 
   return (
     <div className="space-y-6">
@@ -170,30 +173,37 @@ export default async function LoungePage() {
         </div>
       )}
 
-      {/* ── Métricas Lounge ── */}
+      {/* ── Métricas Lounge (gráfico + totales) ── */}
       <section>
-        <div className="mb-4">
-          <p className="label-section">Rendimiento del Lounge</p>
-          <h2 className="section-heading mt-0.5">Métricas de conversión</h2>
-          <p className="section-subtext">
-            Cuando el Lounge esté activo, verás aquí los escaneos, clicks y conversiones en tiempo real.
-          </p>
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p className="label-section">Rendimiento del Lounge</p>
+            <h2 className="section-heading mt-0.5">Métricas de conversión</h2>
+            <p className="section-subtext">
+              Escaneos, clicks y conversiones de los últimos 30 días.
+            </p>
+          </div>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {REAL_METRICS.map((metric) => (
-            <div
-              key={metric.label}
-              className="flex flex-col gap-1 rounded-[20px] border border-slate-100 bg-white p-4 shadow-sm"
-            >
-              <p className="text-2xl font-black text-slate-900">
-                {metric.value > 0 ? metric.value.toString() : "—"}
-              </p>
-              <p className="text-xs font-bold text-slate-700">{metric.label}</p>
-              <p className="text-[11px] text-slate-400">{metric.hint}</p>
-            </div>
-          ))}
-        </div>
+        <LoungeMetricsChart dailyData={loungeDailyData} totals={loungeMetrics} />
       </section>
+
+      {/* ── Recomendación: crear primera promoción ── */}
+      {loungePromotions.length === 0 && (
+        <div className="flex items-start gap-4 rounded-[20px] border border-[#D5A84C]/25 bg-[#FDF8EE] p-5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D5A84C]/30 bg-white">
+            <Tag size={18} className="text-[#C9922A]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-black text-[#080A0F]">Crea tu primera promoción</p>
+            <p className="mt-0.5 text-sm text-[#080A0F]/60">
+              Añade una oferta al Lounge para aumentar el ticket medio mientras los clientes esperan.
+            </p>
+          </div>
+          <Link href="/dashboard/lounge/promotions" className="btn-gold shrink-0">
+            Crear oferta
+          </Link>
+        </div>
+      )}
 
       {/* ── Productos destacados ── */}
       <section className="surface-frame p-5 md:p-6">
@@ -228,37 +238,67 @@ export default async function LoungePage() {
         </div>
       </section>
 
-      {/* ── Promociones activas ── */}
+      {/* ── Promociones Lounge ── */}
       <section className="surface-frame p-5 md:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <Tag size={16} className="text-[#C9922A]" />
-              <p className="label-section">Promociones activas</p>
+              <p className="label-section">Promociones Lounge</p>
             </div>
             <h2 className="section-heading mt-1">Ofertas en la sala de espera</h2>
             <p className="section-subtext">
-              Crea promociones que aparezcan en el Lounge para aumentar el ticket medio.
+              {loungePromotions.length > 0
+                ? `${loungePromotions.length} promoción${loungePromotions.length > 1 ? "es" : ""} configurada${loungePromotions.length > 1 ? "s" : ""}.`
+                : "Crea promociones para aumentar el ticket medio."}
             </p>
           </div>
-          <Link href="/dashboard/marketing" className="btn-outline shrink-0">
-            Marketing <ArrowRight size={14} />
+          <Link href="/dashboard/lounge/promotions" className="btn-gold shrink-0">
+            Gestionar promociones <ArrowRight size={14} />
           </Link>
         </div>
 
-        <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
-            <Tag size={20} className="text-slate-400" />
+        {loungePromotions.length > 0 ? (
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {loungePromotions.slice(0, 4).map((promo) => (
+              <div
+                key={promo.id}
+                className="flex items-center gap-3 rounded-2xl border border-[#D5A84C]/15 bg-[#FDF8EE] px-4 py-3"
+              >
+                <Tag size={14} className="shrink-0 text-[#C9922A]" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-black text-[#080A0F]">{promo.title}</p>
+                  {promo.price_label && (
+                    <p className="text-xs text-[#C9922A]">{promo.price_label}</p>
+                  )}
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black ${
+                    promo.active
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {promo.active ? "Activa" : "Inactiva"}
+                </span>
+              </div>
+            ))}
           </div>
-          <p className="font-black text-slate-700">Sin promociones activas</p>
-          <p className="max-w-sm text-sm leading-6 text-slate-500">
-            Activa una promoción desde Marketing Studio para que aparezca en el Lounge y
-            capture la atención de tus clientes mientras esperan.
-          </p>
-          <Link href="/dashboard/marketing" className="btn-primary mt-1">
-            Crear promoción
-          </Link>
-        </div>
+        ) : (
+          <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
+              <Tag size={20} className="text-slate-400" />
+            </div>
+            <p className="font-black text-slate-700">Sin promociones configuradas</p>
+            <p className="max-w-sm text-sm leading-6 text-slate-500">
+              Crea tu primera oferta para que aparezca en el Lounge y capture
+              la atención de tus clientes mientras esperan.
+            </p>
+            <Link href="/dashboard/lounge/promotions" className="btn-gold mt-1">
+              Crear primera promoción
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* ── Servicios upgrade ── */}
@@ -329,6 +369,31 @@ export default async function LoungePage() {
           <Link href="/dashboard/ajustes" className="mt-4 btn-outline w-full">
             Configurar WhatsApp <ArrowRight size={14} />
           </Link>
+        </div>
+      </section>
+
+      {/* ── Agente Lounge (Próximamente) ── */}
+      <section className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-75">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
+          <Bot size={20} className="text-slate-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-black text-slate-700">Agente Lounge IA</h3>
+            <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+              Próximamente
+            </span>
+            <span className="rounded-full border border-[#D5A84C]/30 bg-[#FDF8EE] px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+              Premium IA
+            </span>
+          </div>
+          <p className="mt-1 text-sm leading-5 text-slate-500">
+            Tu Agente Lounge detectará qué productos, promociones y servicios generan más interés
+            para recomendar acciones automáticas y maximizar la conversión en sala de espera.
+          </p>
+          <p className="mt-2 text-xs font-semibold text-slate-400">
+            Estado: Próximamente · Premium IA
+          </p>
         </div>
       </section>
 
