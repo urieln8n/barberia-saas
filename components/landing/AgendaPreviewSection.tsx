@@ -210,7 +210,7 @@ function AgendaStats() {
           className="rounded-2xl border border-[#080A0F]/8 bg-white p-4 text-center shadow-sm"
         >
           <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
-          <p className="mt-0.5 text-xs text-[#080A0F]/45">{stat.label}</p>
+          <p className="mt-0.5 text-xs text-[#080A0F]/60">{stat.label}</p>
         </motion.div>
       ))}
     </div>
@@ -225,7 +225,7 @@ export function AgendaPreviewSection() {
 
   return (
     <section
-      className="bg-white px-5 py-16 md:py-24 lg:px-8"
+      className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
       aria-labelledby="agenda-section-heading"
     >
       <div className="mx-auto max-w-7xl">

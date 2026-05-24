@@ -210,7 +210,7 @@ export function QRBookingSection({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="bg-[#F8F8F6] px-5 py-16 md:py-24 lg:px-8"
+      className="bg-[#F8F8F6] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
       aria-labelledby="qr-section-heading"
     >
       <div className="mx-auto max-w-7xl">

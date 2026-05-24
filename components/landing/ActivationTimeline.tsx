@@ -228,7 +228,7 @@ export function ActivationTimeline() {
 
   return (
     <section
-      className="bg-white px-5 py-16 md:py-24 lg:px-8"
+      className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
       aria-labelledby="timeline-heading"
     >
       <div className="mx-auto max-w-7xl">

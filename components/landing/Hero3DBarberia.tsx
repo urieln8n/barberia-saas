@@ -27,17 +27,17 @@ function HeroVisualFallback() {
       </div>
 
       {/* Floating badges */}
-      <div className="absolute left-4 top-10 rounded-2xl border border-[#D5A84C]/20 bg-white/5 px-3 py-2 backdrop-blur-sm">
+      <div className="absolute left-4 top-10 rounded-2xl border border-[#D5A84C]/25 bg-white/90 px-3 py-2 shadow-sm backdrop-blur-sm">
         <p className="text-[11px] font-black text-[#D5A84C]">24/7</p>
-        <p className="text-[10px] text-white/50">Reservas</p>
+        <p className="text-[10px] text-[#080A0F]/55">Reservas</p>
       </div>
-      <div className="absolute right-4 bottom-12 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm">
-        <p className="text-[11px] font-black text-white">0%</p>
-        <p className="text-[10px] text-white/50">Comisión</p>
+      <div className="absolute right-4 bottom-12 rounded-2xl border border-[#080A0F]/10 bg-white/90 px-3 py-2 shadow-sm backdrop-blur-sm">
+        <p className="text-[11px] font-black text-[#080A0F]">0%</p>
+        <p className="text-[10px] text-[#080A0F]/55">Comisión</p>
       </div>
-      <div className="absolute right-8 top-8 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm">
+      <div className="absolute right-8 top-8 rounded-2xl border border-[#080A0F]/10 bg-white/90 px-3 py-2 shadow-sm backdrop-blur-sm">
         <QrCode size={14} className="text-[#D5A84C]" />
-        <p className="mt-1 text-[10px] text-white/50">QR listo</p>
+        <p className="mt-1 text-[10px] text-[#080A0F]/55">QR listo</p>
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ export function Hero3DBarberia() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#F8F8F6] px-5 pb-16 pt-14 md:pb-24 md:pt-20 lg:px-8"
+      className="relative overflow-hidden bg-[#F8F8F6] px-5 pb-16 pt-14 text-[#080A0F] md:pb-24 md:pt-20 lg:px-8"
       aria-label="Hero BarberíaOS"
     >
       {/* Subtle warm gradient top */}
@@ -195,7 +195,7 @@ export function Hero3DBarberia() {
                 >
                   {num}
                 </span>
-                <span className="text-sm text-[#080A0F]/42">{label}</span>
+                <span className="text-sm text-[#080A0F]/60">{label}</span>
               </div>
             ))}
           </motion.div>

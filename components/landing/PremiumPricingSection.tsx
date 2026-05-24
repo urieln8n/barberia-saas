@@ -229,7 +229,7 @@ export function PremiumPricingSection() {
   return (
     <section
       id="precios"
-      className="bg-[#F8F8F6] px-5 py-16 md:py-24 lg:px-8"
+      className="bg-[#F8F8F6] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
       aria-labelledby="pricing-section-heading"
     >
       <div className="mx-auto max-w-7xl">

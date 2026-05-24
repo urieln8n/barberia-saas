@@ -209,9 +209,9 @@ function SideStats({ inView }: { inView: boolean }) {
           className="rounded-2xl border bg-white p-5 shadow-sm"
           style={{ borderColor: border, willChange: "transform, opacity" }}
         >
-          <p className="text-xs font-black uppercase text-[#080A0F]/40">{label}</p>
+          <p className="text-xs font-black uppercase text-[#080A0F]/55">{label}</p>
           <p className={`mt-2 text-3xl font-black ${color}`}>{value}</p>
-          <p className="mt-1 text-xs text-[#080A0F]/45">{desc}</p>
+          <p className="mt-1 text-xs text-[#080A0F]/60">{desc}</p>
         </motion.div>
       ))}
     </div>
@@ -228,7 +228,7 @@ export function CashCounterSection() {
 
   return (
     <section
-      className="bg-[#F8F8F6] px-5 py-16 md:py-24 lg:px-8"
+      className="bg-[#F8F8F6] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
       aria-labelledby="cash-section-heading"
     >
       <div className="mx-auto max-w-7xl">
