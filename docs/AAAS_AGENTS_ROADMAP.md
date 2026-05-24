@@ -375,5 +375,18 @@ Mes 7-12
 
 ---
 
+## Agenda Visual Pro como motor AaaS
+
+La nueva agenda semanal prepara la capa AaaS desde el producto core:
+
+- **Agente de Huecos Libres:** detecta espacios visuales sin citas y los conecta con Marketing Studio. En Fase 1 solo recomienda; en fases futuras preparara campanas con aprobacion humana.
+- **Recepcionista IA conectada a disponibilidad:** la agenda expone la estructura necesaria para responder "que huecos hay" sin crear reservas automaticamente todavia.
+- **Agenda como motor de recomendaciones:** las metricas de pendientes, nuevos clientes, ocupacion y huecos alimentan recomendaciones simples basadas en reglas.
+- **Futuro:** acciones automaticas solo con aprobacion humana previa: promocionar hueco, enviar recordatorio, confirmar cita, sugerir upsell o pedir resena.
+
+No se activa OpenAI real, WhatsApp real ni automatizacion autonoma en esta fase.
+
+---
+
 *Documento generado en rama feature/aaas-agentic-product-audit*
 *Revisar y ajustar según feedback de primeros usuarios*
