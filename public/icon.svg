@@ -1,50 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!--
+    BarberíaOS brand mark — 512×512
+    Golden-ratio B: upper lobe radius 61 (h 123), lower lobe radius 102 (h 205)
+    Ratio 205/123 ≈ 1.667 ≈ φ
+    All arc paths — zero font dependency.
+  -->
   <defs>
-    <!-- Background: warm dark centre, near-black edge -->
-    <radialGradient id="bg" cx="40%" cy="35%" r="65%" gradientUnits="userSpaceOnUse" fx="205" fy="179" cx2="256" cy2="256" r2="256">
-      <stop offset="0%"   stop-color="#1E1B14"/>
-      <stop offset="55%"  stop-color="#0F0E0B"/>
-      <stop offset="100%" stop-color="#050503"/>
+    <radialGradient id="bg" cx="42%" cy="38%" r="62%" fx="42%" fy="38%">
+      <stop offset="0%"   stop-color="#1D1A14"/>
+      <stop offset="58%"  stop-color="#0C0B08"/>
+      <stop offset="100%" stop-color="#030302"/>
     </radialGradient>
-    <!-- Ring: bright gold top-right, dim bottom-left -->
-    <linearGradient id="ring" x1="10%" y1="10%" x2="90%" y2="90%">
-      <stop offset="0%"   stop-color="#F9E98A" stop-opacity="0.85"/>
-      <stop offset="40%"  stop-color="#D4AF37" stop-opacity="0.60"/>
-      <stop offset="100%" stop-color="#6B4D0A" stop-opacity="0.18"/>
+    <linearGradient id="ring" x1="12%" y1="12%" x2="88%" y2="88%">
+      <stop offset="0%"   stop-color="#F8E882" stop-opacity="0.85"/>
+      <stop offset="32%"  stop-color="#D4AF37" stop-opacity="0.60"/>
+      <stop offset="100%" stop-color="#4A2E05" stop-opacity="0.12"/>
     </linearGradient>
-    <!-- Diagonal stroke gradient -->
     <linearGradient id="slash" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#6B4D0A" stop-opacity="0.45"/>
-      <stop offset="30%"  stop-color="#C49B1F" stop-opacity="0.9"/>
-      <stop offset="62%"  stop-color="#D4AF37"/>
-      <stop offset="82%"  stop-color="#EDD060"/>
-      <stop offset="100%" stop-color="#FDF2B0" stop-opacity="0.75"/>
+      <stop offset="0%"   stop-color="#4A2E05" stop-opacity="0.30"/>
+      <stop offset="22%"  stop-color="#A8820C" stop-opacity="0.92"/>
+      <stop offset="52%"  stop-color="#D4AF37"/>
+      <stop offset="76%"  stop-color="#E8D060"/>
+      <stop offset="100%" stop-color="#FCF2BC" stop-opacity="0.65"/>
     </linearGradient>
     <clipPath id="cc">
       <circle cx="256" cy="256" r="238"/>
     </clipPath>
   </defs>
 
-  <!-- Background circle -->
+  <!-- Background sphere -->
   <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
 
-  <!-- Outer gold ring -->
-  <circle cx="256" cy="256" r="241" fill="none" stroke="url(#ring)" stroke-width="4"/>
+  <!-- Gold ring system -->
+  <circle cx="256" cy="256" r="241" fill="none" stroke="url(#ring)" stroke-width="3.7"/>
+  <circle cx="256" cy="256" r="227" fill="none" stroke="#D4AF37"    stroke-width="1.1" opacity="0.24"/>
 
-  <!-- Inner whisper ring -->
-  <circle cx="256" cy="256" r="226" fill="none" stroke="#D4AF37" stroke-width="1.3" opacity="0.22"/>
+  <!--
+    Golden-ratio B (scaled ×5.12 from 100-unit design):
+      Stem   x 159–215  y 77–435  (width 56, height 358)
+      Upper  M 215,77  A 61,61  0 0 1 215,200 Z  (radius 61, height 123)
+      Lower  M 215,230 A 102,102 0 0 1 215,435 Z (radius 102, height 205)
+      Lower÷Upper = 205÷123 ≈ 1.667 ≈ φ
+  -->
+  <rect x="159" y="77" width="56" height="358" rx="13" fill="white"/>
+  <path d="M 215,77  A 61,61  0 0 1 215,199 Z" fill="white"/>
+  <path d="M 215,230 A 102,102 0 0 1 215,434 Z" fill="white"/>
 
-  <!-- ── Geometric B mark (stem + upper lobe + lower lobe) ── -->
-  <!-- Stem -->
-  <rect x="97" y="77" width="61" height="358" rx="13" fill="white"/>
-  <!-- Upper D-lobe -->
-  <path d="M 148,77 C 266,77 323,108 323,164 C 323,220 266,235 148,235 Z" fill="white"/>
-  <!-- Lower D-lobe (slightly wider + taller) -->
-  <path d="M 148,266 C 281,266 338,297 338,353 C 338,409 281,435 148,435 Z" fill="white"/>
-
-  <!-- Diagonal razor-accent stroke -->
-  <!-- cos45° × 238 ≈ 168 → endpoints (256-169, 256+169)=(87,425) and (425,87) -->
-  <line x1="87" y1="425" x2="425" y2="87"
-        stroke="url(#slash)" stroke-width="10" stroke-linecap="round"
-        clip-path="url(#cc)" opacity="0.92"/>
+  <!--
+    Razor accent diamond (parallelogram scaled ×5.12):
+    Original corners: 15.2,81.2  18.8,84.8  84.8,18.8  81.2,15.2
+    Scaled: 77.8,415.7  96.3,434.2  434.2,96.3  415.7,77.8
+  -->
+  <polygon
+    points="78,416  97,434  434,96  415,78"
+    fill="url(#slash)"
+    clip-path="url(#cc)"
+    opacity="0.90"
+  />
 </svg>
