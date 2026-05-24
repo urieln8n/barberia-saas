@@ -1,44 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
-import Lenis from "lenis";
 import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
+import { LenisProvider } from "@/components/LenisProvider";
 
 export function LandingExperience({ children }: { children: ReactNode }) {
-  const rootRef = useRef<HTMLElement | null>(null);
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion || window.matchMedia("(pointer: coarse)").matches) {
-      return;
-    }
-
-    const lenis = new Lenis({
-      duration: 1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 0.85,
-    });
-
-    let frame = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frame = requestAnimationFrame(raf);
-    };
-
-    frame = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      lenis.destroy();
-    };
-  }, [prefersReducedMotion]);
-
   return (
-    <main ref={rootRef} className="min-h-screen overflow-hidden bg-gradient-to-br from-[#05070d] via-[#07111f] to-[#02030a] text-white">
-      {children}
-    </main>
+    <LenisProvider>
+      <main className="min-h-screen overflow-hidden bg-gradient-to-br from-[#05070d] via-[#07111f] to-[#02030a] text-white">
+        {children}
+      </main>
+    </LenisProvider>
   );
 }
 
