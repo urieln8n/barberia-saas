@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   CalendarCheck,
   MessageCircle,
@@ -11,13 +10,8 @@ import {
   Tag,
   Zap,
 } from "lucide-react";
-
-type Service = {
-  id: string;
-  name: string;
-  price: number;
-  duration_minutes: number;
-};
+import type { LoungePromotion, PublicLoungeService } from "@/src/lib/lounge/get-public-lounge-data";
+import type { LoungeInteractionType } from "@/src/lib/lounge/track-interaction";
 
 type Props = {
   barbershopName: string;
@@ -25,8 +19,12 @@ type Props = {
   bookingUrl: string;
   whatsappUrl: string | null;
   googleReviewUrl: string | null;
-  services: Service[];
+  services: PublicLoungeService[];
+  promotions: LoungePromotion[];
   loungeUrl: string;
+  showBooking: boolean;
+  welcomeTitle: string | null;
+  welcomeDescription: string | null;
 };
 
 // Mock upgrade services for upsell section
@@ -38,33 +36,44 @@ const UPGRADE_SERVICES = [
   { name: "Mascarilla hidratante", price: 10, icon: "💆" },
 ];
 
+/**
+ * Fire-and-forget tracking call — never blocks the user action.
+ */
+function track(
+  slug: string,
+  type: LoungeInteractionType,
+  payload?: Record<string, unknown>
+) {
+  try {
+    fetch("/api/lounge/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug, type, payload: payload ?? {} }),
+    }).catch(() => {
+      // Silently ignore network errors
+    });
+  } catch {
+    // Never throw
+  }
+}
+
 export function LoungePage({
   barbershopName,
+  barbershopSlug,
   bookingUrl,
   whatsappUrl,
   googleReviewUrl,
   services,
+  promotions,
   loungeUrl,
+  showBooking,
+  welcomeTitle,
+  welcomeDescription,
 }: Props) {
-
-  function handleShare() {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      navigator
-        .share({
-          title: `${barbershopName} — BarberíaOS Lounge`,
-          text: `Te recomiendo ${barbershopName}. Puedes reservar y ver sus servicios aquí:`,
-          url: loungeUrl,
-        })
-        .catch(() => {
-          // User cancelled share
-        });
-    } else {
-      // Fallback: copy to clipboard
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(loungeUrl).catch(() => {});
-      }
-    }
-  }
+  const displayTitle = welcomeTitle ?? "Mientras esperas, descubre más";
+  const displayDescription =
+    welcomeDescription ??
+    "Reserva tu próxima cita, explora servicios premium y deja tu reseña en Google. Todo desde tu móvil, sin descargar nada.";
 
   return (
     <main className="min-h-screen bg-[#F8F8F6] pb-24">
@@ -96,20 +105,18 @@ export function LoungePage({
               <Sparkles size={24} className="text-[#C9922A]" />
             </div>
           </div>
-          <h1 className="text-2xl font-black text-[#080A0F]">
-            Mientras esperas, descubre más
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-[#080A0F]/60">
-            Reserva tu próxima cita, explora servicios premium y deja tu reseña en Google.
-            Todo desde tu móvil, sin descargar nada.
-          </p>
-          <a
-            href={bookingUrl}
-            className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#080A0F] px-6 py-3 text-sm font-black text-white shadow-sm transition-colors hover:bg-[#1a1a1a] active:scale-[0.98]"
-          >
-            <CalendarCheck size={16} />
-            Reservar próxima cita
-          </a>
+          <h1 className="text-2xl font-black text-[#080A0F]">{displayTitle}</h1>
+          <p className="mt-2 text-sm leading-6 text-[#080A0F]/60">{displayDescription}</p>
+          {showBooking && (
+            <a
+              href={bookingUrl}
+              onClick={() => track(barbershopSlug, "booking_click")}
+              className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#080A0F] px-6 py-3 text-sm font-black text-white shadow-sm transition-colors hover:bg-[#1a1a1a] active:scale-[0.98]"
+            >
+              <CalendarCheck size={16} />
+              Reservar próxima cita
+            </a>
+          )}
         </section>
 
         {/* ── Servicios de la barbería ── */}
@@ -139,6 +146,9 @@ export function LoungePage({
                     </p>
                     <a
                       href={`${bookingUrl}?service=${service.id}`}
+                      onClick={() =>
+                        track(barbershopSlug, "product_interest", { service_id: service.id })
+                      }
                       className="rounded-xl border border-[#D5A84C]/30 bg-[#FDF8EE] px-3 py-1.5 text-xs font-black text-[#8A641F] transition-colors hover:bg-[#D5A84C]/20"
                     >
                       Reservar
@@ -176,9 +186,9 @@ export function LoungePage({
                   <button
                     type="button"
                     className="rounded-xl border border-[#D5A84C]/30 bg-white px-3 py-1.5 text-xs font-black text-[#8A641F]"
-                    onClick={() => {
-                      // Register interest — no real data collection
-                    }}
+                    onClick={() =>
+                      track(barbershopSlug, "upgrade_interest", { service: service.name })
+                    }
                   >
                     Me interesa
                   </button>
@@ -188,7 +198,7 @@ export function LoungePage({
           </div>
         </section>
 
-        {/* ── Promociones (empty state) ── */}
+        {/* ── Promociones reales / empty state ── */}
         <section>
           <div className="mb-3 flex items-center gap-2">
             <Tag size={15} className="text-[#C9922A]" />
@@ -196,11 +206,47 @@ export function LoungePage({
               Promociones activas
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-slate-200 bg-white px-6 py-8 text-center">
-            <Tag size={20} className="text-slate-300" />
-            <p className="text-sm font-bold text-slate-500">Sin promociones activas</p>
-            <p className="text-xs text-slate-400">Vuelve pronto — el equipo actualiza las ofertas regularmente.</p>
-          </div>
+          {promotions.length > 0 ? (
+            <div className="grid gap-2">
+              {promotions.map((promo) => (
+                <div
+                  key={promo.id}
+                  className="rounded-[20px] border border-[#D5A84C]/20 bg-[#FDF8EE] px-4 py-4 shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black text-[#080A0F]">{promo.title}</p>
+                      {promo.description && (
+                        <p className="mt-1 text-sm text-[#080A0F]/60">{promo.description}</p>
+                      )}
+                    </div>
+                    {promo.price_label && (
+                      <span className="shrink-0 rounded-xl border border-[#D5A84C]/30 bg-white px-3 py-1 text-sm font-black text-[#C9922A]">
+                        {promo.price_label}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      track(barbershopSlug, "promo_click", { promo_id: promo.id })
+                    }
+                    className="mt-3 w-full rounded-xl border border-[#D5A84C]/30 bg-white px-4 py-2 text-xs font-black text-[#8A641F] transition-colors hover:bg-[#D5A84C]/10 active:scale-[0.98]"
+                  >
+                    {promo.cta_label}
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-slate-200 bg-white px-6 py-8 text-center">
+              <Tag size={20} className="text-slate-300" />
+              <p className="text-sm font-bold text-slate-500">Sin promociones activas</p>
+              <p className="text-xs text-slate-400">
+                Vuelve pronto — el equipo actualiza las ofertas regularmente.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* ── Acciones principales ── */}
@@ -211,6 +257,7 @@ export function LoungePage({
               href={googleReviewUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track(barbershopSlug, "review_click")}
               className="flex min-h-14 items-center gap-4 rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-3 transition-colors hover:bg-yellow-100 active:scale-[0.98]"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
@@ -239,6 +286,7 @@ export function LoungePage({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track(barbershopSlug, "whatsapp_click")}
               className="flex min-h-14 items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 transition-colors hover:bg-emerald-100 active:scale-[0.98]"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
@@ -255,12 +303,21 @@ export function LoungePage({
           <button
             type="button"
             onClick={() => {
+              track(barbershopSlug, "share_click");
               if (typeof navigator !== "undefined" && navigator.share) {
-                navigator.share({
-                  title: `${barbershopName} — BarberíaOS Lounge`,
-                  text: `Te recomiendo ${barbershopName}. Puedes reservar aquí:`,
-                  url: bookingUrl,
-                }).catch(() => {});
+                navigator
+                  .share({
+                    title: `${barbershopName} — BarberíaOS Lounge`,
+                    text: `Te recomiendo ${barbershopName}. Puedes reservar aquí:`,
+                    url: bookingUrl,
+                  })
+                  .catch(() => {
+                    // User cancelled share
+                  });
+              } else {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(loungeUrl).catch(() => {});
+                }
               }
             }}
             className="flex w-full min-h-14 items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition-colors hover:bg-slate-50 active:scale-[0.98]"
@@ -275,13 +332,16 @@ export function LoungePage({
           </button>
 
           {/* Reservar CTA final */}
-          <a
-            href={bookingUrl}
-            className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D5A84C] px-6 py-4 text-sm font-black text-[#080A0F] shadow-md transition-colors hover:bg-[#c49a3d] active:scale-[0.98]"
-          >
-            <CalendarCheck size={16} />
-            Reservar próxima cita
-          </a>
+          {showBooking && (
+            <a
+              href={bookingUrl}
+              onClick={() => track(barbershopSlug, "booking_click")}
+              className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D5A84C] px-6 py-4 text-sm font-black text-[#080A0F] shadow-md transition-colors hover:bg-[#c49a3d] active:scale-[0.98]"
+            >
+              <CalendarCheck size={16} />
+              Reservar próxima cita
+            </a>
+          )}
         </section>
 
         {/* ── Footer ── */}

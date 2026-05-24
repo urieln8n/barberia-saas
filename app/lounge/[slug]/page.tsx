@@ -1,18 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
-import {
-  CalendarCheck,
-  MessageCircle,
-  Package,
-  Scissors,
-  Share2,
-  Sparkles,
-  Star,
-  Tag,
-  Zap,
-} from "lucide-react";
-import { createClient } from "@/src/lib/supabase/server";
+import { getPublicLoungeData } from "@/src/lib/lounge/get-public-lounge-data";
 import { SITE_URL } from "@/src/lib/site-url";
 import { LoungePage } from "./LoungePage";
 
@@ -22,21 +10,14 @@ type Props = {
   params: { slug: string };
 };
 
-async function getBarbershopBySlug(slug: string) {
-  const supabase = await createClient();
-  return supabase
-    .from("barbershops")
-    .select("id, name, slug, phone, address, city, instagram_url, google_business_url")
-    .eq("slug", slug)
-    .maybeSingle();
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = params.slug?.trim();
   if (!slug) return { title: "BarberíaOS Lounge" };
 
-  const { data: barbershop } = await getBarbershopBySlug(slug);
-  if (!barbershop) return { title: "Lounge no encontrado | BarberíaOS" };
+  const data = await getPublicLoungeData(slug);
+  if (!data) return { title: "Lounge no encontrado | BarberíaOS" };
+
+  const { barbershop } = data;
 
   return {
     title: `${barbershop.name} · Lounge`,
@@ -56,34 +37,54 @@ export default async function PublicLoungePage({ params }: Props) {
   const slug = params.slug?.trim();
   if (!slug) notFound();
 
-  const { data: barbershop, error } = await getBarbershopBySlug(slug);
-  if (error || !barbershop) notFound();
+  const data = await getPublicLoungeData(slug);
+  if (!data) notFound();
 
-  const supabase = await createClient();
-  const { data: services } = await supabase
-    .from("services")
-    .select("id, name, price, duration_minutes")
-    .eq("barbershop_id", barbershop.id)
-    .eq("active", true)
-    .order("created_at", { ascending: true })
-    .limit(6);
+  const { barbershop, settings, promotions, services } = data;
 
+  // Resolve booking URL
   const bookingUrl = `${SITE_URL}/r/${barbershop.slug}`;
-  const whatsappPhone = barbershop.phone?.replace(/[^\d]/g, "") ?? null;
-  const whatsappUrl = whatsappPhone
-    ? `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(`Hola, estoy en ${barbershop.name} y quiero hacer una consulta.`)}`
-    : null;
-  const googleReviewUrl = barbershop.google_business_url ?? null;
+
+  // Resolve whatsapp URL: lounge_settings.whatsapp_url > derived from phone
+  const whatsappUrl = (() => {
+    if (settings?.whatsapp_url) return settings.whatsapp_url;
+    const phone = barbershop.phone?.replace(/[^\d]/g, "") ?? null;
+    if (phone) {
+      return `https://wa.me/${phone}?text=${encodeURIComponent(
+        `Hola, estoy en ${barbershop.name} y quiero hacer una consulta.`
+      )}`;
+    }
+    return null;
+  })();
+
+  // Resolve google review URL: lounge_settings.google_review_url > barbershop.google_business_url
+  const googleReviewUrl =
+    settings?.google_review_url ?? barbershop.google_business_url ?? null;
+
+  // Resolve visibility flags (default to true if no settings)
+  const showBooking = settings?.show_booking ?? true;
+  const showReviews = settings?.show_reviews ?? true;
+  const showWhatsapp = settings?.show_whatsapp ?? true;
+  const showProducts = settings?.show_products ?? true;
+  const showPromos = settings?.show_promos ?? true;
+
+  // Resolve welcome text
+  const welcomeTitle = settings?.welcome_title ?? null;
+  const welcomeDescription = settings?.welcome_description ?? null;
 
   return (
     <LoungePage
       barbershopName={barbershop.name}
       barbershopSlug={barbershop.slug}
       bookingUrl={bookingUrl}
-      whatsappUrl={whatsappUrl}
-      googleReviewUrl={googleReviewUrl}
-      services={(services ?? []) as { id: string; name: string; price: number; duration_minutes: number }[]}
+      whatsappUrl={showWhatsapp ? whatsappUrl : null}
+      googleReviewUrl={showReviews ? googleReviewUrl : null}
+      services={showProducts ? services : []}
+      promotions={showPromos ? promotions : []}
       loungeUrl={`${SITE_URL}/lounge/${barbershop.slug}`}
+      showBooking={showBooking}
+      welcomeTitle={welcomeTitle}
+      welcomeDescription={welcomeDescription}
     />
   );
 }

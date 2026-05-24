@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Package,
   QrCode,
+  Settings,
   Sparkles,
   Star,
   Tag,
@@ -16,17 +17,10 @@ import {
   Zap,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { getLoungeSettings } from "@/src/lib/lounge/get-lounge-settings";
+import { getLoungeMetrics } from "@/src/lib/lounge/get-lounge-metrics";
 
 export const dynamic = "force-dynamic";
-
-// ── Mock data for Lounge (real data will come from lounge_settings table in Phase 2) ──
-const MOCK_METRICS = [
-  { label: "Escaneos QR este mes", value: "—", hint: "Activa el Lounge para empezar" },
-  { label: "Clicks en Reservar", value: "—", hint: "Conecta el QR del Lounge" },
-  { label: "Clicks en Productos", value: "—", hint: "Añade productos destacados" },
-  { label: "Clicks en WhatsApp", value: "—", hint: "Activa el botón de contacto" },
-  { label: "Clicks en Reseñas", value: "—", hint: "Activa el link de Google" },
-];
 
 export default async function LoungePage() {
   const supabase = await createClient();
@@ -51,6 +45,22 @@ export default async function LoungePage() {
   const loungePublicUrl = slug ? `${siteUrl}/lounge/${slug}` : null;
   const hasLounge = Boolean(slug);
 
+  // Load real lounge settings and metrics
+  const [loungeSettings, loungeMetrics] = await Promise.all([
+    getLoungeSettings(barbershopId),
+    getLoungeMetrics(barbershopId),
+  ]);
+
+  const isLoungeActive = loungeSettings?.is_active ?? null;
+
+  const REAL_METRICS = [
+    { label: "Escaneos QR este mes", value: loungeMetrics.qr_scan, hint: loungeMetrics.qr_scan === 0 ? "Activa el Lounge para empezar" : "escaneos registrados" },
+    { label: "Clicks en Reservar", value: loungeMetrics.booking_click, hint: loungeMetrics.booking_click === 0 ? "Conecta el QR del Lounge" : "veces pulsado" },
+    { label: "Clicks en Productos", value: loungeMetrics.product_interest, hint: loungeMetrics.product_interest === 0 ? "Añade productos destacados" : "intereses registrados" },
+    { label: "Clicks en WhatsApp", value: loungeMetrics.whatsapp_click, hint: loungeMetrics.whatsapp_click === 0 ? "Activa el botón de contacto" : "contactos por WhatsApp" },
+    { label: "Clicks en Reseñas", value: loungeMetrics.review_click, hint: loungeMetrics.review_click === 0 ? "Activa el link de Google" : "visitas a Google" },
+  ];
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -69,6 +79,9 @@ export default async function LoungePage() {
                 <ExternalLink size={15} /> Ver página pública
               </a>
             ) : null}
+            <Link href="/dashboard/lounge/settings" className="btn-gold">
+              <Settings size={15} /> Configurar Lounge
+            </Link>
             <Link href="/dashboard/lounge/qr" className="btn-outline">
               <QrCode size={15} /> QR del Lounge
             </Link>
@@ -80,9 +93,18 @@ export default async function LoungePage() {
       <div className="flex flex-wrap items-center gap-3">
         <span className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#C9922A]/10 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#8A641F]">
           <Sparkles size={11} className="text-[#C9922A]" />
-          Nuevo · BarberíaOS Lounge
+          BarberíaOS Lounge
         </span>
-        {hasLounge ? (
+        {hasLounge && isLoungeActive === true ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            Activo
+          </span>
+        ) : hasLounge && isLoungeActive === false ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-bold text-red-600">
+            Inactivo
+          </span>
+        ) : hasLounge ? (
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Activo
@@ -158,12 +180,14 @@ export default async function LoungePage() {
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {MOCK_METRICS.map((metric) => (
+          {REAL_METRICS.map((metric) => (
             <div
               key={metric.label}
               className="flex flex-col gap-1 rounded-[20px] border border-slate-100 bg-white p-4 shadow-sm"
             >
-              <p className="text-2xl font-black text-slate-900">{metric.value}</p>
+              <p className="text-2xl font-black text-slate-900">
+                {metric.value > 0 ? metric.value.toString() : "—"}
+              </p>
               <p className="text-xs font-bold text-slate-700">{metric.label}</p>
               <p className="text-[11px] text-slate-400">{metric.hint}</p>
             </div>

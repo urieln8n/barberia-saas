@@ -696,6 +696,142 @@ export default function HomePage() {
           </div>
         </Shell>
 
+        {/* ── BarberíaOS Lounge ─────────────────────────────────────────────── */}
+        <Shell id="lounge" className="landing-section-dark">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+              <div>
+                <SectionIntro
+                  eyebrow="BarberíaOS Lounge"
+                  title="Convierte tu sala de espera en una máquina de reservas y ventas."
+                  text="Con un QR, tus clientes pueden reservar, descubrir productos, pedir upgrades, dejar reseñas y contactar por WhatsApp mientras esperan."
+                />
+                <ul className="mt-6 space-y-3">
+                  {[
+                    "Un QR en tu local activa todo",
+                    "Reservas, reseñas y WhatsApp desde el móvil del cliente",
+                    "Promociones activas visibles en sala de espera",
+                    "Tracking de escaneos, clicks y conversiones",
+                  ].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-sm font-bold text-white/72">
+                      <CheckCircle2 size={16} className="shrink-0 text-[#D5A84C]" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <PrimaryButton href={DEMO_URL} variant="gold" className="min-h-12 px-7">
+                    Ver el Lounge en demo <QrCode size={17} />
+                  </PrimaryButton>
+                </div>
+              </div>
+              <div className="premium-blue-panel rounded-[28px] p-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <QrCode size={24} className="text-[#D5A84C]" />
+                  <p className="font-black text-white">Sala de espera activa</p>
+                </div>
+                <div className="grid gap-3">
+                  {[
+                    ["📅", "Reservar próxima cita", "1 click desde el móvil"],
+                    ["⭐", "Dejar reseña en Google", "Mientras esperan, sin olvidarlo"],
+                    ["💬", "Hablar por WhatsApp", "Consulta directa sin llamadas"],
+                    ["🏷️", "Ver promociones activas", "Upsell en sala, sin esfuerzo"],
+                  ].map(([icon, title, hint]) => (
+                    <div key={title as string} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.065] p-3">
+                      <span className="text-xl">{icon}</span>
+                      <div>
+                        <p className="text-sm font-black text-white">{title as string}</p>
+                        <p className="text-xs text-white/45">{hint as string}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </Shell>
+
+        {/* ── Agentes IA (AaaS) ─────────────────────────────────────────────── */}
+        <Shell id="agentes-ia" className="landing-section-graphite">
+          <div className="mx-auto max-w-7xl">
+            <SectionIntro
+              eyebrow="Agentes IA que trabajan por ti"
+              title="Automatiza lo que más tiempo te quita sin añadir más trabajo."
+              text="BarberíaOS Agents son módulos de IA que actúan dentro del sistema para que tú no tengas que estar pendiente de todo."
+              center
+            />
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  icon: Bot,
+                  title: "Recepcionista IA WhatsApp",
+                  text: "Responde preguntas frecuentes, confirma reservas y gestiona cancelaciones por WhatsApp sin que el dueño tenga que estar al móvil.",
+                  tag: "Premium IA",
+                },
+                {
+                  icon: Star,
+                  title: "Agente de Reseñas",
+                  text: "Detecta cuando un cliente sale satisfecho y envía el momento perfecto para pedir una reseña en Google. Sin perseguir a nadie.",
+                  tag: "Premium IA",
+                },
+                {
+                  icon: Users,
+                  title: "Agente de Retención",
+                  text: "Identifica clientes que llevan semanas sin volver y prepara una acción personalizada para recuperarlos antes de perderlos.",
+                  tag: "Premium IA",
+                },
+                {
+                  icon: Clock3,
+                  title: "Agente de Huecos",
+                  text: "Detecta huecos en la agenda y sugiere qué campaña o mensaje puede llenarlos. Sin esperar a ver el día vacío.",
+                  tag: "Premium IA",
+                },
+                {
+                  icon: Zap,
+                  title: "BarberíaOS Lounge IA",
+                  text: "Tu sala de espera como canal de reservas, ventas y reseñas. Un QR convierte la espera en conversión.",
+                  tag: "Disponible ahora",
+                  highlight: true,
+                },
+                {
+                  icon: Megaphone,
+                  title: "Agente de Campañas",
+                  text: "Genera copys para Instagram, historias y mensajes de WhatsApp adaptados al momento real de tu barbería.",
+                  tag: "Premium IA",
+                },
+              ].map(({ icon: Icon, title, text, tag, highlight }) => (
+                <article
+                  key={title}
+                  className={`flex flex-col rounded-[24px] p-6 ${highlight ? "bento-gold-feature" : "premium-dark-card"}`}
+                  data-gsap-premium="feature"
+                >
+                  <div className="flex items-center justify-between">
+                    <Icon size={22} className={highlight ? "text-[#D5A84C]" : "text-[#38BDF8]"} />
+                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase ${
+                      highlight
+                        ? "border border-[#D5A84C]/40 bg-[#D5A84C]/10 text-[#D5A84C]"
+                        : "border border-white/10 bg-white/[0.07] text-white/45"
+                    }`}>
+                      {tag}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-lg font-black text-white">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
+                </article>
+              ))}
+            </div>
+            {/* Diferenciación corta */}
+            <div className="mt-10 rounded-[28px] border border-[#D5A84C]/20 bg-[#D5A84C]/[0.04] p-6 text-center">
+              <p className="text-xl font-black text-white">
+                Sin comisión. Con clientes propios. Con agentes IA.
+              </p>
+              <p className="mt-2 text-sm text-white/55">
+                BarberíaOS no es otra agenda. Es el sistema operativo de tu barbería con IA que trabaja cuando tú no puedes.
+              </p>
+            </div>
+          </div>
+        </Shell>
+
         {/* ── Cash counter — animated revenue section ─────────────────────────── */}
         <CashCounterSection />
 
