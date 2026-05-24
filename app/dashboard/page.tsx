@@ -19,6 +19,9 @@ import {
   MessageCircle,
   Star,
   Sparkles,
+  Bot,
+  Tv,
+  RotateCcw,
 } from "lucide-react";
 import { StatCard }   from "@/components/ui/StatCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -30,6 +33,7 @@ import { GrowthScoreCard } from "@/components/dashboard/GrowthScoreCard";
 import { SmartAlerts } from "@/components/dashboard/SmartAlerts";
 import { WelcomePanel } from "@/components/dashboard/WelcomePanel";
 import { QuickActionsRow } from "@/components/dashboard/QuickActionsRow";
+import { RecommendedActionCard } from "@/components/dashboard/RecommendedActionCard";
 import {
   PremiumDashboardItem,
   PremiumDashboardMotion,
@@ -720,6 +724,95 @@ export default async function DashboardPage() {
           Ver agentes <ArrowRight size={13} />
         </div>
       </Link>
+
+      {/* ── Tus agentes IA — resumen ── */}
+      <section className="surface-frame p-5 md:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Bot size={16} className="text-[#C9922A]" />
+              <p className="label-section">Tus agentes IA</p>
+            </div>
+            <h2 className="section-heading mt-1">Inteligencia trabajando</h2>
+            <p className="section-subtext">
+              Activa los agentes IA para automatizar retención, reseñas, huecos y más.
+            </p>
+          </div>
+          <Link href="/dashboard/agents" className="btn-dark shrink-0">
+            Ver agentes IA <ArrowRight size={14} />
+          </Link>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: "Recepcionista IA", status: "Beta", color: "text-amber-700", bg: "bg-amber-50", border: "border-amber-100" },
+            { label: "Reseñas IA", status: "Activo", color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-100" },
+            { label: "Retención IA", status: "Activo", color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-100" },
+            { label: "Lounge Agent", status: "Próximamente", color: "text-slate-500", bg: "bg-slate-50", border: "border-slate-200" },
+          ].map(({ label, status, color, bg, border }) => (
+            <div key={label} className={`flex items-center justify-between gap-2 rounded-2xl border px-4 py-3 ${bg} ${border}`}>
+              <div className="flex items-center gap-2">
+                <Sparkles size={13} className={color} />
+                <p className="text-sm font-black text-[#080A0F]">{label}</p>
+              </div>
+              <span className={`text-[11px] font-black ${color}`}>{status}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Lounge card ── */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Link
+          href="/dashboard/lounge"
+          className="group flex cursor-pointer items-start gap-4 rounded-[24px] border border-[#D5A84C]/20 bg-[FDF8EE] p-5 shadow-sm transition-all hover:border-[#D5A84C]/40 hover:shadow-md bg-white"
+        >
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D5A84C]/25 bg-[#FDF8EE]">
+            <Tv size={20} className="text-[#C9922A]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <p className="font-black text-[#080A0F]">BarberíaOS Lounge</p>
+              <span className="rounded-full border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+                Nuevo
+              </span>
+            </div>
+            <p className="mt-1 text-sm leading-5 text-[#080A0F]/60">
+              Convierte tu sala de espera en un canal de reservas, ventas y reseñas.
+            </p>
+            <p className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-[#C9922A] transition-colors group-hover:text-[#8A641F]">
+              Activar Lounge <ArrowRight size={12} />
+            </p>
+          </div>
+        </Link>
+
+        {/* ── RecommendedActionCard ── */}
+        <RecommendedActionCard
+          title={
+            dormantClientsCount > 0
+              ? `${dormantClientsCount} clientes pueden volver con un mensaje`
+              : totalFreeSlotsToday > 0
+              ? `${totalFreeSlotsToday} huecos libres hoy — activa una campaña`
+              : "Activa el Agente Reseñas para mejorar tu reputación"
+          }
+          description={
+            dormantClientsCount > 0
+              ? "Activa el Agente Retención IA para preparar mensajes de WhatsApp personalizados. El 30% vuelve."
+              : totalFreeSlotsToday > 0
+              ? "El Agente Huecos genera el copy de Instagram Stories y WhatsApp en 10 segundos."
+              : "Las reseñas de Google determinan si te encuentran. Un mensaje bien redactado tarda 10 segundos."
+          }
+          cta="Ver agentes IA"
+          ctaHref="/dashboard/agents"
+          icon={
+            dormantClientsCount > 0
+              ? RotateCcw
+              : totalFreeSlotsToday > 0
+              ? Clock
+              : Star
+          }
+          variant="gold"
+        />
+      </div>
 
       <section className="surface-frame p-5 md:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

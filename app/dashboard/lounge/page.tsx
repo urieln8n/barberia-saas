@@ -1,0 +1,351 @@
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/src/lib/supabase/server";
+import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { getConfiguredSiteUrl } from "@/src/lib/site-url";
+import {
+  ArrowRight,
+  ExternalLink,
+  MessageCircle,
+  Package,
+  QrCode,
+  Sparkles,
+  Star,
+  Tag,
+  Tv,
+  Zap,
+} from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
+
+export const dynamic = "force-dynamic";
+
+// ── Mock data for Lounge (real data will come from lounge_settings table in Phase 2) ──
+const MOCK_METRICS = [
+  { label: "Escaneos QR este mes", value: "—", hint: "Activa el Lounge para empezar" },
+  { label: "Clicks en Reservar", value: "—", hint: "Conecta el QR del Lounge" },
+  { label: "Clicks en Productos", value: "—", hint: "Añade productos destacados" },
+  { label: "Clicks en WhatsApp", value: "—", hint: "Activa el botón de contacto" },
+  { label: "Clicks en Reseñas", value: "—", hint: "Activa el link de Google" },
+];
+
+export default async function LoungePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) redirect("/login");
+
+  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+  if (!barbershopId) redirect("/onboarding");
+
+  const { data: barbershop } = await supabase
+    .from("barbershops")
+    .select("id, name, slug")
+    .eq("id", barbershopId)
+    .maybeSingle();
+
+  const siteUrl = getConfiguredSiteUrl();
+  const slug = barbershop?.slug ?? null;
+  const loungePublicUrl = slug ? `${siteUrl}/lounge/${slug}` : null;
+  const hasLounge = Boolean(slug);
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Módulo Lounge"
+        title="BarberíaOS Lounge"
+        description="Convierte tu sala de espera en una máquina de reservas, ventas y reseñas."
+        action={
+          <div className="flex flex-wrap gap-2">
+            {hasLounge && loungePublicUrl ? (
+              <a
+                href={loungePublicUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-dark"
+              >
+                <ExternalLink size={15} /> Ver página pública
+              </a>
+            ) : null}
+            <Link href="/dashboard/lounge/qr" className="btn-outline">
+              <QrCode size={15} /> QR del Lounge
+            </Link>
+          </div>
+        }
+      />
+
+      {/* ── Estado + Badge ── */}
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#C9922A]/10 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#8A641F]">
+          <Sparkles size={11} className="text-[#C9922A]" />
+          Nuevo · BarberíaOS Lounge
+        </span>
+        {hasLounge ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            Activo
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-100 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+            Pendiente de slug
+          </span>
+        )}
+      </div>
+
+      {/* ── Link público copiable ── */}
+      {hasLounge && loungePublicUrl ? (
+        <div className="surface-frame p-5 md:p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
+              <QrCode size={18} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-black text-[#080A0F]">Tu Lounge público</p>
+              <p className="mt-1 text-sm text-[#080A0F]/60">
+                Comparte este link o imprime el QR del Lounge para tu sala de espera.
+              </p>
+              <div className="mt-3 flex min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <span className="min-w-0 flex-1 break-all font-mono text-xs font-semibold text-slate-700">
+                  {loungePublicUrl}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/dashboard/lounge/qr" className="btn-gold">
+              <QrCode size={15} /> Ver QR del Lounge
+            </Link>
+            <a
+              href={loungePublicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline"
+            >
+              <ExternalLink size={15} /> Ver página pública
+            </a>
+            <Link href="/dashboard/qr" className="btn-outline">
+              <QrCode size={15} /> QR de reservas
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="surface-frame p-5 md:p-6">
+          <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-dashed border-slate-300 bg-slate-50">
+              <Sparkles size={22} className="text-slate-400" />
+            </div>
+            <p className="font-black text-slate-700">Activa BarberíaOS Lounge</p>
+            <p className="max-w-sm text-sm leading-6 text-slate-500">
+              Configura el slug de tu barbería para activar tu página de Lounge pública y
+              convertir la sala de espera en un canal de reservas, ventas y reseñas.
+            </p>
+            <Link href="/dashboard/ajustes" className="btn-dark mt-2">
+              Configurar barbería <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Métricas Lounge ── */}
+      <section>
+        <div className="mb-4">
+          <p className="label-section">Rendimiento del Lounge</p>
+          <h2 className="section-heading mt-0.5">Métricas de conversión</h2>
+          <p className="section-subtext">
+            Cuando el Lounge esté activo, verás aquí los escaneos, clicks y conversiones en tiempo real.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {MOCK_METRICS.map((metric) => (
+            <div
+              key={metric.label}
+              className="flex flex-col gap-1 rounded-[20px] border border-slate-100 bg-white p-4 shadow-sm"
+            >
+              <p className="text-2xl font-black text-slate-900">{metric.value}</p>
+              <p className="text-xs font-bold text-slate-700">{metric.label}</p>
+              <p className="text-[11px] text-slate-400">{metric.hint}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Productos destacados ── */}
+      <section className="surface-frame p-5 md:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Package size={16} className="text-[#C9922A]" />
+              <p className="label-section">Productos destacados</p>
+            </div>
+            <h2 className="section-heading mt-1">Lo que ven tus clientes en espera</h2>
+            <p className="section-subtext">
+              Añade productos y servicios que tus clientes podrán descubrir mientras esperan.
+            </p>
+          </div>
+          <Link href="/dashboard/inventario" className="btn-outline shrink-0">
+            Ver inventario <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
+            <Package size={20} className="text-slate-400" />
+          </div>
+          <p className="font-black text-slate-700">Sin productos configurados</p>
+          <p className="max-w-sm text-sm leading-6 text-slate-500">
+            Añade productos en tu inventario para que aparezcan en el Lounge. Tus clientes
+            podrán mostrar interés mientras esperan su turno.
+          </p>
+          <Link href="/dashboard/inventario" className="btn-primary mt-1">
+            Añadir productos
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Promociones activas ── */}
+      <section className="surface-frame p-5 md:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Tag size={16} className="text-[#C9922A]" />
+              <p className="label-section">Promociones activas</p>
+            </div>
+            <h2 className="section-heading mt-1">Ofertas en la sala de espera</h2>
+            <p className="section-subtext">
+              Crea promociones que aparezcan en el Lounge para aumentar el ticket medio.
+            </p>
+          </div>
+          <Link href="/dashboard/marketing" className="btn-outline shrink-0">
+            Marketing <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
+            <Tag size={20} className="text-slate-400" />
+          </div>
+          <p className="font-black text-slate-700">Sin promociones activas</p>
+          <p className="max-w-sm text-sm leading-6 text-slate-500">
+            Activa una promoción desde Marketing Studio para que aparezca en el Lounge y
+            capture la atención de tus clientes mientras esperan.
+          </p>
+          <Link href="/dashboard/marketing" className="btn-primary mt-1">
+            Crear promoción
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Servicios upgrade ── */}
+      <section className="surface-frame p-5 md:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Zap size={16} className="text-[#C9922A]" />
+              <p className="label-section">Servicios upgrade</p>
+            </div>
+            <h2 className="section-heading mt-1">Upsell en sala de espera</h2>
+            <p className="section-subtext">
+              Los clientes pueden descubrir servicios adicionales mientras esperan: barba, cejas, lavado premium.
+            </p>
+          </div>
+          <Link href="/dashboard/servicios" className="btn-outline shrink-0">
+            Ver servicios <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {["Arreglo de barba", "Diseño de cejas", "Lavado premium", "Tratamiento facial", "Mascarilla hidratante"].map(
+            (service) => (
+              <div
+                key={service}
+                className="flex items-center gap-3 rounded-2xl border border-[#D5A84C]/15 bg-[#FDF8EE] px-4 py-3"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#D5A84C]/15">
+                  <Sparkles size={14} className="text-[#8A641F]" />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-[#080A0F]">{service}</p>
+                  <p className="text-xs text-[#080A0F]/50">Actívalo en Servicios</p>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </section>
+
+      {/* ── Canales de conversión ── */}
+      <section className="grid gap-4 md:grid-cols-2">
+        <div className="surface-frame p-5 md:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Star size={16} className="text-[#C9922A]" />
+            <p className="label-section">Reseñas en Google</p>
+          </div>
+          <h3 className="section-heading">Pide reseñas desde el Lounge</h3>
+          <p className="section-subtext mt-1">
+            El botón "Dejar reseña en Google" aparecerá en tu Lounge público para que los
+            clientes lo hagan mientras esperan.
+          </p>
+          <Link href="/dashboard/resenas" className="mt-4 btn-outline w-full">
+            Configurar reseñas <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="surface-frame p-5 md:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <MessageCircle size={16} className="text-[#C9922A]" />
+            <p className="label-section">WhatsApp directo</p>
+          </div>
+          <h3 className="section-heading">Botón de contacto rápido</h3>
+          <p className="section-subtext mt-1">
+            El botón "Hablar con la barbería" en el Lounge abre WhatsApp directamente. Sin
+            esperar, sin formularios.
+          </p>
+          <Link href="/dashboard/ajustes" className="mt-4 btn-outline w-full">
+            Configurar WhatsApp <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Próximamente ── */}
+      <section className="grid gap-4 md:grid-cols-2">
+        <div className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-70">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
+            <Tv size={20} className="text-slate-500" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-black text-slate-700">Lounge TV</h3>
+              <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+                Próximamente
+              </span>
+            </div>
+            <p className="mt-1 text-sm leading-5 text-slate-500">
+              Pantalla para sala de espera con agenda del día, promociones y contenido de
+              marca. Tu barbería, siempre activa.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-70">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
+            <Tag size={20} className="text-slate-500" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-black text-slate-700">Lounge Ads</h3>
+              <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+                Próximamente
+              </span>
+            </div>
+            <p className="mt-1 text-sm leading-5 text-slate-500">
+              Publicidad de productos locales en tu sala de espera. Genera ingresos
+              adicionales mientras tus clientes esperan su turno.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
