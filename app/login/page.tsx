@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Chrome } from "lucide-react";
-import { BarberiasOSIsotipo } from "@/components/ui/BarberiasOSLogo";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 import { supabase } from "@/src/lib/supabase/client";
 
 export default function LoginPage() {
@@ -107,7 +107,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
 
         <div className="mb-8 flex items-center justify-center gap-3">
-          <BarberiasOSIsotipo size={44} />
+          <BarberiaOSLogo variant="isotipo" size={44} />
           <span className="text-xl font-black text-[#050A14]">BarberíaOS</span>
         </div>
 

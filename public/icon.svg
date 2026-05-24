@@ -1,18 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Background: warm dark centre, near-black edge -->
+    <radialGradient id="bg" cx="40%" cy="35%" r="65%" gradientUnits="userSpaceOnUse" fx="205" fy="179" cx2="256" cy2="256" r2="256">
+      <stop offset="0%"   stop-color="#1E1B14"/>
+      <stop offset="55%"  stop-color="#0F0E0B"/>
+      <stop offset="100%" stop-color="#050503"/>
+    </radialGradient>
+    <!-- Ring: bright gold top-right, dim bottom-left -->
+    <linearGradient id="ring" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%"   stop-color="#F9E98A" stop-opacity="0.85"/>
+      <stop offset="40%"  stop-color="#D4AF37" stop-opacity="0.60"/>
+      <stop offset="100%" stop-color="#6B4D0A" stop-opacity="0.18"/>
+    </linearGradient>
+    <!-- Diagonal stroke gradient -->
+    <linearGradient id="slash" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#6B4D0A" stop-opacity="0.45"/>
+      <stop offset="30%"  stop-color="#C49B1F" stop-opacity="0.9"/>
+      <stop offset="62%"  stop-color="#D4AF37"/>
+      <stop offset="82%"  stop-color="#EDD060"/>
+      <stop offset="100%" stop-color="#FDF2B0" stop-opacity="0.75"/>
+    </linearGradient>
+    <clipPath id="cc">
+      <circle cx="256" cy="256" r="238"/>
+    </clipPath>
+  </defs>
+
   <!-- Background circle -->
-  <circle cx="256" cy="256" r="256" fill="#0A0A0A"/>
-  <!-- Thin gold ring -->
-  <circle cx="256" cy="256" r="235" fill="none" stroke="#D4AF37" stroke-width="8" opacity="0.45"/>
-  <!-- Bold B letterform -->
-  <text
-    x="256"
-    y="338"
-    text-anchor="middle"
-    fill="white"
-    font-size="286"
-    font-weight="900"
-    font-family="Arial Black, Arial, sans-serif"
-  >B</text>
-  <!-- Diagonal gold accent stroke — inside circle boundary -->
-  <line x1="102" y1="410" x2="410" y2="102" stroke="#D4AF37" stroke-width="10" stroke-linecap="round" opacity="0.75"/>
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+
+  <!-- Outer gold ring -->
+  <circle cx="256" cy="256" r="241" fill="none" stroke="url(#ring)" stroke-width="4"/>
+
+  <!-- Inner whisper ring -->
+  <circle cx="256" cy="256" r="226" fill="none" stroke="#D4AF37" stroke-width="1.3" opacity="0.22"/>
+
+  <!-- ── Geometric B mark (stem + upper lobe + lower lobe) ── -->
+  <!-- Stem -->
+  <rect x="97" y="77" width="61" height="358" rx="13" fill="white"/>
+  <!-- Upper D-lobe -->
+  <path d="M 148,77 C 266,77 323,108 323,164 C 323,220 266,235 148,235 Z" fill="white"/>
+  <!-- Lower D-lobe (slightly wider + taller) -->
+  <path d="M 148,266 C 281,266 338,297 338,353 C 338,409 281,435 148,435 Z" fill="white"/>
+
+  <!-- Diagonal razor-accent stroke -->
+  <!-- cos45° × 238 ≈ 168 → endpoints (256-169, 256+169)=(87,425) and (425,87) -->
+  <line x1="87" y1="425" x2="425" y2="87"
+        stroke="url(#slash)" stroke-width="10" stroke-linecap="round"
+        clip-path="url(#cc)" opacity="0.92"/>
 </svg>

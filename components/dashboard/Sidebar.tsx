@@ -38,7 +38,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { BarberiasOSIsotipo } from "@/components/ui/BarberiasOSLogo";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -406,7 +406,7 @@ export default function Sidebar() {
     <>
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/[0.09] px-4 shadow-[0_2px_28px_rgba(5,10,20,0.38)] backdrop-blur-xl md:hidden" style={{ background: "linear-gradient(135deg, rgba(15,32,64,0.97) 0%, rgba(8,17,30,0.97) 100%)" }}>
         <Link href="/dashboard" className="flex items-center gap-3">
-          <BarberiasOSIsotipo size={40} />
+          <BarberiaOSLogo size={40} />
           <span className="font-black tracking-tight text-white">BarberíaOS</span>
         </Link>
         <button
@@ -589,7 +589,7 @@ export default function Sidebar() {
         {collapsed ? (
           <div className="mb-3 flex justify-center">
             <Link href="/dashboard" title="BarberíaOS — Inicio">
-              <BarberiasOSIsotipo size={40} />
+              <BarberiaOSLogo size={40} />
             </Link>
           </div>
         ) : (
@@ -598,7 +598,7 @@ export default function Sidebar() {
             style={{ background: "linear-gradient(135deg, rgba(212,175,102,0.08) 0%, rgba(255,255,255,0.03) 100%)" }}
           >
             <Link href="/dashboard" className="flex items-center gap-3">
-              <BarberiasOSIsotipo size={40} className="shrink-0" />
+              <BarberiaOSLogo size={40} className="shrink-0" />
               <div className="min-w-0">
                 <span className="block text-[15px] font-black leading-none tracking-tight text-white">BarberíaOS</span>
                 <span className="mt-1 flex items-center gap-1.5">
