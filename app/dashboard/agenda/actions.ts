@@ -5,6 +5,7 @@ import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
+import { checkSlotAvailability } from "@/src/lib/appointments/check-availability";
 
 type BarberRow = {
   id: string;
@@ -70,11 +71,13 @@ async function findAvailableBarber({
   barbershopId,
   appointmentDate,
   startTime,
+  endTime,
 }: {
   supabase: ReturnType<typeof createServiceRoleClient>;
   barbershopId: string;
   appointmentDate: string;
   startTime: string;
+  endTime: string;
 }) {
   const { data: barbersData, error } = await supabase
     .from("barbers")
@@ -93,24 +96,16 @@ async function findAvailableBarber({
   const barbers = (barbersData ?? []) as BarberRow[];
 
   for (const barber of barbers) {
-    const { data: conflict, error: conflictError } = await supabase
-      .from("appointments")
-      .select("id")
-      .eq("barbershop_id", barbershopId)
-      .eq("barber_id", barber.id)
-      .eq("appointment_date", appointmentDate)
-      .eq("start_time", startTime)
-      .in("status", ["scheduled", "confirmed"] as const)
-      .maybeSingle();
+    const check = await checkSlotAvailability({
+      supabase,
+      barbershopId,
+      barberId: barber.id,
+      appointmentDate,
+      startTime,
+      endTime,
+    });
 
-    if (conflictError) {
-      return {
-        error: conflictError.message,
-        barberId: null as string | null,
-      };
-    }
-
-    if (!conflict) {
+    if (check.available) {
       return {
         error: null,
         barberId: barber.id,
@@ -175,6 +170,7 @@ export async function createAppointment(formData: FormData) {
     return { error: "Cliente no válido para esta barbería." };
   }
 
+  const endTime = addMinutesToTime(startTime, service.duration_minutes ?? 30);
   let barberId: string | null = barberIdRaw || null;
 
   if (barberId) {
@@ -192,22 +188,18 @@ export async function createAppointment(formData: FormData) {
       return { error: "Barbero no disponible." };
     }
 
-    const { data: conflict, error: conflictError } = await supabase
-      .from("appointments")
-      .select("id")
-      .eq("barbershop_id", barbershopId)
-      .eq("barber_id", barberId)
-      .eq("appointment_date", appointmentDate)
-      .eq("start_time", startTime)
-      .in("status", ["scheduled", "confirmed"] as const)
-      .maybeSingle();
+    // Interval-based overlap check (includes pending, scheduled, confirmed)
+    const check = await checkSlotAvailability({
+      supabase,
+      barbershopId,
+      barberId,
+      appointmentDate,
+      startTime,
+      endTime,
+    });
 
-    if (conflictError) {
-      return { error: conflictError.message };
-    }
-
-    if (conflict) {
-      return { error: "Esta hora ya no está disponible. Elige otra." };
+    if (!check.available) {
+      return { error: check.reason };
     }
   } else {
     const available = await findAvailableBarber({
@@ -215,6 +207,7 @@ export async function createAppointment(formData: FormData) {
       barbershopId,
       appointmentDate,
       startTime,
+      endTime,
     });
 
     if (available.error || !available.barberId) {
@@ -225,8 +218,6 @@ export async function createAppointment(formData: FormData) {
 
     barberId = available.barberId;
   }
-
-  const endTime = addMinutesToTime(startTime, service.duration_minutes ?? 30);
 
   const { error: insertError } = await supabase.from("appointments").insert({
     barbershop_id: barbershopId,

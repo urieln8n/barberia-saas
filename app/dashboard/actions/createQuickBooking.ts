@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/src/lib/supabase/server"
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role"
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current"
+import { checkSlotAvailability } from "@/src/lib/appointments/check-availability"
 import { revalidatePath } from "next/cache"
 
 type QuickBookingInput = {
@@ -103,21 +104,21 @@ export async function createQuickBooking(
     return { success: false, error: "El barbero seleccionado no está disponible." }
   }
 
-  // 5. Check for double booking conflict
+  // 5. Check for double booking conflict — interval-based, not exact-match
   const startTimeFormatted = appointmentTime.length === 5 ? `${appointmentTime}:00` : appointmentTime
+  const endTimeForCheck = addMinutesToTime(appointmentTime, serviceData.duration_minutes ?? 30)
 
-  const { data: conflict } = await supabase
-    .from("appointments")
-    .select("id")
-    .eq("barbershop_id", barbershopId)
-    .eq("barber_id", barberId)
-    .eq("appointment_date", appointmentDate)
-    .eq("start_time", startTimeFormatted)
-    .in("status", ["scheduled", "confirmed"])
-    .maybeSingle()
+  const availabilityCheck = await checkSlotAvailability({
+    supabase,
+    barbershopId,
+    barberId,
+    appointmentDate,
+    startTime: startTimeFormatted,
+    endTime: endTimeForCheck,
+  })
 
-  if (conflict) {
-    return { success: false, error: "Ese barbero ya tiene una cita a esa hora. Elige otra hora o barbero." }
+  if (!availabilityCheck.available) {
+    return { success: false, error: availabilityCheck.reason }
   }
 
   // 6. Find or create client by phone + barbershop_id
