@@ -6,7 +6,6 @@
       Upper arc M 184,82  A 61,61  0 0 1 184,205  (r=12×5.12=61, y=40×5.12=205)
       Lower arc M 184,236 A 97,97  0 0 1 184,430  (r=19×5.12=97, y=46×5.12=236)
       Ratio 205/123 ≈ 1.667 ≈ φ
-      Razor     (92,420)→(420,92)  (18/82 × 5.12)
   -->
   <defs>
     <radialGradient id="bg" cx="42%" cy="38%" r="62%" fx="42%" fy="38%">
@@ -15,16 +14,9 @@
       <stop offset="100%" stop-color="#030302"/>
     </radialGradient>
     <linearGradient id="ring" x1="12%" y1="12%" x2="88%" y2="88%">
-      <stop offset="0%"   stop-color="#F8E882" stop-opacity="0.88"/>
-      <stop offset="30%"  stop-color="#D4AF37" stop-opacity="0.62"/>
-      <stop offset="100%" stop-color="#3E2203" stop-opacity="0.10"/>
-    </linearGradient>
-    <linearGradient id="slash" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#3E2203" stop-opacity="0.28"/>
-      <stop offset="20%"  stop-color="#A07A0A" stop-opacity="0.95"/>
-      <stop offset="50%"  stop-color="#D4AF37"/>
-      <stop offset="74%"  stop-color="#E8D060"/>
-      <stop offset="100%" stop-color="#FBF0B8" stop-opacity="0.62"/>
+      <stop offset="0%"   stop-color="#F8E882" stop-opacity="0.92"/>
+      <stop offset="30%"  stop-color="#D4AF37" stop-opacity="0.70"/>
+      <stop offset="100%" stop-color="#3E2203" stop-opacity="0.12"/>
     </linearGradient>
   </defs>
 
@@ -33,7 +25,7 @@
 
   <!-- Two-depth gold ring system -->
   <circle cx="256" cy="256" r="241" fill="none" stroke="url(#ring)" stroke-width="3.7"/>
-  <circle cx="256" cy="256" r="227" fill="none" stroke="#D4AF37"    stroke-width="1.1" opacity="0.24"/>
+  <circle cx="256" cy="256" r="227" fill="none" stroke="#D4AF37"    stroke-width="1.1" opacity="0.28"/>
 
   <!-- Monoline B — spine (x=36→184, y=16→82, y=84→430) -->
   <line
@@ -60,15 +52,5 @@
     stroke="white"
     stroke-width="28"
     stroke-linecap="round"
-  />
-
-  <!-- Razor accent: 45° gold line (18,82)→(82,18) scaled ×5.12 = (92,420)→(420,92) -->
-  <line
-    x1="92"  y1="420"
-    x2="420" y2="92"
-    stroke="url(#slash)"
-    stroke-width="10"
-    stroke-linecap="round"
-    opacity="0.92"
   />
 </svg>

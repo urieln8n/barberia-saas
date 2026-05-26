@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { BLOCKING_STATUSES } from "@/src/lib/appointments/check-availability";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import {
   buildRealAvailability,
@@ -17,7 +18,11 @@ import {
   createAutomationEvent,
 } from "@/src/lib/automation/events";
 
-const ACTIVE_STATUSES = ["scheduled", "confirmed"] as const;
+const ACTIVE_STATUSES = BLOCKING_STATUSES;
+const ACTIVE_STATUS_QUERY_VALUES = [...BLOCKING_STATUSES] as unknown as [
+  "scheduled",
+  "confirmed",
+];
 const BOOKING_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const BOOKING_RATE_LIMIT_MAX_BY_IP = 8;
 const BOOKING_RATE_LIMIT_MAX_BY_PHONE = 3;
@@ -242,7 +247,7 @@ async function findAvailableBarber({
     .select("start_time, end_time, barber_id")
     .eq("barbershop_id", barbershopId)
     .eq("appointment_date", date)
-    .in("status", ACTIVE_STATUSES)
+    .in("status", ACTIVE_STATUS_QUERY_VALUES)
     .in("barber_id", activeBarberIds);
 
   if (appointmentsError) {
@@ -381,7 +386,7 @@ export async function getUnavailableSlots(
     .select("start_time, end_time, barber_id")
     .eq("barbershop_id", barbershopId)
     .eq("appointment_date", date)
-    .in("status", ACTIVE_STATUSES)
+        .in("status", ACTIVE_STATUS_QUERY_VALUES)
     .in("barber_id", activeBarberIds);
 
   if (appointmentsError) {
@@ -574,7 +579,7 @@ export async function createPublicBooking(
       .select("start_time, end_time, barber_id")
       .eq("barbershop_id", barbershopId)
       .eq("appointment_date", date)
-      .in("status", ACTIVE_STATUSES)
+      .in("status", ACTIVE_STATUS_QUERY_VALUES)
       .in("barber_id", activeBarberIds),
     supabase
       .from("barber_schedules")

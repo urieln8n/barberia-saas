@@ -74,6 +74,41 @@ export const SEO_INTENT_PAGES = [
     status: "publicada",
   },
   {
+    path: "/qr-reservas-barberias",
+    intent: "QR de reservas para barberías",
+    status: "publicada",
+  },
+  {
+    path: "/huecos-libres-barberia",
+    intent: "Huecos libres y cancelaciones en barbería",
+    status: "publicada",
+  },
+  {
+    path: "/programa-fidelizacion-barberias",
+    intent: "Fidelización y retención de clientes en barberías",
+    status: "publicada",
+  },
+  {
+    path: "/marketing-para-barberias",
+    intent: "Marketing digital para barberías",
+    status: "publicada",
+  },
+  {
+    path: "/software-barberias-madrid",
+    intent: "Software para barberías en Madrid",
+    status: "publicada",
+  },
+  {
+    path: "/software-barberias-sevilla",
+    intent: "Software para barberías en Sevilla",
+    status: "publicada",
+  },
+  {
+    path: "/software-barberias-valencia",
+    intent: "Software para barberías en Valencia",
+    status: "publicada",
+  },
+  {
     path: "/software-inventario-barberia",
     intent: "Productos, stock y venta en mostrador",
     status: "recomendada",
@@ -81,12 +116,12 @@ export const SEO_INTENT_PAGES = [
   {
     path: "/crm-clientes-barberia",
     intent: "Clientes, historial y recuperación",
-    status: "recomendada",
+    status: "publicada",
   },
   {
     path: "/whatsapp-barberias",
     intent: "Reservas y mensajes por WhatsApp",
-    status: "recomendada",
+    status: "publicada",
   },
   {
     path: "/marketing-barberias",

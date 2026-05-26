@@ -90,7 +90,6 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-text-size-adjust: 100%;
     @apply font-sans;
@@ -233,13 +232,13 @@
     @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
   }
   .panel {
-    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:p-6;
+    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-card md:p-6;
   }
   .panel-compact {
     @apply rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm;
   }
   .metric-card {
-    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md;
+    @apply rounded-[2rem] border border-slate-200 bg-white p-5 text-slate-900 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-card-md;
   }
   .metric-icon {
     @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-[0_1px_2px_rgba(5,10,20,0.07)];
@@ -445,7 +444,15 @@
     @apply rounded-[24px] border border-slate-200 bg-white p-4 text-slate-900 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md;
   }
   .surface-frame {
-    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm;
+    @apply rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-card;
+    position: relative;
+  }
+  .surface-frame::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 146, 42, 0.22), transparent);
   }
   .section-band {
     @apply rounded-[2rem] border border-slate-200 bg-slate-50 text-slate-900 shadow-sm;
@@ -680,6 +687,25 @@
   }
   .data-table tbody tr {
     @apply transition-colors hover:bg-slate-50;
+  }
+
+  /* ─── Plan / status badges (dashboard pages) ─────── */
+  .badge-pro {
+    @apply inline-flex items-center rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-700;
+  }
+  .badge-nuevo {
+    @apply inline-flex items-center rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700;
+  }
+  .badge-beta {
+    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-600;
+  }
+
+  /* ─── KPI display ─────────────────────────────────── */
+  .kpi-value {
+    @apply text-3xl font-black tracking-tight text-[#080A0F];
+  }
+  .kpi-label {
+    @apply text-sm font-medium text-slate-500;
   }
 }
 

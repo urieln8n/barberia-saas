@@ -27,7 +27,8 @@ import type {
 } from "@/src/lib/agenda/types";
 import { buildBarberWorkloads } from "@/src/lib/agenda/barber-workload";
 import { detectOpportunities } from "@/src/lib/agenda/opportunities";
-import { getTodayISO } from "@/src/lib/agenda/agenda-utils";
+import { formatTime, getTodayISO, isActiveAppointment, timeToMinutes } from "@/src/lib/agenda/agenda-utils";
+import { getAgendaNotifications } from "@/src/lib/notifications/get-agenda-notifications";
 import { createAppointment, updateAppointmentStatus } from "./actions";
 import { AgendaStatCard } from "@/components/agenda/AgendaStatCard";
 import { AgendaFilters, type AgendaFilter } from "@/components/agenda/AgendaFilters";
@@ -41,6 +42,9 @@ import { MonthlyCalendarGrid } from "@/components/agenda/MonthlyCalendarGrid";
 import { BarberWorkloadView } from "@/components/agenda/BarberWorkloadView";
 import { AgendaOpportunitiesView } from "@/components/agenda/AgendaOpportunitiesView";
 import { AgendaMotionShell } from "@/components/agenda/AgendaMotionShell";
+import { AgendaNotificationsBell } from "@/components/agenda/AgendaNotificationsBell";
+import { AgendaNowCard } from "@/components/agenda/AgendaNowCard";
+import { QuickBookingPanel } from "@/components/dashboard/QuickBookingPanel";
 
 type Props = {
   days: AgendaDay[];
@@ -55,7 +59,16 @@ type Props = {
   dateISO: string;
   barbershopId: string;
   monthData: MonthData | null;
+  initialSelectedBarber?: string;
+  initialSelectedService?: string;
   errors: string[];
+};
+
+type QuickBookingDefaults = {
+  date: string;
+  time: string;
+  barberId: string;
+  serviceId: string;
 };
 
 function money(value: number) {
@@ -87,6 +100,8 @@ export function AgendaClient({
   dateISO: initialDate,
   barbershopId,
   monthData,
+  initialSelectedBarber = "",
+  initialSelectedService = "",
   errors,
 }: Props) {
   const router = useRouter();
@@ -100,15 +115,19 @@ export function AgendaClient({
   const [selectedAppointment, setSelectedAppointment] =
     useState<AgendaAppointment | null>(null);
   const [activeFilter, setActiveFilter] = useState<AgendaFilter>("all");
-  const [selectedBarber, setSelectedBarber] = useState("");
-  const [selectedService, setSelectedService] = useState("");
+  const [selectedBarber, setSelectedBarber] = useState(initialSelectedBarber);
+  const [selectedService, setSelectedService] = useState(initialSelectedService);
+  const [quickBookingDefaults, setQuickBookingDefaults] =
+    useState<QuickBookingDefaults | null>(null);
 
   const slots = generateTimeSlots(9, 20, 30);
 
-  function pushURL(newView: AgendaView, newDate: string) {
+  function pushURL(newView: AgendaView, newDate: string, barberId = selectedBarber, serviceId = selectedService) {
     const params = new URLSearchParams();
     params.set("view", newView);
     params.set("date", newDate);
+    if (barberId) params.set("barber", barberId);
+    if (serviceId) params.set("service", serviceId);
     router.push(`/dashboard/agenda?${params.toString()}`);
   }
 
@@ -131,8 +150,21 @@ export function AgendaClient({
   function handleViewBarberAgenda(barberId: string) {
     setSelectedBarber(barberId);
     setView("week");
-    pushURL("week", dateISO);
+    pushURL("week", dateISO, barberId, selectedService);
   }
+
+  function handleBarberChange(barberId: string) {
+    setSelectedBarber(barberId);
+    pushURL(view, dateISO, barberId, selectedService);
+  }
+
+  function handleServiceChange(serviceId: string) {
+    setSelectedService(serviceId);
+    pushURL(view, dateISO, selectedBarber, serviceId);
+  }
+
+  const selectedBarberRow = barbers.find((barber) => barber.id === selectedBarber) ?? null;
+  const selectedServiceRow = services.find((service) => service.id === selectedService) ?? null;
 
   const visibleAppointments = useMemo(() => {
     if (activeFilter === "free") return [];
@@ -150,13 +182,58 @@ export function AgendaClient({
     return freeSlots.filter((s) => {
       const byFilter = activeFilter === "free" || activeFilter === "all";
       const byBarber = selectedBarber ? s.barber?.id === selectedBarber : true;
-      return byFilter && byBarber;
+      const byService = selectedServiceRow
+        ? timeToMinutes(formatTime(s.end_time)) - timeToMinutes(formatTime(s.start_time)) >= selectedServiceRow.duration_minutes
+        : true;
+      return byFilter && byBarber && byService;
     });
-  }, [activeFilter, freeSlots, selectedBarber]);
+  }, [activeFilter, freeSlots, selectedBarber, selectedServiceRow]);
+
+  const filteredAppointmentsForMetrics = useMemo(() => {
+    return appointments.filter((a) => {
+      const byBarber = selectedBarber ? a.barber?.id === selectedBarber : true;
+      const byService = selectedService ? a.service?.id === selectedService : true;
+      return byBarber && byService;
+    });
+  }, [appointments, selectedBarber, selectedService]);
+
+  const filteredFreeSlotsForMetrics = useMemo(() => {
+    return freeSlots.filter((s) => {
+      const byBarber = selectedBarber ? s.barber?.id === selectedBarber : true;
+      const byService = selectedServiceRow
+        ? timeToMinutes(formatTime(s.end_time)) - timeToMinutes(formatTime(s.start_time)) >= selectedServiceRow.duration_minutes
+        : true;
+      return byBarber && byService;
+    });
+  }, [freeSlots, selectedBarber, selectedServiceRow]);
+
+  const visibleMetrics = useMemo<AgendaMetrics>(() => {
+    const today = getTodayISO();
+    const activeAppointments = filteredAppointmentsForMetrics.filter(isActiveAppointment);
+    return {
+      todayAppointments: filteredAppointmentsForMetrics.filter((appointment) => appointment.appointment_date === today).length,
+      weekAppointments: activeAppointments.length,
+      estimatedRevenue: activeAppointments.reduce((sum, appointment) => sum + Number(appointment.service?.price ?? 0), 0),
+      freeSlots: filteredFreeSlotsForMetrics.length,
+      pendingAppointments: filteredAppointmentsForMetrics.filter((appointment) =>
+        ["pending", "scheduled"].includes(appointment.status),
+      ).length,
+      newClients: filteredAppointmentsForMetrics.filter((appointment) => (appointment.client?.visit_count ?? 0) <= 1).length,
+      completedAppointments: filteredAppointmentsForMetrics.filter((appointment) => appointment.status === "completed").length,
+      cancelledAppointments: filteredAppointmentsForMetrics.filter((appointment) =>
+        ["cancelled", "no_show"].includes(appointment.status),
+      ).length,
+    };
+  }, [filteredAppointmentsForMetrics, filteredFreeSlotsForMetrics]);
 
   const barberWorkloads = useMemo(
     () => buildBarberWorkloads(barbers, appointments, freeSlots),
     [barbers, appointments, freeSlots],
+  );
+
+  const agendaNotifications = useMemo(
+    () => getAgendaNotifications({ appointments, freeSlots, selectedDate: dateISO }),
+    [appointments, freeSlots, dateISO],
   );
 
   const opportunities = useMemo(
@@ -175,6 +252,37 @@ export function AgendaClient({
     }
     setShowModal(false);
     router.refresh();
+  }
+
+  function getSuggestedServiceId(slot: FreeSlot) {
+    const duration = Math.max(
+      15,
+      Number(slot.end_time.slice(0, 2)) * 60 +
+        Number(slot.end_time.slice(3, 5)) -
+        (Number(slot.start_time.slice(0, 2)) * 60 + Number(slot.start_time.slice(3, 5))),
+    );
+
+    return services.find((service) => service.duration_minutes <= duration)?.id ?? "";
+  }
+
+  function handleFreeSlotBook(slot: FreeSlot) {
+    setFormError("");
+    setQuickBookingDefaults({
+      date: slot.date,
+      time: slot.start_time.slice(0, 5),
+      barberId: slot.barber?.id ?? "",
+      serviceId: getSuggestedServiceId(slot),
+    });
+  }
+
+  function handleEmptySlotClick(day: string, hour: string) {
+    setFormError("");
+    setQuickBookingDefaults({
+      date: day,
+      time: hour.slice(0, 5),
+      barberId: selectedBarber ?? "",
+      serviceId: selectedService ?? "",
+    });
   }
 
   async function handleStatus(id: string, status: string) {
@@ -206,17 +314,20 @@ export function AgendaClient({
                   Controla citas, huecos, barberos y oportunidades.
                 </h1>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setFormError("");
-                  setShowModal(true);
-                }}
-                className="flex shrink-0 items-center gap-1.5 rounded-2xl bg-[#080A0F] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#1a1d26] active:scale-95"
-              >
-                <Plus size={14} />
-                <span className="hidden sm:block">Nueva cita</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <AgendaNotificationsBell notifications={agendaNotifications} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormError("");
+                    setShowModal(true);
+                  }}
+                  className="flex shrink-0 items-center gap-1.5 rounded-2xl bg-[#080A0F] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#1a1d26] active:scale-95"
+                >
+                  <Plus size={14} />
+                  <span className="hidden sm:block">Nueva cita</span>
+                </button>
+              </div>
             </div>
 
             <AgendaViewSwitcher current={view} onChange={handleViewChange} />
@@ -241,35 +352,35 @@ export function AgendaClient({
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             <AgendaStatCard
               label="Citas hoy"
-              value={metrics.todayAppointments}
+              value={visibleMetrics.todayAppointments}
               description="Reservas activas para hoy."
               icon={CalendarDays}
               accent="blue"
             />
             <AgendaStatCard
               label="Ingresos estimados"
-              value={money(metrics.estimatedRevenue)}
+              value={money(visibleMetrics.estimatedRevenue)}
               description="Calculado con precios de servicios."
               icon={Euro}
               accent="gold"
             />
             <AgendaStatCard
               label="Huecos libres"
-              value={metrics.freeSlots}
+              value={visibleMetrics.freeSlots}
               description="Huecos detectados esta semana."
               icon={Clock}
               accent="green"
             />
             <AgendaStatCard
               label="Pendientes"
-              value={metrics.pendingAppointments}
+              value={visibleMetrics.pendingAppointments}
               description="Citas por confirmar."
               icon={UserPlus}
               accent="red"
             />
             <AgendaStatCard
               label="Clientes nuevos"
-              value={metrics.newClients}
+              value={visibleMetrics.newClients}
               description="Detectado por historial de visitas."
               icon={Users}
               accent="slate"
@@ -280,20 +391,46 @@ export function AgendaClient({
         {/* View body with motion */}
         <AgendaMotionShell view={view}>
           {view === "day" && (
-            <DailyTimelineView
-              dateISO={dateISO}
-              appointments={appointments}
-              freeSlots={freeSlots}
-              onAppointmentClick={setSelectedAppointment}
-              onNewAppointment={() => {
-                setFormError("");
-                setShowModal(true);
-              }}
-            />
+            <div className="space-y-4">
+              <AgendaNowCard
+                appointments={visibleAppointments}
+                freeSlots={visibleFreeSlots}
+                dateISO={dateISO}
+              />
+              <AgendaFilters
+                activeFilter={activeFilter}
+                onFilterChange={setActiveFilter}
+                selectedBarber={selectedBarber}
+                selectedService={selectedService}
+                onBarberChange={handleBarberChange}
+                onServiceChange={handleServiceChange}
+                barbers={barbers}
+                services={services}
+              />
+              <DailyTimelineView
+                dateISO={dateISO}
+                appointments={visibleAppointments}
+                freeSlots={visibleFreeSlots}
+                barbers={barbers}
+                services={services}
+                selectedBarberName={selectedBarberRow?.name ?? null}
+                onAppointmentClick={setSelectedAppointment}
+                onFreeSlotBook={handleFreeSlotBook}
+                onNewAppointment={() => {
+                  setFormError("");
+                  setShowModal(true);
+                }}
+              />
+            </div>
           )}
 
           {view === "week" && (
             <div className="space-y-4">
+              <AgendaNowCard
+                appointments={visibleAppointments}
+                freeSlots={visibleFreeSlots}
+                dateISO={dateISO}
+              />
               {appointments.length === 0 && (
                 <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
@@ -336,19 +473,29 @@ export function AgendaClient({
                 onFilterChange={setActiveFilter}
                 selectedBarber={selectedBarber}
                 selectedService={selectedService}
-                onBarberChange={setSelectedBarber}
-                onServiceChange={setSelectedService}
+                onBarberChange={handleBarberChange}
+                onServiceChange={handleServiceChange}
                 barbers={barbers}
                 services={services}
               />
+
+              <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/8 px-4 py-3 text-sm font-bold text-slate-700">
+                {selectedBarberRow
+                  ? `Mostrando agenda de ${selectedBarberRow.name}.`
+                  : "Mostrando agenda de todos los barberos."}
+                {selectedServiceRow ? ` Filtrada por ${selectedServiceRow.name}.` : ""}
+              </div>
 
               <WeeklyCalendarGrid
                 days={days}
                 appointments={visibleAppointments}
                 freeSlots={visibleFreeSlots}
+                services={services}
                 selectedDay={dateISO}
                 onSelectedDayChange={handleDateChange}
                 onAppointmentClick={setSelectedAppointment}
+                onFreeSlotBook={handleFreeSlotBook}
+                onEmptySlotClick={handleEmptySlotClick}
               />
 
               <AgendaRecommendedAction recommendation={recommendation} />
@@ -385,6 +532,23 @@ export function AgendaClient({
         updating={updating}
         onClose={() => setSelectedAppointment(null)}
         onStatusChange={handleStatus}
+      />
+
+      <QuickBookingPanel
+        open={quickBookingDefaults !== null}
+        onOpenChange={(open) => {
+          if (!open) setQuickBookingDefaults(null);
+        }}
+        services={services}
+        barbers={barbers}
+        defaultDate={quickBookingDefaults?.date}
+        defaultTime={quickBookingDefaults?.time}
+        defaultBarberId={quickBookingDefaults?.barberId}
+        defaultServiceId={quickBookingDefaults?.serviceId}
+        onSuccess={() => {
+          setQuickBookingDefaults(null);
+          router.refresh();
+        }}
       />
 
       {/* New appointment modal */}

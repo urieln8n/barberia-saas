@@ -106,7 +106,7 @@ export function MonthlyCalendarGrid({ monthData, onDayClick }: Props) {
         {/* Day cells */}
         <div className="grid grid-cols-7">
           {monthDays.map((day, idx) => {
-            const isClickable = day.isCurrentMonth && day.appointmentCount > 0;
+            const isClickable = day.isCurrentMonth;
             const Tag = isClickable ? "button" : "div";
 
             return (
@@ -127,19 +127,26 @@ export function MonthlyCalendarGrid({ monthData, onDayClick }: Props) {
                     group relative flex min-h-[72px] w-full flex-col border-b border-r border-[#080A0F]/5 p-2 text-left
                     transition-all duration-150
                     ${isClickable ? "cursor-pointer hover:bg-[#F8F8F6] hover:shadow-sm" : "cursor-default"}
-                    ${day.isToday ? "ring-2 ring-inset ring-[#D5A84C]/50" : ""}
+                    ${day.isToday ? "bg-[#D5A84C]/4 ring-2 ring-inset ring-[#D5A84C]/60" : ""}
                   `}
                 >
                   {/* Day number */}
-                  <span
-                    className={`
-                      flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-black
-                      ${day.isToday ? "bg-[#D5A84C] text-[#080A0F]" : ""}
-                      ${!day.isCurrentMonth ? "text-[#080A0F]/20" : "text-[#080A0F]"}
-                    `}
-                  >
-                    {day.dayNumber}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`
+                        flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-black
+                        ${day.isToday ? "bg-[#D5A84C] text-[#080A0F] shadow-[0_2px_8px_rgba(213,168,76,0.40)]" : ""}
+                        ${!day.isCurrentMonth ? "text-[#080A0F]/20" : "text-[#080A0F]"}
+                      `}
+                    >
+                      {day.dayNumber}
+                    </span>
+                    {day.isToday && (
+                      <span className="rounded-full bg-[#D5A84C]/15 px-1.5 py-px text-[8px] font-black uppercase tracking-wide text-[#8A641F]">
+                        Hoy
+                      </span>
+                    )}
+                  </div>
 
                   {/* Activity indicators */}
                   {day.isCurrentMonth && day.appointmentCount > 0 && (
@@ -161,6 +168,12 @@ export function MonthlyCalendarGrid({ monthData, onDayClick }: Props) {
                     </div>
                   )}
 
+                  {day.isCurrentMonth && day.appointmentCount === 0 && (
+                    <div className="mt-1.5 rounded-lg bg-emerald-50 px-1.5 py-0.5 text-[9px] font-black text-emerald-700 ring-1 ring-emerald-100">
+                      Dia libre
+                    </div>
+                  )}
+
                   {/* Dot row for new clients */}
                   {day.isCurrentMonth && day.newClients > 0 && (
                     <div className="mt-1 flex items-center gap-0.5">
@@ -179,7 +192,7 @@ export function MonthlyCalendarGrid({ monthData, onDayClick }: Props) {
                   {/* Hover: "ver día" hint */}
                   {isClickable && (
                     <span className="absolute bottom-1 right-1.5 hidden text-[8px] font-black text-[#D5A84C] group-hover:block">
-                      ver →
+                      ver dia
                     </span>
                   )}
                 </Tag>

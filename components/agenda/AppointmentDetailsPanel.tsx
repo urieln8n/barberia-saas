@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarClock, CreditCard, MessageCircle, RotateCw, Star, X } from "lucide-react";
+import { CalendarClock, CheckCircle, CreditCard, MessageCircle, RotateCw, Star, UserX, X } from "lucide-react";
 import { formatTime, getAppointmentDuration, getPrimaryClientInsight } from "@/src/lib/agenda/agenda-utils";
 import { getStatusLabel } from "@/src/lib/agenda/appointment-colors";
 import type { AgendaAppointment } from "@/src/lib/agenda/types";
@@ -13,17 +13,14 @@ type Props = {
   onStatusChange: (id: string, status: string) => void;
 };
 
-const quickActions = [
-  { label: "Reagendar", icon: RotateCw, disabled: true },
-  { label: "Cobrar en caja", icon: CreditCard, href: "/dashboard/caja" },
-  { label: "WhatsApp", icon: MessageCircle, disabled: true },
-  { label: "Pedir resena", icon: Star, disabled: true },
-];
-
 export function AppointmentDetailsPanel({ appointment, updating, onClose, onStatusChange }: Props) {
   if (!appointment) return null;
 
   const duration = getAppointmentDuration(appointment);
+  const phone = appointment.client?.phone;
+  const waPhone = phone?.replace(/\D/g, "");
+  const waLink = waPhone ? `https://wa.me/${waPhone}` : null;
+  const isTerminated = ["completed", "cancelled", "no_show"].includes(appointment.status);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm">
@@ -49,13 +46,27 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
         </div>
 
         <div className="mt-5 grid gap-3">
+          {/* Phone — clickable tel: link */}
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <p className="text-xs font-black uppercase tracking-wide text-slate-500">Teléfono</p>
+            {phone ? (
+              <a href={`tel:${phone}`} className="mt-1 block text-sm font-bold text-blue-600 underline underline-offset-2">
+                {phone}
+              </a>
+            ) : (
+              <p className="mt-1 text-sm font-bold text-slate-950">No disponible</p>
+            )}
+          </div>
+
           {[
-            ["Telefono", appointment.client?.phone ?? "No disponible"],
             ["Servicio", appointment.service?.name ?? "Servicio no definido"],
             ["Barbero", appointment.barber?.name ?? "Sin barbero"],
-            ["Duracion", `${duration} min`],
+            ["Duración", `${duration} min`],
             ["Precio", appointment.service?.price ? `${appointment.service.price} EUR estimado` : "No disponible"],
             ["Estado", getStatusLabel(appointment.status)],
+            ...(appointment.client?.visit_count
+              ? [["Visitas", `${appointment.client.visit_count} visita${appointment.client.visit_count !== 1 ? "s" : ""}`]]
+              : []),
             ["Notas", appointment.notes || "Sin notas"],
           ].map(([label, value]) => (
             <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
@@ -75,46 +86,84 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
           </p>
         </section>
 
+        {/* Status action buttons */}
         <div className="mt-5 grid gap-2">
+          <button
+            type="button"
+            disabled={updating === appointment.id || appointment.status === "confirmed" || isTerminated}
+            onClick={() => onStatusChange(appointment.id, "confirmed")}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-black text-white transition hover:bg-emerald-700 disabled:opacity-40"
+          >
+            <CheckCircle size={15} /> Confirmar
+          </button>
           <button
             type="button"
             disabled={updating === appointment.id || appointment.status === "completed"}
             onClick={() => onStatusChange(appointment.id, "completed")}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-sm font-black text-white transition hover:bg-slate-800 disabled:opacity-50"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-sm font-black text-white transition hover:bg-slate-800 disabled:opacity-40"
           >
             <CalendarClock size={15} /> Marcar completada
           </button>
           <button
             type="button"
+            disabled={updating === appointment.id || appointment.status === "no_show" || appointment.status === "completed"}
+            onClick={() => onStatusChange(appointment.id, "no_show")}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-black text-orange-800 transition hover:bg-orange-100 disabled:opacity-40"
+          >
+            <UserX size={15} /> No se presentó
+          </button>
+          <button
+            type="button"
             disabled={updating === appointment.id || appointment.status === "cancelled"}
             onClick={() => onStatusChange(appointment.id, "cancelled")}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 text-sm font-black text-rose-800 transition hover:bg-rose-100 disabled:opacity-50"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 text-sm font-black text-rose-800 transition hover:bg-rose-100 disabled:opacity-40"
           >
             Cancelar
           </button>
         </div>
 
+        {/* Quick actions */}
         <div className="mt-5 grid grid-cols-2 gap-2">
-          {quickActions.map(({ label, icon: Icon, href, disabled }) =>
-            href && !disabled ? (
-              <Link
-                key={label}
-                href={href}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-50"
-              >
-                <Icon size={14} /> {label}
-              </Link>
-            ) : (
-              <button
-                key={label}
-                type="button"
-                disabled
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
-              >
-                <Icon size={14} /> {label}
-              </button>
-            ),
+          <Link
+            href="/dashboard/caja"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:bg-slate-50"
+          >
+            <CreditCard size={14} /> Cobrar en caja
+          </Link>
+
+          {waLink ? (
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-xs font-black text-emerald-800 transition hover:bg-emerald-100"
+            >
+              <MessageCircle size={14} /> WhatsApp
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
+            >
+              <MessageCircle size={14} /> WhatsApp
+            </button>
           )}
+
+          <button
+            type="button"
+            disabled
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
+          >
+            <RotateCw size={14} /> Reagendar
+          </button>
+          <button
+            type="button"
+            disabled
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
+          >
+            <Star size={14} /> Pedir reseña
+          </button>
         </div>
       </aside>
     </div>

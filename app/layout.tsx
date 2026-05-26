@@ -6,10 +6,11 @@ import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 // @ts-ignore
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const sora = Sora({ subsets: ["latin"], variable: "--font-display", weight: ["700", "800"] });
 
 export const viewport: Viewport = {
   themeColor: "#111111",
@@ -20,9 +21,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(BUSINESS_CONFIG.siteUrl),
-  title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
+  title: "BarberíaOS | Software para barberías con reservas, caja y QR sin comisión",
   description:
-    "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería sin depender de plataformas externas.",
+    "Controla reservas, caja, clientes, barberos y huecos libres desde un solo panel. Agenda online, QR propio y cero comisiones por reserva.",
   alternates: {
     canonical: BUSINESS_CONFIG.siteUrl,
   },
@@ -39,9 +40,9 @@ export const metadata: Metadata = {
     locale: "es_ES",
     url: BUSINESS_CONFIG.siteUrl,
     siteName: BUSINESS_CONFIG.commercialName,
-    title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
+    title: "BarberíaOS | Software para barberías con reservas, caja y QR sin comisión",
     description:
-      "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería.",
+      "Reservas, agenda, caja, clientes, barberos, huecos libres, QR y marketing en un solo panel para barberías.",
     images: [
       {
         url: "/opengraph-image",
@@ -54,9 +55,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BarberíaOS | Software para barberías con reservas, caja y clientes",
+    title: "BarberíaOS | Reservas, caja y QR para barberías",
     description:
-      "Gestiona reservas, caja, clientes, barberos, productos, QR y campañas de crecimiento para tu barbería.",
+      "Controla reservas, caja, clientes, barberos y huecos libres desde un solo panel.",
     images: ["/opengraph-image"],
   },
   appleWebApp: {
@@ -80,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={cn("font-sans", inter.variable)}>
+    <html lang="es" className={cn("font-sans", inter.variable, sora.variable)}>
       <body className="font-sans antialiased">
         {children}
         <FloatingWhatsAppButton />

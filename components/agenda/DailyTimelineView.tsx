@@ -1,9 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Plus, Clock, Zap } from "lucide-react";
+import { Plus, Clock, Zap, Users } from "lucide-react";
 import { formatTime, timeToMinutes } from "@/src/lib/agenda/agenda-utils";
-import type { AgendaAppointment, FreeSlot } from "@/src/lib/agenda/types";
+import {
+  isCurrentDay,
+  getCurrentTimePosition,
+  formatNowLabel,
+} from "@/src/lib/agenda/time-position";
+import type { AgendaAppointment, AgendaBarber, AgendaService, FreeSlot } from "@/src/lib/agenda/types";
+import { useRef } from "react";
 import { AppointmentCard } from "./AppointmentCard";
 import { FreeSlotCard } from "./FreeSlotCard";
 
@@ -34,7 +41,11 @@ type Props = {
   dateISO: string;
   appointments: AgendaAppointment[];
   freeSlots: FreeSlot[];
+  barbers?: AgendaBarber[];
+  services?: AgendaService[];
+  selectedBarberName?: string | null;
   onAppointmentClick: (a: AgendaAppointment) => void;
+  onFreeSlotBook?: (slot: FreeSlot) => void;
   onNewAppointment: () => void;
 };
 
@@ -42,10 +53,48 @@ export function DailyTimelineView({
   dateISO,
   appointments,
   freeSlots,
+  barbers = [],
+  services = [],
+  selectedBarberName,
   onAppointmentClick,
+  onFreeSlotBook,
   onNewAppointment,
 }: Props) {
   const prefersReducedMotion = useReducedMotion();
+
+  const nowLineRef = useRef<HTMLDivElement>(null);
+
+  const [nowState, setNowState] = useState<{ percent: number | null; label: string }>(() => ({
+    percent: isCurrentDay(dateISO) ? getCurrentTimePosition(TIMELINE_START, TIMELINE_END) : null,
+    label: formatNowLabel(),
+  }));
+
+  useEffect(() => {
+    if (!isCurrentDay(dateISO)) {
+      setNowState({ percent: null, label: formatNowLabel() });
+      return;
+    }
+    const update = () =>
+      setNowState({
+        percent: getCurrentTimePosition(TIMELINE_START, TIMELINE_END),
+        label: formatNowLabel(),
+      });
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, [dateISO]);
+
+  // Scroll "Ahora" line into view on load (only on today, respects reduced-motion)
+  useEffect(() => {
+    if (!nowLineRef.current || nowState.percent === null) return;
+    const t = setTimeout(() => {
+      nowLineRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
+    }, 350);
+    return () => clearTimeout(t);
+  }, [nowState.percent, prefersReducedMotion]);
 
   const dayAppointments = appointments
     .filter((a) => a.appointment_date === dateISO)
@@ -53,7 +102,7 @@ export function DailyTimelineView({
 
   const daySlots = freeSlots
     .filter((s) => s.date === dateISO)
-    .slice(0, 8);
+    .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
   const totalHeight = (TIMELINE_END - TIMELINE_START) * CELL_HEIGHT;
 
@@ -67,6 +116,9 @@ export function DailyTimelineView({
           <p className="text-[11px] font-black uppercase tracking-widest text-[#D5A84C]">
             Vista día
           </p>
+          <h2 className="mt-1 text-lg font-black text-[#080A0F]">
+            {selectedBarberName ? `Agenda de ${selectedBarberName}` : "Agenda de todo el equipo"}
+          </h2>
           <p className="text-xs text-[#080A0F]/50">
             {dayAppointments.length} cita{dayAppointments.length !== 1 ? "s" : ""} ·{" "}
             {daySlots.length} hueco{daySlots.length !== 1 ? "s" : ""} libre{daySlots.length !== 1 ? "s" : ""}
@@ -80,6 +132,23 @@ export function DailyTimelineView({
           <Plus size={13} />
           Nueva reserva
         </button>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Reservas</p>
+          <p className="mt-1 text-2xl font-black text-slate-950">{dayAppointments.length}</p>
+        </div>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Huecos libres</p>
+          <p className="mt-1 text-2xl font-black text-emerald-700">{daySlots.length}</p>
+        </div>
+        <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/8 p-4 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#B8892A]">Equipo visible</p>
+          <p className="mt-1 flex items-center gap-2 text-2xl font-black text-slate-950">
+            <Users size={18} /> {selectedBarberName ? 1 : barbers.length}
+          </p>
+        </div>
       </div>
 
       {/* Timeline grid */}
@@ -123,6 +192,21 @@ export function DailyTimelineView({
               />
             ))}
 
+            {/* Current time line — anchored so scroll-into-view works */}
+            {nowState.percent !== null && (
+              <div
+                ref={nowLineRef}
+                className="pointer-events-none absolute inset-x-0 z-20 flex items-center gap-0"
+                style={{ top: Math.round(nowState.percent * totalHeight) - 1 }}
+              >
+                <span className="ml-1 mr-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#D5A84C] shadow-[0_0_0_3px_rgba(213,168,76,0.22)]" />
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-[#D5A84C] to-[#D5A84C]/30 shadow-[0_1px_6px_rgba(213,168,76,0.35)]" />
+                <span className="mr-1 shrink-0 rounded-full bg-[#D5A84C] px-2 py-px text-[9px] font-black text-white shadow-sm">
+                  {nowState.label}
+                </span>
+              </div>
+            )}
+
             {/* Free slot hints */}
             {daySlots.map((slot) => {
               const top = minutesToTop(slot.start_time);
@@ -130,14 +214,23 @@ export function DailyTimelineView({
               return (
                 <div
                   key={slot.id}
-                  className="absolute left-0 right-3 rounded-xl border border-dashed border-[#D5A84C]/30 bg-[#D5A84C]/5 px-2"
+                  className="absolute left-0 right-3 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50/90 px-2 shadow-sm"
                   style={{ top: top + 2, height: height - 4 }}
                 >
-                  <div className="flex items-center gap-1 pt-1">
-                    <Zap size={10} className="text-[#D5A84C]" />
-                    <span className="text-[9px] font-black text-[#B8892A]">
+                  <div className="flex items-center justify-between gap-2 pt-1.5">
+                    <span className="flex min-w-0 items-center gap-1 text-[9px] font-black text-emerald-800">
+                      <Zap size={10} className="shrink-0 text-emerald-600" />
                       {formatTime(slot.start_time)} · {slot.barber?.name ?? "Libre"}
                     </span>
+                    {onFreeSlotBook ? (
+                      <button
+                        type="button"
+                        onClick={() => onFreeSlotBook(slot)}
+                        className="shrink-0 rounded-lg bg-slate-950 px-2 py-1 text-[9px] font-black text-white transition hover:bg-slate-800"
+                      >
+                        + Reservar
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               );
@@ -196,17 +289,37 @@ export function DailyTimelineView({
         )}
       </div>
 
-      {/* Mobile compact list fallback (shown when grid is too narrow) */}
-      {dayAppointments.length > 0 && (
+      {/* Mobile compact list fallback */}
+      {(dayAppointments.length > 0 || daySlots.length > 0) && (
         <div className="block md:hidden space-y-2 pt-1">
           <p className="text-[10px] font-black uppercase tracking-widest text-[#080A0F]/40">
             Lista del día
           </p>
+
+          {/* "Ahora" separator in mobile list */}
+          {nowState.percent !== null && (
+            <div className="flex items-center gap-2 py-1">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#D5A84C]" />
+              <span className="h-px flex-1 bg-[#D5A84C]/30" />
+              <span className="rounded-full bg-[#D5A84C] px-2 py-px text-[9px] font-black text-white">
+                {nowState.label}
+              </span>
+            </div>
+          )}
+
           {dayAppointments.map((appt) => (
             <AppointmentCard
               key={appt.id}
               appointment={appt}
               onClick={onAppointmentClick}
+            />
+          ))}
+          {daySlots.map((slot) => (
+            <FreeSlotCard
+              key={slot.id}
+              slot={slot}
+              services={services}
+              onBook={onFreeSlotBook}
             />
           ))}
         </div>

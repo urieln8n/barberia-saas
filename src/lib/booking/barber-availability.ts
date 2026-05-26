@@ -1,6 +1,15 @@
-import { generateTimeSlots, overlaps } from "@/src/lib/booking/time-slots";
+import { BLOCKING_STATUSES } from "@/src/lib/appointments/check-availability";
+import {
+  DEFAULT_BOOKING_SLOT_INTERVAL_MINUTES,
+  DEFAULT_OPERATIONAL_END_TIME,
+  DEFAULT_OPERATIONAL_START_TIME,
+  addMinutesToTime,
+  normalizeTime,
+  timesOverlap,
+} from "@/src/lib/availability/operational-hours";
+import { generateTimeSlots } from "@/src/lib/booking/time-slots";
 
-const ACTIVE_STATUSES = ["pending", "scheduled", "confirmed"];
+const ACTIVE_STATUSES = BLOCKING_STATUSES;
 
 export type BarberAvailabilityBarber = {
   id: string;
@@ -28,19 +37,6 @@ export type BarberAvailabilityItem = {
   status: "full" | "almost_full" | "available" | "needs_bookings";
   suggestedMessage: string;
 };
-
-function normalizeTime(time?: string | null) {
-  return time ? time.slice(0, 5) : "";
-}
-
-function addMinutesToTime(time: string, minutesToAdd: number) {
-  const [hoursRaw, minutesRaw] = time.split(":");
-  const date = new Date();
-  date.setHours(Number(hoursRaw), Number(minutesRaw), 0, 0);
-  date.setMinutes(date.getMinutes() + minutesToAdd);
-
-  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-}
 
 function isPastSlot(time: string, todayIso: string) {
   const now = new Date();
@@ -79,9 +75,9 @@ export function buildTodayBarberAvailability({
   barbers,
   appointments,
   todayIso,
-  startHour = 9,
-  endHour = 20,
-  intervalMinutes = 30,
+  startHour = Number(DEFAULT_OPERATIONAL_START_TIME.slice(0, 2)),
+  endHour = Number(DEFAULT_OPERATIONAL_END_TIME.slice(0, 2)),
+  intervalMinutes = DEFAULT_BOOKING_SLOT_INTERVAL_MINUTES,
 }: {
   barbers: BarberAvailabilityBarber[];
   appointments: BarberAvailabilityAppointment[];
@@ -101,7 +97,7 @@ export function buildTodayBarberAvailability({
       const activeAppointments = appointments.filter(
         (appointment) =>
           appointment.barber_id === barber.id &&
-          ACTIVE_STATUSES.includes(appointment.status ?? "")
+          (ACTIVE_STATUSES as readonly string[]).includes(appointment.status ?? "")
       );
 
       const freeSlots = slots.filter((slot) => {
@@ -113,7 +109,7 @@ export function buildTodayBarberAvailability({
 
           const end = normalizeTime(appointment.end_time) || addMinutesToTime(start, intervalMinutes);
 
-          return overlaps(slot, slotEnd, start, end);
+          return timesOverlap(slot, slotEnd, start, end);
         });
       });
 

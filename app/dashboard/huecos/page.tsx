@@ -1,17 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
-import { ArrowRight, CalendarClock, Scissors, Users } from "lucide-react";
+import { ArrowRight, CalendarPlus, Megaphone } from "lucide-react";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
-import { TodayAvailability } from "@/components/dashboard/TodayAvailability";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { buildOperationalFreeSlots } from "@/src/lib/agenda/get-free-slots";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { StatCard } from "@/components/ui/StatCard";
+import { HuecosClient } from "./HuecosClient";
 
 export const dynamic = "force-dynamic";
+
+type SearchParams = {
+  date?: string;
+  fecha?: string;
+};
+
+type PageProps = {
+  searchParams?: SearchParams;
+};
 
 type AppointmentRow = {
   barber_id: string | null;
@@ -25,16 +31,38 @@ type BarberRow = {
   name: string;
 };
 
-function getLocalDateISO() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
+type ServiceRow = {
+  id: string;
+  name: string;
+  price: number | null;
+  duration_minutes: number | null;
+};
 
-  return `${year}-${month}-${day}`;
+type ScheduleRow = {
+  barber_id: string;
+  weekday: number;
+  start_time: string | null;
+  end_time: string | null;
+  active: boolean | null;
+};
+
+function getMadridDateISO() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Madrid",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-export default async function HuecosPage() {
+function isValidDateISO(value?: string) {
+  return Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
+}
+
+export default async function HuecosPage({ searchParams }: PageProps) {
   const supabase = await createServerClient();
 
   const {
@@ -52,7 +80,9 @@ export default async function HuecosPage() {
     redirect("/onboarding");
   }
 
-  const today = getLocalDateISO();
+  const requestedDate = searchParams?.date ?? searchParams?.fecha;
+  const todayISO = getMadridDateISO();
+  const dateISO = isValidDateISO(requestedDate) ? requestedDate! : todayISO;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -66,129 +96,113 @@ export default async function HuecosPage() {
         })
       : supabase;
 
-  const [barbersResult, appointmentsResult] = await Promise.all([
-    dataClient
-      .from("barbers")
-      .select("id, name")
-      .eq("barbershop_id", barbershopId)
-      .eq("active", true)
-      .order("name", { ascending: true }),
+  const [barbersResult, servicesResult, appointmentsResult, schedulesResult] =
+    await Promise.all([
+      dataClient
+        .from("barbers")
+        .select("id, name")
+        .eq("barbershop_id", barbershopId)
+        .eq("active", true)
+        .order("name", { ascending: true }),
 
-    dataClient
-      .from("appointments")
-      .select("barber_id, start_time, end_time, status")
-      .eq("barbershop_id", barbershopId)
-      .eq("appointment_date", today),
-  ]);
+      dataClient
+        .from("services")
+        .select("id, name, price, duration_minutes")
+        .eq("barbershop_id", barbershopId)
+        .eq("active", true)
+        .order("duration_minutes", { ascending: true }),
 
-  const barbers = ((barbersResult.data as BarberRow[]) ?? []).map((barber) => ({
+      dataClient
+        .from("appointments")
+        .select("barber_id, start_time, end_time, status")
+        .eq("barbershop_id", barbershopId)
+        .eq("appointment_date", dateISO),
+
+      dataClient
+        .from("barber_schedules")
+        .select("barber_id, weekday, start_time, end_time, active")
+        .eq("barbershop_id", barbershopId)
+        .eq("active", true),
+    ]);
+
+  const barbers = ((barbersResult.data as BarberRow[] | null) ?? []).map((barber) => ({
     id: barber.id,
     name: barber.name,
   }));
-
-  const availabilityItems = buildTodayBarberAvailability({
-    barbers,
-    appointments: ((appointmentsResult.data as AppointmentRow[]) ?? []).map((appointment) => ({
+  const services = ((servicesResult.data as ServiceRow[] | null) ?? []).map((service) => ({
+    id: service.id,
+    name: service.name,
+    price: service.price,
+    duration_minutes: service.duration_minutes,
+  }));
+  const appointments = ((appointmentsResult.data as AppointmentRow[] | null) ?? []).map(
+    (appointment) => ({
       barber_id: appointment.barber_id,
       start_time: appointment.start_time,
       end_time: appointment.end_time,
       status: appointment.status,
-    })),
-    todayIso: today,
-    startHour: 9,
-    endHour: 20,
-    intervalMinutes: 30,
-  });
+    }),
+  );
+  const schedules = ((schedulesResult.data as ScheduleRow[] | null) ?? []).map((schedule) => ({
+    barber_id: schedule.barber_id,
+    weekday: schedule.weekday,
+    start_time: schedule.start_time,
+    end_time: schedule.end_time,
+    active: schedule.active,
+  }));
 
-  const totalFreeSlots = availabilityItems.reduce(
-    (sum, item) => sum + item.freeSlots.length,
-    0
-  );
-  const totalAppointments = availabilityItems.reduce(
-    (sum, item) => sum + item.appointmentsToday,
-    0
-  );
-  const barberWithMostSlots = availabilityItems.reduce(
-    (top, item) => (!top || item.freeSlots.length > top.freeSlots.length ? item : top),
-    null as (typeof availabilityItems)[number] | null
-  );
-  const availableBarbers = availabilityItems.filter((item) => item.freeSlots.length > 0).length;
+  const { slots, summary } = buildOperationalFreeSlots({
+    dateISO,
+    barbers,
+    appointments,
+    services,
+    schedules,
+  });
 
   return (
     <div className="space-y-5">
       <PageHeader
-        eyebrow="Agenda"
         title="Huecos libres"
-        description="Vista rápida para saber qué barbero tiene horas disponibles hoy y copiar un mensaje listo para captar clientes."
+        description="Mira quien esta libre y llena la agenda en segundos."
         action={
-          <PrimaryButton href="/dashboard/agenda" variant="secondary">
-            Ver agenda <ArrowRight size={15} />
-          </PrimaryButton>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Link href="/dashboard/agenda" className="btn-primary">
+              <CalendarPlus size={15} />
+              Nueva reserva
+            </Link>
+            <Link href={`/dashboard/agenda?view=day&date=${dateISO}`} className="btn-outline">
+              Ver agenda
+              <ArrowRight size={15} />
+            </Link>
+            <Link href="/dashboard/marketing" className="btn-outline">
+              <Megaphone size={15} />
+              Campana rapida
+            </Link>
+          </div>
         }
       />
 
-      {(barbersResult.error || appointmentsResult.error) && (
+      {(barbersResult.error ||
+        servicesResult.error ||
+        appointmentsResult.error ||
+        schedulesResult.error) && (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">
-          No se pudieron cargar todos los huecos. Revisa la conexión o permisos de lectura.
+          No se pudieron cargar todos los datos de huecos. Revisa conexion o permisos de lectura.
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Total huecos libres hoy"
-          value={totalFreeSlots}
-          description="Slots disponibles desde ahora"
-          icon={CalendarClock}
-        />
-        <StatCard
-          label="Barbero con más huecos"
-          value={barberWithMostSlots?.barberName ?? "Sin barberos"}
-          description={barberWithMostSlots ? `${barberWithMostSlots.freeSlots.length} huecos libres` : "Activa tu equipo"}
-          icon={Scissors}
-          iconBg="bg-[#D5A84C]/10"
-          iconColor="text-[#8A641F]"
-        />
-        <StatCard
-          label="Barberos disponibles"
-          value={availableBarbers}
-          description="Con al menos un hueco"
-          icon={Users}
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-700"
-        />
-        <StatCard
-          label="Citas de hoy"
-          value={totalAppointments}
-          description="Reservas activas asignadas"
-          icon={CalendarClock}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-700"
-        />
-      </div>
+      <HuecosClient
+        dateISO={dateISO}
+        todayISO={todayISO}
+        slots={slots}
+        summary={summary}
+        services={services}
+        barbers={barbers}
+      />
 
-      {barbers.length === 0 ? (
-        <EmptyState
-          icon={Scissors}
-          title="Sin barberos activos"
-          description="Activa o crea barberos para calcular huecos libres por cada miembro del equipo."
-          action={
-            <PrimaryButton href="/dashboard/barberos" variant="primary">
-              Gestionar barberos
-            </PrimaryButton>
-          }
-        />
-      ) : (
-        <TodayAvailability items={availabilityItems} />
-      )}
-
-      {barbers.length > 0 && totalFreeSlots === 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-600 shadow-sm">
-          No hay huecos libres restantes para hoy con el horario actual. Puedes revisar la agenda o crear una cita manual para otro día.
-        </div>
-      )}
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-500">
-        Cálculo basado en barberos activos y citas de hoy con estado pendiente, programada o confirmada. No modifica reservas ni disponibilidad pública.
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-xs font-medium text-slate-500">
+        Calculo basado en horarios de barbero si existen, reservas activas y servicios que caben en cada intervalo.
+        Bloquean `pending`, `scheduled` y `confirmed`; no bloquean `cancelled`, `completed` ni `no_show`.
       </div>
     </div>
   );

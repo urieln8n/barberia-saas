@@ -40,6 +40,7 @@ const config: Config = {
           "ui-sans-serif",
           "sans-serif",
         ],
+        display: ["var(--font-display)", "Inter", "system-ui", "sans-serif"],
       },
       borderRadius: {
         "4xl": "2rem",

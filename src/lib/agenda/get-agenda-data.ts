@@ -150,7 +150,17 @@ export async function getAgendaData({
   const services = (servicesResult.data ?? []) as AgendaService[];
   const barbers = (barbersResult.data ?? []) as AgendaBarber[];
   const schedules = (schedulesResult.data ?? []) as AgendaSchedule[];
-  const freeSlots = detectFreeSlots({ days, appointments, barbers, schedules });
+  const minimumServiceDuration = Math.min(
+    ...services.map((service) => Number(service.duration_minutes ?? 30)).filter((duration) => duration > 0),
+    30,
+  );
+  const freeSlots = detectFreeSlots({
+    days,
+    appointments,
+    barbers,
+    schedules,
+    durationMinutes: minimumServiceDuration,
+  });
   const metrics = calculateAgendaMetrics(appointments, freeSlots);
   const recommendation = buildAgendaRecommendation(metrics, appointments, freeSlots);
 

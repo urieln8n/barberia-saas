@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <ActionToastProvider>
       <SidebarCollapseProvider>
-        <div className="premium-grid-bg min-h-screen font-sans antialiased">
+        <div className="min-h-screen bg-[#F9F6F1] font-sans antialiased">
           <Sidebar />
           <DashboardShell>{children}</DashboardShell>
         </div>

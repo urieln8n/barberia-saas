@@ -7,6 +7,13 @@ import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { checkSlotAvailability } from "@/src/lib/appointments/check-availability";
 
+type ExistingAppointmentRow = {
+  id: string;
+  barber_id: string;
+  service_id: string;
+  status: string;
+};
+
 type BarberRow = {
   id: string;
   name: string | null;
@@ -33,7 +40,7 @@ function addMinutesToTime(time: string, minutesToAdd: number) {
   const hh = String(date.getHours()).padStart(2, "0");
   const mm = String(date.getMinutes()).padStart(2, "0");
 
-  return `${hh}:${mm}:00`;
+  return `${hh}:${mm}`;
 }
 
 async function getLoggedBarbershopId() {
@@ -247,6 +254,78 @@ export async function createAppointment(formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/agenda");
   revalidatePath("/dashboard/clientes");
+
+  return { success: true };
+}
+
+export async function rescheduleAppointment(
+  id: string,
+  appointmentDate: string,
+  startTime: string,
+) {
+  const { error: authError, barbershopId } = await getLoggedBarbershopId();
+  if (authError || !barbershopId) {
+    return { error: authError ?? "No se pudo validar la barbería." };
+  }
+
+  const supabase = createServiceRoleClient();
+
+  const { data: existingData, error: fetchError } = await supabase
+    .from("appointments")
+    .select("id, barber_id, service_id, status")
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  const existing = existingData as ExistingAppointmentRow | null;
+
+  if (fetchError || !existing) {
+    return { error: "Cita no encontrada." };
+  }
+
+  if (["completed", "cancelled", "no_show"].includes(existing.status)) {
+    return { error: "No se puede reagendar una cita ya finalizada." };
+  }
+
+  const { data: serviceData } = await supabase
+    .from("services")
+    .select("duration_minutes")
+    .eq("id", existing.service_id)
+    .maybeSingle();
+
+  const duration = (serviceData as { duration_minutes: number | null } | null)?.duration_minutes ?? 30;
+  const endTime = addMinutesToTime(startTime, duration);
+
+  const check = await checkSlotAvailability({
+    supabase,
+    barbershopId,
+    barberId: existing.barber_id,
+    appointmentDate,
+    startTime,
+    endTime,
+    excludeAppointmentId: id,
+  });
+
+  if (!check.available) {
+    return { error: check.reason };
+  }
+
+  const { error: updateError } = await supabase
+    .from("appointments")
+    .update({
+      appointment_date: appointmentDate,
+      start_time: startTime,
+      end_time: endTime,
+    })
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
+
+  if (updateError) {
+    return { error: updateError.message };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/agenda");
 
   return { success: true };
 }

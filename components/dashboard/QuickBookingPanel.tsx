@@ -25,6 +25,8 @@ type Props = {
   barbers: Barber[]
   defaultDate?: string
   defaultBarberId?: string
+  defaultTime?: string
+  defaultServiceId?: string
   onSuccess?: () => void
 }
 
@@ -64,6 +66,8 @@ export function QuickBookingPanel({
   barbers,
   defaultDate,
   defaultBarberId,
+  defaultTime,
+  defaultServiceId,
   onSuccess,
 }: Props) {
   const { showToast } = useActionToast()
@@ -71,6 +75,8 @@ export function QuickBookingPanel({
     ...INITIAL_FORM,
     appointmentDate: defaultDate ?? getTodayISO(),
     barberId: defaultBarberId ?? "",
+    appointmentTime: defaultTime ?? "",
+    serviceId: defaultServiceId ?? "",
   })
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -83,6 +89,8 @@ export function QuickBookingPanel({
         ...INITIAL_FORM,
         appointmentDate: defaultDate ?? getTodayISO(),
         barberId: defaultBarberId ?? "",
+        appointmentTime: defaultTime ?? "",
+        serviceId: defaultServiceId ?? "",
       })
       setErrors({})
       setIsSubmitting(false)
@@ -90,7 +98,7 @@ export function QuickBookingPanel({
       const timer = setTimeout(() => firstInputRef.current?.focus(), 150)
       return () => clearTimeout(timer)
     }
-  }, [open, defaultDate, defaultBarberId])
+  }, [open, defaultDate, defaultBarberId, defaultTime, defaultServiceId])
 
   // Close on Escape
   useEffect(() => {
@@ -382,7 +390,7 @@ export function QuickBookingPanel({
                   id="qb-time"
                   type="time"
                   value={form.appointmentTime}
-                  step="1800"
+                  step="900"
                   onChange={(e) => setField("appointmentTime", e.target.value)}
                   disabled={isSubmitting}
                   className={`input-field ${errors.appointmentTime ? "input-error" : ""}`}

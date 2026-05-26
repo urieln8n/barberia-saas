@@ -43,9 +43,8 @@ type Props = {
 //    Endpoints are inside the circle (r≈45.3 < 46.5) — no clip needed.
 
 function Mark({ px, uid }: { px: number; uid: string }) {
-  const bgId    = `g-bg-${uid}`;
-  const ringId  = `g-rg-${uid}`;
-  const slashId = `g-sl-${uid}`;
+  const bgId   = `g-bg-${uid}`;
+  const ringId = `g-rg-${uid}`;
 
   return (
     <svg
@@ -67,18 +66,9 @@ function Mark({ px, uid }: { px: number; uid: string }) {
 
         {/* ── Gold ring: brilliant top-right → vanishing bottom-left ── */}
         <linearGradient id={ringId} x1="12%" y1="12%" x2="88%" y2="88%">
-          <stop offset="0%"   stopColor="#F8E882" stopOpacity="0.88" />
-          <stop offset="30%"  stopColor="#D4AF37" stopOpacity="0.62" />
-          <stop offset="100%" stopColor="#3E2203" stopOpacity="0.10" />
-        </linearGradient>
-
-        {/* ── Razor: ember → gold → champagne ── */}
-        <linearGradient id={slashId} x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#3E2203" stopOpacity="0.28" />
-          <stop offset="20%"  stopColor="#A07A0A" stopOpacity="0.95" />
-          <stop offset="50%"  stopColor="#D4AF37" />
-          <stop offset="74%"  stopColor="#E8D060" />
-          <stop offset="100%" stopColor="#FBF0B8" stopOpacity="0.62" />
+          <stop offset="0%"   stopColor="#F8E882" stopOpacity="0.92" />
+          <stop offset="30%"  stopColor="#D4AF37" stopOpacity="0.70" />
+          <stop offset="100%" stopColor="#3E2203" stopOpacity="0.12" />
         </linearGradient>
       </defs>
 
@@ -87,7 +77,7 @@ function Mark({ px, uid }: { px: number; uid: string }) {
 
       {/* ── LAYER 2 ── Two-depth gold ring system ────────────────────── */}
       <circle cx="50" cy="50" r="47"   fill="none" stroke={`url(#${ringId})`} strokeWidth="0.72" />
-      <circle cx="50" cy="50" r="44.4" fill="none" stroke="#D4AF37"           strokeWidth="0.22" opacity="0.24" />
+      <circle cx="50" cy="50" r="44.4" fill="none" stroke="#D4AF37"           strokeWidth="0.22" opacity="0.28" />
 
       {/* ── LAYER 3 ── Monoline B ─────────────────────────────────────
           All strokes white, 5.5px, rounded caps.
@@ -120,19 +110,6 @@ function Mark({ px, uid }: { px: number; uid: string }) {
         stroke="white"
         strokeWidth="5.5"
         strokeLinecap="round"
-      />
-
-      {/* ── LAYER 4 ── Razor accent ────────────────────────────────────
-          Thin gold line at 45°. Passes through lower arc at y=64.
-          Reads as a precision blade cutting through the mark.
-      ──────────────────────────────────────────────────────────────── */}
-      <line
-        x1="18" y1="82"
-        x2="82" y2="18"
-        stroke={`url(#${slashId})`}
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.92"
       />
     </svg>
   );

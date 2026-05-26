@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, MessageCircle, Scissors } from "lucide-react";
+import { LenisProvider } from "@/components/LenisProvider";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
@@ -20,7 +21,8 @@ type SeoLandingPageProps = {
 
 export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq }: SeoLandingPageProps) {
   return (
-    <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
+    <LenisProvider>
+      <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="Volver a BarberíaOS">
@@ -160,6 +162,7 @@ export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq }: 
         </nav>
         <p className="mt-3">© {new Date().getFullYear()} BarberíaOS.</p>
       </footer>
-    </main>
+      </main>
+    </LenisProvider>
   );
 }

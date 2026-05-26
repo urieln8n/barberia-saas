@@ -5,8 +5,10 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
-import { Mail, Phone, StickyNote, UserPlus } from "lucide-react";
+import { Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { StatCard } from "@/components/ui/StatCard";
 import { RetentionActions } from "./RetentionActions";
 
 export const dynamic = "force-dynamic";
@@ -400,30 +402,16 @@ export default async function ClientesPage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-2xl border border-[#DDE7FB] bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="label-section">
-              Clientes CRM
-            </p>
-
-            <h1 className="mt-2 text-3xl font-black tracking-tight text-[#111827] md:text-4xl">
-              CRM visual de {barbershopResult.data?.name ?? "tu barbería"}
-            </h1>
-
-            <p className="mt-2 max-w-2xl text-sm text-slate-500">
-              Segmenta clientes nuevos, frecuentes, perdidos, reactivados y VIP con acciones rápidas para reservar, pedir reseñas y abrir WhatsApp.
-            </p>
-          </div>
-
-          <a
-            href="/dashboard/agenda"
-            className="btn-primary"
-          >
+      <PageHeader
+        section="Clientes"
+        title={`CRM de ${barbershopResult.data?.name ?? "tu barbería"}`}
+        description="Segmenta nuevos, frecuentes, perdidos y VIP. Acciones rápidas para reservar, pedir reseñas y abrir WhatsApp."
+        action={
+          <a href="/dashboard/agenda" className="btn-primary">
             Crear reserva
           </a>
-        </div>
-      </section>
+        }
+      />
 
       {errorMessage && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -432,33 +420,10 @@ export default async function ClientesPage() {
       )}
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Total clientes</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {clients.length}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Con teléfono</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {clientsWithPhone}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Nuevos este mes</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {newClientsThisMonth}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-neutral-500">Frecuentes</p>
-          <p className="mt-2 text-3xl font-black text-neutral-950">
-            {recurringClients}
-          </p>
-        </div>
+        <StatCard label="Total clientes" value={clients.length} description="En tu base de datos" icon={Users} />
+        <StatCard label="Con teléfono" value={clientsWithPhone} description="Puedes contactarlos" icon={Phone} />
+        <StatCard label="Nuevos este mes" value={newClientsThisMonth} description="Registrados este mes" icon={UserPlus} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
+        <StatCard label="Frecuentes" value={recurringClients} description="Más de una visita" icon={TrendingUp} iconBg="bg-amber-50" iconColor="text-amber-700" />
       </section>
 
       <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
@@ -489,7 +454,7 @@ export default async function ClientesPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1fr_1.6fr]">
+      <section className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
         <div id="crear-cliente" className="panel overflow-hidden p-0">
           <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,rgba(47,111,235,0.06),rgba(255,255,255,0))] px-5 py-5 md:px-6">
             <p className="label-section">Clientes</p>
@@ -589,8 +554,8 @@ export default async function ClientesPage() {
             />
           ) : (
             <>
-              <div className="mt-6 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block">
-                <table className="w-full text-left text-sm">
+              <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-neutral-200 md:block">
+                <table className="w-full min-w-[640px] text-left text-sm">
                   <thead className="bg-neutral-50 text-xs uppercase text-neutral-500">
                     <tr>
                       <th className="px-4 py-3">Cliente</th>
