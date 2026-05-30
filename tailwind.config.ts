@@ -40,7 +40,7 @@ const config: Config = {
         // ── Semantic states ──────────────────────────────────
         freeSlot:   "#DDF8E7",   // Verde hueco libre (agenda)
         success:    "#16A34A",   // Verde éxito
-        amber:      "#F59E0B",   // Ámbar alerta
+        amberAlert: "#F59E0B",   // Ámbar alerta (no sobreescribe la paleta amber de Tailwind)
         danger:     "#EF4444",   // Rojo suave
 
         // ── Actions ──────────────────────────────────────────
