@@ -12,7 +12,7 @@ export function AgendaPageHeader({ selectedDate, onDateChange, onNewAppointment 
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/10 px-3 py-1 text-xs font-black uppercase tracking-wide text-[#8A641F]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-xs font-black uppercase tracking-wide text-[#8A641F]">
             <Sparkles size={13} />
             Agenda premium
           </div>
@@ -29,7 +29,7 @@ export function AgendaPageHeader({ selectedDate, onDateChange, onNewAppointment 
             type="date"
             value={selectedDate}
             onChange={(event) => onDateChange(event.target.value)}
-            className="min-h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 outline-none transition focus:border-[#D5A84C] focus:bg-white"
+            className="min-h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 outline-none transition focus:border-[#D4AF37] focus:bg-white"
           />
           <button
             type="button"

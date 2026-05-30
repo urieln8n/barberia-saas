@@ -18,7 +18,7 @@ function OccupancyBar({ pct }: { pct: number }) {
     pct >= 70
       ? "bg-emerald-500"
       : pct >= 40
-        ? "bg-[#D5A84C]"
+        ? "bg-[#D4AF37]"
         : "bg-red-400";
   return (
     <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ function BarberWorkloadCard({ workload, index, onViewAgenda }: CardProps) {
 
       {/* Header */}
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#080A0F] text-[#D5A84C]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#080A0F] text-[#D4AF37]">
           <Scissors size={16} />
         </div>
         <div>
@@ -105,10 +105,10 @@ function BarberWorkloadCard({ workload, index, onViewAgenda }: CardProps) {
           <p className="text-[10px] text-[#080A0F]/40">citas activas</p>
         </div>
 
-        <div className="rounded-xl border border-[#D5A84C]/20 bg-[#D5A84C]/5 p-3">
+        <div className="rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/5 p-3">
           <div className="flex items-center gap-1.5">
-            <Euro size={12} className="text-[#B8892A]/70" />
-            <span className="text-[10px] font-black uppercase text-[#B8892A]/70">
+            <Euro size={12} className="text-[#B88917]/70" />
+            <span className="text-[10px] font-black uppercase text-[#B88917]/70">
               Ingresos
             </span>
           </div>
@@ -168,7 +168,7 @@ function BarberWorkloadCard({ workload, index, onViewAgenda }: CardProps) {
         </button>
         <a
           href="/dashboard/marketing"
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#D5A84C]/25 bg-[#D5A84C]/8 px-3 py-2 text-xs font-black text-[#B8892A] transition hover:bg-[#D5A84C]/15"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/8 px-3 py-2 text-xs font-black text-[#B88917] transition hover:bg-[#D4AF37]/15"
         >
           <Megaphone size={11} />
           Campaña
@@ -207,7 +207,7 @@ export function BarberWorkloadView({ workloads, onViewBarberAgenda }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <p className="text-[11px] font-black uppercase tracking-widest text-[#D5A84C]">
+        <p className="text-[11px] font-black uppercase tracking-widest text-[#D4AF37]">
           Vista barberos
         </p>
         <p className="text-xs text-[#080A0F]/50">

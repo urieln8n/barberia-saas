@@ -6,10 +6,10 @@ import type { AgendaOpportunity } from "@/src/lib/agenda/types";
 
 const TONE_STYLES = {
   gold: {
-    card: "border-[#D5A84C]/25 bg-[#D5A84C]/5",
-    icon: "bg-[#D5A84C]/12 text-[#B8892A]",
-    badge: "bg-[#D5A84C]/15 text-[#8A641F]",
-    cta: "border-[#D5A84C]/30 bg-[#D5A84C]/10 text-[#8A641F] hover:bg-[#D5A84C]/20",
+    card: "border-[#D4AF37]/25 bg-[#D4AF37]/5",
+    icon: "bg-[#D4AF37]/12 text-[#B88917]",
+    badge: "bg-[#D4AF37]/15 text-[#8A641F]",
+    cta: "border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#8A641F] hover:bg-[#D4AF37]/20",
   },
   blue: {
     card: "border-[#38BDF8]/25 bg-[#38BDF8]/5",
@@ -101,7 +101,7 @@ export function AgendaOpportunitiesView({ opportunities }: Props) {
     <div className="flex flex-col gap-5">
       {/* Header */}
       <div>
-        <p className="text-[11px] font-black uppercase tracking-widest text-[#D5A84C]">
+        <p className="text-[11px] font-black uppercase tracking-widest text-[#D4AF37]">
           Oportunidades
         </p>
         <h2 className="mt-1 text-xl font-black text-[#080A0F]">
@@ -137,11 +137,11 @@ export function AgendaOpportunitiesView({ opportunities }: Props) {
       {/* AaaS hint */}
       <div className="rounded-2xl border border-[#080A0F]/8 bg-[#080A0F] p-5">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D5A84C]/15">
-            <Bot size={16} className="text-[#D5A84C]" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15">
+            <Bot size={16} className="text-[#D4AF37]" />
           </div>
           <div>
-            <p className="text-xs font-black uppercase tracking-widest text-[#D5A84C]/70">
+            <p className="text-xs font-black uppercase tracking-widest text-[#D4AF37]/70">
               Agentes IA — próximamente
             </p>
             <h3 className="mt-0.5 font-black text-white">
@@ -153,7 +153,7 @@ export function AgendaOpportunitiesView({ opportunities }: Props) {
             </p>
             <a
               href="/dashboard/agentes"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 px-3 py-1.5 text-xs font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/20"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/20"
             >
               Ver Agentes IA <ArrowRight size={11} />
             </a>

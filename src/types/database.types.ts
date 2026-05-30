@@ -1439,6 +1439,174 @@ export interface Database {
         Relationships: [];
       };
 
+      // ── Fidelización ────────────────────────────────────────
+      loyalty_programs: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          name: string;
+          stamps_required: number;
+          reward_description: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          name?: string;
+          stamps_required?: number;
+          reward_description?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          stamps_required?: number;
+          reward_description?: string | null;
+          is_active?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_programs_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      loyalty_cards: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          program_id: string;
+          client_id: string;
+          current_stamps: number;
+          redeemed_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          program_id: string;
+          client_id: string;
+          current_stamps?: number;
+          redeemed_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          current_stamps?: number;
+          redeemed_count?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_cards_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "loyalty_cards_program_id_fkey";
+            columns: ["program_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_programs";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "loyalty_cards_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      loyalty_stamps: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          program_id: string;
+          card_id: string;
+          client_id: string;
+          appointment_id: string | null;
+          added_by: "manual" | "appointment";
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          program_id: string;
+          card_id: string;
+          client_id: string;
+          appointment_id?: string | null;
+          added_by?: "manual" | "appointment";
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          notes?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_stamps_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "loyalty_stamps_appointment_id_fkey";
+            columns: ["appointment_id"];
+            isOneToOne: false;
+            referencedRelation: "appointments";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      loyalty_redemptions: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          program_id: string;
+          card_id: string;
+          client_id: string;
+          reward_description: string | null;
+          redeemed_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          barbershop_id: string;
+          program_id: string;
+          card_id: string;
+          client_id: string;
+          reward_description?: string | null;
+          redeemed_at?: string;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_redemptions_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "loyalty_cards";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
       // ── Security audits (Shield) ─────────────────────────────
       security_audits: {
         Row: {
@@ -1580,3 +1748,7 @@ export type PaymentStatus      = Payment["status"];
 export type CashMovementType   = CashMovement["movement_type"];
 export type PlanName           = Subscription["plan_name"];
 export type SubscriptionStatus = Subscription["status"];
+export type LoyaltyProgram    = TableRow<"loyalty_programs">;
+export type LoyaltyCard       = TableRow<"loyalty_cards">;
+export type LoyaltyStamp      = TableRow<"loyalty_stamps">;
+export type LoyaltyRedemption = TableRow<"loyalty_redemptions">;

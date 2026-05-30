@@ -22,6 +22,7 @@ import { buildRetentionMessage } from "@/src/lib/retention/messages";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { CustomerCopyMessageButton } from "./CustomerCopyMessageButton";
 import { createCustomerReviewAction, saveClientCrmAction } from "./actions";
+import { ClientLoyaltyCard } from "@/components/loyalty/ClientLoyaltyCard";
 
 export const dynamic = "force-dynamic";
 
@@ -542,6 +543,13 @@ export default async function CustomerDetailPage({ params }: Props) {
               </p>
             </div>
           </section>
+
+          <ClientLoyaltyCard
+            clientId={clientRow.id}
+            barbershopId={barbershopId}
+            clientName={clientRow.name}
+            phone={clientRow.phone}
+          />
         </aside>
       </section>
     </div>

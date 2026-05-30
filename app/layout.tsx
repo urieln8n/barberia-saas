@@ -6,11 +6,16 @@ import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 // @ts-ignore
 import "./globals.css";
-import { Inter, Sora } from "next/font/google";
+import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const sora = Sora({ subsets: ["latin"], variable: "--font-display", weight: ["700", "800"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const viewport: Viewport = {
   themeColor: "#111111",
@@ -81,7 +86,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={cn("font-sans", inter.variable, sora.variable)}>
+    <html lang="es" className={cn("font-sans", inter.variable, GeistSans.variable, GeistMono.variable)}>
       <body className="font-sans antialiased">
         {children}
         <FloatingWhatsAppButton />

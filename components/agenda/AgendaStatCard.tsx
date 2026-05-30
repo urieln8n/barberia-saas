@@ -9,7 +9,7 @@ type Props = {
 };
 
 const ACCENTS = {
-  gold: "border-[#D5A84C]/25 bg-[#D5A84C]/10 text-[#8A641F]",
+  gold: "border-[#D4AF37]/25 bg-[#D4AF37]/10 text-[#8A641F]",
   green: "border-emerald-200 bg-emerald-50 text-emerald-700",
   blue: "border-sky-200 bg-sky-50 text-sky-700",
   red: "border-rose-200 bg-rose-50 text-rose-700",
