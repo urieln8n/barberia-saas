@@ -113,7 +113,7 @@ export function DailyTimelineView({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-widest text-[#D5A84C]">
+          <p className="text-[11px] font-black uppercase tracking-widest text-[#D4AF37]">
             Vista día
           </p>
           <h2 className="mt-1 text-lg font-black text-[#080A0F]">
@@ -143,8 +143,8 @@ export function DailyTimelineView({
           <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Huecos libres</p>
           <p className="mt-1 text-2xl font-black text-emerald-700">{daySlots.length}</p>
         </div>
-        <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/8 p-4 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#B8892A]">Equipo visible</p>
+        <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/8 p-4 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#B88917]">Equipo visible</p>
           <p className="mt-1 flex items-center gap-2 text-2xl font-black text-slate-950">
             <Users size={18} /> {selectedBarberName ? 1 : barbers.length}
           </p>
@@ -199,9 +199,9 @@ export function DailyTimelineView({
                 className="pointer-events-none absolute inset-x-0 z-20 flex items-center gap-0"
                 style={{ top: Math.round(nowState.percent * totalHeight) - 1 }}
               >
-                <span className="ml-1 mr-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#D5A84C] shadow-[0_0_0_3px_rgba(213,168,76,0.22)]" />
-                <div className="h-[2px] flex-1 bg-gradient-to-r from-[#D5A84C] to-[#D5A84C]/30 shadow-[0_1px_6px_rgba(213,168,76,0.35)]" />
-                <span className="mr-1 shrink-0 rounded-full bg-[#D5A84C] px-2 py-px text-[9px] font-black text-white shadow-sm">
+                <span className="ml-1 mr-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#D4AF37] shadow-[0_0_0_3px_rgba(212,175,55,0.22)]" />
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-[#D4AF37] to-[#D4AF37]/30 shadow-[0_1px_6px_rgba(212,175,55,0.35)]" />
+                <span className="mr-1 shrink-0 rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black text-white shadow-sm">
                   {nowState.label}
                 </span>
               </div>
@@ -281,7 +281,7 @@ export function DailyTimelineView({
             <button
               type="button"
               onClick={onNewAppointment}
-              className="mt-1 flex items-center gap-1.5 rounded-2xl border border-[#080A0F]/12 bg-[#F8F8F6] px-4 py-2 text-xs font-black text-[#080A0F]/70 transition hover:bg-[#D5A84C]/8 hover:text-[#080A0F]"
+              className="mt-1 flex items-center gap-1.5 rounded-2xl border border-[#080A0F]/12 bg-[#F8F8F6] px-4 py-2 text-xs font-black text-[#080A0F]/70 transition hover:bg-[#D4AF37]/8 hover:text-[#080A0F]"
             >
               <Plus size={12} /> Crear cita
             </button>
@@ -299,9 +299,9 @@ export function DailyTimelineView({
           {/* "Ahora" separator in mobile list */}
           {nowState.percent !== null && (
             <div className="flex items-center gap-2 py-1">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-[#D5A84C]" />
-              <span className="h-px flex-1 bg-[#D5A84C]/30" />
-              <span className="rounded-full bg-[#D5A84C] px-2 py-px text-[9px] font-black text-white">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#D4AF37]" />
+              <span className="h-px flex-1 bg-[#D4AF37]/30" />
+              <span className="rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black text-white">
                 {nowState.label}
               </span>
             </div>

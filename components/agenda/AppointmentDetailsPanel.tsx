@@ -1,19 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarClock, CheckCircle, CreditCard, MessageCircle, RotateCw, Star, UserX, X } from "lucide-react";
+import { CalendarClock, CheckCircle, CreditCard, ExternalLink, Gift, MessageCircle, RotateCw, Star, UserX, X } from "lucide-react";
 import { formatTime, getAppointmentDuration, getPrimaryClientInsight } from "@/src/lib/agenda/agenda-utils";
 import { getStatusLabel } from "@/src/lib/agenda/appointment-colors";
 import type { AgendaAppointment } from "@/src/lib/agenda/types";
+
+type LoyaltyHint = {
+  stamps: number;
+  required: number;
+  rewardDescription?: string | null;
+};
 
 type Props = {
   appointment: AgendaAppointment | null;
   updating: string | null;
   onClose: () => void;
   onStatusChange: (id: string, status: string) => void;
+  loyaltyHint?: LoyaltyHint | null;
 };
 
-export function AppointmentDetailsPanel({ appointment, updating, onClose, onStatusChange }: Props) {
+export function AppointmentDetailsPanel({ appointment, updating, onClose, onStatusChange, loyaltyHint = null }: Props) {
   if (!appointment) return null;
 
   const duration = getAppointmentDuration(appointment);
@@ -86,6 +93,57 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
           </p>
         </section>
 
+        {/* Loyalty hint */}
+        {appointment.client?.id && (() => {
+          if (loyaltyHint) {
+            const remaining = loyaltyHint.required - loyaltyHint.stamps;
+            const hasReward = loyaltyHint.stamps >= loyaltyHint.required;
+            return (
+              <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wide text-amber-700">
+                  <Gift size={12} /> Fidelización
+                </p>
+                <p className="mt-2 font-black text-slate-950">
+                  {hasReward
+                    ? `Recompensa lista 🎁`
+                    : `${loyaltyHint.stamps}/${loyaltyHint.required} sellos`}
+                </p>
+                <p className="mt-1 text-sm leading-5 text-slate-600">
+                  {hasReward
+                    ? `${loyaltyHint.rewardDescription ?? "El cliente tiene una recompensa pendiente"}. Recuérdale al cerrar la cita.`
+                    : remaining === 1
+                    ? `Le falta 1 sello para conseguir su recompensa. Si completas esta cita, añade el sello desde la ficha.`
+                    : `Le faltan ${remaining} sellos para la recompensa. Añade sello al completar.`}
+                </p>
+                <Link
+                  href={`/dashboard/clientes/${appointment.client!.id}`}
+                  className="mt-3 inline-flex text-xs font-black text-amber-700 hover:underline"
+                  onClick={onClose}
+                >
+                  Ver tarjeta del cliente →
+                </Link>
+              </section>
+            );
+          }
+          return (
+            <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wide text-amber-700">
+                <Gift size={12} /> Fidelización
+              </p>
+              <p className="mt-2 text-sm text-slate-600">
+                Añade un sello de fidelización al completar esta cita.
+              </p>
+              <Link
+                href={`/dashboard/clientes/${appointment.client!.id}`}
+                className="mt-2 inline-flex text-xs font-black text-amber-700 hover:underline"
+                onClick={onClose}
+              >
+                Ver tarjeta de puntos →
+              </Link>
+            </section>
+          );
+        })()}
+
         {/* Status action buttons */}
         <div className="mt-5 grid gap-2">
           <button
@@ -153,6 +211,7 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
           <button
             type="button"
             disabled
+            title="Disponible próximamente"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
           >
             <RotateCw size={14} /> Reagendar
@@ -160,11 +219,24 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
           <button
             type="button"
             disabled
+            title="Disponible próximamente"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
           >
             <Star size={14} /> Pedir reseña
           </button>
         </div>
+
+        {/* Ver cliente completo */}
+        {appointment.client?.id ? (
+          <Link
+            href={`/dashboard/clientes/${appointment.client.id}`}
+            onClick={onClose}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-3 text-sm font-black text-[#8A641F] transition hover:bg-[#D4AF37]/15"
+          >
+            <ExternalLink size={14} />
+            Ver ficha completa del cliente
+          </Link>
+        ) : null}
       </aside>
     </div>
   );

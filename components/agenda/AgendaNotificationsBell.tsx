@@ -22,7 +22,7 @@ function NotifIcon({ type }: { type: AgendaNotification["type"] }) {
     return <CalendarClock size={14} className="text-red-500" />;
   if (type === "free_slot") return <Zap size={14} className="text-emerald-500" />;
   if (type === "pending_booking")
-    return <AlertCircle size={14} className="text-[#D5A84C]" />;
+    return <AlertCircle size={14} className="text-[#D4AF37]" />;
   if (type === "no_show" || type === "cancellation")
     return <AlertCircle size={14} className="text-red-400" />;
   return <Info size={14} className="text-slate-400" />;
@@ -38,7 +38,7 @@ function priorityChip(p: AgendaNotification["priority"]) {
   if (p === "high")
     return "bg-red-50 text-red-600 border border-red-100";
   if (p === "medium")
-    return "bg-[#D5A84C]/10 text-[#8A641F] border border-[#D5A84C]/20";
+    return "bg-[#D4AF37]/10 text-[#8A641F] border border-[#D4AF37]/20";
   return "bg-slate-50 text-slate-500 border border-slate-100";
 }
 
@@ -83,9 +83,9 @@ export function AgendaNotificationsBell({ notifications }: Props) {
         onClick={() => setOpen((v) => !v)}
         aria-label={`Notificaciones${total > 0 ? ` (${total})` : ""}`}
         aria-expanded={open}
-        className={`relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D5A84C] ${
+        className={`relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
           open
-            ? "border-[#D5A84C]/50 bg-[#D5A84C]/10 text-[#8A641F]"
+            ? "border-[#D4AF37]/50 bg-[#D4AF37]/10 text-[#8A641F]"
             : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-800"
         }`}
       >
@@ -93,7 +93,7 @@ export function AgendaNotificationsBell({ notifications }: Props) {
         {total > 0 && (
           <span
             className={`absolute -right-1.5 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[9px] font-black text-white shadow-sm ${
-              highCount > 0 ? "bg-red-500" : "bg-[#D5A84C]"
+              highCount > 0 ? "bg-red-500" : "bg-[#D4AF37]"
             }`}
           >
             {total > 9 ? "9+" : total}

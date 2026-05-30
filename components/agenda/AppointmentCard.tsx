@@ -20,8 +20,10 @@ export function AppointmentCard({ appointment, compact = false, onClick }: Props
     <button
       type="button"
       onClick={() => onClick(appointment)}
-      className={`w-full rounded-xl border p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${color.card}`}
+      className={`relative w-full overflow-hidden rounded-xl border p-3 pl-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${color.card}`}
     >
+      {/* Status strip — left edge color indicator */}
+      <span className={`absolute inset-y-0 left-0 w-[3px] ${color.dot}`} aria-hidden="true" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-black leading-tight">

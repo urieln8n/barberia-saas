@@ -143,7 +143,7 @@ export function AgendaDateNavigator({ view, dateISO, onDateChange }: Props) {
             <button
               type="button"
               onClick={() => onDateChange(today)}
-              className="flex h-9 items-center gap-1.5 rounded-xl border border-[#D5A84C]/30 bg-[#D5A84C]/8 px-3 text-xs font-black text-[#B8892A] transition hover:bg-[#D5A84C]/15 active:scale-95"
+              className="flex h-9 items-center gap-1.5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-3 text-xs font-black text-[#B88917] transition hover:bg-[#D4AF37]/15 active:scale-95"
             >
               <CalendarCheck size={12} />
               Hoy

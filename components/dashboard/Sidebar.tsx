@@ -37,6 +37,7 @@ import {
   Sparkles,
   Tv,
   X,
+  Gift,
   type LucideIcon,
 } from "lucide-react";
 import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
@@ -101,11 +102,12 @@ const sidebarGroups: SidebarGroup[] = [
   {
     label: "Crecer y fidelizar",
     items: [
-      { href: "/dashboard/marketing",     label: "Marketing Studio",  icon: Megaphone              },
-      { href: "/dashboard/resenas",       label: "Reseñas",           icon: Star                   },
-      { href: "/dashboard/recuperacion",  label: "Clientes perdidos", icon: RotateCcw              },
-      { href: "/dashboard/agents",        label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
-      { href: "/dashboard/growth",        label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
+      { href: "/dashboard/marketing",      label: "Marketing Studio",  icon: Megaphone              },
+      { href: "/dashboard/fidelizacion",   label: "Fidelización",      icon: Gift,      badge: "Nuevo" },
+      { href: "/dashboard/resenas",        label: "Reseñas",           icon: Star                   },
+      { href: "/dashboard/recuperacion",   label: "Clientes perdidos", icon: RotateCcw              },
+      { href: "/dashboard/agents",         label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
+      { href: "/dashboard/growth",         label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
     ],
   },
   {
@@ -150,12 +152,13 @@ const groupedMobileNav: MobileNavGroup[] = [
   {
     title: "Crecer",
     items: [
-      { href: "/dashboard/marketing",    label: "Marketing Studio",  icon: Megaphone              },
-      { href: "/dashboard/resenas",      label: "Reseñas",           icon: Star                   },
-      { href: "/dashboard/recuperacion", label: "Clientes perdidos", icon: RotateCcw              },
-      { href: "/dashboard/agents",       label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
-      { href: "/dashboard/lounge",       label: "Sala de espera",    icon: Tv,        badge: "Pro" },
-      { href: "/dashboard/growth",       label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
+      { href: "/dashboard/marketing",     label: "Marketing Studio",  icon: Megaphone              },
+      { href: "/dashboard/fidelizacion",  label: "Fidelización",      icon: Gift,      badge: "Nuevo" },
+      { href: "/dashboard/resenas",       label: "Reseñas",           icon: Star                   },
+      { href: "/dashboard/recuperacion",  label: "Clientes perdidos", icon: RotateCcw              },
+      { href: "/dashboard/agents",        label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
+      { href: "/dashboard/lounge",        label: "Sala de espera",    icon: Tv,        badge: "Pro" },
+      { href: "/dashboard/growth",        label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
     ],
   },
   {
@@ -199,7 +202,7 @@ function getInitialMobileGroup(pathname: string): string {
 
 function NavBadge({ badge, dark }: { badge: BadgeType; dark?: boolean }) {
   const styles: Record<BadgeType, string> = {
-    Pro:   dark ? "border-[#C9922A]/25 bg-[#C9922A]/12 text-[#C9922A]"
+    Pro:   dark ? "border-[#B88917]/25 bg-[#B88917]/12 text-[#B88917]"
                 : "border-[#D5A84C]/25 bg-[#D5A84C]/10 text-[#8A641F]",
     Nuevo: dark ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
                 : "border-emerald-600/25 bg-emerald-600/10 text-emerald-700",
@@ -236,15 +239,15 @@ function NavLink({
       className={`nav-link transition-all duration-150 ${
         dark
           ? active
-            ? "font-semibold text-white shadow-[inset_3px_0_0_#D4AF66]"
+            ? "font-semibold text-white shadow-[inset_3px_0_0_#D4AF37]"
             : "font-medium text-slate-300/85 hover:bg-white/[0.07] hover:text-white"
           : active
-            ? "bg-[#C9922A]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#C9922A]"
-            : "font-medium text-neutral-500 hover:bg-[#C9922A]/5 hover:text-neutral-900"
+            ? "bg-[#B88917]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#B88917]"
+            : "font-medium text-neutral-500 hover:bg-[#B88917]/5 hover:text-neutral-900"
       }`}
       style={
         dark && active
-          ? { background: "linear-gradient(90deg, rgba(212,175,102,0.16) 0%, rgba(212,175,102,0.06) 60%, transparent 100%)" }
+          ? { background: "linear-gradient(90deg, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0.06) 60%, transparent 100%)" }
           : undefined
       }
     >
@@ -252,7 +255,7 @@ function NavLink({
         size={18}
         strokeWidth={1.75}
         className={`shrink-0 transition-colors ${
-          active ? "text-[#D4AF66]" : dark ? "text-slate-400/75" : "text-neutral-400"
+          active ? "text-[#D4AF37]" : dark ? "text-slate-400/75" : "text-neutral-400"
         }`}
       />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -273,15 +276,15 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       title={item.label}
       className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-150 ${
         active
-          ? "shadow-[inset_3px_0_0_#D4AF66,0_0_14px_rgba(212,175,102,0.12)]"
+          ? "shadow-[inset_3px_0_0_#D4AF37,0_0_14px_rgba(212,175,55,0.12)]"
           : "hover:bg-white/[0.07]"
       }`}
-      style={active ? { background: "linear-gradient(90deg, rgba(212,175,102,0.18), transparent)" } : undefined}
+      style={active ? { background: "linear-gradient(90deg, rgba(212,175,55,0.18), transparent)" } : undefined}
     >
       <Icon
         size={18}
         strokeWidth={1.75}
-        className={`transition-colors ${active ? "text-[#D4AF66]" : "text-slate-400/65"}`}
+        className={`transition-colors ${active ? "text-[#D4AF37]" : "text-slate-400/65"}`}
       />
     </Link>
   );
@@ -320,11 +323,11 @@ function MobileBottomNav({
                 onClick={onOpenMore}
                 className={`flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-xs font-bold transition-colors ${
                   moreActive
-                    ? "bg-[#D4AF66]/18 text-white"
+                    ? "bg-[#D4AF37]/18 text-white"
                     : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
                 }`}
               >
-                <Icon size={21} className={moreActive ? "text-[#D4AF66]" : "text-slate-300/70"} />
+                <Icon size={21} className={moreActive ? "text-[#D4AF37]" : "text-slate-300/70"} />
                 <span className="max-w-full truncate">{item.label}</span>
               </button>
             );
@@ -338,11 +341,11 @@ function MobileBottomNav({
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-xs font-bold transition-colors ${
                 active
-                  ? "bg-[#D4AF66]/18 text-white"
+                  ? "bg-[#D4AF37]/18 text-white"
                   : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
               }`}
             >
-              <Icon size={21} className={active ? "text-[#D4AF66]" : "text-slate-300/70"} />
+              <Icon size={21} className={active ? "text-[#D4AF37]" : "text-slate-300/70"} />
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
@@ -416,7 +419,7 @@ export default function Sidebar() {
           <Link
             href="/dashboard/reservas"
             aria-label="Nueva reserva"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D4AF66]/25 bg-[#D4AF66]/10 text-[#D4AF66] shadow-sm transition-colors hover:bg-[#D4AF66]/20 hover:border-[#D4AF66]/45"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 text-[#D4AF37] shadow-sm transition-colors hover:bg-[#D4AF37]/20 hover:border-[#D4AF37]/45"
           >
             <Plus size={17} />
           </Link>
@@ -470,7 +473,7 @@ export default function Sidebar() {
           <nav className="flex flex-1 flex-col gap-4 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)]">
             {/* Quick actions */}
             <section aria-labelledby="mobile-quick-actions">
-              <h2 id="mobile-quick-actions" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF66]">
+              <h2 id="mobile-quick-actions" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
                 Accesos rápidos
               </h2>
               <div className="grid grid-cols-2 gap-2">
@@ -485,11 +488,11 @@ export default function Sidebar() {
                       aria-current={active ? "page" : undefined}
                       className={`min-h-[72px] rounded-[20px] border p-3 transition-colors ${
                         active
-                          ? "border-[#D4AF66]/40 bg-[#D4AF66]/15 text-white"
-                          : "border-white/10 bg-white/[0.06] text-slate-300 hover:border-[#D4AF66]/35 hover:bg-white/[0.10]"
+                          ? "border-[#D4AF37]/40 bg-[#D4AF37]/15 text-white"
+                          : "border-white/10 bg-white/[0.06] text-slate-300 hover:border-[#D4AF37]/35 hover:bg-white/[0.10]"
                       }`}
                     >
-                      <Icon size={18} className={active ? "text-[#D4AF66]" : "text-slate-500"} />
+                      <Icon size={18} className={active ? "text-[#D4AF37]" : "text-slate-500"} />
                       <span className="mt-3 block text-sm font-black leading-tight">{item.label}</span>
                     </Link>
                   );
@@ -499,7 +502,7 @@ export default function Sidebar() {
 
             {/* Grouped nav */}
             <section aria-labelledby="mobile-grouped-nav" className="min-h-0">
-              <h2 id="mobile-grouped-nav" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF66]">
+              <h2 id="mobile-grouped-nav" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
                 Secciones
               </h2>
               {/* Group tabs */}
@@ -513,7 +516,7 @@ export default function Sidebar() {
                       onClick={() => setActiveMobileGroup(group.title)}
                       className={`min-h-10 rounded-xl text-xs font-black transition-colors ${
                         active
-                          ? "bg-[#D4AF66] text-[#050A14] shadow-sm"
+                          ? "bg-[#D4AF37] text-[#050A14] shadow-sm"
                           : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
                       }`}
                     >
@@ -561,7 +564,7 @@ export default function Sidebar() {
         }`}
         style={{
           background:
-            "radial-gradient(circle at 88% 4%, rgba(212,175,102,0.07), transparent 36%)," +
+            "radial-gradient(circle at 88% 4%, rgba(212,175,55,0.07), transparent 36%)," +
             "radial-gradient(circle at 6% 92%, rgba(37,99,235,0.09), transparent 42%)," +
             "linear-gradient(168deg, #0F2040 0%, #0B1A2E 44%, #07111E 100%)",
         }}
@@ -570,7 +573,7 @@ export default function Sidebar() {
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-0 right-0 top-0 h-[2px]"
-          style={{ background: "linear-gradient(90deg, transparent 0%, rgba(212,175,102,0.55) 50%, transparent 100%)" }}
+          style={{ background: "linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.55) 50%, transparent 100%)" }}
         />
 
         {/* Collapse toggle */}
@@ -578,12 +581,12 @@ export default function Sidebar() {
           type="button"
           onClick={toggle}
           title={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF66]/20 bg-[#0F2040] shadow-[0_2px_10px_rgba(5,10,20,0.45)] transition-all duration-150 hover:border-[#D4AF66]/50 hover:bg-[#D4AF66]/12 hover:shadow-[0_0_12px_rgba(212,175,102,0.20)]"
+          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF37]/20 bg-[#0F2040] shadow-[0_2px_10px_rgba(5,10,20,0.45)] transition-all duration-150 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/12 hover:shadow-[0_0_12px_rgba(212,175,55,0.20)]"
         >
           {collapsed ? (
-            <ChevronRight size={13} className="text-[#D4AF66]/70" />
+            <ChevronRight size={13} className="text-[#D4AF37]/70" />
           ) : (
-            <ChevronLeft size={13} className="text-[#D4AF66]/70" />
+            <ChevronLeft size={13} className="text-[#D4AF37]/70" />
           )}
         </button>
 
@@ -596,8 +599,8 @@ export default function Sidebar() {
           </div>
         ) : (
           <div
-            className="mb-5 rounded-[20px] border border-[#D4AF66]/18 px-3 py-3"
-            style={{ background: "linear-gradient(135deg, rgba(212,175,102,0.08) 0%, rgba(255,255,255,0.03) 100%)" }}
+            className="mb-5 rounded-[20px] border border-[#D4AF37]/18 px-3 py-3"
+            style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(255,255,255,0.03) 100%)" }}
           >
             <Link href="/dashboard" className="flex items-center gap-3">
               <BarberiaOSLogo size={40} className="shrink-0" />
@@ -609,7 +612,7 @@ export default function Sidebar() {
                   <span className="block truncate text-[10px] font-semibold leading-tight text-slate-400">
                     Panel de control
                   </span>
-                  <span className="shrink-0 rounded-full border border-[#D4AF66]/30 bg-[#D4AF66]/12 px-1.5 py-px text-[9px] font-black uppercase tracking-wide text-[#D4AF66]">
+                  <span className="shrink-0 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/12 px-1.5 py-px text-[9px] font-black uppercase tracking-wide text-[#D4AF37]">
                     Pro
                   </span>
                 </span>
@@ -622,7 +625,7 @@ export default function Sidebar() {
         {!collapsed && (
           <Link
             href="/dashboard/reservas"
-            className="mb-3 flex items-center justify-center gap-2 rounded-2xl border border-[#D4AF66]/22 bg-[#D4AF66]/10 px-4 py-2.5 text-sm font-black text-[#D4AF66] transition-all duration-150 hover:border-[#D4AF66]/40 hover:bg-[#D4AF66]/18"
+            className="mb-3 flex items-center justify-center gap-2 rounded-2xl border border-[#D4AF37]/22 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-black text-[#D4AF37] transition-all duration-150 hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/18"
           >
             <Plus size={15} />
             Nueva cita

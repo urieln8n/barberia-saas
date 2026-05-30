@@ -39,11 +39,16 @@ export function FreeSlotCard({ slot, services = [], compact = false, onBook, onP
     .filter((service) => service.duration_minutes <= duration)
     .slice(0, compact ? 1 : 2);
 
+  // Potential income: lowest price among fitting services (conservative estimate)
+  const potentialIncome = fittingServices.length > 0
+    ? Math.min(...fittingServices.map((s) => s.price).filter((p) => p > 0))
+    : null;
+
   return (
     <article
       className={`rounded-xl border p-3 text-emerald-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
         isNow
-          ? "border-emerald-300 bg-gradient-to-br from-emerald-50 via-white to-[#D5A84C]/10 ring-2 ring-emerald-200/70"
+          ? "border-emerald-300 bg-gradient-to-br from-emerald-50 via-white to-[#D4AF37]/10 ring-2 ring-emerald-200/70"
           : "border-emerald-200 bg-emerald-50/80"
       }`}
     >
@@ -54,8 +59,13 @@ export function FreeSlotCard({ slot, services = [], compact = false, onBook, onP
               Hueco libre
             </span>
             {isNow ? (
-              <span className="rounded-full bg-[#D5A84C] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white">
+              <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-white">
                 Ahora
+              </span>
+            ) : null}
+            {potentialIncome !== null && potentialIncome > 0 && !compact ? (
+              <span className="rounded-full border border-emerald-300 bg-white px-2 py-0.5 text-[10px] font-black text-emerald-700">
+                ~{potentialIncome} € potencial
               </span>
             ) : null}
           </div>

@@ -8,7 +8,7 @@ import {
   Clock,
   Euro,
   Plus,
-  UserPlus,
+  Scissors,
   Users,
   X,
 } from "lucide-react";
@@ -236,6 +236,17 @@ export function AgendaClient({
     [appointments, freeSlots, dateISO],
   );
 
+  const nextApptLabel = useMemo(() => {
+    const dayAppts = visibleAppointments
+      .filter(
+        (a) =>
+          a.appointment_date === dateISO &&
+          ["scheduled", "confirmed", "pending"].includes(a.status),
+      )
+      .sort((a, b) => a.start_time.localeCompare(b.start_time));
+    return dayAppts[0]?.start_time.slice(0, 5) ?? "—";
+  }, [visibleAppointments, dateISO]);
+
   const opportunities = useMemo(
     () => detectOpportunities(metrics, appointments, freeSlots, barberWorkloads),
     [metrics, appointments, freeSlots, barberWorkloads],
@@ -300,14 +311,14 @@ export function AgendaClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-8">
+    <div className="min-h-screen bg-[#F7F3EA] pb-8">
       <div className="space-y-5">
         {/* Header */}
         <div className="rounded-2xl border border-[#080A0F]/8 bg-white p-4 shadow-sm md:p-5">
           <div className="flex flex-col gap-3">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#D5A84C]">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#D4AF37]">
                   Agenda Pro
                 </p>
                 <h1 className="text-xl font-black text-[#080A0F] md:text-2xl">
@@ -372,18 +383,18 @@ export function AgendaClient({
               accent="green"
             />
             <AgendaStatCard
-              label="Pendientes"
-              value={visibleMetrics.pendingAppointments}
-              description="Citas por confirmar."
-              icon={UserPlus}
-              accent="red"
+              label="Barberos activos"
+              value={barbers.length}
+              description={barbers.length > 0 ? barbers.map((b) => b.name).join(", ") : "Sin barberos configurados."}
+              icon={Users}
+              accent="gold"
             />
             <AgendaStatCard
-              label="Clientes nuevos"
-              value={visibleMetrics.newClients}
-              description="Detectado por historial de visitas."
-              icon={Users}
-              accent="slate"
+              label="Próxima cita"
+              value={nextApptLabel}
+              description={nextApptLabel === "—" ? "Sin citas activas hoy." : "Hora de la siguiente reserva activa."}
+              icon={Scissors}
+              accent="blue"
             />
           </div>
         )}
@@ -479,7 +490,7 @@ export function AgendaClient({
                 services={services}
               />
 
-              <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/8 px-4 py-3 text-sm font-bold text-slate-700">
+              <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-4 py-3 text-sm font-bold text-slate-700">
                 {selectedBarberRow
                   ? `Mostrando agenda de ${selectedBarberRow.name}.`
                   : "Mostrando agenda de todos los barberos."}
@@ -558,7 +569,7 @@ export function AgendaClient({
             <div className="p-6 md:p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-wide text-[#B8892A]">
+                  <p className="text-xs font-black uppercase tracking-wide text-[#B88917]">
                     Agenda Pro
                   </p>
                   <h2 className="mt-1 text-2xl font-black tracking-tight text-[#080A0F]">

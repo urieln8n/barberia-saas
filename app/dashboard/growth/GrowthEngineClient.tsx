@@ -218,6 +218,10 @@ const templates: Template[] = [
   ["Cliente perdido 30 días", "WhatsApp", "Recuperacion", "Hola [NOMBRE], hace tiempo que no vienes por [BARBERIA]. Esta semana tienes [OFERTA]."],
   ["Pedir reseña Google", "WhatsApp", "Reseñas", "Gracias por venir, [NOMBRE]. Nos ayudas dejando una reseña? [LINK_WEB]"],
   ["Promoción producto de inventario", "WhatsApp", "Producto", "Hola [NOMBRE], tenemos [PRODUCTO] para mantener tu corte en casa. Te lo guardamos?"],
+  ["Fidelización — te falta 1 sello", "WhatsApp", "Fidelización", "Hola [NOMBRE], te queda solo 1 sello para conseguir tu recompensa en [BARBERIA]. Ven esta semana y la tienes. Reserva aqui: [LINK_RESERVA]"],
+  ["Fidelización — recompensa lista", "WhatsApp", "Fidelización", "Hola [NOMBRE], tienes una recompensa lista en [BARBERIA]: [OFERTA]. Pasate cuando quieras a reclamarla. Te esperamos!"],
+  ["Fidelización — vuelve y suma", "WhatsApp", "Fidelización", "Hola [NOMBRE], hace tiempo que no vienes por [BARBERIA]. Recuerda que tienes tu tarjeta de puntos activa. Cada visita cuenta. Reserva aqui: [LINK_RESERVA]"],
+  ["Fidelización — doble sello esta semana", "WhatsApp", "Fidelización", "Hola [NOMBRE], esta semana en [BARBERIA] cada visita suma doble sello en tu tarjeta de puntos. Aprovechalo y reserva: [LINK_RESERVA]"],
 ].map(([name, channel, category, body]) => ({
   name,
   channel: channel as Template["channel"],

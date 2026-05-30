@@ -54,7 +54,7 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
           >
             <Icon
               size={13}
-              className={isActive ? "text-[#D5A84C]" : ""}
+              className={isActive ? "text-[#D4AF37]" : ""}
               aria-hidden="true"
             />
             {/* Full label on md+, short on mobile */}
@@ -65,7 +65,7 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
             {id === "opportunities" && !isActive && (
               <span
                 aria-hidden="true"
-                className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#D5A84C]"
+                className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#D4AF37]"
               />
             )}
           </button>
