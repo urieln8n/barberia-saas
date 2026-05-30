@@ -450,12 +450,12 @@ export default function Sidebar() {
         />
         <aside
           aria-label="Más opciones de navegación"
-          className={`absolute bottom-0 left-0 right-0 flex max-h-[82vh] flex-col rounded-t-[2rem] border-t border-white/10 bg-[#07101F] p-5 shadow-[0_-24px_60px_rgba(5,10,20,0.42)] transition-transform duration-200 ${
+          className={`absolute bottom-0 left-0 right-0 flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden rounded-t-[2rem] border-t border-white/10 bg-[#07101F] shadow-[0_-24px_60px_rgba(5,10,20,0.42)] transition-transform duration-200 ${
             drawerOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >
           {/* Drawer header */}
-          <div className="mb-4 flex items-center justify-between">
+          <div className="flex shrink-0 items-center justify-between px-5 pb-4 pt-5">
             <div>
               <p className="text-xl font-black leading-none text-white">Más opciones</p>
               <p className="mt-1 text-sm font-medium text-slate-400">Accede a cualquier sección</p>
@@ -470,7 +470,7 @@ export default function Sidebar() {
             </button>
           </div>
 
-          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+5.5rem)]">
+          <nav className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain px-5 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* Quick actions */}
             <section aria-labelledby="mobile-quick-actions">
               <h2 id="mobile-quick-actions" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
@@ -541,19 +541,18 @@ export default function Sidebar() {
                 ))}
               </div>
             </section>
-
-            {/* Logout */}
-            <div className="border-t border-white/[0.08] pt-3">
-              <button
-                type="button"
-                onClick={async () => { setDrawerOpen(false); await handleLogout(); }}
-                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-400 transition-colors hover:bg-[#E5484D]/8 hover:text-[#E5484D]/80"
-              >
-                <LogOut size={16} className="shrink-0" />
-                Cerrar sesión
-              </button>
-            </div>
           </nav>
+
+          <footer className="shrink-0 border-t border-white/[0.08] bg-[#07101F] px-5 pb-[calc(24px+env(safe-area-inset-bottom))] pt-4">
+            <button
+              type="button"
+              onClick={async () => { setDrawerOpen(false); await handleLogout(); }}
+              className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-slate-400 transition-colors hover:border-[#E5484D]/25 hover:bg-[#E5484D]/8 hover:text-[#E5484D]/80"
+            >
+              <LogOut size={16} className="shrink-0" />
+              Cerrar sesión
+            </button>
+          </footer>
         </aside>
       </div>
 

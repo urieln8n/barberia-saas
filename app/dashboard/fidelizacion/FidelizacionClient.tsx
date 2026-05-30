@@ -148,7 +148,7 @@ function StatCard({
   }[tone];
 
   return (
-    <div className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="min-w-0 rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <p className="text-xs font-black uppercase tracking-wide text-slate-500">{label}</p>
         <Icon size={16} className={iconCls} />
@@ -193,7 +193,7 @@ function formatDate(date: string | null) {
 
 function SetupState() {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
+    <div className="flex flex-col items-center justify-center px-1 py-14 text-center sm:py-20">
       <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-[28px] border border-[#D4AF37]/30 bg-[#FFFBEB]">
         <Gift size={36} className="text-[#D4AF37]" />
       </div>
@@ -217,7 +217,7 @@ function SetupState() {
         </Link>
       </div>
 
-      <div className="mt-12 grid gap-4 text-left sm:grid-cols-3">
+      <div className="mt-10 grid w-full gap-4 text-left sm:mt-12 sm:grid-cols-3">
         {[
           {
             icon: Star,
@@ -271,12 +271,12 @@ export function FidelizacionClient({
   const stampsRequired = activeProgram?.stamps_required ?? 8;
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden pb-[calc(6rem+env(safe-area-inset-bottom))]">
       {/* ── Page header ─────────────────────────────────────────────────────── */}
-      <div className="border-b border-slate-200 bg-white px-5 py-6 lg:px-8">
+      <div className="border-b border-slate-200 bg-white px-4 py-5 sm:px-5 sm:py-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="label-section">Programa</p>
                 <span className="badge-success">Nuevo</span>
@@ -286,11 +286,11 @@ export function FidelizacionClient({
                 Premia a tus clientes y haz que vuelvan más veces.
               </p>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => setActiveTab("clientes")}
-                className="btn-outline text-sm"
+                className="btn-outline justify-center text-sm"
               >
                 <Users size={15} />
                 Clientes con puntos
@@ -298,7 +298,7 @@ export function FidelizacionClient({
               <button
                 type="button"
                 onClick={() => window.alert("Configuración de programa disponible próximamente.")}
-                className="btn-gold text-sm"
+                className="btn-gold justify-center text-sm"
               >
                 <Sparkles size={15} />
                 {activeProgram ? "Editar programa" : "Crear programa"}
@@ -307,7 +307,7 @@ export function FidelizacionClient({
           </div>
 
           {/* Tabs */}
-          <div className="mt-5 flex gap-1 rounded-2xl border border-slate-200 bg-slate-100 p-1 sm:w-fit">
+          <div className="mt-5 flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-100 p-1 sm:w-fit">
             {(
               [
                 { id: "overview",   label: "Resumen"       },
@@ -319,7 +319,7 @@ export function FidelizacionClient({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`min-h-9 rounded-xl px-4 text-sm font-black transition-colors ${
+                className={`min-h-9 shrink-0 rounded-xl px-4 text-sm font-black transition-colors ${
                   activeTab === tab.id
                     ? "bg-white text-slate-900 shadow-sm"
                     : "text-slate-500 hover:text-slate-700"
@@ -333,7 +333,7 @@ export function FidelizacionClient({
       </div>
 
       {/* ── Content ─────────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-6xl px-5 py-8 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8">
 
         {/* Tab: Overview */}
         {activeTab === "overview" && (
@@ -343,7 +343,7 @@ export function FidelizacionClient({
             ) : (
               <div className="space-y-6">
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
                   <StatCard icon={Users}      label="Con tarjeta activa"     value={stats.totalCards}      tone="gold"  />
                   <StatCard icon={Gift}       label="Recompensas pendientes" value={stats.pendingRewards}  tone="green" />
                   <StatCard icon={Star}       label="Sellos este mes"        value={stats.stampsThisMonth} tone="blue"  />
@@ -354,9 +354,9 @@ export function FidelizacionClient({
                 {/* Program + card mockup */}
                 <div className="grid gap-5 lg:grid-cols-2">
                   {/* Program details */}
-                  <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="flex items-start justify-between">
-                      <div>
+                  <div className="min-w-0 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
                         <p className="label-section">Programa activo</p>
                         <h2 className="mt-1 text-lg font-black text-slate-900">
                           {activeProgram?.name ?? "Mi programa de fidelización"}
@@ -366,13 +366,13 @@ export function FidelizacionClient({
                     </div>
 
                     <div className="mt-5 space-y-2">
-                      <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                      <div className="flex flex-col gap-1 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <span className="text-sm text-slate-500">Regla</span>
                         <span className="text-sm font-black text-slate-900">
                           {stampsRequired} visitas = 1 recompensa
                         </span>
                       </div>
-                      <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                      <div className="flex flex-col gap-1 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <span className="text-sm text-slate-500">Recompensa</span>
                         <span className="text-sm font-black text-slate-900">
                           {activeProgram?.reward_description ?? "Corte gratis"}
@@ -400,7 +400,7 @@ export function FidelizacionClient({
                   </div>
 
                   {/* Visual mockup — dark card on purpose */}
-                  <div className="rounded-[24px] border border-[#D4AF37]/25 bg-gradient-to-br from-[#0F1A2E] via-[#0B1220] to-[#050A14] p-6 shadow-[0_20px_60px_rgba(212,175,55,0.12)]">
+                  <div className="min-w-0 rounded-[24px] border border-[#D4AF37]/25 bg-gradient-to-br from-[#0F1A2E] via-[#0B1220] to-[#050A14] p-4 shadow-[0_20px_60px_rgba(212,175,55,0.12)] sm:p-6">
                     <div className="mb-4 flex items-center justify-between">
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-wide text-[#D4AF37]">
@@ -417,15 +417,15 @@ export function FidelizacionClient({
                       variant="dark"
                     />
 
-                    <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                      <div>
+                    <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
                         <p className="text-[11px] text-white/50">Próxima recompensa</p>
                         <p className="text-sm font-black text-white">
                           {stampsRequired - 5 > 0 ? `${stampsRequired - 5} visitas para` : ""}
                           {" "}{activeProgram?.reward_description ?? "Corte gratis"}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="sm:text-right">
                         <p className="text-[10px] text-white/50">Progreso</p>
                         <p className="text-xl font-black tabular-nums text-[#D4AF37]">
                           5/{stampsRequired}
@@ -448,8 +448,8 @@ export function FidelizacionClient({
 
                 {/* Clients near reward */}
                 {clientsNearReward.length > 0 && (
-                  <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="mb-5 flex items-center justify-between">
+                  <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+                    <div className="mb-5 flex items-center justify-between gap-3">
                       <div>
                         <p className="label-section">Acción recomendada</p>
                         <h2 className="mt-1 text-base font-black text-slate-900">
@@ -469,19 +469,19 @@ export function FidelizacionClient({
                             key={client.id}
                             className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
                           >
-                            <div className="flex items-center gap-3">
+                            <div className="flex min-w-0 items-center gap-3">
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/20 bg-[#FFFBEB] text-sm font-black text-[#B88917]">
                                 {client.name.charAt(0).toUpperCase()}
                               </div>
-                              <div>
+                              <div className="min-w-0">
                                 <p className="text-sm font-black text-slate-900">{client.name}</p>
                                 <p className="text-xs text-slate-400">
                                   Última visita: {formatDate(client.lastVisit)}
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <div className="text-right">
+                            <div className="flex items-center justify-between gap-3 sm:justify-end">
+                              <div className="sm:text-right">
                                 <p className="text-lg font-black tabular-nums text-amber-600">
                                   {client.stamps}/{client.stampsRequired}
                                 </p>
@@ -516,7 +516,7 @@ export function FidelizacionClient({
                 )}
 
                 {/* Quick actions */}
-                <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                   <h2 className="mb-4 text-base font-black text-slate-900">Acciones rápidas</h2>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {[
@@ -568,8 +568,8 @@ export function FidelizacionClient({
         {/* Tab: Clientes */}
         {activeTab === "clientes" && (
           <div className="space-y-6">
-            <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between">
+            <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-base font-black text-slate-900">
                   {dbReady ? "Clientes con tarjeta activa" : "Base de clientes"}
                 </h2>
@@ -601,19 +601,19 @@ export function FidelizacionClient({
                     const pct = Math.round((client.stamps / client.stampsRequired) * 100);
                     return (
                       <div key={client.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="flex min-w-0 items-center gap-3">
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/20 bg-[#FFFBEB] text-sm font-black text-[#B88917]">
                               {client.name.charAt(0).toUpperCase()}
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <p className="text-sm font-black text-slate-900">{client.name}</p>
                               <p className="text-xs text-slate-400">
                                 {client.stamps}/{client.stampsRequired} sellos · {formatDate(client.lastVisit)}
                               </p>
                             </div>
                           </div>
-                          <p className="text-base font-black tabular-nums text-[#B88917]">{pct}%</p>
+                          <p className="text-base font-black tabular-nums text-[#B88917] sm:text-right">{pct}%</p>
                         </div>
                         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
                           <div
@@ -640,15 +640,15 @@ export function FidelizacionClient({
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {LOYALTY_TEMPLATES.map((tpl) => (
-                <div key={tpl.id} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="flex items-start justify-between gap-3">
+                <div key={tpl.id} className="min-w-0 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <p className="text-sm font-black text-slate-900">{tpl.label}</p>
                     <button
                       type="button"
                       onClick={() => copyTemplate(tpl.id, tpl.body)}
-                      className={`shrink-0 flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-black transition-colors ${
+                      className={`flex shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-black transition-colors ${
                         copiedTemplate === tpl.id
                           ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                           : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
