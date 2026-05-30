@@ -32,9 +32,10 @@ function dbErrorMessage(error: { code?: string; message: string }, fallback: str
 }
 
 const LEAD_STATUSES = [
-  "new", "nuevo", "contactado", "demo_agendada", "propuesta_enviada",
-  "trial_activo", "ganado", "perdido",
+  "new", "contacted", "demo_booked", "closed", "lost", "nuevo", "contactado",
+  "demo_agendada", "propuesta_enviada", "trial_activo", "ganado", "perdido",
 ] as const;
+type LeadStatus = (typeof LEAD_STATUSES)[number];
 
 const LEAD_SOURCES = [
   "directo", "barberiaos.com", "instagram", "referido", "google", "linkedin", "feria", "otro",
@@ -58,6 +59,10 @@ const LeadSchema = z
       z.number({ invalid_type_error: "El MRR debe ser un número" }).min(0, "El MRR potencial debe ser ≥ 0"),
     ),
     notes:             z.preprocess(strOrNull, z.string().nullable()),
+    barbers_count:     z.preprocess(strOrNull, z.string().nullable()).optional(),
+    instagram_username:z.preprocess(strOrNull, z.string().nullable()).optional(),
+    lead_temperature:  z.enum(["cold", "warm", "hot"]).default("warm").optional(),
+    utm_campaign:      z.preprocess(strOrNull, z.string().nullable()).optional(),
     last_contacted_at: z.preprocess(dateTimeOrNull, z.string().datetime("Fecha de último contacto no válida").nullable()),
     next_action_at:    z.preprocess(dateTimeOrNull, z.string().datetime("Fecha de próxima acción no válida").nullable()),
   })
@@ -133,5 +138,40 @@ export async function deleteLead(id: string): Promise<ActionResult> {
     return { success: true };
   } catch {
     return { success: false, error: "Error al eliminar el lead" };
+  }
+}
+
+export async function updateLeadStatus(id: string, status: string): Promise<ActionResult> {
+  await requirePlatformAdmin();
+  try {
+    const parsedId = LeadIdSchema.safeParse(id);
+    if (!parsedId.success) return { success: false, error: firstError(parsedId.error) };
+
+    const parsedStatus = z.enum(LEAD_STATUSES).safeParse(status);
+    if (!parsedStatus.success) return { success: false, error: "Estado no válido" };
+
+    const supabase = await createClient();
+    const updates: { status: LeadStatus; updated_at: string; last_contacted_at?: string } = {
+      status: parsedStatus.data,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (parsedStatus.data === "contacted") {
+      updates.last_contacted_at = new Date().toISOString();
+    }
+
+    const { error } = await supabase
+      .from("crm_leads")
+      .update(updates)
+      .eq("id", parsedId.data)
+      .select("id")
+      .single();
+
+    if (error) return { success: false, error: dbErrorMessage(error, "No se pudo cambiar el estado") };
+
+    revalidatePath(PATH);
+    return { success: true };
+  } catch {
+    return { success: false, error: "Error inesperado al cambiar el estado" };
   }
 }

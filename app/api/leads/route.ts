@@ -9,10 +9,16 @@ const LeadSchema = z.object({
   barbershopName: z.string().trim().min(2, "El nombre de la barbería es obligatorio"),
   city: z.string().trim().min(2, "La ciudad es obligatoria"),
   barbersCount: z.string().trim().min(1, "Indica el número de barberos"),
-  currentSystem: z.string().trim().min(1, "Indica tu sistema actual"),
-  mainProblem: z.string().trim().min(1, "Indica el principal problema"),
-  interest: z.string().trim().min(1, "Indica tu interés"),
+  currentSystem: z.string().trim().optional().or(z.literal("")),
+  mainProblem: z.string().trim().optional().or(z.literal("")),
+  interest: z.string().trim().optional().or(z.literal("")),
   message: z.string().trim().max(1500).optional().or(z.literal("")),
+  source: z.string().trim().optional().or(z.literal("")),
+  utmSource: z.string().trim().optional().or(z.literal("")),
+  utmMedium: z.string().trim().optional().or(z.literal("")),
+  utmCampaign: z.string().trim().optional().or(z.literal("")),
+  utmContent: z.string().trim().optional().or(z.literal("")),
+  landingPath: z.string().trim().optional().or(z.literal("")),
 });
 
 function clean(value: string | undefined) {
@@ -24,6 +30,14 @@ function envReady() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
   );
+}
+
+function normalizeSource(value: string | undefined) {
+  const source = clean(value)?.toLowerCase();
+  if (source === "instagram") return "instagram";
+  if (source === "pedir-demo") return "pedir-demo";
+  if (source === "barberiaos.com") return "barberiaos.com";
+  return "barberiaos.com";
 }
 
 export async function POST(request: Request) {
@@ -51,6 +65,10 @@ export async function POST(request: Request) {
   const supabase = createServiceRoleClient();
   const email = clean(lead.email);
   const message = clean(lead.message);
+  const source = normalizeSource(lead.source || lead.utmSource);
+  const currentSystem = clean(lead.currentSystem) ?? "No indicado";
+  const mainProblem = clean(lead.mainProblem) ?? "Solicitud de demo desde landing";
+  const interest = clean(lead.interest) ?? "Pedir demo";
 
   const duplicateFilters = [`phone.eq.${lead.whatsapp}`];
   if (email) duplicateFilters.push(`email.eq.${email}`);
@@ -73,10 +91,12 @@ export async function POST(request: Request) {
   }
 
   const notes = [
-    `Sistema actual: ${lead.currentSystem}`,
-    `Problema principal: ${lead.mainProblem}`,
-    `Interés: ${lead.interest}`,
+    `Sistema actual: ${currentSystem}`,
+    `Problema principal: ${mainProblem}`,
+    `Interés: ${interest}`,
     `Barberos: ${lead.barbersCount}`,
+    `Origen: ${source}`,
+    clean(lead.utmCampaign) ? `Campaña UTM: ${clean(lead.utmCampaign)}` : null,
     message ? `Mensaje: ${message}` : null,
   ]
     .filter(Boolean)
@@ -84,14 +104,26 @@ export async function POST(request: Request) {
 
   const { error } = await supabase.from("crm_leads").insert({
     business_name: lead.barbershopName,
+    barbershop_name: lead.barbershopName,
     contact_name: lead.name,
     phone: lead.whatsapp,
+    whatsapp: lead.whatsapp,
     email,
     city: lead.city,
     country: "ES",
-    source: "barberiaos.com",
+    source,
     status: "new",
     potential_mrr: 0,
+    barbers_count: lead.barbersCount,
+    current_system: currentSystem,
+    main_problem: mainProblem,
+    interest,
+    message,
+    utm_source: clean(lead.utmSource) ?? source,
+    utm_medium: clean(lead.utmMedium),
+    utm_campaign: clean(lead.utmCampaign),
+    utm_content: clean(lead.utmContent),
+    landing_path: clean(lead.landingPath) ?? "/instagram",
     notes,
   });
 
