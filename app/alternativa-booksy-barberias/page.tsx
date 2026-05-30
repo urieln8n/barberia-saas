@@ -32,6 +32,8 @@ const comparison = [
   { feature: "Página pública propia", booksy: false, barberiaos: true },
   { feature: "QR descargable", booksy: false, barberiaos: true },
   { feature: "Caja y ventas por barbero", booksy: false, barberiaos: true },
+  { feature: "Tarjeta de puntos digital", booksy: false, barberiaos: true },
+  { feature: "Sellos automáticos sin app", booksy: false, barberiaos: true },
   { feature: "Auditoría web incluida", booksy: false, barberiaos: true },
   { feature: "Widget para tu web", booksy: false, barberiaos: true },
   { feature: "Directorio local opcional", booksy: true, barberiaos: true },
@@ -55,6 +57,10 @@ const whySwitch = [
   {
     title: "Caja y gestión completa",
     text: "Booksy es solo agenda. BarberíaOS añade caja diaria, ventas por barbero, clientes frecuentes, auditoría web y widget — todo en un panel pensado para barberías.",
+  },
+  {
+    title: "Fidelización con tarjeta de puntos digital",
+    text: "Booksy no tiene programa de fidelización para tus clientes. BarberíaOS incluye tarjeta de puntos digital con sellos automáticos al completar cita, recompensas personalizadas y acceso por QR o link — sin que el cliente instale ninguna app.",
   },
 ];
 
@@ -161,7 +167,7 @@ export default function AlternativaBooksyPage() {
           <h2 className="text-center text-2xl font-black text-[#080A0F] md:text-3xl">
             ¿Por qué las barberías se pasan a BarberíaOS?
           </h2>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {whySwitch.map((item) => (
               <article
                 key={item.title}
@@ -200,9 +206,14 @@ export default function AlternativaBooksyPage() {
           <p className="mx-auto mt-4 max-w-xl text-base leading-8 text-white/65">
             Puedes mantener Booksy durante la transición. BarberíaOS no requiere que abandones nada de golpe.
           </p>
-          <PrimaryButton href="/login" variant="gold" className="mt-8 min-h-12 px-8">
-            Probar BarberíaOS gratis <ArrowRight size={17} />
-          </PrimaryButton>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <PrimaryButton href="/login" variant="gold" className="min-h-12 px-8">
+              Probar BarberíaOS gratis <ArrowRight size={17} />
+            </PrimaryButton>
+            <PrimaryButton href="/tarjeta-puntos-digital-barberia" variant="secondary" className="min-h-12 px-7">
+              Ver tarjeta de puntos
+            </PrimaryButton>
+          </div>
           <p className="mt-4 text-xs text-white/35">Sin tarjeta · Sin permanencia · Configuración en 48h</p>
         </div>
       </section>

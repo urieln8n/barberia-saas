@@ -1933,6 +1933,121 @@ export function FAQSection() {
   );
 }
 
+export function FidelizacionSection() {
+  return (
+    <MotionBlock className="bg-[#050A14] px-5 py-24 text-white lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          {/* Copy */}
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">
+              Fidelización
+            </p>
+            <h2 className="mt-4 text-3xl font-black leading-[1.1] md:text-[2.6rem]">
+              No solo llenes la agenda.
+              <br />
+              <span className="text-[#D5A84C]">Haz que tus clientes vuelvan.</span>
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-8 text-white/60">
+              Tarjeta de puntos digital con sellos automáticos al completar cita. El cliente
+              ve su progreso desde un link o QR sin instalar ninguna app.
+            </p>
+            <ul className="mt-7 space-y-3">
+              {[
+                "Sello automático al completar cita",
+                "Recompensas configurables por la barbería",
+                "QR o link — sin app para el cliente",
+                "Progreso visible en ficha del cliente",
+                "Campañas de recuperación desde Marketing Studio",
+                "Sin coste adicional — incluido en el plan",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-[#D5A84C]" />
+                  <span className="text-sm text-white/72">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/programa-fidelizacion-barberias"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-[#D5A84C]/30 bg-[#D5A84C]/12 px-6 text-sm font-black text-[#D5A84C] transition hover:bg-[#D5A84C]/20"
+              >
+                Ver programa de fidelización
+                <ChevronRight size={15} />
+              </Link>
+              <Link
+                href="/tarjeta-puntos-digital-barberia"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-white/12 bg-white/[0.06] px-6 text-sm font-black text-white/70 transition hover:bg-white/[0.10]"
+              >
+                Tarjeta de puntos digital
+                <ChevronRight size={15} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Loyalty card mockup */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative w-full max-w-[340px]">
+              <div className="rounded-[28px] border border-[#D5A84C]/28 bg-gradient-to-br from-[#0F1A2E] via-[#0B1220] to-[#050A14] p-6 shadow-[0_24px_80px_rgba(213,168,76,0.16)]">
+                <div className="mb-5 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.1em] text-[#D5A84C]">
+                      Tarjeta de fidelización
+                    </p>
+                    <p className="mt-0.5 text-base font-black text-white">Carlos Mendoza</p>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#D5A84C]/15">
+                    <Scissors size={18} className="text-[#D5A84C]" />
+                  </div>
+                </div>
+                <div className="mb-4 grid grid-cols-5 gap-2">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`flex aspect-square items-center justify-center rounded-xl border text-[10px] ${
+                        i < 7
+                          ? "border-[#D5A84C]/60 bg-[#D5A84C]/20 text-[#D5A84C]"
+                          : "border-white/10 bg-white/5 text-white/20"
+                      }`}
+                    >
+                      {i < 7 ? (
+                        <Star size={12} fill="currentColor" />
+                      ) : (
+                        <Star size={12} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div>
+                    <p className="text-[11px] text-white/50">Próxima recompensa</p>
+                    <p className="text-sm font-black text-white">3 visitas para corte gratis</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] text-white/50">Progreso</p>
+                    <p className="text-lg font-black tabular-nums text-[#D5A84C]">7/10</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  <QrCode size={14} className="text-white/40" />
+                  <p className="text-[11px] text-white/40">barberiaos.com/fidelidad/carlos</p>
+                </div>
+              </div>
+              {/* Floating badge */}
+              <div className="absolute -right-3 -top-3 rounded-2xl border border-[#10B981]/30 bg-[#10B981]/12 px-3 py-1.5 shadow-[0_8px_24px_rgba(16,185,129,0.18)]">
+                <p className="text-xs font-black text-[#10B981]">+1 sello automático</p>
+              </div>
+              <div className="absolute -bottom-3 -left-3 rounded-2xl border border-[#D5A84C]/28 bg-[#050A14] px-3 py-1.5">
+                <p className="text-xs font-black text-[#D5A84C]">Sin app · Sin fricción</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
 export function FinalCTA() {
   return (
     <MotionBlock className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
@@ -2003,6 +2118,7 @@ export function UltraVipLanding() {
         <RevenueEngineSection />
         <QRReservationSection />
         <MarketingStudioSection />
+        <FidelizacionSection />
         <GrowthEnginePreviewSection />
         <VIPWebsiteOfferSection />
         <WebVipDeepDiveSection />
