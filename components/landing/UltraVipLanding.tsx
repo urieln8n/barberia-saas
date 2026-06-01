@@ -888,7 +888,7 @@ function TestimonialsSection() {
           {testimonials.map(({ quote, name, role, city, initial, metric, metricLabel }) => (
             <article
               key={name}
-              className="flex flex-col gap-4 rounded-[28px] border border-[#232323] bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
+              className="flex flex-col gap-4 rounded-[28px] border border-[#232323] bg-[#111111] p-7"
             >
               <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-4 py-3">
                 <p className="text-xl font-black text-white">{metric}</p>
@@ -1106,18 +1106,17 @@ export function PremiumHero() {
           </div>
         </div>
 
-        {/* H1 — full width, massive */}
-        <h1 className="mx-auto mt-7 max-w-4xl text-6xl font-black leading-[0.90] tracking-[-0.04em] text-white md:text-7xl lg:text-[88px]">
-          Más reservas.{" "}
+        {/* H1 — infrastructure positioning, Stripe-level */}
+        <h1 className="mx-auto mt-7 max-w-4xl text-6xl font-black leading-[0.90] tracking-[-0.045em] text-white md:text-7xl lg:text-[88px]">
+          El sistema operativo{" "}
           <span className="bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] bg-clip-text text-transparent">
-            Más caja.
-          </span>{" "}
-          Sin caos.
+            de tu barbería.
+          </span>
         </h1>
 
-        {/* Sub — tight, confident */}
-        <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#A1A1AA]">
-          El panel de mando para barberías que quieren crecer. Sin mensajes perdidos, sin doble reserva, sin comisión por cada cita.
+        {/* Sub — outcome-focused, confident */}
+        <p className="mx-auto mt-7 max-w-xl text-xl leading-9 text-[#A1A1AA]">
+          Reservas, agenda, caja, clientes y WhatsApp. Conectados. Sin comisiones, sin dependencias, desde el primer día.
         </p>
 
         {/* CTAs — centered */}
@@ -1299,7 +1298,7 @@ export function RevenueEngineSection() {
 
 export function ImplementationSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Implantación"
@@ -1654,7 +1653,7 @@ export function GrowthEnginePreviewSection() {
 
 export function TrustArchitectureSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
@@ -1793,7 +1792,7 @@ export function ProductProofSection() {
 
 export function ConversionBlueprintSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Blueprint de conversión"
@@ -1947,7 +1946,7 @@ export function PremiumSignalMatrixSection() {
 
 export function LaunchChecklistSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
@@ -2007,7 +2006,7 @@ export function ClosingArgumentsSection() {
 
 export function ExtendedFAQSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <SectionHeader
           eyebrow="Preguntas frecuentes"
@@ -2028,12 +2027,23 @@ export function ExtendedFAQSection() {
 
 export function PricingSection() {
   return (
-    <MotionBlock id="precios" className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock id="precios" className="bg-[#070707] px-5 py-20 text-white md:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
+        {/* Pre-price anchor: remind them of the ROI */}
+        <div className="mb-12 rounded-[26px] border border-[#232323] bg-[#111111] p-6 text-center">
+          <p className="text-sm font-bold text-[#A1A1AA]">
+            5 huecos libres por semana a 25€ =
+            <span className="ml-1 font-black text-[#22C55E]">+500€/mes recuperables</span>
+            <span className="mx-2 text-[#A1A1AA]/40">·</span>
+            BarberíaOS Pro cuesta
+            <span className="ml-1 font-black text-white">79€/mes</span>
+          </p>
+        </div>
+
         <SectionHeader
-          eyebrow="Planes"
-          title="Precio fijo para operar mejor. Setup para salir bien."
-          text="Mantén BarberíaOS mensual y añade setup desde 300€ para configurar servicios, barberos, QR, agenda y materiales iniciales."
+          eyebrow="Inversión"
+          title="El coste de no tener sistema es siempre mayor."
+          text="Precio fijo mensual. Sin comisión por reserva. Sin permanencia."
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {plans.map((plan) => (
@@ -2041,25 +2051,27 @@ export function PricingSection() {
               key={plan.name}
               className={`relative flex min-h-full flex-col rounded-[28px] p-7 ${
                 plan.featured
-                  ? "bg-[#111111] text-white shadow-[0_32px_90px_rgba(213,168,76,0.18)]"
-                  : "border border-[#232323] bg-[#0C0C0C] text-white"
+                  ? "border border-[#D4AF37]/30 bg-[#111111] shadow-[0_0_0_1px_rgba(212,175,55,0.15),0_32px_80px_rgba(0,0,0,0.40)]"
+                  : "border border-[#232323] bg-[#0C0C0C]"
               }`}
             >
-              {plan.featured ? (
-                <span className="absolute right-5 top-5 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black text-white">
-                  Más recomendado
+              {plan.featured && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#D4AF37] px-4 py-1 text-[11px] font-black text-[#070707]">
+                  Más popular
                 </span>
-              ) : null}
-              <h3 className="text-2xl font-black">{plan.name}</h3>
-              <p className={`mt-3 text-sm leading-6 ${plan.featured ? "text-white/55" : "text-white/55"}`}>{plan.text}</p>
-              <div className="mt-7 flex items-end gap-1">
-                <span className="text-5xl font-black">{plan.price}</span>
-                <span className={`mb-1 text-sm font-bold ${plan.featured ? "text-white/38" : "text-white/38"}`}>/mes</span>
+              )}
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#A1A1AA]/60">{plan.name}</p>
+                <div className="mt-3 flex items-end gap-1.5">
+                  <span className="text-5xl font-black tracking-tight text-white">{plan.price}</span>
+                  <span className="mb-1.5 text-sm font-semibold text-[#A1A1AA]">/mes</span>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-[#A1A1AA]">{plan.text}</p>
               </div>
-              <ul className="mt-7 flex flex-1 flex-col gap-3">
+              <ul className="mt-8 flex flex-1 flex-col gap-3 border-t border-[#232323] pt-8">
                 {plan.features.map((feature) => (
-                  <li key={feature} className={`flex items-start gap-2.5 text-sm font-bold ${plan.featured ? "text-white/70" : "text-[#A1A1AA]"}`}>
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#D4AF37]" size={16} />
+                  <li key={feature} className="flex items-start gap-2.5 text-sm text-[#A1A1AA]">
+                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#22C55E]" size={15} />
                     {feature}
                   </li>
                 ))}
@@ -2068,13 +2080,13 @@ export function PricingSection() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl text-sm font-black transition ${
+                className={`mt-8 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl text-sm font-black transition-all ${
                   plan.featured
-                    ? "bg-[#D4AF37] text-white hover:bg-[#F4D03F]"
-                    : "border border-[#232323] bg-[#111111] text-white/70 hover:text-white"
+                    ? "bg-[#D4AF37] text-[#070707] hover:bg-[#F4D03F] hover:shadow-[0_8px_24px_rgba(212,175,55,0.25)]"
+                    : "border border-[#232323] bg-[#111111] text-[#A1A1AA] hover:border-[#333] hover:text-white"
                 }`}
               >
-                Pedir demo
+                Empezar ahora
                 <ArrowRight size={15} />
               </a>
             </article>
@@ -2533,6 +2545,73 @@ function ResenasIASection() {
   );
 }
 
+function ManifiestoSection() {
+  const principles = [
+    {
+      n: "01",
+      title: "Tu cliente es tuyo.",
+      text: "Cuando reserva contigo, los datos son tuyos. No de un marketplace que te cobra por cada cita y te puede desconectar mañana.",
+    },
+    {
+      n: "02",
+      title: "El sistema trabaja. Tú decides.",
+      text: "BarberíaOS no automatiza lo que no debes automatizar. Te muestra qué hacer y tú eliges. La relación con el cliente siempre es humana.",
+    },
+    {
+      n: "03",
+      title: "Construido para crecer.",
+      text: "No es una agenda online. Es la infraestructura para que tu barbería pase de sobrevivir a operar como una empresa que escala.",
+    },
+  ] as const;
+
+  return (
+    <MotionBlock className="bg-[#070707] px-5 py-20 text-white md:py-32 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:items-start">
+          <div className="lg:sticky lg:top-24">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+              Por qué existe BarberíaOS
+            </p>
+            <h2 className="mt-4 text-4xl font-black leading-[1.05] tracking-[-0.03em] md:text-5xl">
+              Construido para las barberías que no quieren depender de nadie.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
+              Creemos que cada barbería merece el mismo nivel de tecnología que tienen las grandes empresas. Sin comisiones. Sin intermediarios. Con sus datos.
+            </p>
+            <div className="mt-8">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl bg-[#D4AF37] px-7 text-sm font-black text-[#070707] shadow-[0_0_0_1px_rgba(212,175,55,0.25),0_8px_24px_rgba(212,175,55,0.18)] transition hover:-translate-y-0.5 hover:bg-[#F4D03F]"
+              >
+                <MessageCircle size={15} />
+                Hablar con el equipo
+              </a>
+            </div>
+          </div>
+          <div className="space-y-4">
+            {principles.map(({ n, title, text }) => (
+              <article
+                key={n}
+                className="group rounded-[28px] border border-[#232323] bg-[#111111] p-7 transition-colors hover:border-[#D4AF37]/25 hover:bg-[#141414]"
+              >
+                <div className="flex items-start gap-5">
+                  <span className="shrink-0 text-[11px] font-black tabular-nums text-[#D4AF37]/50 mt-0.5">{n}</span>
+                  <div>
+                    <h3 className="text-xl font-black text-white">{title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-[#A1A1AA]">{text}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
 function FloatingCTA() {
   const [visible, setVisible] = useState(false);
 
@@ -2589,40 +2668,33 @@ export function UltraVipLanding() {
         Saltar al contenido
       </a>
       <div id="contenido-principal">
+        {/* 1. Hook — quién eres y qué prometes */}
         <PremiumHero />
         <SocialProofBar />
-        <GoldDivider />
+
+        {/* 2. El problema y el coste de no actuar */}
         <ROISection />
-        <ProblemCards />
-        <OperatingSystemSection />
-        <AgendaShowcase />
+
+        {/* 3. El sistema en acción — 4 capacidades core */}
         <ReservasOnlineSection />
-        <BeforeAfterSection />
-        <ProductFeatureGrid />
-        <RevenueEngineSection />
-        <QRReservationSection />
-        <MarketingStudioSection />
         <WhatsAppIASection />
         <FidelizacionSection />
         <ResenasIASection />
-        <GrowthEnginePreviewSection />
-        <VIPWebsiteOfferSection />
-        <WebVipDeepDiveSection />
-        <ImplementationSection />
-        <TrustArchitectureSection />
-        <LocalSeoSection />
-        <FounderOfferSection />
-        <ProductProofSection />
-        <ConversionBlueprintSection />
-        <OwnerCommandRoomSection />
-        <RouteAuthoritySection />
-        <PremiumSignalMatrixSection />
-        <LaunchChecklistSection />
-        <ClosingArgumentsSection />
-        <PricingSection />
+
+        {/* 4. Antes vs después — elimina objeciones */}
+        <BeforeAfterSection />
+
+        {/* 5. Manifiesto — por qué existe, misión, confianza */}
+        <ManifiestoSection />
+
+        {/* 6. Prueba social — barberías reales con resultados */}
         <TestimonialsSection />
+
+        {/* 6. Precio con contexto — el ROI ya está en la mente */}
+        <PricingSection />
+
+        {/* 7. Dudas y cierre */}
         <FAQSection />
-        <ExtendedFAQSection />
         <FinalCTA />
         <Footer />
       </div>
