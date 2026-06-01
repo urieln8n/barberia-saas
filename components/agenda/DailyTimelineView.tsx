@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Plus, Clock, Zap, Users } from "lucide-react";
+import { CalendarPlus, Clock, Users, Zap } from "lucide-react";
 import { formatTime, timeToMinutes } from "@/src/lib/agenda/agenda-utils";
 import {
   isCurrentDay,
@@ -10,13 +10,12 @@ import {
   formatNowLabel,
 } from "@/src/lib/agenda/time-position";
 import type { AgendaAppointment, AgendaBarber, AgendaService, FreeSlot } from "@/src/lib/agenda/types";
-import { useRef } from "react";
 import { AppointmentCard } from "./AppointmentCard";
 import { FreeSlotCard } from "./FreeSlotCard";
 
-const TIMELINE_START = 9; // 09:00
-const TIMELINE_END = 20; // 20:00
-const CELL_HEIGHT = 64; // px per hour
+const TIMELINE_START = 9;
+const TIMELINE_END = 20;
+const CELL_HEIGHT = 72; // slightly taller rows for premium feel
 
 function minutesToTop(timeStr: string): number {
   const mins = timeToMinutes(formatTime(timeStr));
@@ -27,9 +26,9 @@ function minutesToTop(timeStr: string): number {
 function durationToHeight(start: string, end: string | null, durationMin: number): number {
   if (end) {
     const diff = timeToMinutes(formatTime(end)) - timeToMinutes(formatTime(start));
-    return Math.max(48, (Math.min(diff, 120) / 60) * CELL_HEIGHT);
+    return Math.max(52, (Math.min(diff, 120) / 60) * CELL_HEIGHT);
   }
-  return Math.max(48, (Math.min(durationMin, 120) / 60) * CELL_HEIGHT);
+  return Math.max(52, (Math.min(durationMin, 120) / 60) * CELL_HEIGHT);
 }
 
 const HOURS = Array.from(
@@ -61,7 +60,6 @@ export function DailyTimelineView({
   onNewAppointment,
 }: Props) {
   const prefersReducedMotion = useReducedMotion();
-
   const nowLineRef = useRef<HTMLDivElement>(null);
 
   const [nowState, setNowState] = useState<{ percent: number | null; label: string }>(() => ({
@@ -84,7 +82,6 @@ export function DailyTimelineView({
     return () => clearInterval(id);
   }, [dateISO]);
 
-  // Scroll "Ahora" line into view on load (only on today, respects reduced-motion)
   useEffect(() => {
     if (!nowLineRef.current || nowState.percent === null) return;
     const t = setTimeout(() => {
@@ -105,67 +102,74 @@ export function DailyTimelineView({
     .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
   const totalHeight = (TIMELINE_END - TIMELINE_START) * CELL_HEIGHT;
-
   const isEmpty = dayAppointments.length === 0 && daySlots.length === 0;
+
+  const estimatedRevenue = dayAppointments.reduce(
+    (sum, a) => sum + Number(a.service?.price ?? 0),
+    0,
+  );
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Mini KPIs */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-2xl border border-[#2a2a2a] bg-[#111111] p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#555]">Reservas</p>
+          <p className="mt-1.5 text-2xl font-black text-white">{dayAppointments.length}</p>
+        </div>
+        <div className="rounded-2xl border border-[#22C55E]/20 bg-[#22C55E]/[0.06] p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#22C55E]/70">Huecos libres</p>
+          <p className="mt-1.5 text-2xl font-black text-[#22C55E]">{daySlots.length}</p>
+        </div>
+        <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.06] p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#D4AF37]/70">
+            {selectedBarberName ? "Barbero" : "Equipo"}
+          </p>
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Users size={16} className="text-[#D4AF37]" />
+            <p className="text-2xl font-black text-[#D4AF37]">
+              {selectedBarberName ? 1 : barbers.length}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-widest text-[#D4AF37]">
-            Vista día
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#D4AF37]">
+            Vista día · {selectedBarberName ?? "Todo el equipo"}
           </p>
-          <h2 className="mt-1 text-lg font-black text-[#080A0F]">
-            {selectedBarberName ? `Agenda de ${selectedBarberName}` : "Agenda de todo el equipo"}
-          </h2>
-          <p className="text-xs text-[#080A0F]/50">
-            {dayAppointments.length} cita{dayAppointments.length !== 1 ? "s" : ""} ·{" "}
-            {daySlots.length} hueco{daySlots.length !== 1 ? "s" : ""} libre{daySlots.length !== 1 ? "s" : ""}
+          <p className="mt-0.5 text-xs text-[#666]">
+            {dayAppointments.length} cita{dayAppointments.length !== 1 ? "s" : ""}
+            {estimatedRevenue > 0 ? ` · ${estimatedRevenue}€ previstos` : ""}
           </p>
         </div>
         <button
           type="button"
           onClick={onNewAppointment}
-          className="flex items-center gap-1.5 rounded-2xl bg-[#080A0F] px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-[#1a1d26] active:scale-95"
+          className="flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] px-3.5 py-2 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/[0.15] active:scale-95"
         >
-          <Plus size={13} />
+          <CalendarPlus size={13} />
           Nueva reserva
         </button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Reservas</p>
-          <p className="mt-1 text-2xl font-black text-slate-950">{dayAppointments.length}</p>
-        </div>
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Huecos libres</p>
-          <p className="mt-1 text-2xl font-black text-emerald-700">{daySlots.length}</p>
-        </div>
-        <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/8 p-4 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#B88917]">Equipo visible</p>
-          <p className="mt-1 flex items-center gap-2 text-2xl font-black text-slate-950">
-            <Users size={18} /> {selectedBarberName ? 1 : barbers.length}
-          </p>
-        </div>
-      </div>
-
-      {/* Timeline grid */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#080A0F]/8 bg-white shadow-sm">
+      {/* Timeline */}
+      <div className="relative overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0d0d0d] shadow-[0_24px_80px_rgba(0,0,0,0.40)]">
         <div className="flex">
           {/* Hour labels */}
           <div
-            className="shrink-0 border-r border-[#080A0F]/6"
+            className="shrink-0 border-r border-[#1e1e1e]"
             style={{ width: 56, height: totalHeight }}
           >
             {HOURS.map((h) => (
               <div
                 key={h}
-                className="flex items-start justify-end pr-2 pt-1"
+                className="flex items-start justify-end pr-2.5 pt-1.5"
                 style={{ height: CELL_HEIGHT }}
               >
-                <span className="text-[10px] font-bold text-[#080A0F]/35">
+                <span className="text-[10px] font-bold tabular-nums text-[#444]">
                   {String(h).padStart(2, "0")}:00
                 </span>
               </div>
@@ -178,7 +182,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={h}
-                className="absolute inset-x-0 border-t border-[#080A0F]/5"
+                className="absolute inset-x-0 border-t border-[#1e1e1e]"
                 style={{ top: i * CELL_HEIGHT }}
               />
             ))}
@@ -187,46 +191,46 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={`half-${h}`}
-                className="absolute inset-x-0 border-t border-[#080A0F]/[0.03]"
+                className="absolute inset-x-0 border-t border-[#161616]"
                 style={{ top: i * CELL_HEIGHT + CELL_HEIGHT / 2 }}
               />
             ))}
 
-            {/* Current time line — anchored so scroll-into-view works */}
+            {/* "Ahora" line — premium gold */}
             {nowState.percent !== null && (
               <div
                 ref={nowLineRef}
                 className="pointer-events-none absolute inset-x-0 z-20 flex items-center gap-0"
                 style={{ top: Math.round(nowState.percent * totalHeight) - 1 }}
               >
-                <span className="ml-1 mr-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#D4AF37] shadow-[0_0_0_3px_rgba(212,175,55,0.22)]" />
-                <div className="h-[2px] flex-1 bg-gradient-to-r from-[#D4AF37] to-[#D4AF37]/30 shadow-[0_1px_6px_rgba(212,175,55,0.35)]" />
-                <span className="mr-1 shrink-0 rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black text-white shadow-sm">
+                <span className="ml-1 mr-1.5 h-3 w-3 shrink-0 rounded-full bg-[#D4AF37] shadow-[0_0_0_3px_rgba(212,175,55,0.20),0_0_10px_rgba(212,175,55,0.40)]" />
+                <div className="h-[1.5px] flex-1 bg-gradient-to-r from-[#D4AF37] via-[#D4AF37]/60 to-transparent" />
+                <span className="mr-2 shrink-0 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[9px] font-black text-[#070707] shadow-sm">
                   {nowState.label}
                 </span>
               </div>
             )}
 
-            {/* Free slot hints */}
+            {/* Free slots */}
             {daySlots.map((slot) => {
               const top = minutesToTop(slot.start_time);
               const height = durationToHeight(slot.start_time, slot.end_time, 45);
               return (
                 <div
                   key={slot.id}
-                  className="absolute left-0 right-3 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50/90 px-2 shadow-sm"
+                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-[#22C55E]/20 bg-[#22C55E]/[0.06]"
                   style={{ top: top + 2, height: height - 4 }}
                 >
-                  <div className="flex items-center justify-between gap-2 pt-1.5">
-                    <span className="flex min-w-0 items-center gap-1 text-[9px] font-black text-emerald-800">
-                      <Zap size={10} className="shrink-0 text-emerald-600" />
-                      {formatTime(slot.start_time)} · {slot.barber?.name ?? "Libre"}
+                  <div className="flex h-full items-center justify-between gap-2 px-3">
+                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-[#22C55E]">
+                      <Zap size={10} className="shrink-0" />
+                      {formatTime(slot.start_time)} · {slot.barber?.name ?? "Hueco libre"}
                     </span>
                     {onFreeSlotBook ? (
                       <button
                         type="button"
                         onClick={() => onFreeSlotBook(slot)}
-                        className="shrink-0 rounded-lg bg-slate-950 px-2 py-1 text-[9px] font-black text-white transition hover:bg-slate-800"
+                        className="shrink-0 rounded-lg border border-[#22C55E]/30 bg-[#22C55E]/[0.12] px-2.5 py-1 text-[9px] font-black text-[#22C55E] transition hover:bg-[#22C55E]/[0.20]"
                       >
                         + Reservar
                       </button>
@@ -247,13 +251,13 @@ export function DailyTimelineView({
               return (
                 <motion.div
                   key={appt.id}
-                  initial={prefersReducedMotion ? false : { opacity: 0, x: -8 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: idx * 0.04 }}
+                  transition={{ duration: 0.18, delay: idx * 0.035 }}
                   className="absolute left-1 right-1"
                   style={{ top: top + 2, height: height - 4 }}
                 >
-                  <div className="h-full overflow-hidden rounded-xl shadow-sm">
+                  <div className="h-full overflow-hidden rounded-xl">
                     <AppointmentCard
                       appointment={appt}
                       compact={height < 72}
@@ -268,59 +272,49 @@ export function DailyTimelineView({
 
         {/* Empty state */}
         {isEmpty && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#080A0F]/10 bg-[#F8F8F6]">
-              <Clock size={20} className="text-[#080A0F]/30" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#2a2a2a] bg-[#111111] text-[#444]">
+              <Clock size={22} />
             </div>
             <div className="text-center">
-              <p className="font-black text-[#080A0F]">Día sin citas</p>
-              <p className="mt-1 text-xs text-[#080A0F]/50">
-                Cuando entren reservas, aparecerán aquí en timeline vertical.
+              <p className="font-black text-white">Día disponible</p>
+              <p className="mt-1.5 text-xs leading-6 text-[#666]">
+                Crea la primera cita o comparte tu link para recibir reservas online.
               </p>
             </div>
             <button
               type="button"
               onClick={onNewAppointment}
-              className="mt-1 flex items-center gap-1.5 rounded-2xl border border-[#080A0F]/12 bg-[#F8F8F6] px-4 py-2 text-xs font-black text-[#080A0F]/70 transition hover:bg-[#D4AF37]/8 hover:text-[#080A0F]"
+              className="flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] px-4 py-2 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/[0.15]"
             >
-              <Plus size={12} /> Crear cita
+              <CalendarPlus size={12} /> Crear primera cita
             </button>
           </div>
         )}
       </div>
 
-      {/* Mobile compact list fallback */}
+      {/* Mobile list */}
       {(dayAppointments.length > 0 || daySlots.length > 0) && (
         <div className="block md:hidden space-y-2 pt-1">
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#080A0F]/40">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#555]">
             Lista del día
           </p>
 
-          {/* "Ahora" separator in mobile list */}
           {nowState.percent !== null && (
             <div className="flex items-center gap-2 py-1">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-[#D4AF37]" />
-              <span className="h-px flex-1 bg-[#D4AF37]/30" />
-              <span className="rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black text-white">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#D4AF37] shadow-[0_0_6px_rgba(212,175,55,0.5)]" />
+              <span className="h-px flex-1 bg-[#D4AF37]/20" />
+              <span className="rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black text-[#070707]">
                 {nowState.label}
               </span>
             </div>
           )}
 
           {dayAppointments.map((appt) => (
-            <AppointmentCard
-              key={appt.id}
-              appointment={appt}
-              onClick={onAppointmentClick}
-            />
+            <AppointmentCard key={appt.id} appointment={appt} onClick={onAppointmentClick} />
           ))}
           {daySlots.map((slot) => (
-            <FreeSlotCard
-              key={slot.id}
-              slot={slot}
-              services={services}
-              onBook={onFreeSlotBook}
-            />
+            <FreeSlotCard key={slot.id} slot={slot} services={services} onBook={onFreeSlotBook} />
           ))}
         </div>
       )}

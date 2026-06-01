@@ -13,12 +13,7 @@ const VIEWS: {
   { id: "week", label: "Semana", shortLabel: "Sem.", Icon: CalendarDays },
   { id: "month", label: "Mes", shortLabel: "Mes", Icon: Grid3X3 },
   { id: "barbers", label: "Barberos", shortLabel: "Barb.", Icon: LayoutGrid },
-  {
-    id: "opportunities",
-    label: "Oportunidades",
-    shortLabel: "Oport.",
-    Icon: Lightbulb,
-  },
+  { id: "opportunities", label: "Oportunidades", shortLabel: "Oport.", Icon: Lightbulb },
 ];
 
 type Props = {
@@ -31,7 +26,7 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
     <div
       role="tablist"
       aria-label="Cambiar vista de agenda"
-      className="flex items-center rounded-2xl border border-[#080A0F]/10 bg-white p-1 shadow-sm"
+      className="flex items-center gap-0.5 rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-1"
     >
       {VIEWS.map(({ id, label, shortLabel, Icon }) => {
         const isActive = current === id;
@@ -43,29 +38,25 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
             aria-selected={isActive}
             onClick={() => onChange(id)}
             className={`
-              relative flex flex-1 items-center justify-center gap-1.5 rounded-xl px-2 py-2
-              text-xs font-black transition-all duration-150
-              ${
-                isActive
-                  ? "bg-[#080A0F] text-white shadow-sm"
-                  : "text-[#080A0F]/50 hover:bg-[#080A0F]/5 hover:text-[#080A0F]/80"
+              relative flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-2
+              text-xs font-bold transition-all duration-150
+              ${isActive
+                ? "bg-[#D4AF37] text-[#070707] shadow-sm"
+                : "text-[#666] hover:bg-[#1a1a1a] hover:text-white"
               }
             `}
           >
             <Icon
-              size={13}
-              className={isActive ? "text-[#D4AF37]" : ""}
+              size={12}
               aria-hidden="true"
             />
-            {/* Full label on md+, short on mobile */}
             <span className="hidden sm:block">{label}</span>
             <span className="block sm:hidden">{shortLabel}</span>
 
-            {/* Gold dot indicator for opportunities */}
             {id === "opportunities" && !isActive && (
               <span
                 aria-hidden="true"
-                className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#D4AF37]"
+                className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#22C55E]"
               />
             )}
           </button>
