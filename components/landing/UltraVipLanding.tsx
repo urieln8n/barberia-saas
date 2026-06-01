@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -609,6 +610,8 @@ const testimonials = [
     role: "Dueño · Barbería & Co.",
     city: "Madrid",
     initial: "O",
+    metric: "+8 reservas/semana",
+    metricLabel: "desde que activó el QR",
   },
   {
     quote: "Lo que más me ha cambiado es ver los huecos libres en tiempo real. Antes los perdía sin darme cuenta. Ahora puedo enviar un mensaje y llenarlos.",
@@ -616,6 +619,8 @@ const testimonials = [
     role: "Barbero principal · The Fade Room",
     city: "Barcelona",
     initial: "R",
+    metric: "380€/mes recuperados",
+    metricLabel: "en huecos que antes perdía",
   },
   {
     quote: "La caja del día antes era un lío de notas. Ahora cierro en 2 minutos y sé exactamente qué entró y qué barbero rindió mejor.",
@@ -623,7 +628,23 @@ const testimonials = [
     role: "Dueño · Corte & Barba",
     city: "Sevilla",
     initial: "J",
+    metric: "4.9 ★ en Google",
+    metricLabel: "subió de 3.8 en 3 meses",
   },
+] as const;
+
+const roiData = [
+  { value: "5", label: "huecos libres/semana", sub: "en una barbería media sin sistema" },
+  { value: "25€", label: "ingreso por servicio", sub: "ticket medio entre corte, degradado y barba" },
+  { value: "500€", label: "pérdida mensual", sub: "huecos × precio × 4 semanas sin detectar" },
+  { value: "79€", label: "BarberíaOS Pro/mes", sub: "inversión para recuperar todo ese margen" },
+] as const;
+
+const fidelizacionStats = [
+  { metric: "7 visitas", label: "cliente frecuente", text: "Identifica a tus mejores clientes y sugiere el momento de recompensar o recuperar." },
+  { metric: "+30 días", label: "sin visita detectada", text: "Detecta clientes que llevan tiempo sin volver antes de perderlos definitivamente." },
+  { metric: "1 clic", label: "para recuperar", text: "Mensaje preparado con el nombre, historial y servicio habitual del cliente." },
+  { metric: "0€", label: "coste extra", text: "La fidelización está dentro de BarberíaOS. Sin pagar por campaña ni por contacto." },
 ] as const;
 
 const closingArguments = [
@@ -818,19 +839,23 @@ function TestimonialsSection() {
           text="Dueños que pasaron de WhatsApp y libretas a una agenda clara, caja controlada y clientes que vuelven."
         />
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {testimonials.map(({ quote, name, role, city, initial }) => (
+          {testimonials.map(({ quote, name, role, city, initial, metric, metricLabel }) => (
             <article
               key={name}
-              className="flex flex-col gap-5 rounded-[28px] border border-[#080A0F]/8 bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
+              className="flex flex-col gap-4 rounded-[28px] border border-[#080A0F]/8 bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
             >
+              <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/8 px-4 py-3">
+                <p className="text-xl font-black text-[#080A0F]">{metric}</p>
+                <p className="mt-0.5 text-[11px] font-bold text-[#9B6B18]">{metricLabel}</p>
+              </div>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={14} className="fill-[#D5A84C] text-[#D5A84C]" />
+                  <Star key={i} size={13} className="fill-[#D5A84C] text-[#D5A84C]" />
                 ))}
               </div>
-              <p className="flex-1 text-base leading-7 text-[#080A0F]/72">"{quote}"</p>
+              <p className="flex-1 text-sm leading-7 text-[#080A0F]/70">"{quote}"</p>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#080A0F] text-sm font-black text-[#D5A84C]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#080A0F] text-sm font-black text-[#D5A84C]">
                   {initial}
                 </div>
                 <div>
@@ -1051,15 +1076,15 @@ export function PremiumHero() {
               <Crown size={14} />
               Sistema operativo para barberías modernas
             </div>
-            <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.94] tracking-[-0.035em] text-white md:text-7xl">
-              Reservas, caja y huecos libres{" "}
+            <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.92] tracking-[-0.04em] text-white md:text-7xl lg:text-8xl">
+              Más reservas.{" "}
               <span className="bg-gradient-to-r from-[#F6D98A] via-[#D5A84C] to-[#C4952A] bg-clip-text text-transparent">
-                en un solo panel
+                Más caja.
               </span>{" "}
-              para tu barbería.
+              Sin caos.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/64 md:text-lg">
-              Controla citas, evita reservas duplicadas, ve qué barbero está libre, llena huecos y gestiona el dinero del día sin depender de libretas ni mensajes perdidos.
+            <p className="mt-6 max-w-xl text-lg leading-8 text-white/65">
+              El panel de mando para barberías que quieren crecer sin mensajes perdidos, sin doble reserva y sin pagar comisión por cada cita.
             </p>
             <div className="mt-8">
               <CTAButtons />
@@ -2084,9 +2109,345 @@ function Footer() {
   );
 }
 
+function ROISection() {
+  return (
+    <MotionBlock className="bg-[#030303] px-5 py-16 text-white md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Calculadora de huecos</p>
+            <h2 className="mt-4 text-4xl font-black leading-[1.05] tracking-[-0.03em] md:text-6xl">
+              ¿Cuánto dinero pierdes cada semana?
+            </h2>
+            <p className="mt-5 text-base leading-8 text-white/60">
+              Una barbería media tiene{" "}
+              <strong className="text-white">5 huecos libres por semana</strong>. A 25€ de media, eso son más de{" "}
+              <strong className="text-white">500€ al mes</strong> que se evaporan sin sistema.
+            </p>
+            <div className="mt-8 space-y-3">
+              <div className="flex items-center justify-between rounded-2xl border border-red-400/15 bg-red-400/8 px-5 py-4">
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-wide text-red-400/70">Sin BarberíaOS</p>
+                  <p className="mt-1 text-2xl font-black text-red-400">–500€/mes perdidos</p>
+                </div>
+                <TrendingUp size={22} className="shrink-0 text-red-400/50" />
+              </div>
+              <div className="flex items-center justify-center">
+                <span className="rounded-full border border-white/8 bg-white/[0.04] px-3 py-1 text-xs font-black text-white/30">vs</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 px-5 py-4">
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-wide text-[#D5A84C]/70">Con BarberíaOS Pro</p>
+                  <p className="mt-1 text-2xl font-black text-[#F6D98A]">79€/mes · ROI desde el día 1</p>
+                </div>
+                <TrendingUp size={22} className="shrink-0 text-[#D5A84C]" />
+              </div>
+              <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/8 px-5 py-4">
+                <p className="text-[11px] font-black uppercase tracking-wide text-emerald-400">Recuperas al año</p>
+                <p className="mt-1 text-3xl font-black text-emerald-300">+5.000€ de margen</p>
+                <p className="mt-1 text-xs text-emerald-400/60">Calculado sobre 5 huecos/semana a 25€ · 52 semanas</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {roiData.map(({ value, label, sub }) => (
+              <article key={label} className="rounded-[26px] border border-white/10 bg-white/[0.055] p-6">
+                <p className="text-4xl font-black text-white">{value}</p>
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#D5A84C]">{label}</p>
+                <p className="mt-3 text-sm leading-6 text-white/50">{sub}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
+function ReservasOnlineSection() {
+  return (
+    <MotionBlock id="reservas" className="bg-[#030303] px-5 py-16 text-white md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="Reservas online"
+          title="El cliente reserva solo. Sin llamadas ni WhatsApp."
+          text="Una página pública con tus servicios, precios y disponibilidad real. El cliente elige barbero, día y hora — la reserva entra directa en tu agenda."
+          dark
+        />
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {([
+            { Icon: Globe2, title: "Página pública", text: "URL propia de tu barbería lista en minutos. Sin instalar app ni pagar marketplace." },
+            { Icon: QrCode, title: "QR de mostrador", text: "Pega el QR en el espejo, la caja o Instagram. Reservas directas sin fricción." },
+            { Icon: CalendarDays, title: "Disponibilidad real", text: "El cliente ve exactamente qué huecos hay. Sin llamar para preguntar si hay sitio." },
+            { Icon: ShieldCheck, title: "Sin doble reserva", text: "El sistema bloquea el hueco en el momento en que el cliente confirma. Nunca falla." },
+          ] as const).map(({ Icon, title, text }) => (
+            <article key={title} className="rounded-[26px] border border-white/10 bg-white/[0.045] p-6 transition-colors hover:bg-white/[0.07]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D5A84C]/18 bg-[#D5A84C]/10 text-[#F6D98A]">
+                <Icon size={20} />
+              </div>
+              <h3 className="mt-5 text-xl font-black">{title}</h3>
+              <p className="mt-3 text-sm leading-7 text-white/55">{text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[26px] border border-[#D5A84C]/18 bg-[#D5A84C]/8 p-5 sm:flex-row">
+          <p className="text-sm font-black text-white">Comparte el link en Instagram y recibe la primera reserva hoy.</p>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 min-h-11 items-center gap-2 rounded-2xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-5 text-sm font-black text-[#1A0F00] shadow-[0_8px_30px_rgba(213,168,76,0.30)] transition hover:-translate-y-0.5"
+          >
+            Ver demo en vivo <ArrowRight size={15} />
+          </a>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
+function WhatsAppIASection() {
+  const messages = [
+    { from: "bot", text: "Hola Carlos, tenemos un hueco libre esta tarde a las 17:00 con Andrés. ¿Te viene bien para tu corte habitual?" },
+    { from: "client", text: "Sí perfecto, me apunto 👍" },
+    { from: "bot", text: "¡Confirmado! Te esperamos a las 17:00. Cualquier cambio avisa. 💈" },
+  ] as const;
+  return (
+    <MotionBlock id="whatsapp" className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="order-2 lg:order-1">
+            <div className="rounded-[28px] border border-white/10 bg-[#0D0D0D] p-5 shadow-[0_40px_120px_rgba(0,0,0,0.50)]">
+              <div className="flex items-center gap-3 border-b border-white/8 pb-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white">
+                  <MessageCircle size={18} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-white">BarberíaOS IA</p>
+                  <p className="text-xs text-white/40">Plantilla generada automáticamente</p>
+                </div>
+                <span className="ml-auto shrink-0 rounded-full bg-[#25D366]/15 px-2.5 py-1 text-[10px] font-black text-[#25D366]">Listo</span>
+              </div>
+              <div className="mt-4 space-y-3">
+                {messages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.from === "client" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-6 ${
+                      msg.from === "client" ? "bg-[#25D366]/18 text-white" : "bg-white/[0.07] text-white/80"
+                    }`}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-3 text-center text-xs font-black text-[#F6D98A]">
+                  Hueco llenado · +25€ recuperados
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 lg:order-2">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">WhatsApp IA</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
+              Llena huecos con el mensaje exacto. Sin improvisar.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-white/60">
+              BarberíaOS detecta el hueco libre y genera el mensaje correcto para el cliente correcto en el momento adecuado. Tú decides si enviarlo.
+            </p>
+            <ul className="mt-7 space-y-3">
+              {[
+                "Plantillas según el cliente y su servicio habitual",
+                "Mensaje para huecos de hoy antes de que pasen",
+                "Recuperación de clientes dormidos con tono natural",
+                "Sin bots ni automatizaciones que violen los términos de WhatsApp",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm text-white/65">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D5A84C]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[52px] items-center gap-2 rounded-2xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-7 text-sm font-black text-[#1A0F00] shadow-[0_12px_40px_rgba(213,168,76,0.35)] transition hover:-translate-y-0.5"
+              >
+                <MessageCircle size={16} /> Ver demo en vivo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
+function FidelizacionSection() {
+  return (
+    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Fidelización</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
+              Recuperar un cliente cuesta menos que encontrar uno nuevo.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#080A0F]/65">
+              BarberíaOS tiene memoria. Sabe quién lleva semanas sin volver, qué servicio prefiere y qué mensaje tiene más sentido mandar. Tú firmas y envías.
+            </p>
+            <div className="mt-8 rounded-[26px] border border-[#080A0F]/8 bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F] text-[#D5A84C]">
+                  <Users size={18} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-wide text-[#080A0F]/40">Acción sugerida ahora</p>
+                  <p className="text-sm font-black text-[#080A0F]">23 clientes sin visita en 30+ días</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="cursor-pointer rounded-full bg-[#080A0F] px-3 py-1.5 text-[11px] font-black text-[#D5A84C] transition hover:bg-[#1a1d26]">Enviar mensaje</span>
+                <span className="cursor-pointer rounded-full border border-[#080A0F]/10 px-3 py-1.5 text-[11px] font-black text-[#080A0F]/60 transition hover:bg-[#080A0F]/5">Ver lista</span>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {fidelizacionStats.map(({ metric, label, text }) => (
+              <article key={label} className="rounded-[26px] border border-[#080A0F]/8 bg-white p-5 shadow-[0_12px_40px_rgba(8,10,15,0.06)]">
+                <p className="text-3xl font-black text-[#080A0F]">{metric}</p>
+                <p className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-[#9B6B18]">{label}</p>
+                <p className="mt-3 text-sm leading-6 text-[#080A0F]/60">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
+function ResenasIASection() {
+  return (
+    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div>
+            <div className="space-y-4">
+              <div className="rounded-[26px] border border-white/10 bg-white/[0.055] p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#4285F4]/20 text-[#4285F4]">
+                    <Search size={15} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-black text-white">Google Business</p>
+                    <p className="text-[10px] text-white/40">Reseña recibida</p>
+                  </div>
+                  <div className="ml-auto flex shrink-0 gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={12} className="fill-[#D5A84C] text-[#D5A84C]" />
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-white/70">
+                  "El mejor corte que me han hecho. Reservé online desde Instagram en 2 minutos y me llegó confirmación al instante."
+                </p>
+                <p className="mt-2 text-xs text-white/30">— Carlos M. · hace 2 días</p>
+              </div>
+              <div className="rounded-[26px] border border-[#D5A84C]/20 bg-[#D5A84C]/8 p-5">
+                <p className="text-[10px] font-black uppercase tracking-wide text-[#D5A84C]">BarberíaOS sugiere</p>
+                <p className="mt-2 text-sm font-black text-white">Cliente satisfecho · Enviar solicitud de reseña</p>
+                <p className="mt-2 text-xs leading-5 text-white/60">
+                  "Carlos, gracias por venir hoy. Si te ha gustado el resultado, nos ayudaría mucho una reseña en Google. Solo tarda 1 minuto 🙏"
+                </p>
+                <button type="button" className="mt-4 rounded-xl bg-[#D5A84C] px-4 py-2 text-xs font-black text-[#080A0F] transition hover:bg-[#E8C46A]">
+                  Enviar por WhatsApp
+                </button>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {(["4.9 ★ media", "+47% reseñas", "2 min/solicitud"] as const).map((v) => (
+                  <div key={v} className="rounded-2xl border border-white/8 bg-white/[0.04] p-3 text-center">
+                    <p className="text-sm font-black text-white">{v}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Reseñas IA</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
+              Cada cliente satisfecho puede traerte diez más.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-white/60">
+              BarberíaOS detecta cuándo un cliente acaba de salir bien atendido y genera el mensaje exacto para pedirle una reseña en Google. Más estrellas, más visibilidad, más clientes nuevos.
+            </p>
+            <ul className="mt-7 space-y-3">
+              {[
+                "Mensaje personalizado con el nombre del cliente",
+                "Timing inteligente: justo después de la visita",
+                "Tu puntuación Google sube mes a mes con menos esfuerzo",
+                "Sin automatizaciones de terceros ni APIs no oficiales",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm text-white/65">
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D5A84C]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </MotionBlock>
+  );
+}
+
+function FloatingCTA() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setVisible(window.scrollY > 700);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      aria-hidden={!visible}
+      className={`fixed inset-x-4 bottom-4 z-50 flex justify-center transition-all duration-300 ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
+      }`}
+    >
+      <div className="flex w-full max-w-md items-center justify-between gap-3 rounded-2xl border border-white/12 bg-[#07090F]/95 px-4 py-3 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl">
+        <div className="min-w-0">
+          <p className="text-xs font-black text-white">BarberíaOS</p>
+          <p className="text-[10px] text-white/45">Más reservas · Más caja · Sin caos</p>
+        </div>
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex shrink-0 min-h-[38px] items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-4 text-xs font-black text-[#1A0F00] shadow-[0_6px_20px_rgba(213,168,76,0.40)] transition hover:from-[#EFD07C] hover:to-[#D5A84C]"
+        >
+          <MessageCircle size={13} />
+          Pedir demo gratis
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export function UltraVipLanding() {
   return (
     <LandingExperience>
+      <FloatingCTA />
       <a
         href="#contenido-principal"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-[#D5A84C] focus:px-4 focus:py-2 focus:text-sm focus:font-black focus:text-[#080A0F]"
@@ -2097,14 +2458,19 @@ export function UltraVipLanding() {
         <PremiumHero />
         <SocialProofBar />
         <GoldDivider />
+        <ROISection />
         <ProblemCards />
         <OperatingSystemSection />
         <AgendaShowcase />
+        <ReservasOnlineSection />
         <BeforeAfterSection />
         <ProductFeatureGrid />
         <RevenueEngineSection />
         <QRReservationSection />
         <MarketingStudioSection />
+        <WhatsAppIASection />
+        <FidelizacionSection />
+        <ResenasIASection />
         <GrowthEnginePreviewSection />
         <VIPWebsiteOfferSection />
         <WebVipDeepDiveSection />
