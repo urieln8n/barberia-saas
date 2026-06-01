@@ -750,14 +750,14 @@ function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className={`text-xs font-black uppercase tracking-[0.18em] ${dark ? "text-[#D5A84C]" : "text-[#9B6B18]"}`}>
+      <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
         {eyebrow}
       </p>
-      <h2 className={`mt-4 text-3xl font-black leading-tight md:text-5xl ${dark ? "text-white" : "text-[#080A0F]"}`}>
+      <h2 className="mt-4 text-4xl font-black leading-[1.05] tracking-[-0.03em] text-white md:text-5xl">
         {title}
       </h2>
       {text ? (
-        <p className={`mx-auto mt-5 max-w-2xl text-base leading-8 ${dark ? "text-white/60" : "text-[#080A0F]/58"}`}>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#A1A1AA]">
           {text}
         </p>
       ) : null}
@@ -772,7 +772,7 @@ function CTAButtons({ center = false }: { center?: boolean }) {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-7 text-sm font-black text-[#1A0F00] shadow-[0_20px_60px_rgba(213,168,76,0.42),inset_0_1px_0_rgba(255,255,255,0.30)] transition hover:-translate-y-0.5 hover:from-[#EFD07C] hover:to-[#D5A84C] hover:shadow-[0_24px_70px_rgba(213,168,76,0.52)] active:scale-[0.98]"
+        className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] px-7 text-sm font-black text-[#070707] shadow-[0_20px_60px_rgba(213,168,76,0.42),inset_0_1px_0_rgba(255,255,255,0.30)] transition hover:-translate-y-0.5 hover:from-[#EFD07C] hover:to-[#D4AF37] hover:shadow-[0_24px_70px_rgba(213,168,76,0.52)] active:scale-[0.98]"
       >
         <MessageCircle size={17} />
         Pedir demo por WhatsApp
@@ -798,11 +798,57 @@ function RequestDemoLink({
   return (
     <Link
       href={REQUEST_DEMO_URL}
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-sm font-black text-[#080A0F] shadow-[0_18px_50px_rgba(255,255,255,0.14)] transition hover:-translate-y-0.5 hover:bg-[#F8F5EE] active:scale-[0.98] ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-sm font-black text-white shadow-[0_18px_50px_rgba(255,255,255,0.14)] transition hover:-translate-y-0.5 hover:bg-[#0C0C0C] active:scale-[0.98] ${className}`}
     >
       {children}
       <ArrowRight size={16} />
     </Link>
+  );
+}
+
+function StickyNav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 48);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-[#232323] bg-[#070707]/90 backdrop-blur-xl"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
+        <Link href="/" className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]" aria-label="BarberíaOS inicio">
+          <BarberiaOSLogo variant="isotipo" size={30} />
+          <span className="text-sm font-black tracking-tight text-white">BarberíaOS</span>
+        </Link>
+        <nav className="hidden items-center gap-7 text-sm font-medium text-[#A1A1AA] lg:flex" aria-label="Navegación principal">
+          <Link href="#reservas" className="transition-colors hover:text-white">Producto</Link>
+          <Link href="#whatsapp" className="transition-colors hover:text-white">Funciones</Link>
+          <Link href="#precios" className="transition-colors hover:text-white">Precios</Link>
+          <Link href="/software-para-barberias" className="transition-colors hover:text-white">Recursos</Link>
+        </nav>
+        <div className="flex items-center gap-3">
+          <Link href="/login" className="hidden text-sm font-medium text-[#A1A1AA] transition-colors hover:text-white sm:block">
+            Entrar
+          </Link>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-xl bg-[#D4AF37] px-4 text-xs font-black text-[#070707] transition hover:bg-[#F4D03F]"
+          >
+            Pedir demo
+          </a>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -814,13 +860,13 @@ function SocialProofBar() {
     { value: "24/7", label: "reservas online" },
   ] as const;
   return (
-    <div className="border-y border-white/[0.07] bg-[#0A0A0A] px-5 py-5 lg:px-8">
+    <div className="border-y border-[#232323] bg-[#111111] px-5 py-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           {items.map(({ value, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1 text-center">
-              <p className="text-2xl font-black text-white">{value}</p>
-              <p className="text-[11px] font-bold uppercase tracking-wide text-white/44">{label}</p>
+            <div key={label} className="flex flex-col items-center gap-1.5 text-center">
+              <p className="text-3xl font-black tracking-tight text-white">{value}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A1A1AA]">{label}</p>
             </div>
           ))}
         </div>
@@ -831,7 +877,7 @@ function SocialProofBar() {
 
 function TestimonialsSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Lo que dicen los dueños"
@@ -842,31 +888,31 @@ function TestimonialsSection() {
           {testimonials.map(({ quote, name, role, city, initial, metric, metricLabel }) => (
             <article
               key={name}
-              className="flex flex-col gap-4 rounded-[28px] border border-[#080A0F]/8 bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
+              className="flex flex-col gap-4 rounded-[28px] border border-[#232323] bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
             >
-              <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/8 px-4 py-3">
-                <p className="text-xl font-black text-[#080A0F]">{metric}</p>
-                <p className="mt-0.5 text-[11px] font-bold text-[#9B6B18]">{metricLabel}</p>
+              <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-4 py-3">
+                <p className="text-xl font-black text-white">{metric}</p>
+                <p className="mt-0.5 text-[11px] font-bold text-[#D4AF37]">{metricLabel}</p>
               </div>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={13} className="fill-[#D5A84C] text-[#D5A84C]" />
+                  <Star key={i} size={13} className="fill-[#D4AF37] text-[#D4AF37]" />
                 ))}
               </div>
-              <p className="flex-1 text-sm leading-7 text-[#080A0F]/70">"{quote}"</p>
+              <p className="flex-1 text-sm leading-7 text-white/70">"{quote}"</p>
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#080A0F] text-sm font-black text-[#D5A84C]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#111111] text-sm font-black text-[#D4AF37]">
                   {initial}
                 </div>
                 <div>
-                  <p className="text-sm font-black text-[#080A0F]">{name}</p>
-                  <p className="text-xs text-[#080A0F]/50">{role} · {city}</p>
+                  <p className="text-sm font-black text-white">{name}</p>
+                  <p className="text-xs text-[#A1A1AA]">{role} · {city}</p>
                 </div>
               </div>
             </article>
           ))}
         </div>
-        <p className="mt-6 text-center text-xs text-[#080A0F]/35">
+        <p className="mt-6 text-center text-xs text-[#A1A1AA]/60">
           Experiencias de dueños durante el onboarding y primeros meses de uso.
         </p>
       </div>
@@ -876,7 +922,7 @@ function TestimonialsSection() {
 
 function GoldDivider() {
   return (
-    <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-[#D5A84C]/50 to-transparent" />
+    <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
   );
 }
 
@@ -892,7 +938,7 @@ function Pill({
       className={`inline-flex items-center rounded-full border px-3 py-2 text-xs font-black ${
         dark
           ? "border-white/10 bg-white/[0.055] text-white/70"
-          : "border-[#080A0F]/10 bg-white text-[#080A0F]/62"
+          : "border-[#232323] bg-[#111111] text-[#A1A1AA]"
       }`}
     >
       {children}
@@ -908,9 +954,9 @@ function ExecutiveMetricStrip() {
           key={stat.label}
           className="relative overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur"
         >
-          <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-gradient-to-b from-[#D5A84C] to-[#D5A84C]/20" />
+          <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-gradient-to-b from-[#D4AF37] to-[#D4AF37]/20" />
           <p className="text-3xl font-black text-white">{stat.value}</p>
-          <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#D5A84C]">{stat.label}</p>
+          <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">{stat.label}</p>
           <p className="mt-3 text-sm leading-6 text-white/52">{stat.text}</p>
         </article>
       ))}
@@ -928,7 +974,7 @@ export function FloatingMetricCard({
   tone?: "gold" | "green" | "blue" | "zinc";
 }) {
   const tones = {
-    gold: "border-[#D5A84C]/32 bg-[#D5A84C]/14 text-[#F6D98A]",
+    gold: "border-[#D4AF37]/32 bg-[#D4AF37]/14 text-[#F4D03F]",
     green: "border-emerald-300/28 bg-emerald-400/14 text-emerald-200",
     blue: "border-sky-300/28 bg-sky-400/14 text-sky-200",
     zinc: "border-white/16 bg-white/[0.09] text-white/78",
@@ -966,12 +1012,12 @@ export function DashboardMockup() {
       <div className="rounded-[24px] border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.025] p-4 md:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#D5A84C]">Panel BarberíaOS</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#D4AF37]">Panel BarberíaOS</p>
             <p className="mt-1 text-xl font-black text-white">Agenda operativa</p>
           </div>
           <div className="flex rounded-full border border-white/10 bg-white/[0.06] p-1 text-[11px] font-black text-white/52">
             {["Día", "Semana", "Mes"].map((item, index) => (
-              <span key={item} className={`rounded-full px-3 py-1.5 ${index === 0 ? "bg-[#D5A84C] text-[#080A0F]" : ""}`}>
+              <span key={item} className={`rounded-full px-3 py-1.5 ${index === 0 ? "bg-[#D4AF37] text-white" : ""}`}>
                 {item}
               </span>
             ))}
@@ -993,14 +1039,14 @@ export function DashboardMockup() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-4">
-              <p className="text-xs font-black text-[#F6D98A]">Próxima reserva</p>
+            <div className="mt-4 rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-4">
+              <p className="text-xs font-black text-[#F4D03F]">Próxima reserva</p>
               <p className="mt-2 text-sm font-bold text-white">11:30 · Corte + barba</p>
               <p className="text-xs text-white/45">Cliente: Andrés · Barbero: Diego</p>
             </div>
           </div>
           <div className="relative rounded-2xl border border-white/10 bg-[#06080D] p-4">
-            <div className="absolute left-0 right-0 top-[48%] h-px bg-gradient-to-r from-transparent via-[#D5A84C] to-transparent shadow-[0_0_22px_rgba(213,168,76,0.70)]" />
+            <div className="absolute left-0 right-0 top-[48%] h-px bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent shadow-[0_0_22px_rgba(213,168,76,0.70)]" />
             <div className="grid grid-cols-[54px_1fr] gap-3">
               <div className="space-y-5 text-xs font-bold text-white/28">
                 {hours.map((hour) => (
@@ -1016,7 +1062,7 @@ export function DashboardMockup() {
                         ? "border-emerald-300/25 bg-emerald-400/12"
                         : tone === "blue"
                           ? "border-sky-300/20 bg-sky-400/10"
-                          : "border-[#D5A84C]/24 bg-[#D5A84C]/10"
+                          : "border-[#D4AF37]/24 bg-[#D4AF37]/10"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -1042,79 +1088,96 @@ export function DashboardMockup() {
 
 export function PremiumHero() {
   return (
-    <section className="relative overflow-hidden bg-[#030303] px-5 pb-16 pt-6 text-white md:pb-24 lg:px-8">
-      {/* Main gold radial — wider, stronger */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_55%_at_50%_-5%,rgba(213,168,76,0.46),transparent_58%)]" />
-      {/* Secondary warm centre pulse */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_28%_at_50%_0%,rgba(248,232,130,0.18),transparent_48%)]" />
-      {/* Subtle blue accent — right side depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_22%,rgba(56,189,248,0.07),transparent_26%)]" />
-      {/* Bottom fade to black */}
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#030303] to-transparent" />
-      {/* Top gold hairline */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/80 to-transparent" />
-      <div className="relative mx-auto max-w-7xl">
-        <header className="flex items-center justify-between gap-4 py-4">
-          <Link href="/" className="inline-flex items-center gap-3" aria-label="BarberíaOS inicio">
-            <BarberiaOSLogo variant="isotipo" size={42} />
-            <span className="font-black tracking-tight">BarberíaOS</span>
-          </Link>
-          <nav className="hidden items-center gap-6 text-sm font-bold text-white/55 lg:flex" aria-label="Navegación principal">
-            <Link href="#agenda" className="hover:text-white">Agenda</Link>
-            <Link href="#huecos" className="hover:text-white">Huecos</Link>
-            <Link href="#web-vip" className="hover:text-white">Web VIP</Link>
-            <Link href="#precios" className="hover:text-white">Precios</Link>
-          </nav>
-          <Link href="/login" className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-white/70 hover:text-white">
-            Entrar
-          </Link>
-        </header>
+    <section className="relative overflow-hidden bg-[#070707] px-5 pb-24 pt-32 text-white md:pb-32 lg:px-8">
+      {/* Precise gold radial — top center only */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_-5%,rgba(212,175,55,0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_20%_at_50%_-2%,rgba(244,208,63,0.10),transparent_45%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#070707] to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
+      </div>
 
-        <div className="grid gap-10 pt-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:pt-20">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#D5A84C]/12 px-3 py-1.5 text-xs font-black text-[#F6D98A] shadow-[0_0_28px_rgba(213,168,76,0.22),inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <Crown size={14} />
-              Sistema operativo para barberías modernas
-            </div>
-            <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.92] tracking-[-0.04em] text-white md:text-7xl lg:text-8xl">
-              Más reservas.{" "}
-              <span className="bg-gradient-to-r from-[#F6D98A] via-[#D5A84C] to-[#C4952A] bg-clip-text text-transparent">
-                Más caja.
-              </span>{" "}
-              Sin caos.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/65">
-              El panel de mando para barberías que quieren crecer sin mensajes perdidos, sin doble reserva y sin pagar comisión por cada cita.
-            </p>
-            <div className="mt-8">
-              <CTAButtons />
-            </div>
-            <div className="mt-8 grid max-w-xl grid-cols-2 gap-3 text-xs font-bold text-white/46 sm:grid-cols-4">
-              {["Sin comisión por cita", "QR propio", "Agenda online", "Caja diaria"].map((item) => (
-                <span key={item} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-center">
-                  {item}
-                </span>
-              ))}
-            </div>
-            <ExecutiveMetricStrip />
-          </div>
-
-          <div className="relative">
-            <div className="absolute -left-2 top-8 z-10 hidden md:block">
-              <FloatingMetricCard label="Hueco libre" value="Reservar ahora" tone="green" />
-            </div>
-            <div className="absolute -right-3 top-24 z-10 hidden md:block">
-              <FloatingMetricCard label="Caja de hoy" value="486€ registrados" tone="gold" />
-            </div>
-            <div className="absolute -bottom-5 left-12 z-10 hidden md:block">
-              <FloatingMetricCard label="Próxima reserva" value="11:30 · Corte + barba" tone="blue" />
-            </div>
-            <div className="absolute -bottom-4 right-10 z-10 hidden md:block">
-              <FloatingMetricCard label="QR activo" value="Instagram + mostrador" tone="zinc" />
-            </div>
-            <DashboardMockup />
+      <div className="relative mx-auto max-w-5xl text-center">
+        {/* Live badge */}
+        <div className="flex justify-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#232323] bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-[#A1A1AA]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] shadow-[0_0_6px_#22C55E]" />
+            Sistema operativo para barberías modernas
           </div>
         </div>
+
+        {/* H1 — full width, massive */}
+        <h1 className="mx-auto mt-7 max-w-4xl text-6xl font-black leading-[0.90] tracking-[-0.04em] text-white md:text-7xl lg:text-[88px]">
+          Más reservas.{" "}
+          <span className="bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] bg-clip-text text-transparent">
+            Más caja.
+          </span>{" "}
+          Sin caos.
+        </h1>
+
+        {/* Sub — tight, confident */}
+        <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#A1A1AA]">
+          El panel de mando para barberías que quieren crecer. Sin mensajes perdidos, sin doble reserva, sin comisión por cada cita.
+        </p>
+
+        {/* CTAs — centered */}
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-8 text-sm font-black text-[#070707] shadow-[0_0_0_1px_rgba(212,175,55,0.3),0_8px_32px_rgba(212,175,55,0.25)] transition-all hover:-translate-y-0.5 hover:bg-[#F4D03F] hover:shadow-[0_0_0_1px_rgba(244,208,63,0.4),0_12px_40px_rgba(212,175,55,0.35)] active:scale-[0.98]"
+          >
+            <MessageCircle size={16} />
+            Pedir demo gratis
+          </a>
+          <Link
+            href="#reservas"
+            className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-[#232323] bg-white/[0.03] px-8 text-sm font-semibold text-[#A1A1AA] transition-all hover:border-[#333] hover:bg-white/[0.06] hover:text-white active:scale-[0.98]"
+          >
+            Ver cómo funciona
+            <ArrowRight size={15} />
+          </Link>
+        </div>
+
+        {/* Social proof inline */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <div className="flex items-center gap-2">
+            <div className="flex">
+              {["bg-[#D4AF37]", "bg-emerald-500", "bg-sky-500", "bg-slate-600", "bg-rose-500"].map((bg, i) => (
+                <div key={i} className={`-ml-1.5 first:ml-0 h-6 w-6 rounded-full border-2 border-[#070707] ${bg}`} />
+              ))}
+            </div>
+            <span className="text-xs text-[#A1A1AA]">200+ barberías activas</span>
+          </div>
+          <span className="hidden text-[#232323] sm:block">·</span>
+          <div className="flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={12} className="fill-[#D4AF37] text-[#D4AF37]" />
+            ))}
+          </div>
+          <span className="text-xs text-[#A1A1AA]">4.9/5 · Sin comisión por reserva</span>
+        </div>
+      </div>
+
+      {/* Dashboard — full width, below fold */}
+      <div className="relative mx-auto mt-16 max-w-6xl">
+        <div className="pointer-events-none absolute -inset-x-8 -bottom-16 top-8">
+          <div className="h-full w-full bg-[radial-gradient(ellipse_50%_35%_at_50%_60%,rgba(212,175,55,0.06),transparent_70%)]" />
+        </div>
+        <div className="absolute -left-8 top-12 z-10 hidden xl:block">
+          <FloatingMetricCard label="Hueco libre" value="Reservar ahora" tone="green" />
+        </div>
+        <div className="absolute -right-8 top-6 z-10 hidden xl:block">
+          <FloatingMetricCard label="Caja de hoy" value="486€ registrados" tone="gold" />
+        </div>
+        <div className="absolute -bottom-4 left-16 z-10 hidden lg:block">
+          <FloatingMetricCard label="Próxima reserva" value="11:30 · Corte + barba" tone="blue" />
+        </div>
+        <div className="absolute -bottom-3 right-16 z-10 hidden lg:block">
+          <FloatingMetricCard label="QR activo" value="Instagram + mostrador" tone="zinc" />
+        </div>
+        <DashboardMockup />
       </div>
     </section>
   );
@@ -1122,15 +1185,15 @@ export function PremiumHero() {
 
 export function OperatingSystemSection() {
   return (
-    <MotionBlock className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Arquitectura comercial</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Arquitectura comercial</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Una landing premium debe vender el sistema, no solo una agenda bonita.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
+            <p className="mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">
               Captación, conversión, operación y crecimiento conectados en una sola plataforma. Sin depender de mensajes sueltos, hojas o plataformas que cobran por cada reserva.
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
@@ -1146,8 +1209,8 @@ export function OperatingSystemSection() {
                 className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6 shadow-[0_22px_80px_rgba(0,0,0,0.24)]"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#D5A84C]">{eyebrow}</span>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D5A84C]/18 bg-[#D5A84C]/10 text-[#F6D98A]">
+                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#D4AF37]">{eyebrow}</span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D4AF37]/18 bg-[#D4AF37]/10 text-[#F4D03F]">
                     <Icon size={20} />
                   </span>
                 </div>
@@ -1155,7 +1218,7 @@ export function OperatingSystemSection() {
                 <p className="mt-3 text-sm leading-7 text-white/56">{text}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {points.map((point) => (
-                    <span key={point} className="rounded-full bg-white/[0.06] px-3 py-1.5 text-[11px] font-black text-white/58">
+                    <span key={point} className="rounded-full bg-white/[0.06] px-3 py-1.5 text-[11px] font-black text-[#A1A1AA]">
                       {point}
                     </span>
                   ))}
@@ -1171,24 +1234,24 @@ export function OperatingSystemSection() {
 
 export function BeforeAfterSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Antes y después"
           title="De conversaciones sueltas a una barbería con sistema."
           text="Menos improvisación, más control y más reservas propias desde el primer día."
         />
-        <div className="mt-10 overflow-hidden rounded-[30px] border border-[#080A0F]/8 bg-white shadow-[0_22px_80px_rgba(8,10,15,0.08)]">
-          <div className="grid grid-cols-[0.72fr_1fr_1fr] border-b border-[#080A0F]/8 bg-[#080A0F] px-5 py-4 text-xs font-black uppercase tracking-[0.14em] text-white/60">
+        <div className="mt-10 overflow-hidden rounded-[30px] border border-[#232323] bg-white shadow-[0_22px_80px_rgba(8,10,15,0.08)]">
+          <div className="grid grid-cols-[0.72fr_1fr_1fr] border-b border-[#232323] bg-[#111111] px-5 py-4 text-xs font-black uppercase tracking-[0.14em] text-white/60">
             <span>Área</span>
             <span>Sin sistema</span>
             <span>Con BarberíaOS</span>
           </div>
           {beforeAfterRows.map(([area, before, after]) => (
-            <div key={area} className="grid gap-4 border-b border-[#080A0F]/6 px-5 py-5 last:border-b-0 md:grid-cols-[0.72fr_1fr_1fr]">
-              <p className="text-sm font-black text-[#9B6B18]">{area}</p>
-              <p className="text-sm leading-6 text-[#080A0F]/52">{before}</p>
-              <p className="text-sm font-bold leading-6 text-[#080A0F]/76">{after}</p>
+            <div key={area} className="grid gap-4 border-b border-[#232323]/60 px-5 py-5 last:border-b-0 md:grid-cols-[0.72fr_1fr_1fr]">
+              <p className="text-sm font-black text-[#D4AF37]">{area}</p>
+              <p className="text-sm leading-6 text-[#A1A1AA]">{before}</p>
+              <p className="text-sm font-bold leading-6 text-white/76">{after}</p>
             </div>
           ))}
         </div>
@@ -1199,21 +1262,21 @@ export function BeforeAfterSection() {
 
 export function RevenueEngineSection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Motor de ingresos</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Motor de ingresos</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Cada parte del sistema está conectada con ingresos reales.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
+            <p className="mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">
               Llenar agenda, recuperar clientes dormidos, controlar caja y operar con tus propios datos. Sin comisiones ni dependencia de plataformas externas.
             </p>
-            <div className="mt-8 rounded-[26px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-5">
-              <LineChart className="text-[#F6D98A]" size={26} />
+            <div className="mt-8 rounded-[26px] border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-5">
+              <LineChart className="text-[#F4D03F]" size={26} />
               <p className="mt-4 text-xl font-black">Lectura de dueño</p>
-              <p className="mt-2 text-sm leading-7 text-white/58">
+              <p className="mt-2 text-sm leading-7 text-[#A1A1AA]">
                 Qué entra hoy, qué se pierde esta semana, qué barbero tiene capacidad y qué acción comercial conviene lanzar.
               </p>
             </div>
@@ -1221,7 +1284,7 @@ export function RevenueEngineSection() {
           <div className="grid gap-4 sm:grid-cols-2">
             {revenueLevers.map(({ title, metric, text, icon: Icon }) => (
               <article key={title} className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6">
-                <Icon className="text-[#D5A84C]" size={24} />
+                <Icon className="text-[#D4AF37]" size={24} />
                 <p className="mt-5 text-xs font-black uppercase tracking-[0.14em] text-white/38">{metric}</p>
                 <h3 className="mt-2 text-2xl font-black">{title}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/56">{text}</p>
@@ -1236,7 +1299,7 @@ export function RevenueEngineSection() {
 
 export function ImplementationSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Implantación"
@@ -1245,13 +1308,13 @@ export function ImplementationSection() {
         />
         <div className="mt-12 grid gap-4 lg:grid-cols-5">
           {implementationTimeline.map((step, index) => (
-            <article key={step.day} className="relative rounded-[26px] border border-[#080A0F]/8 bg-[#F8F5EE] p-6">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black text-[#D5A84C]">
+            <article key={step.day} className="relative rounded-[26px] border border-[#232323] bg-[#0C0C0C] p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111111] text-sm font-black text-[#D4AF37]">
                 {index + 1}
               </div>
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.15em] text-[#9B6B18]">{step.day}</p>
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.15em] text-[#D4AF37]">{step.day}</p>
               <h3 className="mt-2 text-xl font-black">{step.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#080A0F]/55">{step.text}</p>
+              <p className="mt-3 text-sm leading-6 text-white/55">{step.text}</p>
             </article>
           ))}
         </div>
@@ -1262,7 +1325,7 @@ export function ImplementationSection() {
 
 export function ProblemCards() {
   return (
-    <MotionBlock className="bg-[#F8F5EE] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="El problema"
@@ -1271,10 +1334,10 @@ export function ProblemCards() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {problemCards.map(({ title, text, icon: Icon }) => (
-            <article key={title} className="rounded-[24px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_16px_45px_rgba(8,10,15,0.06)]">
-              <Icon className="text-[#9B6B18]" size={22} />
+            <article key={title} className="rounded-[24px] border border-[#232323] bg-white p-6 shadow-[0_16px_45px_rgba(8,10,15,0.06)]">
+              <Icon className="text-[#D4AF37]" size={22} />
               <h3 className="mt-5 text-xl font-black">{title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#080A0F]/55">{text}</p>
+              <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
             </article>
           ))}
         </div>
@@ -1285,7 +1348,7 @@ export function ProblemCards() {
 
 export function AgendaShowcase() {
   return (
-    <MotionBlock id="funciona" className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock id="funciona" className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <div>
           <SectionHeader
@@ -1297,7 +1360,7 @@ export function AgendaShowcase() {
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {["Controla quién viene", "Quién atiende", "Cuánto entra", "Qué huecos se pueden vender"].map((item) => (
               <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4">
-                <CheckCircle2 size={17} className="text-[#D5A84C]" />
+                <CheckCircle2 size={17} className="text-[#D4AF37]" />
                 <p className="mt-3 text-sm font-black text-white/76">{item}</p>
               </div>
             ))}
@@ -1316,16 +1379,16 @@ export function ProductFeatureGrid() {
         <MotionBlock
           key={section.id}
           id={section.id}
-          className={`px-5 py-16 md:py-24 lg:px-8 ${index % 2 === 0 ? "bg-[#FBF7EF] text-[#080A0F]" : "bg-white text-[#080A0F]"}`}
+          className={`px-5 py-16 md:py-24 lg:px-8 ${index % 2 === 0 ? "bg-[#0C0C0C] text-white" : "bg-[#111111] text-white"}`}
         >
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">{section.eyebrow}</p>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">{section.eyebrow}</p>
               <h2 className="mt-4 text-3xl font-black leading-tight md:text-5xl">{section.title}</h2>
-              <p className="mt-5 max-w-xl text-base leading-8 text-[#080A0F]/58">{section.text}</p>
+              <p className="mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">{section.text}</p>
               <div className="mt-7 flex flex-wrap gap-2">
                 {section.items.map((item) => (
-                  <span key={item} className="rounded-full border border-[#080A0F]/10 bg-white px-3 py-2 text-xs font-black text-[#080A0F]/62 shadow-sm">
+                  <span key={item} className="rounded-full border border-[#232323] bg-white px-3 py-2 text-xs font-black text-[#A1A1AA] shadow-sm">
                     {item}
                   </span>
                 ))}
@@ -1347,7 +1410,7 @@ export function FreeSlotVisualCard({
   title: string;
 }) {
   const accent = {
-    gold: "from-[#D5A84C]/24 to-[#080A0F] text-[#F6D98A]",
+    gold: "from-[#D4AF37]/24 to-[#080A0F] text-[#F4D03F]",
     green: "from-emerald-400/20 to-[#080A0F] text-emerald-200",
     blue: "from-sky-400/20 to-[#080A0F] text-sky-200",
     zinc: "from-zinc-300/14 to-[#080A0F] text-white/80",
@@ -1355,7 +1418,7 @@ export function FreeSlotVisualCard({
 
   return (
     <div className={`rounded-[30px] border border-white/10 bg-gradient-to-br ${accent[variant]} p-5 shadow-[0_28px_90px_rgba(8,10,15,0.18)]`}>
-      <div className="rounded-[24px] border border-white/10 bg-[#080A0F] p-5 text-white">
+      <div className="rounded-[24px] border border-white/10 bg-[#111111] p-5 text-white">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase text-white/35">Vista BarberíaOS</p>
@@ -1374,7 +1437,7 @@ export function FreeSlotVisualCard({
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-black text-white">{service}</p>
-                  <span className="rounded-full bg-[#D5A84C]/12 px-2 py-1 text-[10px] font-black text-[#F6D98A]">{status}</span>
+                  <span className="rounded-full bg-[#D4AF37]/12 px-2 py-1 text-[10px] font-black text-[#F4D03F]">{status}</span>
                 </div>
                 <p className="mt-1 text-xs text-white/42">Barbero: {barber}</p>
               </div>
@@ -1388,10 +1451,10 @@ export function FreeSlotVisualCard({
 
 export function QRReservationSection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">QR y reservas directas</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">QR y reservas directas</p>
           <h2 className="mt-4 text-3xl font-black leading-tight md:text-5xl">
             Tu propio QR de reservas. Sin comisiones por cita.
           </h2>
@@ -1406,19 +1469,19 @@ export function QRReservationSection() {
             ))}
           </div>
         </div>
-        <div className="rounded-[32px] border border-[#D5A84C]/20 bg-[#D5A84C]/8 p-6">
+        <div className="rounded-[32px] border border-[#D4AF37]/20 bg-[#D4AF37]/8 p-6">
           <div className="mx-auto flex aspect-square max-w-[290px] items-center justify-center rounded-[30px] border border-white/14 bg-white p-7">
             <div className="grid h-full w-full grid-cols-5 gap-2">
               {Array.from({ length: 25 }).map((_, index) => (
                 <span
                   key={index}
-                  className={`rounded-md ${[0, 1, 3, 5, 6, 9, 10, 14, 15, 18, 20, 21, 23, 24].includes(index) ? "bg-[#080A0F]" : "bg-[#D5A84C]/30"}`}
+                  className={`rounded-md ${[0, 1, 3, 5, 6, 9, 10, 14, 15, 18, 20, 21, 23, 24].includes(index) ? "bg-[#111111]" : "bg-[#D4AF37]/30"}`}
                 />
               ))}
             </div>
           </div>
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-center">
-            <QrCode className="mx-auto text-[#D5A84C]" size={24} />
+            <QrCode className="mx-auto text-[#D4AF37]" size={24} />
             <p className="mt-3 text-lg font-black">barberiaos.com/r/tu-barberia</p>
             <p className="mt-1 text-sm text-white/45">Listo para escaparate, espejo, stories y Google.</p>
           </div>
@@ -1430,7 +1493,7 @@ export function QRReservationSection() {
 
 export function MarketingStudioSection() {
   return (
-    <MotionBlock className="bg-[#F8F5EE] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Marketing Studio"
@@ -1449,46 +1512,46 @@ export function MarketingStudioSection() {
 
 export function LuxuryFeatureCard({ title, text, icon: Icon }: FeatureItem) {
   return (
-    <article className="rounded-[24px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.07)]">
-      <Icon size={22} className="text-[#9B6B18]" />
+    <article className="rounded-[24px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.07)]">
+      <Icon size={22} className="text-[#D4AF37]" />
       <h3 className="mt-5 text-xl font-black">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-[#080A0F]/55">{text}</p>
+      <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
     </article>
   );
 }
 
 export function VIPWebsiteOfferSection() {
   return (
-    <MotionBlock id="web-vip" className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock id="web-vip" className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Web VIP para barberías</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Web VIP para barberías</p>
           <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
             También podemos convertir tu barbería en una marca premium online.
           </h2>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-white/62">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-[#A1A1AA]">
             Web profesional, QR de reservas, SEO local, WhatsApp, agenda online y BarberíaOS conectado. No es solo una página: es una máquina de reservas.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {["Web premium", "SEO local", "QR de reservas", "Agenda online", "WhatsApp", "Sistema conectado"].map((item) => (
-              <span key={item} className="rounded-full border border-[#D5A84C]/20 bg-[#D5A84C]/10 px-4 py-2 text-sm font-black text-[#F6D98A]">
+              <span key={item} className="rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/10 px-4 py-2 text-sm font-black text-[#F4D03F]">
                 {item}
               </span>
             ))}
           </div>
         </div>
         <div className="rounded-[32px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_34px_120px_rgba(0,0,0,0.38)]">
-          <div className="rounded-[26px] bg-[#F8F5EE] p-5 text-[#080A0F]">
-            <div className="aspect-[4/3] rounded-[24px] bg-gradient-to-br from-[#080A0F] via-[#111827] to-[#D5A84C]/40 p-5 text-white">
-              <p className="text-xs font-black uppercase text-[#D5A84C]">Barbería premium</p>
+          <div className="rounded-[26px] bg-[#0C0C0C] p-5 text-white">
+            <div className="aspect-[4/3] rounded-[24px] bg-gradient-to-br from-[#080A0F] via-[#111827] to-[#D4AF37]/40 p-5 text-white">
+              <p className="text-xs font-black uppercase text-[#D4AF37]">Barbería premium</p>
               <p className="mt-3 max-w-xs text-3xl font-black leading-tight">Tu marca, tus reservas, tu sistema.</p>
-              <div className="mt-8 inline-flex rounded-full bg-[#D5A84C] px-4 py-2 text-sm font-black text-[#080A0F]">
+              <div className="mt-8 inline-flex rounded-full bg-[#D4AF37] px-4 py-2 text-sm font-black text-white">
                 Reservar ahora
               </div>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {["SEO local", "Google Business", "Instagram", "QR en local"].map((item) => (
-                <div key={item} className="rounded-2xl border border-[#080A0F]/10 bg-white p-4 text-sm font-black">
+                <div key={item} className="rounded-2xl border border-[#232323] bg-white p-4 text-sm font-black">
                   {item}
                 </div>
               ))}
@@ -1502,26 +1565,26 @@ export function VIPWebsiteOfferSection() {
 
 export function WebVipDeepDiveSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Web VIP conectada</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Web VIP conectada</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Si la barbería invierte en web, la web debe acabar en reserva.
             </h2>
-            <p className="mt-5 text-base leading-8 text-[#080A0F]/58">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               La anterior landing ya hablaba de Web VIP. La versión premium lo deja más claro: marca, SEO, WhatsApp, QR, agenda pública y BarberíaOS trabajando juntos.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <RequestDemoLink className="bg-[#080A0F] text-white hover:bg-[#141821]">
+              <RequestDemoLink className="bg-[#111111] text-white hover:bg-[#141821]">
                 Ver propuesta VIP
               </RequestDemoLink>
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[#080A0F]/10 bg-white px-6 text-sm font-black text-[#080A0F]/72 transition hover:text-[#080A0F]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[#232323] bg-white px-6 text-sm font-black text-white/72 transition hover:text-white"
               >
                 Hablar por WhatsApp
                 <MessageCircle size={16} />
@@ -1530,10 +1593,10 @@ export function WebVipDeepDiveSection() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {vipWebsiteBlocks.map((block) => (
-              <article key={block.title} className="rounded-[26px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
-                <Gem className="text-[#9B6B18]" size={22} />
+              <article key={block.title} className="rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
+                <Gem className="text-[#D4AF37]" size={22} />
                 <h3 className="mt-5 text-xl font-black">{block.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{block.text}</p>
+                <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{block.text}</p>
               </article>
             ))}
           </div>
@@ -1545,7 +1608,7 @@ export function WebVipDeepDiveSection() {
 
 export function GrowthEnginePreviewSection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Growth Engine"
@@ -1556,7 +1619,7 @@ export function GrowthEnginePreviewSection() {
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {growthEngineCards.map(({ title, text, icon: Icon }) => (
             <article key={title} className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6 shadow-[0_22px_80px_rgba(0,0,0,0.22)]">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 text-[#F6D98A]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-[#F4D03F]">
                 <Icon size={22} />
               </div>
               <h3 className="mt-5 text-xl font-black">{title}</h3>
@@ -1564,10 +1627,10 @@ export function GrowthEnginePreviewSection() {
             </article>
           ))}
         </div>
-        <div className="mt-10 rounded-[32px] border border-[#D5A84C]/20 bg-[radial-gradient(circle_at_50%_0%,rgba(213,168,76,0.18),transparent_42%),rgba(255,255,255,0.055)] p-6 md:p-8">
+        <div className="mt-10 rounded-[32px] border border-[#D4AF37]/20 bg-[radial-gradient(circle_at_50%_0%,rgba(213,168,76,0.18),transparent_42%),rgba(255,255,255,0.055)] p-6 md:p-8">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Sin automatizaciones prohibidas</p>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Sin automatizaciones prohibidas</p>
               <h3 className="mt-3 text-3xl font-black leading-tight md:text-5xl">
                 Crecimiento legal, manual primero y preparado para APIs oficiales.
               </h3>
@@ -1591,31 +1654,31 @@ export function GrowthEnginePreviewSection() {
 
 export function TrustArchitectureSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Confianza técnica</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Confianza técnica</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Premium también significa arquitectura responsable.
             </h2>
-            <p className="mt-5 text-base leading-8 text-[#080A0F]/58">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               El mensaje comercial debe reforzar lo que el producto promete: datos propios, multi-tenant, Supabase con RLS y nada de secretos en cliente.
             </p>
-            <div className="mt-8 rounded-[26px] border border-[#080A0F]/8 bg-[#F8F5EE] p-5">
-              <ShieldCheck className="text-[#9B6B18]" size={26} />
+            <div className="mt-8 rounded-[26px] border border-[#232323] bg-[#0C0C0C] p-5">
+              <ShieldCheck className="text-[#D4AF37]" size={26} />
               <p className="mt-4 text-xl font-black">Diseñado para crecer sin mezclar datos.</p>
-              <p className="mt-2 text-sm leading-7 text-[#080A0F]/55">
+              <p className="mt-2 text-sm leading-7 text-white/55">
                 Cada barbería necesita operar con su contexto, su agenda, sus clientes y su caja.
               </p>
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {trustItems.map(([title, text]) => (
-              <article key={title} className="rounded-[24px] border border-[#080A0F]/8 bg-[#F8F5EE] p-5">
-                <Database className="text-[#9B6B18]" size={20} />
+              <article key={title} className="rounded-[24px] border border-[#232323] bg-[#0C0C0C] p-5">
+                <Database className="text-[#D4AF37]" size={20} />
                 <h3 className="mt-4 text-lg font-black">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#080A0F]/55">{text}</p>
+                <p className="mt-2 text-sm leading-6 text-white/55">{text}</p>
               </article>
             ))}
           </div>
@@ -1627,15 +1690,15 @@ export function TrustArchitectureSection() {
 
 export function LocalSeoSection() {
   return (
-    <MotionBlock className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">SEO local</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">SEO local</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               La landing principal prepara el terreno para páginas locales y verticales.
             </h2>
-            <p className="mt-5 text-base leading-8 text-white/62">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               BarberíaOS ya tiene rutas SEO como software para barberías, agenda online, reservas y páginas por ciudad. Esta landing actúa como núcleo de autoridad.
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
@@ -1647,10 +1710,10 @@ export function LocalSeoSection() {
           <div className="rounded-[32px] border border-white/10 bg-white/[0.055] p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#D5A84C]">Mapa de demanda</p>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#D4AF37]">Mapa de demanda</p>
                 <h3 className="mt-2 text-2xl font-black">Ciudades prioritarias</h3>
               </div>
-              <Search className="text-[#D5A84C]" size={26} />
+              <Search className="text-[#D4AF37]" size={26} />
             </div>
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {localSeoCities.map((city) => (
@@ -1668,32 +1731,32 @@ export function LocalSeoSection() {
 
 export function FounderOfferSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-[36px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_26px_90px_rgba(8,10,15,0.08)] md:p-10">
+        <div className="rounded-[36px] border border-[#232323] bg-white p-6 shadow-[0_26px_90px_rgba(8,10,15,0.08)] md:p-10">
           <div className="grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/24 bg-[#D5A84C]/10 px-3 py-1.5 text-xs font-black text-[#9B6B18]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-black text-[#D4AF37]">
                 <Star size={14} />
                 Barberías fundadoras
               </div>
               <h2 className="mt-5 text-4xl font-black leading-tight md:text-6xl">
                 Oferta premium para barberías que quieren moverse antes.
               </h2>
-              <p className="mt-5 text-base leading-8 text-[#080A0F]/58">
+              <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
                 Un paquete fundador permite vender con más fuerza: setup, QR, web/agenda, mensajes y ruta de crecimiento. No es descuento vacío; es acompañamiento operativo.
               </p>
               <div className="mt-8">
-                <RequestDemoLink className="bg-[#080A0F] text-white hover:bg-[#141821]">
+                <RequestDemoLink className="bg-[#111111] text-white hover:bg-[#141821]">
                   Solicitar plaza fundadora
                 </RequestDemoLink>
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {founderOfferItems.map((item) => (
-                <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#080A0F]/8 bg-[#F8F5EE] p-4">
-                  <CheckCircle2 className="mt-0.5 shrink-0 text-[#9B6B18]" size={18} />
-                  <p className="text-sm font-bold leading-6 text-[#080A0F]/70">{item}</p>
+                <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#232323] bg-[#0C0C0C] p-4">
+                  <CheckCircle2 className="mt-0.5 shrink-0 text-[#D4AF37]" size={18} />
+                  <p className="text-sm font-bold leading-6 text-white/70">{item}</p>
                 </div>
               ))}
             </div>
@@ -1706,7 +1769,7 @@ export function FounderOfferSection() {
 
 export function ProductProofSection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Producto completo"
@@ -1717,7 +1780,7 @@ export function ProductProofSection() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {proofMetrics.map(([title, text]) => (
             <article key={title} className="rounded-[26px] border border-white/10 bg-white/[0.055] p-5">
-              <BookOpenCheck className="text-[#D5A84C]" size={22} />
+              <BookOpenCheck className="text-[#D4AF37]" size={22} />
               <h3 className="mt-4 text-xl font-black">{title}</h3>
               <p className="mt-3 text-sm leading-6 text-white/56">{text}</p>
             </article>
@@ -1730,7 +1793,7 @@ export function ProductProofSection() {
 
 export function ConversionBlueprintSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Blueprint de conversión"
@@ -1739,15 +1802,15 @@ export function ConversionBlueprintSection() {
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {conversionBlueprint.map(({ phase, title, text, icon: Icon, evidence }) => (
-            <article key={phase} className="rounded-[28px] border border-[#080A0F]/8 bg-[#F8F5EE] p-6">
+            <article key={phase} className="rounded-[28px] border border-[#232323] bg-[#0C0C0C] p-6">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-black uppercase tracking-[0.16em] text-[#9B6B18]">{phase}</span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#080A0F] text-[#D5A84C]">
+                <span className="text-xs font-black uppercase tracking-[0.16em] text-[#D4AF37]">{phase}</span>
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111111] text-[#D4AF37]">
                   <Icon size={20} />
                 </span>
               </div>
               <h3 className="mt-5 text-xl font-black leading-tight">{title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{text}</p>
+              <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{text}</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {evidence.map((item) => (
                   <Pill key={item}>{item}</Pill>
@@ -1763,22 +1826,22 @@ export function ConversionBlueprintSection() {
 
 export function OwnerCommandRoomSection() {
   return (
-    <MotionBlock className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Sala de mando</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Sala de mando</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               El dueño no necesita más ruido. Necesita saber qué hacer hoy.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
+            <p className="mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">
               BarberíaOS traduce reservas, caja, equipo y clientes en decisiones simples para cada jornada. Sin hojas, sin mensajes sueltos, sin perder el control.
             </p>
-            <div className="mt-8 rounded-[30px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-6">
+            <div className="mt-8 rounded-[30px] border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-6">
               <div className="flex items-center gap-3">
-                <Crown className="text-[#F6D98A]" size={26} />
+                <Crown className="text-[#F4D03F]" size={26} />
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-[#D5A84C]">Prioridad de hoy</p>
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">Prioridad de hoy</p>
                   <p className="text-xl font-black">Llenar el hueco de las 12:15 y cerrar caja sin errores.</p>
                 </div>
               </div>
@@ -1797,7 +1860,7 @@ export function OwnerCommandRoomSection() {
                     <p className="text-xs font-black uppercase tracking-[0.14em] text-white/38">{panel.title}</p>
                     <p className="mt-2 text-2xl font-black text-white">{panel.metric}</p>
                   </div>
-                  <ChevronRight className="text-[#D5A84C]" size={20} />
+                  <ChevronRight className="text-[#D4AF37]" size={20} />
                 </div>
                 <p className="mt-3 text-sm leading-6 text-white/56">{panel.text}</p>
               </article>
@@ -1811,7 +1874,7 @@ export function OwnerCommandRoomSection() {
 
 export function RouteAuthoritySection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Arquitectura SEO"
@@ -1823,14 +1886,14 @@ export function RouteAuthoritySection() {
             <Link
               key={route.href}
               href={route.href}
-              className="group rounded-[26px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)] transition hover:-translate-y-1 hover:border-[#D5A84C]/30"
+              className="group rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)] transition hover:-translate-y-1 hover:border-[#D4AF37]/30"
             >
               <div className="flex items-center justify-between gap-3">
-                <Globe2 className="text-[#9B6B18]" size={22} />
-                <ArrowRight className="text-[#080A0F]/28 transition group-hover:translate-x-1 group-hover:text-[#9B6B18]" size={18} />
+                <Globe2 className="text-[#D4AF37]" size={22} />
+                <ArrowRight className="text-[#A1A1AA]/50 transition group-hover:translate-x-1 group-hover:text-[#D4AF37]" size={18} />
               </div>
               <h3 className="mt-5 text-xl font-black">{route.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{route.text}</p>
+              <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{route.text}</p>
             </Link>
           ))}
         </div>
@@ -1841,21 +1904,21 @@ export function RouteAuthoritySection() {
 
 export function PremiumSignalMatrixSection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
           <div className="lg:sticky lg:top-8">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Matriz premium</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Matriz premium</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Cada bloque de la landing tiene una razón comercial.
             </h2>
-            <p className="mt-5 text-base leading-8 text-white/62">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               Esta matriz convierte el producto en argumentos de venta. Sirve para que el visitante entienda valor, operación y crecimiento sin leer documentación técnica.
             </p>
-            <div className="mt-8 rounded-[28px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-5">
-              <Sparkles className="text-[#F6D98A]" size={26} />
+            <div className="mt-8 rounded-[28px] border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-5">
+              <Sparkles className="text-[#F4D03F]" size={26} />
               <p className="mt-4 text-xl font-black">Ultra premium no significa recargar.</p>
-              <p className="mt-2 text-sm leading-7 text-white/58">
+              <p className="mt-2 text-sm leading-7 text-[#A1A1AA]">
                 Significa que cada sección ayuda a decidir, confiar o pedir demo.
               </p>
             </div>
@@ -1864,10 +1927,10 @@ export function PremiumSignalMatrixSection() {
             {premiumSignalMatrix.map((signal) => (
               <article key={`${signal.group}-${signal.title}`} className="rounded-[26px] border border-white/10 bg-white/[0.055] p-5">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-[#D5A84C]/20 bg-[#D5A84C]/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-[#F6D98A]">
+                  <span className="rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-[#F4D03F]">
                     {signal.group}
                   </span>
-                  <span className="rounded-full bg-white/[0.07] px-3 py-1 text-[11px] font-black text-white/58">
+                  <span className="rounded-full bg-white/[0.07] px-3 py-1 text-[11px] font-black text-[#A1A1AA]">
                     {signal.impact}
                   </span>
                 </div>
@@ -1884,32 +1947,32 @@ export function PremiumSignalMatrixSection() {
 
 export function LaunchChecklistSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Checklist de salida</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Checklist de salida</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
               Del primer clic al primer día operativo: sin improvisación.
             </h2>
-            <p className="mt-5 text-base leading-8 text-[#080A0F]/65">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               No es una plantilla. Es un sistema que se configura para funcionar desde el primer día: agenda, QR, caja, clientes y WhatsApp preparados antes de abrir.
             </p>
-            <div className="mt-8 rounded-[28px] border border-[#080A0F]/8 bg-[#F8F5EE] p-5">
-              <Rocket className="text-[#9B6B18]" size={26} />
+            <div className="mt-8 rounded-[28px] border border-[#232323] bg-[#0C0C0C] p-5">
+              <Rocket className="text-[#D4AF37]" size={26} />
               <p className="mt-4 text-xl font-black">Publicar solo cuando el flujo está probado.</p>
-              <p className="mt-2 text-sm leading-7 text-[#080A0F]/55">
+              <p className="mt-2 text-sm leading-7 text-white/55">
                 Reserva, agenda, QR, caja, WhatsApp y panel del dueño deben tener sentido antes de empujar tráfico.
               </p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {launchChecklist.map((item, index) => (
-              <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#080A0F]/8 bg-[#F8F5EE] p-4">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#080A0F] text-xs font-black text-[#D5A84C]">
+              <div key={item} className="flex items-start gap-3 rounded-2xl border border-[#232323] bg-[#0C0C0C] p-4">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#111111] text-xs font-black text-[#D4AF37]">
                   {index + 1}
                 </span>
-                <p className="text-sm font-bold leading-6 text-[#080A0F]/70">{item}</p>
+                <p className="text-sm font-bold leading-6 text-white/70">{item}</p>
               </div>
             ))}
           </div>
@@ -1921,7 +1984,7 @@ export function LaunchChecklistSection() {
 
 export function ClosingArgumentsSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Cierre comercial"
@@ -1930,10 +1993,10 @@ export function ClosingArgumentsSection() {
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {closingArguments.map((argument) => (
-            <article key={argument.title} className="rounded-[26px] border border-[#080A0F]/8 bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
-              <CheckCircle2 className="text-[#9B6B18]" size={22} />
+            <article key={argument.title} className="rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
+              <CheckCircle2 className="text-[#D4AF37]" size={22} />
               <h3 className="mt-5 text-xl font-black">{argument.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{argument.text}</p>
+              <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{argument.text}</p>
             </article>
           ))}
         </div>
@@ -1944,17 +2007,17 @@ export function ClosingArgumentsSection() {
 
 export function ExtendedFAQSection() {
   return (
-    <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <SectionHeader
           eyebrow="Preguntas frecuentes"
           title="Las dudas más habituales antes de dar el paso."
         />
-        <div className="mt-10 divide-y divide-[#080A0F]/8 rounded-[28px] border border-[#080A0F]/8 bg-[#F8F5EE]">
+        <div className="mt-10 divide-y divide-[#232323] rounded-[28px] border border-[#232323] bg-[#0C0C0C]">
           {faqPlus.map(([question, answer]) => (
             <article key={question} className="p-6">
               <h3 className="text-lg font-black">{question}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{answer}</p>
+              <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{answer}</p>
             </article>
           ))}
         </div>
@@ -1965,7 +2028,7 @@ export function ExtendedFAQSection() {
 
 export function PricingSection() {
   return (
-    <MotionBlock id="precios" className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock id="precios" className="bg-white px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Planes"
@@ -1978,25 +2041,25 @@ export function PricingSection() {
               key={plan.name}
               className={`relative flex min-h-full flex-col rounded-[28px] p-7 ${
                 plan.featured
-                  ? "bg-[#080A0F] text-white shadow-[0_32px_90px_rgba(213,168,76,0.18)]"
-                  : "border border-[#080A0F]/8 bg-[#F8F5EE] text-[#080A0F]"
+                  ? "bg-[#111111] text-white shadow-[0_32px_90px_rgba(213,168,76,0.18)]"
+                  : "border border-[#232323] bg-[#0C0C0C] text-white"
               }`}
             >
               {plan.featured ? (
-                <span className="absolute right-5 top-5 rounded-full bg-[#D5A84C] px-3 py-1 text-[11px] font-black text-[#080A0F]">
+                <span className="absolute right-5 top-5 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black text-white">
                   Más recomendado
                 </span>
               ) : null}
               <h3 className="text-2xl font-black">{plan.name}</h3>
-              <p className={`mt-3 text-sm leading-6 ${plan.featured ? "text-white/55" : "text-[#080A0F]/55"}`}>{plan.text}</p>
+              <p className={`mt-3 text-sm leading-6 ${plan.featured ? "text-white/55" : "text-white/55"}`}>{plan.text}</p>
               <div className="mt-7 flex items-end gap-1">
                 <span className="text-5xl font-black">{plan.price}</span>
-                <span className={`mb-1 text-sm font-bold ${plan.featured ? "text-white/38" : "text-[#080A0F]/38"}`}>/mes</span>
+                <span className={`mb-1 text-sm font-bold ${plan.featured ? "text-white/38" : "text-white/38"}`}>/mes</span>
               </div>
               <ul className="mt-7 flex flex-1 flex-col gap-3">
                 {plan.features.map((feature) => (
-                  <li key={feature} className={`flex items-start gap-2.5 text-sm font-bold ${plan.featured ? "text-white/70" : "text-[#080A0F]/65"}`}>
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#D5A84C]" size={16} />
+                  <li key={feature} className={`flex items-start gap-2.5 text-sm font-bold ${plan.featured ? "text-white/70" : "text-[#A1A1AA]"}`}>
+                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#D4AF37]" size={16} />
                     {feature}
                   </li>
                 ))}
@@ -2007,8 +2070,8 @@ export function PricingSection() {
                 rel="noopener noreferrer"
                 className={`mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl text-sm font-black transition ${
                   plan.featured
-                    ? "bg-[#D5A84C] text-[#080A0F] hover:bg-[#E8C46A]"
-                    : "border border-[#080A0F]/10 bg-white text-[#080A0F]/70 hover:text-[#080A0F]"
+                    ? "bg-[#D4AF37] text-white hover:bg-[#F4D03F]"
+                    : "border border-[#232323] bg-[#111111] text-white/70 hover:text-white"
                 }`}
               >
                 Pedir demo
@@ -2017,9 +2080,9 @@ export function PricingSection() {
             </article>
           ))}
         </div>
-        <div className="mt-6 rounded-[24px] border border-[#D5A84C]/20 bg-[#D5A84C]/8 p-5 text-center">
-          <p className="text-sm font-black text-[#080A0F]">Setup desde 300€</p>
-          <p className="mt-1 text-sm leading-6 text-[#080A0F]/55">
+        <div className="mt-6 rounded-[24px] border border-[#D4AF37]/20 bg-[#D4AF37]/8 p-5 text-center">
+          <p className="text-sm font-black text-white">Setup desde 300€</p>
+          <p className="mt-1 text-sm leading-6 text-white/55">
             Configuración inicial, servicios, barberos, QR, agenda pública y guía de activación. IVA y alcance final se confirman en demo.
           </p>
         </div>
@@ -2030,8 +2093,8 @@ export function PricingSection() {
             "Sin comisión por reserva",
             "Respuesta en menos de 24h",
           ].map((item) => (
-            <span key={item} className="flex items-center gap-1.5 text-xs font-bold text-[#080A0F]/50">
-              <CheckCircle2 size={13} className="text-[#9B6B18]" />
+            <span key={item} className="flex items-center gap-1.5 text-xs font-bold text-[#A1A1AA]">
+              <CheckCircle2 size={13} className="text-[#D4AF37]" />
               {item}
             </span>
           ))}
@@ -2043,14 +2106,14 @@ export function PricingSection() {
 
 export function FAQSection() {
   return (
-    <MotionBlock className="bg-[#F8F5EE] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <SectionHeader eyebrow="FAQ" title="Objeciones normales antes de cambiar la forma de trabajar." />
-        <div className="mt-10 divide-y divide-[#080A0F]/8 rounded-[28px] border border-[#080A0F]/8 bg-white">
+        <div className="mt-10 divide-y divide-[#232323] rounded-[28px] border border-[#232323] bg-[#111111]">
           {faqs.map(([question, answer]) => (
             <article key={question} className="p-6">
               <h3 className="text-lg font-black">{question}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#080A0F]/56">{answer}</p>
+              <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{answer}</p>
             </article>
           ))}
         </div>
@@ -2061,17 +2124,48 @@ export function FAQSection() {
 
 export function FinalCTA() {
   return (
-    <MotionBlock className="bg-[#050505] px-5 py-16 text-white md:py-24 lg:px-8">
-      <div className="mx-auto max-w-5xl rounded-[34px] border border-[#D5A84C]/22 bg-[radial-gradient(circle_at_50%_0%,rgba(213,168,76,0.22),transparent_46%),rgba(255,255,255,0.055)] p-8 text-center md:p-12">
-        <BadgeEuro className="mx-auto text-[#D5A84C]" size={34} />
-        <h2 className="mt-5 text-4xl font-black leading-tight md:text-6xl">
-          Tu barbería necesita menos caos y más control.
-        </h2>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/62">
-          Mira BarberíaOS aplicado a reservas, agenda, caja, clientes, huecos libres, QR y marketing. Sin prometer resultados falsos, con una demo clara.
-        </p>
-        <div className="mt-8">
-          <CTAButtons center />
+    <MotionBlock className="bg-[#070707] px-5 py-20 text-white md:py-32 lg:px-8">
+      <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[40px] border border-[#232323] bg-[#111111] p-10 text-center md:p-16">
+        {/* Glow */}
+        <div className="pointer-events-none absolute inset-0 rounded-[40px]">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(212,175,55,0.10),transparent_60%)]" />
+        </div>
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#232323] bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-[#A1A1AA]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] shadow-[0_0_6px_#22C55E]" />
+            Demo disponible ahora
+          </div>
+          <h2 className="mx-auto mt-7 max-w-2xl text-4xl font-black leading-[1.05] tracking-[-0.03em] text-white md:text-5xl">
+            Tu barbería. Con sistema. Desde hoy.
+          </h2>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">
+            Una demo de 20 minutos. Sin presión, sin compromiso. Vemos juntos si BarberíaOS encaja con tu forma de trabajar.
+          </p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[52px] items-center gap-2 rounded-2xl bg-[#D4AF37] px-8 text-sm font-black text-[#070707] shadow-[0_0_0_1px_rgba(212,175,55,0.3),0_8px_32px_rgba(212,175,55,0.22)] transition-all hover:-translate-y-0.5 hover:bg-[#F4D03F] hover:shadow-[0_12px_40px_rgba(212,175,55,0.32)]"
+            >
+              <MessageCircle size={16} />
+              Pedir demo por WhatsApp
+            </a>
+            <Link
+              href="/login"
+              className="inline-flex min-h-[52px] items-center gap-2 rounded-2xl border border-[#232333] bg-white/[0.04] px-8 text-sm font-semibold text-[#A1A1AA] transition-all hover:border-[#333] hover:text-white"
+            >
+              Entrar al panel
+              <ArrowRight size={15} />
+            </Link>
+          </div>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#A1A1AA]/60">
+            <span>Sin permanencia</span>
+            <span>·</span>
+            <span>Cancela cuando quieras</span>
+            <span>·</span>
+            <span>Respuesta en menos de 24h</span>
+          </div>
         </div>
       </div>
     </MotionBlock>
@@ -2080,42 +2174,81 @@ export function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#050505] px-5 py-10 text-white lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
-        <div className="max-w-sm">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <BarberiaOSLogo variant="isotipo" size={40} />
-            <span className="font-black tracking-tight">BarberíaOS</span>
-          </Link>
-          <p className="mt-4 text-sm leading-6 text-white/46">
-            Sistema operativo para barberías: reservas, agenda, caja, clientes, huecos libres, QR, marketing e IA.
-          </p>
+    <footer className="border-t border-[#232323] bg-[#070707] px-5 py-12 text-white lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div className="max-w-xs">
+            <Link href="/" className="inline-flex items-center gap-2.5">
+              <BarberiaOSLogo variant="isotipo" size={32} />
+              <span className="text-sm font-black tracking-tight text-white">BarberíaOS</span>
+            </Link>
+            <p className="mt-4 text-sm leading-6 text-[#A1A1AA]">
+              El sistema operativo para barberías modernas.
+            </p>
+            <div className="mt-4 flex gap-0.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} size={12} className="fill-[#D4AF37] text-[#D4AF37]" />
+              ))}
+              <span className="ml-2 text-xs text-[#A1A1AA]">4.9 · 200+ barberías</span>
+            </div>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-3">
+            <div>
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#A1A1AA]/60">Producto</p>
+              <nav className="space-y-2.5 text-sm text-[#A1A1AA]" aria-label="Producto">
+                <div><Link href="#reservas" className="transition-colors hover:text-white">Reservas online</Link></div>
+                <div><Link href="#whatsapp" className="transition-colors hover:text-white">WhatsApp IA</Link></div>
+                <div><Link href="#precios" className="transition-colors hover:text-white">Precios</Link></div>
+                <div><Link href="/pedir-demo" className="transition-colors hover:text-white">Pedir demo</Link></div>
+              </nav>
+            </div>
+            <div>
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#A1A1AA]/60">Recursos</p>
+              <nav className="space-y-2.5 text-sm text-[#A1A1AA]" aria-label="Recursos">
+                <div><Link href="/software-para-barberias" className="transition-colors hover:text-white">Software barberías</Link></div>
+                <div><Link href="/agenda-online-barberia" className="transition-colors hover:text-white">Agenda online</Link></div>
+                <div><Link href="/huecos-libres-barberia" className="transition-colors hover:text-white">Huecos libres</Link></div>
+                <div><Link href="/crm-clientes-barberia" className="transition-colors hover:text-white">CRM clientes</Link></div>
+              </nav>
+            </div>
+            <div>
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#A1A1AA]/60">Legal</p>
+              <nav className="space-y-2.5 text-sm text-[#A1A1AA]" aria-label="Legal">
+                <div><Link href="/legal/privacidad" className="transition-colors hover:text-white">Privacidad</Link></div>
+                <div><Link href="/legal/cookies" className="transition-colors hover:text-white">Cookies</Link></div>
+                <div><Link href="/login" className="transition-colors hover:text-white">Entrar al panel</Link></div>
+                <div>
+                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-white">
+                    WhatsApp <ExternalLink size={11} />
+                  </a>
+                </div>
+              </nav>
+            </div>
+          </div>
         </div>
-        <nav className="grid gap-3 text-sm font-bold text-white/50 sm:grid-cols-2 md:text-right" aria-label="Enlaces de pie de página">
-          <Link href="/pedir-demo" className="hover:text-white">Pedir demo</Link>
-          <Link href="/login" className="hover:text-white">Entrar al panel</Link>
-          <Link href="/software-para-barberias" className="hover:text-white">Software para barberías</Link>
-          <Link href="/agenda-online-barberia" className="hover:text-white">Agenda online</Link>
-          <Link href="/legal/privacidad" className="hover:text-white">Privacidad</Link>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">
-            WhatsApp <ExternalLink className="inline" size={12} />
-          </a>
-        </nav>
+        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-[#232323] pt-6 sm:flex-row sm:items-center">
+          <p className="text-xs text-[#A1A1AA]/40">
+            © {new Date().getFullYear()} BarberíaOS. Contacto:{" "}
+            <a href={`mailto:${BUSINESS_CONFIG.legalEmail}`} className="hover:text-[#A1A1AA]">{BUSINESS_CONFIG.legalEmail}</a>
+          </p>
+          <div className="flex items-center gap-4 text-xs text-[#A1A1AA]/40">
+            <span>Hecho en España 🇪🇸</span>
+            <span>·</span>
+            <span>0% comisión por reserva</span>
+          </div>
+        </div>
       </div>
-      <p className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-5 text-xs text-white/32">
-        © {new Date().getFullYear()} BarberíaOS. Contacto: {BUSINESS_CONFIG.legalEmail}
-      </p>
     </footer>
   );
 }
 
 function ROISection() {
   return (
-    <MotionBlock className="bg-[#030303] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#070707] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Calculadora de huecos</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Calculadora de huecos</p>
             <h2 className="mt-4 text-4xl font-black leading-[1.05] tracking-[-0.03em] md:text-6xl">
               ¿Cuánto dinero pierdes cada semana?
             </h2>
@@ -2135,12 +2268,12 @@ function ROISection() {
               <div className="flex items-center justify-center">
                 <span className="rounded-full border border-white/8 bg-white/[0.04] px-3 py-1 text-xs font-black text-white/30">vs</span>
               </div>
-              <div className="flex items-center justify-between rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 px-5 py-4">
+              <div className="flex items-center justify-between rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 px-5 py-4">
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-wide text-[#D5A84C]/70">Con BarberíaOS Pro</p>
-                  <p className="mt-1 text-2xl font-black text-[#F6D98A]">79€/mes · ROI desde el día 1</p>
+                  <p className="text-[11px] font-black uppercase tracking-wide text-[#D4AF37]/70">Con BarberíaOS Pro</p>
+                  <p className="mt-1 text-2xl font-black text-[#F4D03F]">79€/mes · ROI desde el día 1</p>
                 </div>
-                <TrendingUp size={22} className="shrink-0 text-[#D5A84C]" />
+                <TrendingUp size={22} className="shrink-0 text-[#D4AF37]" />
               </div>
               <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/8 px-5 py-4">
                 <p className="text-[11px] font-black uppercase tracking-wide text-emerald-400">Recuperas al año</p>
@@ -2153,7 +2286,7 @@ function ROISection() {
             {roiData.map(({ value, label, sub }) => (
               <article key={label} className="rounded-[26px] border border-white/10 bg-white/[0.055] p-6">
                 <p className="text-4xl font-black text-white">{value}</p>
-                <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#D5A84C]">{label}</p>
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">{label}</p>
                 <p className="mt-3 text-sm leading-6 text-white/50">{sub}</p>
               </article>
             ))}
@@ -2166,7 +2299,7 @@ function ROISection() {
 
 function ReservasOnlineSection() {
   return (
-    <MotionBlock id="reservas" className="bg-[#030303] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock id="reservas" className="bg-[#070707] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Reservas online"
@@ -2182,7 +2315,7 @@ function ReservasOnlineSection() {
             { Icon: ShieldCheck, title: "Sin doble reserva", text: "El sistema bloquea el hueco en el momento en que el cliente confirma. Nunca falla." },
           ] as const).map(({ Icon, title, text }) => (
             <article key={title} className="rounded-[26px] border border-white/10 bg-white/[0.045] p-6 transition-colors hover:bg-white/[0.07]">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D5A84C]/18 bg-[#D5A84C]/10 text-[#F6D98A]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D4AF37]/18 bg-[#D4AF37]/10 text-[#F4D03F]">
                 <Icon size={20} />
               </div>
               <h3 className="mt-5 text-xl font-black">{title}</h3>
@@ -2190,13 +2323,13 @@ function ReservasOnlineSection() {
             </article>
           ))}
         </div>
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[26px] border border-[#D5A84C]/18 bg-[#D5A84C]/8 p-5 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[26px] border border-[#D4AF37]/18 bg-[#D4AF37]/8 p-5 sm:flex-row">
           <p className="text-sm font-black text-white">Comparte el link en Instagram y recibe la primera reserva hoy.</p>
           <a
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 min-h-11 items-center gap-2 rounded-2xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-5 text-sm font-black text-[#1A0F00] shadow-[0_8px_30px_rgba(213,168,76,0.30)] transition hover:-translate-y-0.5"
+            className="inline-flex shrink-0 min-h-11 items-center gap-2 rounded-2xl bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] px-5 text-sm font-black text-[#070707] shadow-[0_8px_30px_rgba(213,168,76,0.30)] transition hover:-translate-y-0.5"
           >
             Ver demo en vivo <ArrowRight size={15} />
           </a>
@@ -2213,7 +2346,7 @@ function WhatsAppIASection() {
     { from: "bot", text: "¡Confirmado! Te esperamos a las 17:00. Cualquier cambio avisa. 💈" },
   ] as const;
   return (
-    <MotionBlock id="whatsapp" className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock id="whatsapp" className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="order-2 lg:order-1">
@@ -2238,14 +2371,14 @@ function WhatsAppIASection() {
                     </div>
                   </div>
                 ))}
-                <div className="rounded-2xl border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-3 text-center text-xs font-black text-[#F6D98A]">
+                <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-3 text-center text-xs font-black text-[#F4D03F]">
                   Hueco llenado · +25€ recuperados
                 </div>
               </div>
             </div>
           </div>
           <div className="order-1 lg:order-2">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">WhatsApp IA</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">WhatsApp IA</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
               Llena huecos con el mensaje exacto. Sin improvisar.
             </h2>
@@ -2260,7 +2393,7 @@ function WhatsAppIASection() {
                 "Sin bots ni automatizaciones que violen los términos de WhatsApp",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/65">
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D5A84C]" />
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D4AF37]" />
                   {item}
                 </li>
               ))}
@@ -2270,7 +2403,7 @@ function WhatsAppIASection() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[52px] items-center gap-2 rounded-2xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-7 text-sm font-black text-[#1A0F00] shadow-[0_12px_40px_rgba(213,168,76,0.35)] transition hover:-translate-y-0.5"
+                className="inline-flex min-h-[52px] items-center gap-2 rounded-2xl bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] px-7 text-sm font-black text-[#070707] shadow-[0_12px_40px_rgba(213,168,76,0.35)] transition hover:-translate-y-0.5"
               >
                 <MessageCircle size={16} /> Ver demo en vivo
               </a>
@@ -2284,39 +2417,39 @@ function WhatsAppIASection() {
 
 function FidelizacionSection() {
   return (
-    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Fidelización</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Fidelización</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
               Recuperar un cliente cuesta menos que encontrar uno nuevo.
             </h2>
-            <p className="mt-5 text-base leading-8 text-[#080A0F]/65">
+            <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               BarberíaOS tiene memoria. Sabe quién lleva semanas sin volver, qué servicio prefiere y qué mensaje tiene más sentido mandar. Tú firmas y envías.
             </p>
-            <div className="mt-8 rounded-[26px] border border-[#080A0F]/8 bg-white p-5 shadow-sm">
+            <div className="mt-8 rounded-[26px] border border-[#232323] bg-white p-5 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#080A0F] text-[#D5A84C]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#111111] text-[#D4AF37]">
                   <Users size={18} />
                 </div>
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-wide text-[#080A0F]/40">Acción sugerida ahora</p>
-                  <p className="text-sm font-black text-[#080A0F]">23 clientes sin visita en 30+ días</p>
+                  <p className="text-[11px] font-black uppercase tracking-wide text-[#A1A1AA]">Acción sugerida ahora</p>
+                  <p className="text-sm font-black text-white">23 clientes sin visita en 30+ días</p>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="cursor-pointer rounded-full bg-[#080A0F] px-3 py-1.5 text-[11px] font-black text-[#D5A84C] transition hover:bg-[#1a1d26]">Enviar mensaje</span>
-                <span className="cursor-pointer rounded-full border border-[#080A0F]/10 px-3 py-1.5 text-[11px] font-black text-[#080A0F]/60 transition hover:bg-[#080A0F]/5">Ver lista</span>
+                <span className="cursor-pointer rounded-full bg-[#111111] px-3 py-1.5 text-[11px] font-black text-[#D4AF37] transition hover:bg-[#1a1a1a]">Enviar mensaje</span>
+                <span className="cursor-pointer rounded-full border border-[#232323] px-3 py-1.5 text-[11px] font-black text-white/60 transition hover:bg-white/[0.03]">Ver lista</span>
               </div>
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {fidelizacionStats.map(({ metric, label, text }) => (
-              <article key={label} className="rounded-[26px] border border-[#080A0F]/8 bg-white p-5 shadow-[0_12px_40px_rgba(8,10,15,0.06)]">
-                <p className="text-3xl font-black text-[#080A0F]">{metric}</p>
-                <p className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-[#9B6B18]">{label}</p>
-                <p className="mt-3 text-sm leading-6 text-[#080A0F]/60">{text}</p>
+              <article key={label} className="rounded-[26px] border border-[#232323] bg-white p-5 shadow-[0_12px_40px_rgba(8,10,15,0.06)]">
+                <p className="text-3xl font-black text-white">{metric}</p>
+                <p className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">{label}</p>
+                <p className="mt-3 text-sm leading-6 text-white/60">{text}</p>
               </article>
             ))}
           </div>
@@ -2328,7 +2461,7 @@ function FidelizacionSection() {
 
 function ResenasIASection() {
   return (
-    <MotionBlock className="bg-[#080A0F] px-5 py-16 text-white md:py-24 lg:px-8">
+    <MotionBlock className="bg-[#111111] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
@@ -2344,7 +2477,7 @@ function ResenasIASection() {
                   </div>
                   <div className="ml-auto flex shrink-0 gap-0.5">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} size={12} className="fill-[#D5A84C] text-[#D5A84C]" />
+                      <Star key={i} size={12} className="fill-[#D4AF37] text-[#D4AF37]" />
                     ))}
                   </div>
                 </div>
@@ -2353,13 +2486,13 @@ function ResenasIASection() {
                 </p>
                 <p className="mt-2 text-xs text-white/30">— Carlos M. · hace 2 días</p>
               </div>
-              <div className="rounded-[26px] border border-[#D5A84C]/20 bg-[#D5A84C]/8 p-5">
-                <p className="text-[10px] font-black uppercase tracking-wide text-[#D5A84C]">BarberíaOS sugiere</p>
+              <div className="rounded-[26px] border border-[#D4AF37]/20 bg-[#D4AF37]/8 p-5">
+                <p className="text-[10px] font-black uppercase tracking-wide text-[#D4AF37]">BarberíaOS sugiere</p>
                 <p className="mt-2 text-sm font-black text-white">Cliente satisfecho · Enviar solicitud de reseña</p>
                 <p className="mt-2 text-xs leading-5 text-white/60">
                   "Carlos, gracias por venir hoy. Si te ha gustado el resultado, nos ayudaría mucho una reseña en Google. Solo tarda 1 minuto 🙏"
                 </p>
-                <button type="button" className="mt-4 rounded-xl bg-[#D5A84C] px-4 py-2 text-xs font-black text-[#080A0F] transition hover:bg-[#E8C46A]">
+                <button type="button" className="mt-4 rounded-xl bg-[#D4AF37] px-4 py-2 text-xs font-black text-white transition hover:bg-[#F4D03F]">
                   Enviar por WhatsApp
                 </button>
               </div>
@@ -2373,7 +2506,7 @@ function ResenasIASection() {
             </div>
           </div>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Reseñas IA</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D4AF37]">Reseñas IA</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
               Cada cliente satisfecho puede traerte diez más.
             </h2>
@@ -2388,7 +2521,7 @@ function ResenasIASection() {
                 "Sin automatizaciones de terceros ni APIs no oficiales",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/65">
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D5A84C]" />
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#D4AF37]" />
                   {item}
                 </li>
               ))}
@@ -2434,7 +2567,7 @@ function FloatingCTA() {
           href={WHATSAPP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex shrink-0 min-h-[38px] items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#E8C46A] to-[#C9961A] px-4 text-xs font-black text-[#1A0F00] shadow-[0_6px_20px_rgba(213,168,76,0.40)] transition hover:from-[#EFD07C] hover:to-[#D5A84C]"
+          className="inline-flex shrink-0 min-h-[38px] items-center gap-1.5 rounded-xl bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] px-4 text-xs font-black text-[#070707] shadow-[0_6px_20px_rgba(213,168,76,0.40)] transition hover:from-[#EFD07C] hover:to-[#D4AF37]"
         >
           <MessageCircle size={13} />
           Pedir demo gratis
@@ -2447,10 +2580,11 @@ function FloatingCTA() {
 export function UltraVipLanding() {
   return (
     <LandingExperience>
+      <StickyNav />
       <FloatingCTA />
       <a
         href="#contenido-principal"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-[#D5A84C] focus:px-4 focus:py-2 focus:text-sm focus:font-black focus:text-[#080A0F]"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-[#D4AF37] focus:px-4 focus:py-2 focus:text-sm focus:font-black focus:text-white"
       >
         Saltar al contenido
       </a>
