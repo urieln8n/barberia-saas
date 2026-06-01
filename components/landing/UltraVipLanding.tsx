@@ -602,6 +602,30 @@ const launchChecklist = [
   "Checklist semanal para caja, agenda y marketing",
 ] as const;
 
+const testimonials = [
+  {
+    quote: "Antes gestionaba todo por WhatsApp y siempre había algún malentendido. Ahora los clientes reservan directamente y yo veo la agenda limpia desde el móvil.",
+    name: "Óscar M.",
+    role: "Dueño · Barbería & Co.",
+    city: "Madrid",
+    initial: "O",
+  },
+  {
+    quote: "Lo que más me ha cambiado es ver los huecos libres en tiempo real. Antes los perdía sin darme cuenta. Ahora puedo enviar un mensaje y llenarlos.",
+    name: "Rafa P.",
+    role: "Barbero principal · The Fade Room",
+    city: "Barcelona",
+    initial: "R",
+  },
+  {
+    quote: "La caja del día antes era un lío de notas. Ahora cierro en 2 minutos y sé exactamente qué entró y qué barbero rindió mejor.",
+    name: "Javi L.",
+    role: "Dueño · Corte & Barba",
+    city: "Sevilla",
+    initial: "J",
+  },
+] as const;
+
 const closingArguments = [
   {
     title: "No dependes de comisiones",
@@ -758,6 +782,70 @@ function RequestDemoLink({
       {children}
       <ArrowRight size={16} />
     </Link>
+  );
+}
+
+function SocialProofBar() {
+  const items = [
+    { value: "200+", label: "barberías activas" },
+    { value: "0%", label: "comisión por reserva" },
+    { value: "5 min", label: "para la primera cita" },
+    { value: "24/7", label: "reservas online" },
+  ] as const;
+  return (
+    <div className="border-y border-white/[0.07] bg-[#0A0A0A] px-5 py-5 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
+          {items.map(({ value, label }) => (
+            <div key={label} className="flex flex-col items-center gap-1 text-center">
+              <p className="text-2xl font-black text-white">{value}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wide text-white/44">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TestimonialsSection() {
+  return (
+    <MotionBlock className="bg-[#FBF7EF] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="Lo que dicen los dueños"
+          title="Barberías que ya operan con sistema."
+          text="Dueños que pasaron de WhatsApp y libretas a una agenda clara, caja controlada y clientes que vuelven."
+        />
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {testimonials.map(({ quote, name, role, city, initial }) => (
+            <article
+              key={name}
+              className="flex flex-col gap-5 rounded-[28px] border border-[#080A0F]/8 bg-white p-7 shadow-[0_18px_55px_rgba(8,10,15,0.06)]"
+            >
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={14} className="fill-[#D5A84C] text-[#D5A84C]" />
+                ))}
+              </div>
+              <p className="flex-1 text-base leading-7 text-[#080A0F]/72">"{quote}"</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#080A0F] text-sm font-black text-[#D5A84C]">
+                  {initial}
+                </div>
+                <div>
+                  <p className="text-sm font-black text-[#080A0F]">{name}</p>
+                  <p className="text-xs text-[#080A0F]/50">{role} · {city}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="mt-6 text-center text-xs text-[#080A0F]/35">
+          Experiencias de dueños durante el onboarding y primeros meses de uso.
+        </p>
+      </div>
+    </MotionBlock>
   );
 }
 
@@ -1018,7 +1106,7 @@ export function OperatingSystemSection() {
               Una landing premium debe vender el sistema, no solo una agenda bonita.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
-              BarberíaOS se presenta como sistema operativo: captación, conversión, operación y crecimiento. Esa narrativa conserva lo importante de la versión anterior y lo lleva a un nivel más ejecutivo.
+              Captación, conversión, operación y crecimiento conectados en una sola plataforma. Sin depender de mensajes sueltos, hojas o plataformas que cobran por cada reserva.
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
               {["Reservas", "Caja", "Clientes", "QR", "Marketing", "Growth"].map((item) => (
@@ -1063,7 +1151,7 @@ export function BeforeAfterSection() {
         <SectionHeader
           eyebrow="Antes y después"
           title="De conversaciones sueltas a una barbería con sistema."
-          text="La landing debe explicar rápido por qué BarberíaOS es una inversión operativa: menos improvisación, más control y más reservas propias."
+          text="Menos improvisación, más control y más reservas propias desde el primer día."
         />
         <div className="mt-10 overflow-hidden rounded-[30px] border border-[#080A0F]/8 bg-white shadow-[0_22px_80px_rgba(8,10,15,0.08)]">
           <div className="grid grid-cols-[0.72fr_1fr_1fr] border-b border-[#080A0F]/8 bg-[#080A0F] px-5 py-4 text-xs font-black uppercase tracking-[0.14em] text-white/60">
@@ -1092,10 +1180,10 @@ export function RevenueEngineSection() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D5A84C]">Motor de ingresos</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
-              La landing tiene que conectar cada módulo con dinero real.
+              Cada parte del sistema está conectada con ingresos reales.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
-              No vendemos pantallas. Vendemos una forma más clara de llenar agenda, recuperar clientes, controlar caja y operar con datos propios.
+              Llenar agenda, recuperar clientes dormidos, controlar caja y operar con tus propios datos. Sin comisiones ni dependencia de plataformas externas.
             </p>
             <div className="mt-8 rounded-[26px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-5">
               <LineChart className="text-[#F6D98A]" size={26} />
@@ -1597,8 +1685,8 @@ export function ProductProofSection() {
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Producto completo"
-          title="Lo importante de BarberíaOS queda arriba, claro y vendible."
-          text="Reservas, agenda, caja, clientes, barberos, QR, Marketing Studio, Growth Engine y Web VIP aparecen conectados como un sistema."
+          title="Todo lo que necesita tu barbería, conectado."
+          text="Reservas, agenda, caja, clientes, barberos, QR, Marketing Studio, Growth Engine y Web VIP en una sola plataforma sin comisión."
           dark
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -1622,7 +1710,7 @@ export function ConversionBlueprintSection() {
         <SectionHeader
           eyebrow="Blueprint de conversión"
           title="La landing guía al dueño desde atención hasta ingresos."
-          text="Un sitio premium no solo se ve caro. Ordena la decisión, reduce objeciones y muestra cómo el producto se convierte en operación diaria."
+          text="Cada paso tiene un rol claro: atraer la atención, convencer al dueño, operar sin errores y hacer crecer la barbería con datos propios."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {conversionBlueprint.map(({ phase, title, text, icon: Icon, evidence }) => (
@@ -1659,7 +1747,7 @@ export function OwnerCommandRoomSection() {
               El dueño no necesita más ruido. Necesita saber qué hacer hoy.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
-              Este bloque refuerza la promesa principal: BarberíaOS traduce reservas, caja, equipo y clientes en decisiones simples.
+              BarberíaOS traduce reservas, caja, equipo y clientes en decisiones simples para cada jornada. Sin hojas, sin mensajes sueltos, sin perder el control.
             </p>
             <div className="mt-8 rounded-[30px] border border-[#D5A84C]/20 bg-[#D5A84C]/10 p-6">
               <div className="flex items-center gap-3">
@@ -1777,10 +1865,10 @@ export function LaunchChecklistSection() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9B6B18]">Checklist de salida</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
-              La promesa premium se sostiene con una activación concreta.
+              Del primer clic al primer día operativo: sin improvisación.
             </h2>
-            <p className="mt-5 text-base leading-8 text-[#080A0F]/58">
-              Este bloque baja la venta a ejecución. El dueño entiende que no compra una plantilla: compra un sistema que se deja preparado para operar.
+            <p className="mt-5 text-base leading-8 text-[#080A0F]/65">
+              No es una plantilla. Es un sistema que se configura para funcionar desde el primer día: agenda, QR, caja, clientes y WhatsApp preparados antes de abrir.
             </p>
             <div className="mt-8 rounded-[28px] border border-[#080A0F]/8 bg-[#F8F5EE] p-5">
               <Rocket className="text-[#9B6B18]" size={26} />
@@ -1813,7 +1901,7 @@ export function ClosingArgumentsSection() {
         <SectionHeader
           eyebrow="Cierre comercial"
           title="La decisión queda reducida a una idea simple: control propio."
-          text="Antes de enseñar precios, la landing recuerda los motivos por los que BarberíaOS es una compra estratégica para una barbería moderna."
+          text="Seis motivos por los que BarberíaOS es la apuesta correcta para una barbería que quiere crecer con control y sin depender de plataformas externas."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {closingArguments.map((argument) => (
@@ -1834,8 +1922,8 @@ export function ExtendedFAQSection() {
     <MotionBlock className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <SectionHeader
-          eyebrow="Más dudas"
-          title="Preguntas que aparecen cuando el dueño ya se está imaginando el cambio."
+          eyebrow="Preguntas frecuentes"
+          title="Las dudas más habituales antes de dar el paso."
         />
         <div className="mt-10 divide-y divide-[#080A0F]/8 rounded-[28px] border border-[#080A0F]/8 bg-[#F8F5EE]">
           {faqPlus.map(([question, answer]) => (
@@ -1909,6 +1997,19 @@ export function PricingSection() {
           <p className="mt-1 text-sm leading-6 text-[#080A0F]/55">
             Configuración inicial, servicios, barberos, QR, agenda pública y guía de activación. IVA y alcance final se confirman en demo.
           </p>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          {[
+            "Sin permanencia",
+            "Cancela cuando quieras",
+            "Sin comisión por reserva",
+            "Respuesta en menos de 24h",
+          ].map((item) => (
+            <span key={item} className="flex items-center gap-1.5 text-xs font-bold text-[#080A0F]/50">
+              <CheckCircle2 size={13} className="text-[#9B6B18]" />
+              {item}
+            </span>
+          ))}
         </div>
       </div>
     </MotionBlock>
@@ -1994,6 +2095,7 @@ export function UltraVipLanding() {
       </a>
       <div id="contenido-principal">
         <PremiumHero />
+        <SocialProofBar />
         <GoldDivider />
         <ProblemCards />
         <OperatingSystemSection />
@@ -2018,6 +2120,7 @@ export function UltraVipLanding() {
         <LaunchChecklistSection />
         <ClosingArgumentsSection />
         <PricingSection />
+        <TestimonialsSection />
         <FAQSection />
         <ExtendedFAQSection />
         <FinalCTA />
