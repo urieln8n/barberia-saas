@@ -26,7 +26,7 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
     <div
       role="tablist"
       aria-label="Cambiar vista de agenda"
-      className="flex items-center gap-0.5 rounded-xl border border-[#2a2a2a] bg-[#0f0f0f] p-1"
+      className="flex items-center gap-0.5 rounded-xl border border-slate-200 bg-slate-100 p-1"
     >
       {VIEWS.map(({ id, label, shortLabel, Icon }) => {
         const isActive = current === id;
@@ -41,8 +41,8 @@ export function AgendaViewSwitcher({ current, onChange }: Props) {
               relative flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-2
               text-xs font-bold transition-all duration-150
               ${isActive
-                ? "bg-[#D4AF37] text-[#070707] shadow-sm"
-                : "text-[#666] hover:bg-[#1a1a1a] hover:text-white"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:bg-white/70 hover:text-slate-800"
               }
             `}
           >

@@ -13,7 +13,7 @@ export function BarberFilterSelect({ value, onChange, barbers }: Props) {
     <select
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className="min-h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-700 outline-none transition focus:border-[#D4AF37] focus:bg-white"
+      className="min-h-9 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 outline-none transition focus:border-slate-400 focus:ring-1 focus:ring-slate-200 hover:border-slate-300"
     >
       <option value="">Por barbero</option>
       {barbers.map((barber) => (
