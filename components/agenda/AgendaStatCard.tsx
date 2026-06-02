@@ -10,28 +10,28 @@ type Props = {
 };
 
 const ICON_ACCENTS = {
-  gold: "border-[#D4AF37]/25 bg-[#D4AF37]/[0.10] text-[#D4AF37]",
-  green: "border-[#22C55E]/25 bg-[#22C55E]/[0.10] text-[#22C55E]",
-  blue: "border-[#3B82F6]/25 bg-[#3B82F6]/[0.10] text-[#3B82F6]",
-  red: "border-[#EF4444]/25 bg-[#EF4444]/[0.10] text-[#EF4444]",
-  slate: "border-[#333] bg-[#1a1a1a] text-[#888]",
+  gold:  "border-[#D4AF37]/25 bg-[#D4AF37]/[0.10] text-[#D4AF37]",
+  green: "border-emerald-200 bg-emerald-50 text-emerald-600",
+  blue:  "border-blue-200 bg-blue-50 text-blue-600",
+  red:   "border-red-200 bg-red-50 text-red-500",
+  slate: "border-slate-200 bg-slate-100 text-slate-500",
 };
 
 const VALUE_ACCENTS = {
-  gold: "text-[#D4AF37]",
-  green: "text-[#22C55E]",
-  blue: "text-[#3B82F6]",
-  red: "text-[#EF4444]",
-  slate: "text-white",
+  gold:  "text-[#C9922A]",
+  green: "text-emerald-600",
+  blue:  "text-blue-600",
+  red:   "text-red-500",
+  slate: "text-slate-900",
 };
 
 export function AgendaStatCard({ label, value, description, icon: Icon, accent = "slate" }: Props) {
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#111111] p-5 transition-colors hover:border-[#333] hover:bg-[#141414]">
+    <article className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#666]">{label}</p>
-          <p className={`mt-2 text-3xl font-black tracking-tight ${VALUE_ACCENTS[accent]}`}>
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{label}</p>
+          <p className={`mt-2 text-3xl font-black tracking-tight tabular-nums ${VALUE_ACCENTS[accent]}`}>
             {value}
           </p>
         </div>
@@ -39,7 +39,7 @@ export function AgendaStatCard({ label, value, description, icon: Icon, accent =
           <Icon size={17} />
         </div>
       </div>
-      <p className="mt-3 text-xs leading-5 text-[#666]">{description}</p>
+      <p className="mt-3 text-xs leading-5 text-slate-500">{description}</p>
     </article>
   );
 }

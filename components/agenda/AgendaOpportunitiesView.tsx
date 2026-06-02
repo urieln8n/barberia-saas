@@ -135,25 +135,25 @@ export function AgendaOpportunitiesView({ opportunities }: Props) {
       )}
 
       {/* AaaS hint */}
-      <div className="rounded-2xl border border-[#080A0F]/8 bg-[#080A0F] p-5">
+      <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#FDFAF3] p-5 shadow-sm">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15">
-            <Bot size={16} className="text-[#D4AF37]" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10">
+            <Bot size={16} className="text-[#C9922A]" />
           </div>
           <div>
-            <p className="text-xs font-black uppercase tracking-widest text-[#D4AF37]/70">
+            <p className="text-xs font-black uppercase tracking-widest text-[#C9922A]">
               Agentes IA — próximamente
             </p>
-            <h3 className="mt-0.5 font-black text-white">
+            <h3 className="mt-0.5 font-black text-slate-900">
               El Agente de Huecos Libres actuará en base a estas señales
             </h3>
-            <p className="mt-1.5 text-xs leading-5 text-white/50">
+            <p className="mt-1.5 text-xs leading-5 text-slate-500">
               Cuando des aprobación, el agente podrá contactar clientes, preparar campañas
               y llenar huecos automáticamente. Hoy solo detecta. Mañana actúa.
             </p>
             <a
               href="/dashboard/agentes"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/20"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-black text-[#C9922A] transition hover:bg-[#D4AF37]/18"
             >
               Ver Agentes IA <ArrowRight size={11} />
             </a>

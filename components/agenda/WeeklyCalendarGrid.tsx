@@ -170,7 +170,7 @@ export function WeeklyCalendarGrid({
                     ? "border-[#D4AF37]/40 bg-[#D4AF37] text-[#070707] shadow-sm"
                     : day.isToday
                     ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#B88917]"
-                    : "border-[#1e1e1e] bg-white text-slate-700 hover:border-slate-300"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
               >
                 <span className="block text-[10px] font-black uppercase tracking-wide">
@@ -196,12 +196,12 @@ export function WeeklyCalendarGrid({
 
         <div className="space-y-3 p-4">
           {selectedDayAppointments.length === 0 && selectedDaySlots.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50 p-6 text-center">
-              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
-                <CalendarPlus size={18} className="text-emerald-500" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm">
+                <CalendarPlus size={18} className="text-slate-400" />
               </div>
-              <p className="font-black text-slate-900">Día disponible</p>
-              <p className="mt-1 text-sm text-emerald-600">
+              <p className="font-black text-slate-700">Día disponible</p>
+              <p className="mt-1 text-sm text-slate-400">
                 Sin reservas. Crea una cita para llenar este día.
               </p>
             </div>
@@ -309,7 +309,7 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[148px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
+              className="grid min-h-[96px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
             >
               {/* Hour label */}
               <div className="flex items-start justify-end bg-slate-50 px-3 pt-2">
@@ -359,8 +359,8 @@ export function WeeklyCalendarGrid({
                       />
                     ))}
 
-                    {/* Free slots */}
-                    {hourSlots.map((slot) => (
+                    {/* Free slots — máx 2 visibles, resto colapsado */}
+                    {hourSlots.slice(0, 2).map((slot) => (
                       <FreeSlotCard
                         key={slot.id}
                         slot={slot}
@@ -369,6 +369,15 @@ export function WeeklyCalendarGrid({
                         onBook={onFreeSlotBook}
                       />
                     ))}
+                    {hourSlots.length > 2 && (
+                      <button
+                        type="button"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1 text-[10px] font-black text-slate-500 transition hover:bg-slate-100"
+                        onClick={() => onFreeSlotBook?.(hourSlots[2])}
+                      >
+                        +{hourSlots.length - 2} más
+                      </button>
+                    )}
 
                     {/* Empty cell — invisible until hover */}
                     {isEmpty && !past && (
@@ -393,7 +402,7 @@ export function WeeklyCalendarGrid({
           ))}
 
           {/* Footer summary */}
-          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-[#1e1e1e] bg-[#0f0f0f]">
+          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-200 bg-slate-50">
             <div className="p-3" />
             {days.map((day) => {
               const dayAppts = appointments.filter((a) => a.appointment_date === day.iso);
@@ -401,17 +410,17 @@ export function WeeklyCalendarGrid({
               const rev = active.reduce((s, a) => s + (a.service?.price ?? 0), 0);
               const slots = freeSlots.filter((s) => s.date === day.iso).length;
               return (
-                <div key={day.iso} className="border-l border-[#1a1a1a] px-3 py-2">
+                <div key={day.iso} className="border-l border-slate-200 px-3 py-2">
                   {active.length > 0 ? (
-                    <p className="text-[10px] font-black text-[#666]">
+                    <p className="text-[10px] font-black text-slate-600">
                       {active.length} cita{active.length !== 1 ? "s" : ""}
                       {rev > 0 ? ` · ${money(rev)}` : ""}
                     </p>
                   ) : (
-                    <p className="text-[10px] font-semibold text-[#444]">Sin reservas</p>
+                    <p className="text-[10px] font-semibold text-slate-400">Sin reservas</p>
                   )}
                   {slots > 0 && (
-                    <p className="text-[10px] font-semibold text-[#22C55E]">
+                    <p className="text-[10px] font-semibold text-emerald-600">
                       {slots} hueco{slots !== 1 ? "s" : ""}
                     </p>
                   )}
