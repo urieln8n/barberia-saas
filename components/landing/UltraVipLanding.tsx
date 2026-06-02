@@ -2337,7 +2337,7 @@ export function FAQSection() {
 
 export function FinalCTA() {
   return (
-    <MotionBlock className="bg-[#070707] px-5 py-20 text-white md:py-32 lg:px-8">
+    <MotionBlock className="bg-[#070707] px-5 py-20 pb-36 text-white md:py-32 md:pb-32 lg:px-8">
       <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[40px] border border-[#232323] bg-[#111111] p-10 text-center md:p-16">
         {/* Glow */}
         <div className="pointer-events-none absolute inset-0 rounded-[40px]">
@@ -2834,7 +2834,7 @@ function FloatingCTA() {
   return (
     <div
       aria-hidden={!visible}
-      className={`fixed inset-x-4 bottom-4 z-50 flex justify-center transition-all duration-300 ${
+      className={`fixed inset-x-4 bottom-4 z-50 hidden md:flex md:justify-center transition-all duration-300 ${
         visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0 pointer-events-none"
       }`}
     >

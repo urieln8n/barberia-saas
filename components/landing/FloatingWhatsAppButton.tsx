@@ -31,10 +31,27 @@ export function FloatingWhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Solicitar demo por WhatsApp"
-      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border border-[#D5A84C]/35 bg-[#0D0F14] px-4 py-3 text-sm font-black text-[#D5A84C] shadow-[0_18px_45px_rgba(201,146,42,0.18)] transition hover:-translate-y-0.5 hover:bg-[#D5A84C]/10 focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/50 focus:ring-offset-2 sm:bottom-6 sm:right-6 sm:px-5"
+      className="
+        md:hidden
+        fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-50
+        inline-flex items-center gap-2.5
+        rounded-2xl
+        border border-[#D4AF37]/30
+        bg-[#0A0C10]/95 backdrop-blur-sm
+        px-4 py-3
+        shadow-[0_8px_32px_rgba(212,175,55,0.20),0_2px_8px_rgba(0,0,0,0.60)]
+        transition-all duration-200 hover:-translate-y-0.5 hover:border-[#D4AF37]/55 hover:shadow-[0_12px_40px_rgba(212,175,55,0.28)]
+        active:scale-95
+        focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 focus:ring-offset-2
+      "
     >
-      <MessageCircle size={18} className="shrink-0" />
-      <span>Solicitar demo</span>
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/12">
+        <MessageCircle size={17} className="text-[#D4AF37]" />
+      </div>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[13px] font-black text-[#D4AF37]">Solicitar demo</span>
+        <span className="text-[10px] font-medium text-white/45">Te respondemos por WhatsApp</span>
+      </div>
     </a>
   );
 }
