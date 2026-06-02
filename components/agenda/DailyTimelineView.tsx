@@ -218,19 +218,19 @@ export function DailyTimelineView({
               return (
                 <div
                   key={slot.id}
-                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50"
+                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]"
                   style={{ top: top + 2, height: height - 4 }}
                 >
                   <div className="flex h-full items-center justify-between gap-2 px-3">
-                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-emerald-600">
-                      <Zap size={10} className="shrink-0" />
+                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-slate-600">
+                      <Zap size={10} className="shrink-0 text-[#D4AF37]" />
                       {formatTime(slot.start_time)} · {slot.barber?.name ?? "Hueco libre"}
                     </span>
                     {onFreeSlotBook ? (
                       <button
                         type="button"
                         onClick={() => onFreeSlotBook(slot)}
-                        className="shrink-0 rounded-lg border border-emerald-300 bg-emerald-100 px-2.5 py-1 text-[9px] font-black text-emerald-700 transition hover:bg-emerald-200"
+                        className="shrink-0 rounded-lg bg-slate-900 px-2.5 py-1 text-[9px] font-black text-white transition hover:bg-slate-700 active:scale-[0.97]"
                       >
                         + Reservar
                       </button>

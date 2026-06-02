@@ -332,7 +332,7 @@ export function WeeklyCalendarGrid({
                   <div
                     key={`${day.iso}-${hour}`}
                     className={`relative space-y-1.5 border-l border-slate-100 p-1.5 ${
-                      day.isToday && isEmpty && !past ? "bg-emerald-50/40" : ""
+                      day.isToday && !past ? "bg-[#D4AF37]/[0.025]" : ""
                     }`}
                   >
                     {/* "Ahora" line */}
@@ -370,28 +370,22 @@ export function WeeklyCalendarGrid({
                       />
                     ))}
 
-                    {/* Empty cell */}
-                    {isEmpty ? (
-                      past ? (
-                        <div className="flex h-full min-h-[48px] items-center justify-center">
-                          <div className="h-px w-4 bg-slate-200" />
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => onEmptySlotClick?.(day.iso, hour)}
-                          aria-label={`Reservar a las ${hour} — ${day.label} ${day.dayNumber}`}
-                          className="group flex min-h-[120px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-200 bg-emerald-50/60 px-2 py-4 text-center transition-all hover:border-emerald-300 hover:bg-emerald-50 active:scale-[0.98]"
-                        >
-                          <div className="flex h-7 w-7 items-center justify-center rounded-full border border-emerald-200 bg-emerald-100 text-emerald-500 shadow-sm transition-transform group-hover:scale-110">
-                            <CalendarPlus size={13} />
-                          </div>
-                          <span className="text-[10px] font-black uppercase tracking-wide text-emerald-500 group-hover:text-emerald-700">
-                            Reservar
+                    {/* Empty cell — invisible until hover */}
+                    {isEmpty && !past && (
+                      <button
+                        type="button"
+                        onClick={() => onEmptySlotClick?.(day.iso, hour)}
+                        aria-label={`Crear cita a las ${hour} — ${day.label} ${day.dayNumber}`}
+                        className="group flex min-h-[120px] w-full items-center justify-center rounded-xl transition-colors hover:bg-slate-50/80 active:bg-slate-100/60"
+                      >
+                        <span className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                          <CalendarPlus size={11} className="text-slate-400" />
+                          <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">
+                            {hour}
                           </span>
-                        </button>
-                      )
-                    ) : null}
+                        </span>
+                      </button>
+                    )}
                   </div>
                 );
               })}
