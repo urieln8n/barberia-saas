@@ -311,17 +311,17 @@ export function AgendaClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pb-12 text-white">
+    <div className="min-h-screen bg-[#F8FAFC] pb-12 text-slate-900">
       <div className="space-y-4">
-        {/* ═══ COMMAND CENTER HEADER ═══ */}
-        <div className="border-b border-[#1e1e1e] bg-[#0a0a0a] px-1 pb-4 pt-1">
+        {/* ═══ HEADER ═══ */}
+        <div className="border-b border-slate-200 bg-white px-1 pb-4 pt-1">
           {/* Top row: title + actions */}
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.20em] text-[#D4AF37]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.20em] text-[#C9922A]">
                 Agenda · Centro de operaciones
               </p>
-              <h1 className="mt-1 text-xl font-black tracking-tight text-white md:text-2xl">
+              <h1 className="mt-1 text-xl font-black tracking-tight text-slate-900 md:text-2xl">
                 {new Date().toLocaleDateString("es-ES", {
                   weekday: "long",
                   day: "numeric",
@@ -337,7 +337,7 @@ export function AgendaClient({
                   setFormError("");
                   setShowModal(true);
                 }}
-                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-black text-[#070707] shadow-[0_4px_16px_rgba(212,175,55,0.25)] transition hover:bg-[#F4D03F] active:scale-95"
+                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition hover:bg-slate-700 active:scale-95"
               >
                 <Plus size={14} />
                 <span className="hidden sm:block">Nueva cita</span>
@@ -345,56 +345,21 @@ export function AgendaClient({
             </div>
           </div>
 
-          {/* KPI strip — inline, compact */}
+          {/* KPI strip */}
           {view !== "opportunities" && (
             <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
               {[
-                {
-                  label: "Citas hoy",
-                  value: visibleMetrics.todayAppointments,
-                  color: "text-white",
-                  sub: "activas",
-                },
-                {
-                  label: "Ingresos sem.",
-                  value: money(visibleMetrics.estimatedRevenue),
-                  color: "text-[#D4AF37]",
-                  sub: "estimados",
-                },
-                {
-                  label: "Huecos libres",
-                  value: visibleMetrics.freeSlots,
-                  color: "text-[#22C55E]",
-                  sub: "esta semana",
-                },
-                {
-                  label: "Pendientes",
-                  value: visibleMetrics.pendingAppointments,
-                  color: visibleMetrics.pendingAppointments > 0 ? "text-[#F59E0B]" : "text-white",
-                  sub: "por confirmar",
-                },
-                {
-                  label: "Clientes nuevos",
-                  value: visibleMetrics.newClients,
-                  color: "text-[#3B82F6]",
-                  sub: "esta semana",
-                },
-                {
-                  label: "Próxima cita",
-                  value: nextApptLabel,
-                  color: "text-white",
-                  sub: "hoy",
-                },
+                { label: "Citas hoy",      value: visibleMetrics.todayAppointments,                                               color: "text-slate-900", sub: "activas" },
+                { label: "Ingresos sem.",   value: money(visibleMetrics.estimatedRevenue),                                         color: "text-[#C9922A]", sub: "estimados" },
+                { label: "Huecos libres",  value: visibleMetrics.freeSlots,                                                       color: "text-emerald-600", sub: "esta semana" },
+                { label: "Pendientes",     value: visibleMetrics.pendingAppointments, color: visibleMetrics.pendingAppointments > 0 ? "text-amber-500" : "text-slate-900", sub: "por confirmar" },
+                { label: "Clientes nuevos",value: visibleMetrics.newClients,                                                       color: "text-blue-600", sub: "esta semana" },
+                { label: "Próxima cita",   value: nextApptLabel,                                                                   color: "text-slate-900", sub: "hoy" },
               ].map(({ label, value, color, sub }) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-[#1e1e1e] bg-[#111111] px-3 py-2.5"
-                >
-                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#555]">{label}</p>
-                  <p className={`mt-1 text-lg font-black tabular-nums leading-none ${color}`}>
-                    {value}
-                  </p>
-                  <p className="mt-0.5 text-[9px] text-[#444]">{sub}</p>
+                <div key={label} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">{label}</p>
+                  <p className={`mt-1 text-lg font-black tabular-nums leading-none ${color}`}>{value}</p>
+                  <p className="mt-0.5 text-[9px] text-slate-400">{sub}</p>
                 </div>
               ))}
             </div>
@@ -464,27 +429,27 @@ export function AgendaClient({
                 dateISO={dateISO}
               />
               {appointments.length === 0 && (
-                <section className="rounded-2xl border border-dashed border-[#2a2a2a] bg-[#111111] p-8 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] text-[#555]">
+                <section className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center shadow-sm">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-400">
                     <CalendarDays size={22} />
                   </div>
-                  <h2 className="mt-4 text-xl font-black text-white">
+                  <h2 className="mt-4 text-xl font-black text-slate-900">
                     Sin citas esta semana.
                   </h2>
-                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#666]">
+                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500">
                     Crea la primera reserva o comparte tu link para recibir reservas online.
                   </p>
                   <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
                     <button
                       type="button"
                       onClick={() => setShowModal(true)}
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 text-sm font-black text-[#070707] transition hover:bg-[#F4D03F]"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-black text-white transition hover:bg-slate-700"
                     >
                       <Plus size={16} /> Crear primera reserva
                     </button>
                     <Link
                       href="/dashboard/qr"
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-4 text-sm font-black text-[#888] transition hover:text-white"
+                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
                     >
                       Ver link de reservas
                     </Link>
@@ -511,7 +476,7 @@ export function AgendaClient({
                 services={services}
               />
 
-              <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-4 py-3 text-sm font-bold text-slate-700">
+              <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 shadow-sm">
                 {selectedBarberRow
                   ? `Mostrando agenda de ${selectedBarberRow.name}.`
                   : "Mostrando agenda de todos los barberos."}
@@ -583,25 +548,21 @@ export function AgendaClient({
         }}
       />
 
-      {/* New appointment modal — dark premium */}
+      {/* New appointment modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_32px_100px_rgba(0,0,0,0.80)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl">
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37]">
-                    Agenda Pro
-                  </p>
-                  <h2 className="mt-1 text-xl font-black tracking-tight text-white">
-                    Nueva reserva
-                  </h2>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9922A]">Nueva cita</p>
+                  <h2 className="mt-0.5 text-lg font-black text-slate-900">Crear reserva</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
                   aria-label="Cerrar"
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] text-[#666] transition hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:border-slate-300 hover:text-slate-600"
                 >
                   <X size={16} />
                 </button>
@@ -611,19 +572,19 @@ export function AgendaClient({
                 <input type="hidden" name="barbershop_id" value={barbershopId} />
 
                 {[
-                  { label: "Cliente *", name: "client_id", required: true, isSelect: true,
+                  { label: "Cliente *", name: "client_id", required: true,
                     options: [{ value: "", label: "Seleccionar cliente..." }, ...clients.map(c => ({ value: c.id, label: `${c.name}${c.phone ? ` · ${c.phone}` : ""}` }))] },
-                  { label: "Servicio *", name: "service_id", required: true, isSelect: true,
+                  { label: "Servicio *", name: "service_id", required: true,
                     options: [{ value: "", label: "Seleccionar servicio..." }, ...services.map(s => ({ value: s.id, label: `${s.name} · ${s.price}€ · ${s.duration_minutes}min` }))] },
-                  { label: "Barbero", name: "barber_id", required: false, isSelect: true,
+                  { label: "Barbero", name: "barber_id", required: false,
                     options: [{ value: "", label: "Cualquiera / Sin asignar" }, ...barbers.map(b => ({ value: b.id, label: b.name }))] },
-                ].map(({ label, name, required, isSelect, options }) => (
+                ].map(({ label, name, required, options }) => (
                   <div key={name}>
-                    <label className="mb-1.5 block text-xs font-bold text-[#888]">{label}</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">{label}</label>
                     <select
                       name={name}
                       required={required}
-                      className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-3 text-sm text-white outline-none transition focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/25"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
                     >
                       {options.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -634,21 +595,21 @@ export function AgendaClient({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-1.5 block text-xs font-bold text-[#888]">Fecha *</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">Fecha *</label>
                     <input
                       name="appointment_date"
                       type="date"
                       defaultValue={view === "day" ? dateISO : getTodayISO()}
                       required
-                      className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-3 text-sm text-white outline-none transition focus:border-[#D4AF37]/50"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs font-bold text-[#888]">Hora *</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">Hora *</label>
                     <select
                       name="start_time"
                       required
-                      className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-3 text-sm text-white outline-none transition focus:border-[#D4AF37]/50"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                     >
                       <option value="">Hora...</option>
                       {slots.map((slot) => (
@@ -659,16 +620,16 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold text-[#888]">Notas</label>
+                  <label className="mb-1.5 block text-xs font-semibold text-slate-500">Notas</label>
                   <input
                     name="notes"
                     placeholder="Ej: Trae referencia de foto"
-                    className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-3 text-sm text-white placeholder-[#444] outline-none transition focus:border-[#D4AF37]/50"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-300 outline-none transition focus:border-slate-400"
                   />
                 </div>
 
                 {formError && (
-                  <p className="rounded-xl border border-[#EF4444]/25 bg-[#EF4444]/[0.08] px-4 py-3 text-sm font-bold text-[#EF4444]">
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
                     {formError}
                   </p>
                 )}
@@ -677,14 +638,14 @@ export function AgendaClient({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-4 text-sm font-black text-[#888] transition hover:text-white"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-[#D4AF37] px-4 text-sm font-black text-[#070707] transition hover:bg-[#F4D03F] disabled:opacity-50"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-black text-white transition hover:bg-slate-700 disabled:opacity-50"
                   >
                     {saving ? "Guardando..." : "Crear cita"}
                   </button>
