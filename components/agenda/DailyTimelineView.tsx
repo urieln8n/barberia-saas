@@ -113,21 +113,21 @@ export function DailyTimelineView({
     <div className="flex flex-col gap-4">
       {/* Mini KPIs */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-[#2a2a2a] bg-[#111111] p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#555]">Reservas</p>
-          <p className="mt-1.5 text-2xl font-black text-white">{dayAppointments.length}</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Reservas</p>
+          <p className="mt-1.5 text-2xl font-black text-slate-900">{dayAppointments.length}</p>
         </div>
-        <div className="rounded-2xl border border-[#22C55E]/20 bg-[#22C55E]/[0.06] p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#22C55E]/70">Huecos libres</p>
-          <p className="mt-1.5 text-2xl font-black text-[#22C55E]">{daySlots.length}</p>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-600">Huecos libres</p>
+          <p className="mt-1.5 text-2xl font-black text-emerald-700">{daySlots.length}</p>
         </div>
-        <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.06] p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#D4AF37]/70">
+        <div className="rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/5 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C9922A]/80">
             {selectedBarberName ? "Barbero" : "Equipo"}
           </p>
           <div className="mt-1.5 flex items-center gap-1.5">
-            <Users size={16} className="text-[#D4AF37]" />
-            <p className="text-2xl font-black text-[#D4AF37]">
+            <Users size={16} className="text-[#C9922A]" />
+            <p className="text-2xl font-black text-[#8A641F]">
               {selectedBarberName ? 1 : barbers.length}
             </p>
           </div>
@@ -137,10 +137,10 @@ export function DailyTimelineView({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#D4AF37]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C9922A]">
             Vista día · {selectedBarberName ?? "Todo el equipo"}
           </p>
-          <p className="mt-0.5 text-xs text-[#666]">
+          <p className="mt-0.5 text-xs text-slate-500">
             {dayAppointments.length} cita{dayAppointments.length !== 1 ? "s" : ""}
             {estimatedRevenue > 0 ? ` · ${estimatedRevenue}€ previstos` : ""}
           </p>
@@ -148,7 +148,7 @@ export function DailyTimelineView({
         <button
           type="button"
           onClick={onNewAppointment}
-          className="flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] px-3.5 py-2 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/[0.15] active:scale-95"
+          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-black text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900 active:scale-95"
         >
           <CalendarPlus size={13} />
           Nueva reserva
@@ -156,11 +156,11 @@ export function DailyTimelineView({
       </div>
 
       {/* Timeline */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0d0d0d] shadow-[0_24px_80px_rgba(0,0,0,0.40)]">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="flex">
           {/* Hour labels */}
           <div
-            className="shrink-0 border-r border-[#1e1e1e]"
+            className="shrink-0 border-r border-slate-100 bg-slate-50"
             style={{ width: 56, height: totalHeight }}
           >
             {HOURS.map((h) => (
@@ -169,7 +169,7 @@ export function DailyTimelineView({
                 className="flex items-start justify-end pr-2.5 pt-1.5"
                 style={{ height: CELL_HEIGHT }}
               >
-                <span className="text-[10px] font-bold tabular-nums text-[#444]">
+                <span className="text-[10px] font-bold tabular-nums text-slate-400">
                   {String(h).padStart(2, "0")}:00
                 </span>
               </div>
@@ -182,7 +182,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={h}
-                className="absolute inset-x-0 border-t border-[#1e1e1e]"
+                className="absolute inset-x-0 border-t border-slate-100"
                 style={{ top: i * CELL_HEIGHT }}
               />
             ))}
@@ -191,7 +191,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={`half-${h}`}
-                className="absolute inset-x-0 border-t border-[#161616]"
+                className="absolute inset-x-0 border-t border-slate-50"
                 style={{ top: i * CELL_HEIGHT + CELL_HEIGHT / 2 }}
               />
             ))}
@@ -218,11 +218,11 @@ export function DailyTimelineView({
               return (
                 <div
                   key={slot.id}
-                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-[#22C55E]/20 bg-[#22C55E]/[0.06]"
+                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50"
                   style={{ top: top + 2, height: height - 4 }}
                 >
                   <div className="flex h-full items-center justify-between gap-2 px-3">
-                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-[#22C55E]">
+                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-emerald-600">
                       <Zap size={10} className="shrink-0" />
                       {formatTime(slot.start_time)} · {slot.barber?.name ?? "Hueco libre"}
                     </span>
@@ -230,7 +230,7 @@ export function DailyTimelineView({
                       <button
                         type="button"
                         onClick={() => onFreeSlotBook(slot)}
-                        className="shrink-0 rounded-lg border border-[#22C55E]/30 bg-[#22C55E]/[0.12] px-2.5 py-1 text-[9px] font-black text-[#22C55E] transition hover:bg-[#22C55E]/[0.20]"
+                        className="shrink-0 rounded-lg border border-emerald-300 bg-emerald-100 px-2.5 py-1 text-[9px] font-black text-emerald-700 transition hover:bg-emerald-200"
                       >
                         + Reservar
                       </button>
@@ -273,19 +273,19 @@ export function DailyTimelineView({
         {/* Empty state */}
         {isEmpty && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#2a2a2a] bg-[#111111] text-[#444]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-300">
               <Clock size={22} />
             </div>
             <div className="text-center">
-              <p className="font-black text-white">Día disponible</p>
-              <p className="mt-1.5 text-xs leading-6 text-[#666]">
+              <p className="font-black text-slate-900">Día disponible</p>
+              <p className="mt-1.5 text-xs leading-6 text-slate-500">
                 Crea la primera cita o comparte tu link para recibir reservas online.
               </p>
             </div>
             <button
               type="button"
               onClick={onNewAppointment}
-              className="flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] px-4 py-2 text-xs font-black text-[#D4AF37] transition hover:bg-[#D4AF37]/[0.15]"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-900"
             >
               <CalendarPlus size={12} /> Crear primera cita
             </button>

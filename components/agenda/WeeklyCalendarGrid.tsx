@@ -108,13 +108,13 @@ export function WeeklyCalendarGrid({
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       {/* ── Header ── */}
-      <div className="border-b border-slate-200 bg-[#FDFBF7] px-4 py-4">
+      <div className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#D4AF37]">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#C9922A]">
               Vista semana
             </p>
-            <h2 className="mt-0.5 text-lg font-black text-slate-950">
+            <h2 className="mt-0.5 text-lg font-black text-slate-900">
               Agenda semanal
             </h2>
             {weekRangeLabel && (
@@ -124,29 +124,29 @@ export function WeeklyCalendarGrid({
 
           {/* Weekly summary chips */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+            <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 shadow-sm">
               <TrendingUp size={12} className="text-slate-400" />
-              <span className="text-[11px] font-black tabular-nums text-slate-950">
+              <span className="text-[11px] font-black tabular-nums text-slate-900">
                 {weekAppointments}
               </span>
               <span className="text-[11px] font-semibold text-slate-400">reservas</span>
             </div>
             {weekRevenue > 0 && (
-              <div className="flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/8 px-3 py-1.5 shadow-sm">
-                <Euro size={12} className="text-[#B88917]" />
+              <div className="flex items-center gap-1.5 rounded-xl border border-[#C9922A]/25 bg-[#C9922A]/8 px-3 py-1.5 shadow-sm">
+                <Euro size={12} className="text-[#C9922A]" />
                 <span className="text-[11px] font-black tabular-nums text-[#8A641F]">
                   {money(weekRevenue)}
                 </span>
-                <span className="text-[11px] font-semibold text-[#B88917]/70">estimado</span>
+                <span className="text-[11px] font-semibold text-[#C9922A]/70">estimado</span>
               </div>
             )}
             {weekFreeSlots > 0 && (
-              <div className="flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1.5 shadow-sm">
-                <CalendarPlus size={12} className="text-emerald-600" />
+              <div className="flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1.5">
+                <CalendarPlus size={12} className="text-emerald-500" />
                 <span className="text-[11px] font-black tabular-nums text-emerald-700">
                   {weekFreeSlots}
                 </span>
-                <span className="text-[11px] font-semibold text-emerald-600/70">huecos</span>
+                <span className="text-[11px] font-semibold text-emerald-500/70">huecos</span>
               </div>
             )}
           </div>
@@ -167,10 +167,10 @@ export function WeeklyCalendarGrid({
                 onClick={() => onSelectedDayChange(day.iso)}
                 className={`relative min-w-[68px] rounded-2xl border px-2.5 py-2.5 text-center transition-all ${
                   isSelected
-                    ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                    ? "border-[#D4AF37]/40 bg-[#D4AF37] text-[#070707] shadow-sm"
                     : day.isToday
                     ? "border-[#D4AF37] bg-[#D4AF37]/10 text-[#B88917]"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                    : "border-[#1e1e1e] bg-white text-slate-700 hover:border-slate-300"
                 }`}
               >
                 <span className="block text-[10px] font-black uppercase tracking-wide">
@@ -180,7 +180,7 @@ export function WeeklyCalendarGrid({
                 {activeCount > 0 && (
                   <span
                     className={`mt-1 inline-block rounded-full px-1.5 py-px text-[9px] font-black ${
-                      isSelected ? "bg-white/20 text-white" : "bg-slate-800 text-white"
+                      isSelected ? "bg-white/20 text-white" : "bg-[#D4AF37]/20 text-[#D4AF37]"
                     }`}
                   >
                     {activeCount}
@@ -196,12 +196,12 @@ export function WeeklyCalendarGrid({
 
         <div className="space-y-3 p-4">
           {selectedDayAppointments.length === 0 && selectedDaySlots.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/60 p-6 text-center">
+            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50 p-6 text-center">
               <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
-                <CalendarPlus size={18} className="text-emerald-600" />
+                <CalendarPlus size={18} className="text-emerald-500" />
               </div>
-              <p className="font-black text-emerald-800">Día disponible</p>
-              <p className="mt-1 text-sm text-emerald-700/70">
+              <p className="font-black text-slate-900">Día disponible</p>
+              <p className="mt-1 text-sm text-emerald-600">
                 Sin reservas. Crea una cita para llenar este día.
               </p>
             </div>
@@ -232,7 +232,7 @@ export function WeeklyCalendarGrid({
 
           {/* Column headers */}
           <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200">
-            <div className="flex items-center justify-center bg-[#FAFAF7] p-3">
+            <div className="flex items-center justify-center bg-slate-50 p-3">
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                 Hora
               </span>
@@ -249,62 +249,53 @@ export function WeeklyCalendarGrid({
                 <div
                   key={day.iso}
                   onClick={() => onSelectedDayChange(day.iso)}
-                  className={`relative cursor-pointer border-l border-slate-200 p-3 transition-colors hover:bg-slate-50/80 ${
-                    day.isToday
-                      ? "bg-[#D4AF37]/8"
-                      : "bg-[#FAFAF7]"
+                  className={`relative cursor-pointer border-l border-slate-200 p-3 transition-colors hover:bg-slate-50 ${
+                    day.isToday ? "bg-[#C9922A]/5" : "bg-white"
                   }`}
                 >
                   {day.isToday && (
-                    <span className="mb-1.5 inline-block rounded-full bg-[#D4AF37] px-2 py-px text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
+                    <span className="mb-1.5 inline-block rounded-full bg-[#C9922A] px-2 py-px text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
                       Hoy
                     </span>
                   )}
-                  <p
-                    className={`text-[11px] font-black uppercase tracking-wide ${
-                      day.isToday ? "text-[#B88917]" : "text-slate-500"
-                    }`}
-                  >
+                  <p className={`text-[11px] font-black uppercase tracking-wide ${
+                    day.isToday ? "text-[#C9922A]" : "text-slate-400"
+                  }`}>
                     {day.label}
                   </p>
-                  <p
-                    className={`mt-0.5 text-2xl font-black tabular-nums leading-none ${
-                      day.isToday ? "text-[#8A641F]" : "text-slate-950"
-                    }`}
-                  >
+                  <p className={`mt-0.5 text-2xl font-black tabular-nums leading-none ${
+                    day.isToday ? "text-[#8A641F]" : "text-slate-900"
+                  }`}>
                     {day.dayNumber}
                   </p>
 
                   {/* Day summary */}
                   <div className="mt-2 flex flex-wrap gap-1">
                     {activeAppts.length > 0 && (
-                      <span className="rounded-full bg-slate-800 px-1.5 py-0.5 text-[9px] font-black text-white">
+                      <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-600">
                         {activeAppts.length} cita{activeAppts.length !== 1 ? "s" : ""}
                       </span>
                     )}
                     {dayRevenue > 0 && (
-                      <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-1.5 py-0.5 text-[9px] font-black text-[#8A641F]">
+                      <span className="rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10 px-1.5 py-0.5 text-[9px] font-black text-[#8A641F]">
                         ~{money(dayRevenue)}
                       </span>
                     )}
                     {daySlots.length > 0 && activeAppts.length === 0 && (
-                      <span className="rounded-full bg-emerald-500 px-1.5 py-0.5 text-[9px] font-black text-white">
+                      <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black text-emerald-700">
                         {daySlots.length} libre{daySlots.length !== 1 ? "s" : ""}
                       </span>
                     )}
                   </div>
 
                   {/* Occupancy bar */}
-                  <div className="absolute bottom-0 inset-x-0 h-[3px] bg-slate-100">
+                  <div className="absolute inset-x-0 bottom-0 h-[3px] bg-slate-100">
                     <div
                       className={`h-full transition-all ${
-                        occupancyPct >= 70
-                          ? "bg-emerald-500"
-                          : occupancyPct >= 40
-                          ? "bg-[#D4AF37]"
-                          : occupancyPct > 0
-                          ? "bg-amber-300"
-                          : ""
+                        occupancyPct >= 70 ? "bg-emerald-500"
+                        : occupancyPct >= 40 ? "bg-[#C9922A]"
+                        : occupancyPct > 0 ? "bg-amber-300"
+                        : ""
                       }`}
                       style={{ width: `${occupancyPct}%` }}
                     />
@@ -321,7 +312,7 @@ export function WeeklyCalendarGrid({
               className="grid min-h-[148px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
             >
               {/* Hour label */}
-              <div className="flex items-start justify-end bg-[#FAFAF7] px-3 pt-2">
+              <div className="flex items-start justify-end bg-slate-50 px-3 pt-2">
                 <span className="text-[11px] font-black tabular-nums text-slate-400">{hour}</span>
               </div>
 
@@ -341,7 +332,7 @@ export function WeeklyCalendarGrid({
                   <div
                     key={`${day.iso}-${hour}`}
                     className={`relative space-y-1.5 border-l border-slate-100 p-1.5 ${
-                      day.isToday && isEmpty && !past ? "bg-emerald-50/15" : ""
+                      day.isToday && isEmpty && !past ? "bg-emerald-50/40" : ""
                     }`}
                   >
                     {/* "Ahora" line */}
@@ -383,16 +374,16 @@ export function WeeklyCalendarGrid({
                     {isEmpty ? (
                       past ? (
                         <div className="flex h-full min-h-[48px] items-center justify-center">
-                          <div className="h-px w-6 bg-slate-200" />
+                          <div className="h-px w-4 bg-slate-200" />
                         </div>
                       ) : (
                         <button
                           type="button"
                           onClick={() => onEmptySlotClick?.(day.iso, hour)}
                           aria-label={`Reservar a las ${hour} — ${day.label} ${day.dayNumber}`}
-                          className="group flex min-h-[120px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-200/70 bg-emerald-50/40 px-2 py-4 text-center transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm active:scale-[0.98]"
+                          className="group flex min-h-[120px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-emerald-200 bg-emerald-50/60 px-2 py-4 text-center transition-all hover:border-emerald-300 hover:bg-emerald-50 active:scale-[0.98]"
                         >
-                          <div className="flex h-7 w-7 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-500 shadow-sm transition-transform group-hover:scale-110">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full border border-emerald-200 bg-emerald-100 text-emerald-500 shadow-sm transition-transform group-hover:scale-110">
                             <CalendarPlus size={13} />
                           </div>
                           <span className="text-[10px] font-black uppercase tracking-wide text-emerald-500 group-hover:text-emerald-700">
@@ -408,7 +399,7 @@ export function WeeklyCalendarGrid({
           ))}
 
           {/* Footer summary */}
-          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-200 bg-[#FAFAF7]">
+          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-[#1e1e1e] bg-[#0f0f0f]">
             <div className="p-3" />
             {days.map((day) => {
               const dayAppts = appointments.filter((a) => a.appointment_date === day.iso);
@@ -416,17 +407,17 @@ export function WeeklyCalendarGrid({
               const rev = active.reduce((s, a) => s + (a.service?.price ?? 0), 0);
               const slots = freeSlots.filter((s) => s.date === day.iso).length;
               return (
-                <div key={day.iso} className="border-l border-slate-100 px-3 py-2">
+                <div key={day.iso} className="border-l border-[#1a1a1a] px-3 py-2">
                   {active.length > 0 ? (
-                    <p className="text-[10px] font-black text-slate-500">
+                    <p className="text-[10px] font-black text-[#666]">
                       {active.length} cita{active.length !== 1 ? "s" : ""}
                       {rev > 0 ? ` · ${money(rev)}` : ""}
                     </p>
                   ) : (
-                    <p className="text-[10px] font-semibold text-slate-300">Sin reservas</p>
+                    <p className="text-[10px] font-semibold text-[#444]">Sin reservas</p>
                   )}
                   {slots > 0 && (
-                    <p className="text-[10px] font-semibold text-emerald-500">
+                    <p className="text-[10px] font-semibold text-[#22C55E]">
                       {slots} hueco{slots !== 1 ? "s" : ""}
                     </p>
                   )}
