@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/software-para-barberias`}
       eyebrow="Software para barberías"
       h1="El software para barberías que conecta reservas, caja y clientes."
       intro="BarberíaOS es un SaaS vertical para dueños de barberías que necesitan controlar agenda, barberos, servicios, caja, productos, clientes, marketing y reservas online en un solo panel."

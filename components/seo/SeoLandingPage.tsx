@@ -17,11 +17,68 @@ type SeoLandingPageProps = {
     q: string;
     a: string;
   }>;
+  canonicalUrl?: string;
+  city?: string;
 };
 
-export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq }: SeoLandingPageProps) {
+export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq, canonicalUrl, city }: SeoLandingPageProps) {
+  const jsonLdSchemas = canonicalUrl
+    ? [
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "BarberíaOS",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
+          url: canonicalUrl,
+          description: intro,
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "EUR",
+            lowPrice: "39",
+            highPrice: "149",
+            offerCount: "3",
+          },
+          ...(city && {
+            areaServed: {
+              "@type": "City",
+              name: city,
+              addressCountry: "ES",
+            },
+          }),
+        },
+        faq.length > 0
+          ? {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map(({ q, a }) => ({
+                "@type": "Question",
+                name: q,
+                acceptedAnswer: { "@type": "Answer", text: a },
+              })),
+            }
+          : null,
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Inicio", item: BUSINESS_CONFIG.siteUrl },
+            { "@type": "ListItem", position: 2, name: eyebrow, item: canonicalUrl },
+          ],
+        },
+      ].filter(Boolean)
+    : [];
+
   return (
     <LenisProvider>
+      {jsonLdSchemas.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">

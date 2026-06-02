@@ -2,13 +2,42 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Banknote, CalendarDays, CheckCircle2, Scissors, Users } from "lucide-react";
 import { InstagramLeadForm } from "./InstagramLeadForm";
+import { SITE_URL } from "@/src/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Instagram para barberías | BarberíaOS",
   description:
-    "Convierte visitas desde Instagram en demos de BarberíaOS: reservas online, caja y CRM de clientes para barberías.",
+    "Convierte visitas desde Instagram en reservas reales para tu barbería. BarberíaOS: agenda online, caja y CRM sin comisión por reserva.",
   alternates: {
-    canonical: "/instagram",
+    canonical: `${SITE_URL}/instagram`,
+  },
+  openGraph: {
+    title: "Instagram para barberías | BarberíaOS",
+    description:
+      "Convierte el link de tu bio de Instagram en reservas reales. Sin comisión por cita. Configuración en 48h.",
+    url: `${SITE_URL}/instagram`,
+    type: "website",
+    siteName: "BarberíaOS",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Instagram para barberías | BarberíaOS",
+    description: "Convierte Instagram en reservas automáticas para tu barbería. Sin comisiones.",
+  },
+};
+
+const instagramJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Instagram para barberías | BarberíaOS",
+  description:
+    "Convierte visitas desde Instagram en reservas reales para tu barbería. BarberíaOS: agenda online, caja y CRM sin comisión por reserva.",
+  url: `${SITE_URL}/instagram`,
+  inLanguage: "es-ES",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "BarberíaOS",
+    url: SITE_URL,
   },
 };
 
@@ -32,6 +61,12 @@ const blocks = [
 
 export default function InstagramPage() {
   return (
+    <>
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(instagramJsonLd) }}
+      />
     <main className="min-h-screen overflow-hidden bg-[#05070D] text-white">
       <section className="relative px-4 pb-14 pt-6 sm:px-6 lg:px-8">
         <div
@@ -126,5 +161,6 @@ export default function InstagramPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

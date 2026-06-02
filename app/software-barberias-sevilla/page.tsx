@@ -29,6 +29,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/software-barberias-sevilla`}
+      city="Sevilla"
       eyebrow="Software para barberías en Sevilla"
       h1="Gestiona tu barbería en Sevilla desde un solo panel. Sin comisiones."
       intro="Las barberías de Sevilla que usan BarberíaOS reciben reservas desde Instagram, Google y WhatsApp, controlan caja y barberos, y tienen su propia página pública con QR. Todo sin pagar comisión por cada cita."

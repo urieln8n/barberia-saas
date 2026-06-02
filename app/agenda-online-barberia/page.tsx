@@ -71,8 +71,54 @@ const faqs = [
   },
 ];
 
+const agendaJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "BarberíaOS — Agenda Online para Barberías",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: `${SITE_URL}/agenda-online-barberia`,
+    description:
+      "Agenda online para barberías: tus clientes reservan desde Instagram, WhatsApp, QR o tu página pública. Sin llamadas, sin papel.",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "EUR",
+      lowPrice: "39",
+      highPrice: "149",
+      offerCount: "3",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Agenda online para barberías", item: `${SITE_URL}/agenda-online-barberia` },
+    ],
+  },
+];
+
 export default function AgendaOnlineBarberiaPage() {
   return (
+    <>
+      {agendaJsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
     <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
@@ -221,5 +267,6 @@ export default function AgendaOnlineBarberiaPage() {
         <p className="mt-2">© {new Date().getFullYear()} BarberíaOS — Agenda online para barberías.</p>
       </footer>
     </main>
+    </>
   );
 }

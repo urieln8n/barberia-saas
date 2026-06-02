@@ -29,6 +29,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/software-barberias-valencia`}
+      city="Valencia"
       eyebrow="Software para barberías en Valencia"
       h1="Gestiona tu barbería en Valencia desde un solo panel. Sin comisiones."
       intro="Las barberías de Valencia que usan BarberíaOS reciben reservas desde Instagram, Google y WhatsApp, controlan caja y barberos, y tienen su propia página pública con QR. Todo sin pagar comisión por cada cita."
