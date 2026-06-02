@@ -127,27 +127,112 @@ const marketingItems = [
 
 const plans = [
   {
-    name: "Básico",
+    name: "Arranca",
     price: "39€",
-    text: "Para ordenar reservas, agenda, QR y clientes sin depender de mensajes perdidos.",
-    features: ["Reservas online", "Agenda", "Clientes", "QR propio", "Caja básica"],
+    text: "Para ordenar tu barbería desde el primer día. Reservas propias, agenda y caja sin depender de nadie.",
+    highlight: "Ideal para 1-2 barberos",
     featured: false,
+    groups: [
+      {
+        label: "Operación diaria",
+        items: [
+          "Agenda — Vista por día, semana y barbero",
+          "Reservas online — Link y QR propios, sin comisión",
+          "Huecos libres — Detecta horas vacías en la agenda",
+          "Caja del día — Registra cobros y cierra el día",
+          "Clientes — Historial y ficha de cada cliente",
+        ],
+      },
+      {
+        label: "Tu equipo",
+        items: [
+          "Barberos — Gestión de horarios por persona",
+          "Servicios — Precios y duración configurables",
+        ],
+      },
+      {
+        label: "Presencia online",
+        items: [
+          "QR de reservas — Imprimible para mostrador o escaparate",
+          "Página pública — Tu barbería online sin necesitar web",
+          "Marketplace — Apareces en el directorio de BarberíaOS",
+        ],
+      },
+      {
+        label: "Administración",
+        items: [
+          "Pagos — Registro de cada cobro con método de pago",
+          "Fiscalidad — Exporta datos para llevar la contabilidad",
+        ],
+      },
+    ],
   },
   {
-    name: "Pro",
+    name: "Control",
     price: "79€",
-    text: "Para barberías con equipo que necesitan control diario, caja y marketing.",
-    features: ["Todo en Básico", "Caja avanzada", "Huecos libres", "Marketing Studio", "Rendimiento por barbero"],
+    text: "Para barberías con equipo que quieren control total, crecer y no perder un cliente.",
+    highlight: "El más elegido — 3-5 barberos",
     featured: true,
+    groups: [
+      {
+        label: "Todo lo del plan Arranca, más:",
+        items: [],
+      },
+      {
+        label: "Ingresos y negocio",
+        items: [
+          "Inventario — Controla stock y ventas de productos",
+          "Finanzas — Ingresos, gastos y rentabilidad mensual",
+          "Estadísticas — Rendimiento por barbero, servicio y período",
+        ],
+      },
+      {
+        label: "Crecer",
+        items: [
+          "Marketing Studio — Campañas para llenar huecos",
+          "Reseñas — Consigue más valoraciones en Google",
+          "Clientes perdidos — Recupera quien lleva semanas sin volver",
+        ],
+      },
+      {
+        label: "Presencia avanzada",
+        items: [
+          "Sala de espera — Pantalla con tu marca en recepción",
+          "Automatizaciones — Recordatorios y mensajes automáticos",
+        ],
+      },
+    ],
   },
   {
-    name: "Premium",
+    name: "Domina",
     price: "149€",
-    text: "Para dueños que quieren crecimiento, IA, reportes y sistema completo.",
-    features: ["Todo en Pro", "IA del dueño", "CRM de leads", "Reportes", "Optimización mensual"],
+    text: "Para dueños que quieren IA, fidelización activa y un sistema completo de crecimiento.",
+    highlight: "Para barberías en expansión",
     featured: false,
+    groups: [
+      {
+        label: "Todo lo del plan Control, más:",
+        items: [],
+      },
+      {
+        label: "IA y crecimiento",
+        items: [
+          "Agentes IA — Asistente inteligente para el dueño",
+          "Growth Engine — Análisis avanzado de crecimiento",
+          "Fidelización — Programa de puntos para clientes fieles",
+        ],
+      },
+      {
+        label: "Soporte prioritario",
+        items: [
+          "Onboarding dedicado — Setup completo con acompañamiento",
+          "Optimización mensual — Revisión de métricas cada mes",
+          "Acceso anticipado a nuevas funciones",
+        ],
+      },
+    ],
   },
-] as const;
+];
 
 const heroStats = [
   {
@@ -2027,90 +2112,206 @@ export function ExtendedFAQSection() {
 
 export function PricingSection() {
   return (
-    <MotionBlock id="precios" className="bg-[#070707] px-5 py-20 text-white md:py-32 lg:px-8">
+    <MotionBlock id="precios" className="overflow-hidden bg-[#050505] px-5 py-24 text-white md:py-36 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        {/* Pre-price anchor: remind them of the ROI */}
-        <div className="mb-12 rounded-[26px] border border-[#232323] bg-[#111111] p-6 text-center">
-          <p className="text-sm font-bold text-[#A1A1AA]">
-            5 huecos libres por semana a 25€ =
-            <span className="ml-1 font-black text-[#22C55E]">+500€/mes recuperables</span>
-            <span className="mx-2 text-[#A1A1AA]/40">·</span>
-            BarberíaOS Pro cuesta
-            <span className="ml-1 font-black text-white">79€/mes</span>
-          </p>
+
+        {/* ROI anchor pill */}
+        <div className="mb-16 flex justify-center">
+          <div className="inline-flex items-center gap-3 rounded-full border border-[#22C55E]/20 bg-[#22C55E]/8 px-5 py-2.5 shadow-[0_0_32px_rgba(34,197,94,0.08)]">
+            <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[#22C55E] shadow-[0_0_8px_#22C55E]" />
+            <p className="text-sm font-semibold text-white/75">
+              5 huecos libres por semana a 25€ =
+              <span className="ml-1.5 font-black text-[#22C55E]">+500€/mes recuperables</span>
+              <span className="mx-2.5 text-white/20">·</span>
+              Plan Control =
+              <span className="ml-1.5 font-black text-white">79€/mes todo incluido</span>
+            </p>
+          </div>
         </div>
 
+        {/* Header */}
         <SectionHeader
           eyebrow="Inversión"
           title="El coste de no tener sistema es siempre mayor."
-          text="Precio fijo mensual. Sin comisión por reserva. Sin permanencia."
+          text="Precio fijo mensual. Sin comisión por reserva. Sin permanencia mínima."
         />
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <article
-              key={plan.name}
-              className={`relative flex min-h-full flex-col rounded-[28px] p-7 ${
-                plan.featured
-                  ? "border border-[#D4AF37]/30 bg-[#111111] shadow-[0_0_0_1px_rgba(212,175,55,0.15),0_32px_80px_rgba(0,0,0,0.40)]"
-                  : "border border-[#232323] bg-[#0C0C0C]"
-              }`}
-            >
-              {plan.featured && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#D4AF37] px-4 py-1 text-[11px] font-black text-[#070707]">
-                  Más popular
+
+        {/* Cards */}
+        <div className="relative mt-16">
+          {/* Ambient glow under featured */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-0 h-[700px] w-[600px] -translate-x-1/2 rounded-full opacity-30 blur-[100px]"
+            style={{ background: "radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%)" }}
+          />
+
+          <div className="relative grid gap-5 lg:grid-cols-3 lg:items-start">
+            {plans.map((plan) => {
+              const isFeatured = plan.featured;
+              return (
+                <article
+                  key={plan.name}
+                  className={`relative flex flex-col overflow-hidden transition-all duration-300 ${
+                    isFeatured
+                      ? "rounded-[32px] shadow-[0_0_0_1px_rgba(212,175,55,0.40),0_48px_120px_rgba(0,0,0,0.6),0_0_80px_rgba(212,175,55,0.07)] lg:-translate-y-5 lg:scale-[1.04]"
+                      : "rounded-[28px] border border-[#1A1A1A] shadow-[0_24px_64px_rgba(0,0,0,0.35)]"
+                  }`}
+                  style={isFeatured
+                    ? { background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,175,55,0.10) 0%, transparent 60%), linear-gradient(170deg, #181818 0%, #101010 100%)" }
+                    : { background: "linear-gradient(170deg, #0E0E0E 0%, #090909 100%)" }
+                  }
+                >
+                  {/* Top shimmer line */}
+                  {isFeatured && (
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-px"
+                      style={{ background: "linear-gradient(90deg, transparent 5%, rgba(212,175,55,0.75) 50%, transparent 95%)" }}
+                    />
+                  )}
+
+                  {/* Recommended badge */}
+                  {isFeatured && (
+                    <div className="absolute -top-px left-1/2 -translate-x-1/2">
+                      <span className="inline-flex items-center gap-1.5 rounded-b-2xl bg-[#D4AF37] px-5 py-1.5 text-[11px] font-black uppercase tracking-widest text-[#050505] shadow-[0_6px_24px_rgba(212,175,55,0.40)]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#050505]/50" />
+                        Más elegido
+                      </span>
+                    </div>
+                  )}
+
+                  <div className={`flex flex-1 flex-col ${isFeatured ? "p-9 pt-12" : "p-8"}`}>
+
+                    {/* Plan identity */}
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#A1A1AA]/45">
+                        {plan.name}
+                      </p>
+                      <span className={`rounded-full border px-3 py-1 text-[10px] font-black leading-none ${
+                        isFeatured
+                          ? "border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]"
+                          : "border-white/[0.07] bg-white/[0.035] text-[#A1A1AA]/70"
+                      }`}>
+                        {plan.highlight}
+                      </span>
+                    </div>
+
+                    {/* Price */}
+                    <div className="mt-6 flex items-end gap-2">
+                      <span className={`font-black leading-none tracking-tight ${isFeatured ? "text-[68px]" : "text-[58px]"} text-white`}>
+                        {plan.price}
+                      </span>
+                      <div className="mb-2 flex flex-col gap-0.5">
+                        <span className="text-xs font-bold text-[#A1A1AA]/60">/ mes</span>
+                        <span className="text-[10px] text-[#A1A1AA]/35">+ IVA</span>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="mt-4 text-sm leading-7 text-[#A1A1AA]">{plan.text}</p>
+
+                    {/* CTA — high on card for conversion */}
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`mt-8 inline-flex min-h-[52px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-2xl text-sm font-black transition-all duration-200 ${
+                        isFeatured
+                          ? "bg-[#D4AF37] text-[#050505] shadow-[0_4px_20px_rgba(212,175,55,0.30)] hover:bg-[#EFC84A] hover:shadow-[0_8px_36px_rgba(212,175,55,0.45)] active:scale-[0.98]"
+                          : "border border-[#252525] bg-white/[0.04] text-white/80 hover:border-[#D4AF37]/25 hover:bg-white/[0.07] hover:text-white active:scale-[0.98]"
+                      }`}
+                    >
+                      <MessageCircle size={16} className="shrink-0" />
+                      Empezar con {plan.name}
+                    </a>
+
+                    {/* Feature divider */}
+                    <div className={`my-8 border-t ${isFeatured ? "border-[#D4AF37]/12" : "border-[#1C1C1C]"}`} />
+
+                    {/* Feature groups */}
+                    <div className="flex flex-1 flex-col gap-7">
+                      {plan.groups.map((group) => {
+                        const isInheritance = group.label.startsWith("Todo");
+                        if (isInheritance) {
+                          return (
+                            <div
+                              key={group.label}
+                              className="flex items-center gap-2.5 rounded-2xl border border-[#22C55E]/15 bg-[#22C55E]/6 px-4 py-3"
+                            >
+                              <CheckCircle2 size={14} className="shrink-0 text-[#22C55E]" />
+                              <span className="text-xs font-black text-[#22C55E]">{group.label}</span>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div key={group.label}>
+                            <p className={`mb-3.5 text-[10px] font-black uppercase tracking-[0.18em] ${
+                              isFeatured ? "text-[#D4AF37]/60" : "text-[#A1A1AA]/35"
+                            }`}>
+                              {group.label}
+                            </p>
+                            <ul className="flex flex-col gap-3.5">
+                              {group.items.map((feature) => {
+                                const dashIdx = feature.indexOf(" — ");
+                                const name = dashIdx > -1 ? feature.slice(0, dashIdx) : feature;
+                                const desc = dashIdx > -1 ? feature.slice(dashIdx + 3) : null;
+                                return (
+                                  <li key={feature} className="flex items-start gap-3">
+                                    <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ${
+                                      isFeatured ? "bg-[#D4AF37]/14" : "bg-white/[0.05]"
+                                    }`}>
+                                      <CheckCircle2
+                                        size={11}
+                                        className={isFeatured ? "text-[#D4AF37]" : "text-[#A1A1AA]/60"}
+                                      />
+                                    </div>
+                                    <span className="text-[13px] leading-[1.5]">
+                                      <span className="font-black text-white/90">{name}</span>
+                                      {desc && (
+                                        <span className="text-[#A1A1AA]/60"> — {desc}</span>
+                                      )}
+                                    </span>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom: Setup + Trust */}
+        <div className="mt-12 grid gap-4 md:grid-cols-[1fr_1.3fr]">
+          <div className="flex flex-col justify-center gap-1.5 rounded-[24px] border border-[#D4AF37]/18 bg-[#D4AF37]/5 p-7">
+            <p className="text-base font-black text-white">Setup desde 300€</p>
+            <p className="text-sm leading-6 text-[#A1A1AA]/70">
+              Configuración inicial, servicios, barberos, QR, agenda pública y guía de activación incluidos. Alcance e IVA se confirman en demo.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 rounded-[24px] border border-[#1A1A1A] bg-[#0A0A0A] p-7">
+            {[
+              { label: "Sin permanencia", sub: "Cancela cuando quieras" },
+              { label: "0% comisión", sub: "Por cada reserva, siempre" },
+              { label: "Soporte en 24h", sub: "En español por WhatsApp" },
+              { label: "Tus datos", sub: "Son siempre 100% tuyos" },
+            ].map(({ label, sub }) => (
+              <div key={label} className="flex flex-col gap-1">
+                <span className="flex items-center gap-2 text-sm font-black text-white/90">
+                  <CheckCircle2 size={13} className="shrink-0 text-[#D4AF37]" />
+                  {label}
                 </span>
-              )}
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#A1A1AA]/60">{plan.name}</p>
-                <div className="mt-3 flex items-end gap-1.5">
-                  <span className="text-5xl font-black tracking-tight text-white">{plan.price}</span>
-                  <span className="mb-1.5 text-sm font-semibold text-[#A1A1AA]">/mes</span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-[#A1A1AA]">{plan.text}</p>
+                <span className="pl-[21px] text-xs text-[#A1A1AA]/50">{sub}</span>
               </div>
-              <ul className="mt-8 flex flex-1 flex-col gap-3 border-t border-[#232323] pt-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5 text-sm text-[#A1A1AA]">
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#22C55E]" size={15} />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`mt-8 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl text-sm font-black transition-all ${
-                  plan.featured
-                    ? "bg-[#D4AF37] text-[#070707] hover:bg-[#F4D03F] hover:shadow-[0_8px_24px_rgba(212,175,55,0.25)]"
-                    : "border border-[#232323] bg-[#111111] text-[#A1A1AA] hover:border-[#333] hover:text-white"
-                }`}
-              >
-                Empezar ahora
-                <ArrowRight size={15} />
-              </a>
-            </article>
-          ))}
+            ))}
+          </div>
         </div>
-        <div className="mt-6 rounded-[24px] border border-[#D4AF37]/20 bg-[#D4AF37]/8 p-5 text-center">
-          <p className="text-sm font-black text-white">Setup desde 300€</p>
-          <p className="mt-1 text-sm leading-6 text-white/55">
-            Configuración inicial, servicios, barberos, QR, agenda pública y guía de activación. IVA y alcance final se confirman en demo.
-          </p>
-        </div>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          {[
-            "Sin permanencia",
-            "Cancela cuando quieras",
-            "Sin comisión por reserva",
-            "Respuesta en menos de 24h",
-          ].map((item) => (
-            <span key={item} className="flex items-center gap-1.5 text-xs font-bold text-[#A1A1AA]">
-              <CheckCircle2 size={13} className="text-[#D4AF37]" />
-              {item}
-            </span>
-          ))}
-        </div>
+
       </div>
     </MotionBlock>
   );
