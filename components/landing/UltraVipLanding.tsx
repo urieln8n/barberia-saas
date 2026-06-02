@@ -883,7 +883,7 @@ function RequestDemoLink({
   return (
     <Link
       href={REQUEST_DEMO_URL}
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-sm font-black text-white shadow-[0_18px_50px_rgba(255,255,255,0.14)] transition hover:-translate-y-0.5 hover:bg-[#0C0C0C] active:scale-[0.98] ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#1a1a1a] px-6 text-sm font-black text-white shadow-[0_18px_50px_rgba(0,0,0,0.30)] transition hover:-translate-y-0.5 hover:bg-[#111111] active:scale-[0.98] ${className}`}
     >
       {children}
       <ArrowRight size={16} />
@@ -1325,7 +1325,7 @@ export function BeforeAfterSection() {
           title="De conversaciones sueltas a una barbería con sistema."
           text="Menos improvisación, más control y más reservas propias desde el primer día."
         />
-        <div className="mt-10 overflow-hidden rounded-[30px] border border-[#232323] bg-white shadow-[0_22px_80px_rgba(8,10,15,0.08)]">
+        <div className="mt-10 overflow-hidden rounded-[30px] border border-white/10 bg-[#111111] shadow-[0_22px_80px_rgba(0,0,0,0.45)]">
           <div className="grid grid-cols-[0.72fr_1fr_1fr] border-b border-[#232323] bg-[#111111] px-5 py-4 text-xs font-black uppercase tracking-[0.14em] text-white/60">
             <span>Área</span>
             <span>Sin sistema</span>
@@ -1418,7 +1418,7 @@ export function ProblemCards() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {problemCards.map(({ title, text, icon: Icon }) => (
-            <article key={title} className="rounded-[24px] border border-[#232323] bg-white p-6 shadow-[0_16px_45px_rgba(8,10,15,0.06)]">
+            <article key={title} className="rounded-[24px] border border-white/10 bg-[#131313] p-6 shadow-[0_16px_45px_rgba(0,0,0,0.40)]">
               <Icon className="text-[#D4AF37]" size={22} />
               <h3 className="mt-5 text-xl font-black">{title}</h3>
               <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
@@ -1472,7 +1472,7 @@ export function ProductFeatureGrid() {
               <p className="mt-5 max-w-xl text-base leading-8 text-[#A1A1AA]">{section.text}</p>
               <div className="mt-7 flex flex-wrap gap-2">
                 {section.items.map((item) => (
-                  <span key={item} className="rounded-full border border-[#232323] bg-white px-3 py-2 text-xs font-black text-[#A1A1AA] shadow-sm">
+                  <span key={item} className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-2 text-xs font-black text-white/65">
                     {item}
                   </span>
                 ))}
@@ -1596,7 +1596,7 @@ export function MarketingStudioSection() {
 
 export function LuxuryFeatureCard({ title, text, icon: Icon }: FeatureItem) {
   return (
-    <article className="rounded-[24px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.07)]">
+    <article className="rounded-[24px] border border-white/10 bg-[#131313] p-6 shadow-[0_18px_55px_rgba(0,0,0,0.40)]">
       <Icon size={22} className="text-[#D4AF37]" />
       <h3 className="mt-5 text-xl font-black">{title}</h3>
       <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
@@ -1635,7 +1635,7 @@ export function VIPWebsiteOfferSection() {
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {["SEO local", "Google Business", "Instagram", "QR en local"].map((item) => (
-                <div key={item} className="rounded-2xl border border-[#232323] bg-white p-4 text-sm font-black">
+                <div key={item} className="rounded-2xl border border-white/10 bg-[#1a1a1a] p-4 text-sm font-black text-white">
                   {item}
                 </div>
               ))}
@@ -1668,7 +1668,7 @@ export function WebVipDeepDiveSection() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[#232323] bg-white px-6 text-sm font-black text-white/72 transition hover:text-white"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/15 bg-[#1a1a1a] px-6 text-sm font-black text-white/80 transition hover:border-white/25 hover:text-white"
               >
                 Hablar por WhatsApp
                 <MessageCircle size={16} />
@@ -1677,7 +1677,7 @@ export function WebVipDeepDiveSection() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {vipWebsiteBlocks.map((block) => (
-              <article key={block.title} className="rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
+              <article key={block.title} className="rounded-[26px] border border-white/10 bg-[#131313] p-6 shadow-[0_18px_55px_rgba(0,0,0,0.40)]">
                 <Gem className="text-[#D4AF37]" size={22} />
                 <h3 className="mt-5 text-xl font-black">{block.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{block.text}</p>
@@ -1817,7 +1817,7 @@ export function FounderOfferSection() {
   return (
     <MotionBlock className="bg-[#0C0C0C] px-5 py-16 text-white md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-[36px] border border-[#232323] bg-white p-6 shadow-[0_26px_90px_rgba(8,10,15,0.08)] md:p-10">
+        <div className="rounded-[36px] border border-white/10 bg-[#111111] p-6 shadow-[0_26px_90px_rgba(0,0,0,0.55)] md:p-10">
           <div className="grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-black text-[#D4AF37]">
@@ -1970,7 +1970,7 @@ export function RouteAuthoritySection() {
             <Link
               key={route.href}
               href={route.href}
-              className="group rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)] transition hover:-translate-y-1 hover:border-[#D4AF37]/30"
+              className="group rounded-[26px] border border-white/10 bg-[#131313] p-6 shadow-[0_18px_55px_rgba(0,0,0,0.40)] transition hover:-translate-y-1 hover:border-[#D4AF37]/30"
             >
               <div className="flex items-center justify-between gap-3">
                 <Globe2 className="text-[#D4AF37]" size={22} />
@@ -2077,7 +2077,7 @@ export function ClosingArgumentsSection() {
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {closingArguments.map((argument) => (
-            <article key={argument.title} className="rounded-[26px] border border-[#232323] bg-white p-6 shadow-[0_18px_55px_rgba(8,10,15,0.06)]">
+            <article key={argument.title} className="rounded-[26px] border border-white/10 bg-[#131313] p-6 shadow-[0_18px_55px_rgba(0,0,0,0.40)]">
               <CheckCircle2 className="text-[#D4AF37]" size={22} />
               <h3 className="mt-5 text-xl font-black">{argument.title}</h3>
               <p className="mt-3 text-sm leading-7 text-[#A1A1AA]">{argument.text}</p>
@@ -2641,7 +2641,7 @@ function FidelizacionSection() {
             <p className="mt-5 text-base leading-8 text-[#A1A1AA]">
               BarberíaOS tiene memoria. Sabe quién lleva semanas sin volver, qué servicio prefiere y qué mensaje tiene más sentido mandar. Tú firmas y envías.
             </p>
-            <div className="mt-8 rounded-[26px] border border-[#232323] bg-white p-5 shadow-sm">
+            <div className="mt-8 rounded-[26px] border border-[#D4AF37]/20 bg-[#131313] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.35)]">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#111111] text-[#D4AF37]">
                   <Users size={18} />
@@ -2659,7 +2659,7 @@ function FidelizacionSection() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {fidelizacionStats.map(({ metric, label, text }) => (
-              <article key={label} className="rounded-[26px] border border-[#232323] bg-white p-5 shadow-[0_12px_40px_rgba(8,10,15,0.06)]">
+              <article key={label} className="rounded-[26px] border border-white/10 bg-[#131313] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.40)]">
                 <p className="text-3xl font-black text-white">{metric}</p>
                 <p className="mt-1 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">{label}</p>
                 <p className="mt-3 text-sm leading-6 text-white/60">{text}</p>
