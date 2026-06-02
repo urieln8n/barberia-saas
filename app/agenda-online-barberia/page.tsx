@@ -4,11 +4,17 @@ import {
   ArrowRight,
   CalendarClock,
   CheckCircle2,
+  Clock,
+  Instagram,
   QrCode,
   Scissors,
+  Smartphone,
+  Users,
+  Zap,
 } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SITE_URL } from "@/src/lib/site-url";
+import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Agenda Online para Barberías | BarberíaOS",
@@ -25,49 +31,52 @@ export const metadata: Metadata = {
   },
 };
 
-const howWorks = [
+const steps = [
   {
-    step: "1",
+    n: "01",
     title: "Configuras tu barbería",
-    text: "Servicios, precios, barberos y horarios. Nosotros te ayudamos en menos de 48 horas.",
+    text: "Servicios, precios, barberos y horarios. Te ayudamos en menos de 48h.",
+    icon: Scissors,
   },
   {
-    step: "2",
-    title: "Compartes el enlace o el QR",
-    text: "Tu enlace público de reservas funciona en Instagram, Google, WhatsApp y en el mostrador con QR.",
+    n: "02",
+    title: "Compartes el link o QR",
+    text: "Funciona en Instagram, Google, WhatsApp y en el mostrador.",
+    icon: QrCode,
   },
   {
-    step: "3",
+    n: "03",
     title: "Los clientes reservan solos",
-    text: "Eligen servicio, barbero y hora. Confirman con un clic. Tú ves la agenda en tiempo real.",
+    text: "Eligen servicio, barbero y hora. Tú ves la agenda en tiempo real.",
+    icon: CalendarClock,
   },
 ];
 
 const benefits = [
-  "Reservas 24 horas — incluso cuando estás cortando",
-  "Sin llamadas, sin mensajes en WhatsApp",
-  "Agenda por barbero con control de huecos",
-  "QR imprimible para mostrador y escaparate",
-  "Sin comisión por reserva — precio fijo mensual",
-  "Tus clientes son tuyos — los datos no van a ninguna plataforma",
+  { icon: Clock,       text: "Reservas 24h — incluso mientras cortás" },
+  { icon: Smartphone,  text: "Sin app — reservan desde el navegador" },
+  { icon: Users,       text: "Agenda por barbero con control de huecos" },
+  { icon: QrCode,      text: "QR imprimible para mostrador y escaparate" },
+  { icon: Zap,         text: "0% comisión — precio fijo mensual" },
+  { icon: Instagram,   text: "Tus clientes son tuyos — no van a ninguna plataforma" },
 ];
 
 const faqs = [
   {
-    q: "¿Cómo reservan mis clientes con la agenda online?",
-    a: "Comparten el enlace público de reservas de tu barbería o escanean el QR del local. El cliente elige barbero, servicio y hora, sin llamadas ni mensajes de WhatsApp.",
+    q: "¿Cómo reservan mis clientes?",
+    a: "Escanean tu QR o abren tu link. Eligen barbero, servicio y hora sin llamadas ni mensajes.",
   },
   {
-    q: "¿Puedo controlar qué horas ofrezco para reservas?",
-    a: "Sí. Tú configuras los horarios de trabajo, los descansos y los días festivos. La agenda solo muestra los huecos reales disponibles.",
+    q: "¿Puedo controlar qué horas ofrezco?",
+    a: "Sí. Configuras horarios, descansos y festivos. La agenda solo muestra huecos reales.",
   },
   {
     q: "¿Qué pasa si un cliente no aparece?",
-    a: "El sistema registra el no-show en el historial del cliente. BarberíaOS envía recordatorios automáticos antes de la cita para reducir las ausencias.",
+    a: "El sistema lo registra y envía recordatorios automáticos para reducir no-shows.",
   },
   {
-    q: "¿Puedo tener varios barberos con agendas separadas?",
-    a: "Sí. Cada barbero tiene su propia columna en la agenda y los clientes pueden elegir con quién quieren su cita.",
+    q: "¿Puedo tener varios barberos?",
+    a: "Sí. Cada barbero tiene su columna y los clientes eligen con quién quieren su cita.",
   },
 ];
 
@@ -119,154 +128,197 @@ export default function AgendaOnlineBarberiaPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
-    <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-[#C9922A]">
-              <Scissors size={19} />
-            </span>
-            <span className="font-black tracking-tight">BarberíaOS</span>
-          </Link>
-          <PrimaryButton href="/login" variant="gold">
-            Probar gratis
-          </PrimaryButton>
-        </div>
-      </header>
 
-      <section className="bg-[#080A0F] px-5 py-20 text-white lg:px-8">
-        <div className="mx-auto max-w-5xl text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.06em] text-[#C9922A]">
-            Agenda online para barbería
-          </p>
-          <h1 className="mt-4 text-4xl font-black leading-tight md:text-6xl">
-            La agenda online que convierte WhatsApp en reservas automáticas.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/65">
-            BarberíaOS te da una agenda online para tu barbería donde los clientes reservan solos,
-            a cualquier hora, desde su móvil — sin descargar apps, sin registros, sin llamadas.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <PrimaryButton href="/login" variant="gold" className="min-h-12 px-7">
-              Activar mi agenda gratis <ArrowRight size={17} />
-            </PrimaryButton>
-            <PrimaryButton href="/" variant="ghost" className="min-h-12 px-6 text-white/70 hover:bg-white/10 hover:text-white">
-              Ver cómo funciona
-            </PrimaryButton>
-          </div>
-          <p className="mt-5 text-xs text-white/35">Sin tarjeta · Sin permanencia · Setup en 48h</p>
-        </div>
-      </section>
+      <div className="min-h-screen bg-[#F9FAFB] text-[#0A0A0A]">
 
-      <section className="px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="text-center text-3xl font-black text-[#080A0F] md:text-4xl">
-            ¿Cómo funciona la agenda online de BarberíaOS?
-          </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {howWorks.map((h) => (
-              <article
-                key={h.step}
-                className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm"
+        {/* Nav */}
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
+            <Link href="/" className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0A0A0A] text-[#C9922A]">
+                <Scissors size={17} />
+              </span>
+              <span className="text-sm font-black tracking-tight text-[#0A0A0A]">BarberíaOS</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/demo" className="hidden text-sm font-semibold text-slate-500 hover:text-[#0A0A0A] sm:block">
+                Ver demo
+              </Link>
+              <Link
+                href={BUSINESS_CONFIG.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#C9922A] px-4 text-sm font-black text-white transition hover:bg-[#B8811A]"
               >
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#080A0F] text-sm font-black text-[#C9922A]">
-                  {h.step}
-                </span>
-                <h3 className="mt-5 text-xl font-black text-[#080A0F]">{h.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-500">{h.text}</p>
-              </article>
+                Probar gratis
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Hero */}
+        <section className="border-b border-slate-200 bg-white px-5 py-14 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/25 bg-[#C9922A]/8 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-[#C9922A]">
+              Agenda online para barberías
+            </span>
+            <h1 className="mx-auto mt-5 max-w-3xl text-[clamp(2rem,5vw,3.25rem)] font-black leading-[1.1] tracking-tight text-[#0A0A0A]">
+              La agenda que convierte WhatsApp en reservas automáticas.
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-slate-500">
+              Tus clientes reservan solos desde el móvil — sin descargar apps, sin registros, sin llamadas.
+              Tú ves la agenda en tiempo real.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href={BUSINESS_CONFIG.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center gap-2 rounded-2xl bg-[#0A0A0A] px-7 text-sm font-black text-white transition hover:bg-[#1A1A1A]"
+              >
+                Activar mi agenda gratis <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/demo"
+                className="inline-flex h-12 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-7 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-[#0A0A0A]"
+              >
+                Ver demo en vivo
+              </Link>
+            </div>
+            <p className="mt-4 text-xs text-slate-400">Sin tarjeta · Sin permanencia · Setup en 48h</p>
+          </div>
+        </section>
+
+        {/* Stats strip */}
+        <div className="border-b border-slate-200 bg-white">
+          <div className="mx-auto grid max-w-4xl grid-cols-3 divide-x divide-slate-200 px-5">
+            {[
+              { value: "0%",  label: "comisión por reserva" },
+              { value: "48h", label: "setup incluido" },
+              { value: "24/7", label: "reservas activas" },
+            ].map(({ value, label }) => (
+              <div key={label} className="flex flex-col items-center py-5">
+                <span className="text-2xl font-black text-[#0A0A0A]">{value}</span>
+                <span className="mt-0.5 text-xs text-slate-400">{label}</span>
+              </div>
             ))}
           </div>
         </div>
-      </section>
 
-      <section className="bg-white px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-2xl font-black text-[#080A0F] md:text-3xl">
-            Por qué las barberías eligen BarberíaOS como su agenda online
-          </h2>
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-            {benefits.map((b) => (
-              <li key={b} className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-[#F6F8FB] px-5 py-4">
-                <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-600" />
-                <span className="text-sm font-bold leading-6 text-slate-700">{b}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        {/* How it works */}
+        <section className="px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="text-center text-2xl font-black text-[#0A0A0A]">
+              En 3 pasos ya tienes reservas automáticas
+            </h2>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {steps.map(({ n, title, text, icon: Icon }) => (
+                <div key={n} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0A0A0A] text-sm font-black text-[#C9922A]">
+                      {n}
+                    </span>
+                    <Icon size={18} className="text-slate-300" />
+                  </div>
+                  <h3 className="mt-4 text-base font-black text-[#0A0A0A]">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <section className="px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-8">
-            <div className="flex items-start gap-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#C9922A]/10">
-                <QrCode size={22} className="text-[#C9922A]" />
+        {/* Benefits */}
+        <section className="border-y border-slate-200 bg-white px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <h2 className="text-center text-2xl font-black text-[#0A0A0A]">
+              Por qué los barberos eligen BarberíaOS
+            </h2>
+            <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+              {benefits.map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-[#F9FAFB] px-4 py-3.5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#C9922A]/10">
+                    <Icon size={15} className="text-[#C9922A]" />
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700">{text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* QR feature */}
+        <section className="px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="grid gap-6 rounded-2xl border border-slate-200 bg-white p-7 shadow-sm md:grid-cols-[auto_1fr]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#C9922A]/10">
+                <QrCode size={24} className="text-[#C9922A]" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-[#080A0F]">
-                  QR de reservas para tu barbería
-                </h3>
+                <h3 className="text-lg font-black text-[#0A0A0A]">QR de reservas para tu barbería</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Con BarberíaOS obtienes un QR descargable que puedes pegar en el mostrador,
-                  el escaparate, las tarjetas o Instagram. El cliente lo escanea, elige servicio y hora, y reserva.
-                  Sin apps. Sin registro. En menos de un minuto.
+                  Obtienes un QR descargable para pegar en el mostrador, escaparate, tarjetas o Instagram.
+                  El cliente lo escanea, elige servicio y hora, y reserva en menos de un minuto. Sin apps. Sin registro.
                 </p>
                 <div className="mt-4 flex items-center gap-2">
-                  <CalendarClock size={15} className="text-[#C9922A]" />
-                  <span className="text-sm font-bold text-slate-600">
-                    Disponible desde el plan Arranca — 39 €/mes
-                  </span>
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                  <span className="text-sm font-bold text-slate-600">Disponible desde el plan Arranca — 39€/mes</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-white px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-2xl font-black text-[#080A0F] md:text-3xl">
-            Preguntas frecuentes sobre la agenda online para barberías
-          </h2>
-          <div className="mt-8 divide-y divide-slate-100 rounded-[28px] border border-slate-200 bg-[#F6F8FB]">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="p-5 md:p-6">
-                <p className="font-black text-[#080A0F]">{faq.q}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{faq.a}</p>
-              </div>
-            ))}
+        {/* FAQ */}
+        <section className="border-t border-slate-200 bg-white px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="text-center text-2xl font-black text-[#0A0A0A]">
+              Preguntas frecuentes
+            </h2>
+            <div className="mt-7 divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200">
+              {faqs.map((faq) => (
+                <div key={faq.q} className="px-6 py-5">
+                  <p className="text-sm font-black text-[#0A0A0A]">{faq.q}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{faq.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="px-5 py-16 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-[32px] border border-[#C9922A]/25 bg-[#080A0F] p-8 text-center text-white md:p-12">
-          <h2 className="text-3xl font-black md:text-4xl">
-            Activa tu agenda online hoy.
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-8 text-white/65">
-            Te lo configuramos en 48 horas. Sin conocimientos técnicos. Sin contrato.
-          </p>
-          <PrimaryButton href="/login" variant="gold" className="mt-8 min-h-12 px-8">
-            Empezar gratis <ArrowRight size={17} />
-          </PrimaryButton>
-          <p className="mt-4 text-xs text-white/35">Sin tarjeta · Sin permanencia</p>
-        </div>
-      </section>
+        {/* CTA */}
+        <section className="px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl bg-[#0A0A0A] p-10 text-center text-white">
+            <h2 className="text-2xl font-black md:text-3xl">
+              Activa tu agenda online hoy.
+            </h2>
+            <p className="mx-auto mt-3 max-w-sm text-sm leading-7 text-white/60">
+              Te lo configuramos en 48 horas. Sin conocimientos técnicos. Sin contrato.
+            </p>
+            <Link
+              href={BUSINESS_CONFIG.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-7 inline-flex h-12 items-center gap-2 rounded-xl bg-[#C9922A] px-8 text-sm font-black text-white transition hover:bg-[#B8811A]"
+            >
+              Empezar gratis <ArrowRight size={16} />
+            </Link>
+            <p className="mt-4 text-xs text-white/30">Sin tarjeta · Sin permanencia</p>
+          </div>
+        </section>
 
-      <footer className="border-t border-slate-200 bg-white px-5 py-8 text-center text-xs text-slate-400 lg:px-8">
-        <div className="flex flex-wrap justify-center gap-5">
-          <Link href="/" className="font-bold text-slate-600 hover:text-[#080A0F]">
-            ← BarberíaOS
-          </Link>
-          <Link href="/barberias" className="font-bold text-slate-600 hover:text-[#080A0F]">
-            Directorio de barberías
-          </Link>
-        </div>
-        <p className="mt-2">© {new Date().getFullYear()} BarberíaOS — Agenda online para barberías.</p>
-      </footer>
-    </main>
+        {/* Footer */}
+        <footer className="border-t border-slate-200 bg-white px-5 py-6 text-center lg:px-8">
+          <div className="flex flex-wrap justify-center gap-6 text-sm">
+            <Link href="/" className="font-semibold text-slate-500 hover:text-[#0A0A0A]">← BarberíaOS</Link>
+            <Link href="/software-para-barberias" className="text-slate-400 hover:text-slate-600">Software barberías</Link>
+            <Link href="/alternativa-a-booksy" className="text-slate-400 hover:text-slate-600">Alternativa a Booksy</Link>
+            <Link href="/barberias" className="text-slate-400 hover:text-slate-600">Directorio</Link>
+          </div>
+          <p className="mt-4 text-xs text-slate-300">© {new Date().getFullYear()} BarberíaOS — Agenda online para barberías.</p>
+        </footer>
+
+      </div>
     </>
   );
 }
