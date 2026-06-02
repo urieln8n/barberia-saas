@@ -66,6 +66,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     })),
     {
+      url: `${SITE_URL}/tarjeta-puntos-digital-barberia`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/alternativa-a-booksy`,
       lastModified: now,
       changeFrequency: "weekly" as const,

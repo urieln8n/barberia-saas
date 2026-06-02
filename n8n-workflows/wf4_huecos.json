@@ -1,0 +1,188 @@
+{
+  "name": "💰 [4/4] Alerta Huecos Libres — BarberíaOS",
+  "nodes": [
+    {
+      "id": "sc1",
+      "name": "⏰ Cron diario 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1200, 300],
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 9 * * *" }]
+        }
+      }
+    },
+    {
+      "id": "c1",
+      "name": "📅 Configurar día de hoy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-960, 300],
+      "parameters": {
+        "jsCode": "// ✏️ CAMBIA ESTE ID cuando crees tu barbería real\nconst BARBERSHOP_ID = 'TU_BARBERSHOP_ID';\nconst BASE = 'https://eslygfjpxwrjnoimsrly.supabase.co';\nconst KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzbHlnZmpweHdyam5vaW1zcmx5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzg1ODE0MCwiZXhwIjoyMDkzNDM0MTQwfQ.zTMI8PjaF6L785B69zRUDeEqPcYz4LE1DrYo-7tpaP0';\nconst OPENAI = 'TU_OPENAI_API_KEY';\nconst TODAY = new Date().toISOString().split('T')[0];\n\nreturn [{ json: {\n  barbershop_id: BARBERSHOP_ID, today: TODAY, base: BASE, key: KEY, openai: OPENAI,\n  appts_url: `${BASE}/rest/v1/appointments?barbershop_id=eq.${BARBERSHOP_ID}&appointment_date=eq.${TODAY}&status=in.(scheduled,confirmed,pending)&select=start_time,end_time&order=start_time.asc`,\n  clients_url: `${BASE}/rest/v1/clients?barbershop_id=eq.${BARBERSHOP_ID}&phone=not.is.null&select=name,phone&order=created_at.desc&limit=20`\n}}];"
+      }
+    },
+    {
+      "id": "h1",
+      "name": "📊 Citas de hoy (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-720, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.appts_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $json.key }}" },
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.key }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c2",
+      "name": "🔍 Calcular huecos libres",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-480, 300],
+      "parameters": {
+        "jsCode": "const cfg = $('📅 Configurar día de hoy').item.json;\nconst appts = Array.isArray($input.first().json) ? $input.first().json : [];\n\n// Horario de trabajo: 09:00 - 20:00 (660 minutos)\nconst OPEN = 9 * 60;   // 09:00 en minutos\nconst CLOSE = 20 * 60; // 20:00 en minutos\n\nconst toMin = t => { const [h,m] = (t || '09:00').split(':').map(Number); return h*60+m; };\nconst toHHMM = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;\n\n// Bloques ocupados\nconst busy = appts.map(a => ({ s: toMin(a.start_time), e: toMin(a.end_time) })).sort((a,b) => a.s-b.s);\n\n// Calcular huecos libres >= 30 minutos\nconst gaps = [];\nlet cursor = OPEN;\nfor (const b of busy) {\n  if (b.s - cursor >= 30) gaps.push({ from: toHHMM(cursor), to: toHHMM(b.s), mins: b.s - cursor });\n  cursor = Math.max(cursor, b.e);\n}\nif (CLOSE - cursor >= 30) gaps.push({ from: toHHMM(cursor), to: toHHMM(CLOSE), mins: CLOSE - cursor });\n\nconst totalFreeHours = Math.round(gaps.reduce((s,g) => s+g.mins, 0) / 60 * 10) / 10;\nconst gapsSummary = gaps.map(g => `${g.from}-${g.to} (${g.mins} min)`).join(', ') || 'Sin huecos';\n\nreturn [{ json: {\n  ...cfg,\n  total_booked: appts.length,\n  free_slots: gaps.length,\n  free_hours: totalFreeHours,\n  gaps_summary: gapsSummary,\n  has_gaps: gaps.length > 0\n}}];"
+      }
+    },
+    {
+      "id": "if1",
+      "name": "❓ ¿Hay huecos libres?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-240, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "cond-gaps",
+              "leftValue": "={{ $json.has_gaps }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "h2",
+      "name": "👥 Clientes activos (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [0, 160],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('📅 Configurar día de hoy').item.json.clients_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $('📅 Configurar día de hoy').item.json.key }}" },
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $('📅 Configurar día de hoy').item.json.key }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c3",
+      "name": "🧠 Generar mensaje promocional",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 160],
+      "parameters": {
+        "jsCode": "const clients = Array.isArray($input.first().json) ? $input.first().json : [];\nif (clients.length === 0) return [];\n\nconst gapsSummary = $('🔍 Calcular huecos libres').item.json.gaps_summary;\nconst today = $('📅 Configurar día de hoy').item.json.today;\nconst openai = $('📅 Configurar día de hoy').item.json.openai;\nconst barbershop_id = $('📅 Configurar día de hoy').item.json.barbershop_id;\n\n// Limite a 10 clientes para no spamear\nconst targets = clients.slice(0, 10);\n\nreturn targets.map(c => ({\n  json: {\n    phone: c.phone,\n    name: c.name,\n    openai_key: openai,\n    barbershop_id,\n    prompt: `Redacta un mensaje WhatsApp de máximo 2 líneas para ${c.name || 'cliente'} avisando que hoy hay huecos disponibles en los siguientes horarios: ${gapsSummary}. Incluye invitación a reservar. Amable, conciso, sin spam.`\n  }\n}));"
+      }
+    },
+    {
+      "id": "h3",
+      "name": "🤖 OpenAI — Mensaje por cliente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 160],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.openai_key }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: 'Eres el asistente de una barbería. Redactas mensajes promocionales breves y no invasivos en español.' }, { role: 'user', content: $json.prompt }], max_tokens: 120, temperature: 0.7 }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "s1",
+      "name": "📱 PLACEHOLDER — Enviar WhatsApp promo",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [720, 160],
+      "parameters": {
+        "mode": "manual",
+        "fields": {
+          "values": [
+            { "name": "📌 INSTRUCCIÓN", "type": "stringValue", "string": "Reemplaza por tu proveedor WhatsApp cuando lo tengas. Este nodo procesa un cliente a la vez gracias al SplitInBatches anterior." },
+            { "name": "to", "type": "stringValue", "string": "={{ $('🧠 Generar mensaje promocional').item.json.phone }}" },
+            { "name": "message", "type": "stringValue", "string": "={{ $json.choices[0].message.content }}" },
+            { "name": "client_name", "type": "stringValue", "string": "={{ $('🧠 Generar mensaje promocional').item.json.name }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "noop1",
+      "name": "😴 Día completo — sin huecos",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [-240, 460],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "⏰ Cron diario 09:00": {
+      "main": [[{ "node": "📅 Configurar día de hoy", "type": "main", "index": 0 }]]
+    },
+    "📅 Configurar día de hoy": {
+      "main": [[{ "node": "📊 Citas de hoy (Supabase)", "type": "main", "index": 0 }]]
+    },
+    "📊 Citas de hoy (Supabase)": {
+      "main": [[{ "node": "🔍 Calcular huecos libres", "type": "main", "index": 0 }]]
+    },
+    "🔍 Calcular huecos libres": {
+      "main": [[{ "node": "❓ ¿Hay huecos libres?", "type": "main", "index": 0 }]]
+    },
+    "❓ ¿Hay huecos libres?": {
+      "main": [
+        [{ "node": "👥 Clientes activos (Supabase)", "type": "main", "index": 0 }],
+        [{ "node": "😴 Día completo — sin huecos", "type": "main", "index": 0 }]
+      ]
+    },
+    "👥 Clientes activos (Supabase)": {
+      "main": [[{ "node": "🧠 Generar mensaje promocional", "type": "main", "index": 0 }]]
+    },
+    "🧠 Generar mensaje promocional": {
+      "main": [[{ "node": "🤖 OpenAI — Mensaje por cliente", "type": "main", "index": 0 }]]
+    },
+    "🤖 OpenAI — Mensaje por cliente": {
+      "main": [[{ "node": "📱 PLACEHOLDER — Enviar WhatsApp promo", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

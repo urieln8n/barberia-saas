@@ -277,6 +277,7 @@ export interface Database {
           visit_count: number;
           next_recommended_visit_at: string | null;
           no_show_count: number;
+          loyalty_token: string | null;
           created_at: string;
         };
         Insert: {
@@ -293,6 +294,7 @@ export interface Database {
           visit_count?: number;
           next_recommended_visit_at?: string | null;
           no_show_count?: number;
+          loyalty_token?: string | null;
           created_at?: string;
         };
         Update: {
@@ -307,6 +309,7 @@ export interface Database {
           visit_count?: number;
           next_recommended_visit_at?: string | null;
           no_show_count?: number;
+          loyalty_token?: string | null;
         };
         Relationships: [];
       };
@@ -1493,9 +1496,16 @@ export interface Database {
           id: string;
           barbershop_id: string;
           name: string;
+          description: string | null;
           stamps_required: number;
+          reward_title: string;
           reward_description: string | null;
+          reward_type: "free_service" | "discount" | "product" | "custom";
+          reward_value: number | null;
           is_active: boolean;
+          max_stamps_per_day: number | null;
+          min_payment_amount: number | null;
+          whatsapp_message: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -1503,17 +1513,31 @@ export interface Database {
           id?: string;
           barbershop_id: string;
           name?: string;
+          description?: string | null;
           stamps_required?: number;
+          reward_title?: string;
           reward_description?: string | null;
+          reward_type?: "free_service" | "discount" | "product" | "custom";
+          reward_value?: number | null;
           is_active?: boolean;
+          max_stamps_per_day?: number | null;
+          min_payment_amount?: number | null;
+          whatsapp_message?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           name?: string;
+          description?: string | null;
           stamps_required?: number;
+          reward_title?: string;
           reward_description?: string | null;
+          reward_type?: "free_service" | "discount" | "product" | "custom";
+          reward_value?: number | null;
           is_active?: boolean;
+          max_stamps_per_day?: number | null;
+          min_payment_amount?: number | null;
+          whatsapp_message?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -1531,26 +1555,38 @@ export interface Database {
         Row: {
           id: string;
           barbershop_id: string;
-          program_id: string;
           client_id: string;
+          program_id: string;
           current_stamps: number;
           redeemed_count: number;
+          status: "active" | "completed" | "redeemed" | "expired";
+          started_at: string;
+          completed_at: string | null;
+          redeemed_at: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           barbershop_id: string;
-          program_id: string;
           client_id: string;
+          program_id: string;
           current_stamps?: number;
           redeemed_count?: number;
+          status?: "active" | "completed" | "redeemed" | "expired";
+          started_at?: string;
+          completed_at?: string | null;
+          redeemed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           current_stamps?: number;
           redeemed_count?: number;
+          status?: "active" | "completed" | "redeemed" | "expired";
+          started_at?: string;
+          completed_at?: string | null;
+          redeemed_at?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -1582,29 +1618,44 @@ export interface Database {
         Row: {
           id: string;
           barbershop_id: string;
-          program_id: string;
-          card_id: string;
           client_id: string;
+          card_id: string;
           appointment_id: string | null;
-          added_by: "manual" | "appointment";
-          notes: string | null;
+          payment_id: string | null;
+          barber_id: string | null;
+          service_id: string | null;
+          stamp_type: "stamp_added" | "reward_unlocked" | "reward_redeemed" | "manual_add" | "manual_remove";
+          stamps_delta: number;
+          note: string | null;
+          created_by: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           barbershop_id: string;
-          program_id: string;
-          card_id: string;
           client_id: string;
+          card_id: string;
           appointment_id?: string | null;
-          added_by?: "manual" | "appointment";
-          notes?: string | null;
+          payment_id?: string | null;
+          barber_id?: string | null;
+          service_id?: string | null;
+          stamp_type?: "stamp_added" | "reward_unlocked" | "reward_redeemed" | "manual_add" | "manual_remove";
+          stamps_delta?: number;
+          note?: string | null;
+          created_by?: string | null;
           created_at?: string;
         };
         Update: {
-          notes?: string | null;
+          note?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "loyalty_stamps_barbershop_id_fkey";
+            columns: ["barbershop_id"];
+            isOneToOne: false;
+            referencedRelation: "barbershops";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "loyalty_stamps_card_id_fkey";
             columns: ["card_id"];
@@ -1617,39 +1668,6 @@ export interface Database {
             columns: ["appointment_id"];
             isOneToOne: false;
             referencedRelation: "appointments";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-
-      loyalty_redemptions: {
-        Row: {
-          id: string;
-          barbershop_id: string;
-          program_id: string;
-          card_id: string;
-          client_id: string;
-          reward_description: string | null;
-          redeemed_at: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          barbershop_id: string;
-          program_id: string;
-          card_id: string;
-          client_id: string;
-          reward_description?: string | null;
-          redeemed_at?: string;
-          created_at?: string;
-        };
-        Update: Record<string, never>;
-        Relationships: [
-          {
-            foreignKeyName: "loyalty_redemptions_card_id_fkey";
-            columns: ["card_id"];
-            isOneToOne: false;
-            referencedRelation: "loyalty_cards";
             referencedColumns: ["id"];
           }
         ];
@@ -1693,7 +1711,29 @@ export interface Database {
     };
 
     Views: {
-      [_ in never]: never;
+      loyalty_card_summary: {
+        Row: {
+          id: string;
+          barbershop_id: string;
+          client_id: string;
+          program_id: string;
+          current_stamps: number;
+          redeemed_count: number;
+          status: "active" | "completed" | "redeemed" | "expired";
+          started_at: string;
+          completed_at: string | null;
+          redeemed_at: string | null;
+          client_name: string;
+          client_phone: string | null;
+          last_visit_at: string | null;
+          loyalty_token: string | null;
+          stamps_required: number;
+          reward_title: string;
+          program_name: string;
+          progress_pct: number;
+        };
+        Relationships: [];
+      };
     };
 
     Functions: {
@@ -1743,6 +1783,27 @@ export interface Database {
           p_start_time: string;
           p_notes?: string | null;
         };
+        Returns: string;
+      };
+      loyalty_add_stamp: {
+        Args: {
+          p_barbershop_id: string;
+          p_client_id: string;
+          p_appointment_id?: string | null;
+          p_payment_id?: string | null;
+          p_barber_id?: string | null;
+          p_service_id?: string | null;
+          p_note?: string | null;
+          p_created_by?: string | null;
+        };
+        Returns: Json;
+      };
+      loyalty_redeem_reward: {
+        Args: { p_card_id: string; p_created_by?: string | null };
+        Returns: Json;
+      };
+      get_or_create_loyalty_card: {
+        Args: { p_barbershop_id: string; p_client_id: string; p_program_id: string };
         Returns: string;
       };
     };
@@ -1799,4 +1860,3 @@ export type SubscriptionStatus = Subscription["status"];
 export type LoyaltyProgram    = TableRow<"loyalty_programs">;
 export type LoyaltyCard       = TableRow<"loyalty_cards">;
 export type LoyaltyStamp      = TableRow<"loyalty_stamps">;
-export type LoyaltyRedemption = TableRow<"loyalty_redemptions">;

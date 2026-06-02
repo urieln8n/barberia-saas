@@ -84,12 +84,12 @@ export async function addManualStampAction(formData: FormData) {
   // Insert stamp record
   await db.from("loyalty_stamps").insert({
     barbershop_id: barbershopId,
-    program_id: programId,
     card_id: cardId,
     client_id: clientId,
     appointment_id: null,
-    added_by: "manual",
-    notes,
+    stamp_type: "manual_add" as const,
+    stamps_delta: 1,
+    note: notes,
   });
 
   // Update card stamp count
@@ -135,25 +135,8 @@ export async function redeemRewardAction(formData: FormData) {
   if ((card.current_stamps ?? 0) < program.stamps_required)
     redirect(`/dashboard/clientes/${clientId}`);
 
-  // Record redemption
-  await db.from("loyalty_redemptions").insert({
-    barbershop_id: barbershopId,
-    card_id: cardId,
-    client_id: clientId,
-    program_id: card.program_id,
-    reward_description: program.reward_description,
-    redeemed_at: new Date().toISOString(),
-  });
-
-  // Reset stamps, increment redeemed count
-  await db
-    .from("loyalty_cards")
-    .update({
-      current_stamps: 0,
-      redeemed_count: (card.redeemed_count ?? 0) + 1,
-    })
-    .eq("id", cardId)
-    .eq("barbershop_id", barbershopId);
+  // Use RPC to redeem — handles stamp log + new card creation
+  await db.rpc("loyalty_redeem_reward", { p_card_id: cardId });
 
   revalidatePath(`/dashboard/clientes/${clientId}`);
   revalidatePath("/dashboard/fidelizacion");

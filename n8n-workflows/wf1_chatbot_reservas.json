@@ -1,0 +1,173 @@
+{
+  "name": "🤖 [1/4] Chatbot Reservas WhatsApp — BarberíaOS",
+  "nodes": [
+    {
+      "id": "wh1",
+      "name": "📱 WhatsApp Entrante",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-1200, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-reservas",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "barberiaos-whatsapp-v1"
+    },
+    {
+      "id": "c1",
+      "name": "📝 Extraer + Configurar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-960, 300],
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst phone = (b.From || b.from || b.phone || '').replace('whatsapp:','').trim();\nconst message = (b.Body || b.body || b.message || b.text || '').trim();\n\n// ✏️ CAMBIA ESTE ID cuando crees tu barbería real\nconst BARBERSHOP_ID = 'TU_BARBERSHOP_ID';\nconst BASE = 'https://eslygfjpxwrjnoimsrly.supabase.co';\nconst KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzbHlnZmpweHdyam5vaW1zcmx5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzg1ODE0MCwiZXhwIjoyMDkzNDM0MTQwfQ.zTMI8PjaF6L785B69zRUDeEqPcYz4LE1DrYo-7tpaP0';\nconst TODAY = new Date().toISOString().split('T')[0];\nconst D7 = new Date(Date.now() + 7*864e5).toISOString().split('T')[0];\n\nreturn [{ json: {\n  phone, message, barbershop_id: BARBERSHOP_ID, today: TODAY, base: BASE, key: KEY,\n  appts_url: `${BASE}/rest/v1/appointments?barbershop_id=eq.${BARBERSHOP_ID}&appointment_date=gte.${TODAY}&appointment_date=lte.${D7}&status=in.(scheduled,confirmed,pending)&select=appointment_date,start_time,end_time,barbers(name),services(name,duration_minutes)&order=appointment_date.asc,start_time.asc&limit=20`,\n  svcs_url: `${BASE}/rest/v1/services?barbershop_id=eq.${BARBERSHOP_ID}&select=name,duration_minutes,price&order=name.asc`\n}}];"
+      }
+    },
+    {
+      "id": "h1",
+      "name": "📅 Citas próximas (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-720, 200],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.appts_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $json.key }}" },
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.key }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "h2",
+      "name": "✂️ Servicios (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-720, 420],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('📝 Extraer + Configurar').item.json.svcs_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $('📝 Extraer + Configurar').item.json.key }}" },
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $('📝 Extraer + Configurar').item.json.key }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c2",
+      "name": "🧠 Construir prompt OpenAI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-480, 300],
+      "parameters": {
+        "jsCode": "const cfg = $('📝 Extraer + Configurar').item.json;\nconst appts = $('📅 Citas próximas (Supabase)').item.json;\nconst svcs = $('✂️ Servicios (Supabase)').item.json;\n\nconst apptsList = Array.isArray(appts) ? appts : [];\nconst svcsList = Array.isArray(svcs) ? svcs : [];\n\nconst aptsSummary = apptsList.length === 0\n  ? 'No hay citas reservadas los próximos 7 días.'\n  : apptsList.map(a => `- ${a.appointment_date} ${a.start_time?.slice(0,5)}-${a.end_time?.slice(0,5)} | ${a.barbers?.name || 'Barbero'} | ${a.services?.name || 'Servicio'}`).join('\\n');\n\nconst svcsSummary = svcsList.map(s => `- ${s.name} (${s.duration_minutes} min, ${s.price}€)`).join('\\n') || 'Sin servicios configurados.';\n\nconst systemPrompt = `Eres el asistente virtual de reservas de la barbería. Respondes por WhatsApp en español, de forma amable y concisa.\n\nCITAS RESERVADAS PRÓXIMAS 7 DÍAS:\\n${aptsSummary}\\n\\nSERVICIOS DISPONIBLES:\\n${svcsSummary}\\n\\nINSTRUCCIONES:\\n- Ayuda al cliente a reservar cita o resolver dudas\\n- Si quiere reservar, indícale los huecos disponibles entre las citas ya existentes (horario 09:00-20:00)\\n- Siempre termina con el link de reserva: https://barberiaos.com/r/${cfg.barbershop_id}\\n- Máximo 3 líneas de respuesta\\n- Si no hay hueco para su horario, sugiere el más cercano disponible`;\n\nreturn [{ json: {\n  phone: cfg.phone,\n  barbershop_id: cfg.barbershop_id,\n  openai_key: 'TU_OPENAI_API_KEY',\n  messages: [\n    { role: 'system', content: systemPrompt },\n    { role: 'user', content: cfg.message }\n  ]\n}}];"
+      }
+    },
+    {
+      "id": "h3",
+      "name": "🤖 OpenAI — Generar respuesta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-240, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.openai_key }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o-mini', messages: $json.messages, max_tokens: 300, temperature: 0.7 }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "c3",
+      "name": "💬 Extraer respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "parameters": {
+        "jsCode": "const phone = $('🧠 Construir prompt OpenAI').item.json.phone;\nconst raw = $input.first().json;\nconst reply = raw.choices?.[0]?.message?.content || 'Lo siento, no pude procesar tu mensaje. Llámanos directamente.';\nreturn [{ json: { phone, reply, ts: new Date().toISOString() } }];"
+      }
+    },
+    {
+      "id": "s1",
+      "name": "📱 PLACEHOLDER — Enviar WhatsApp",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 300],
+      "parameters": {
+        "mode": "manual",
+        "fields": {
+          "values": [
+            { "name": "📌 INSTRUCCIÓN", "type": "stringValue", "string": "Cuando tengas proveedor WhatsApp (Twilio/Meta), reemplaza este nodo por el nodo de envío. Usa $json.phone como destinatario y $json.reply como mensaje." },
+            { "name": "to", "type": "stringValue", "string": "={{ $json.phone }}" },
+            { "name": "body", "type": "stringValue", "string": "={{ $json.reply }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "r1",
+      "name": "✅ Responder webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reply: $('💬 Extraer respuesta').item.json.reply }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "📱 WhatsApp Entrante": {
+      "main": [[{ "node": "📝 Extraer + Configurar", "type": "main", "index": 0 }]]
+    },
+    "📝 Extraer + Configurar": {
+      "main": [
+        [
+          { "node": "📅 Citas próximas (Supabase)", "type": "main", "index": 0 },
+          { "node": "✂️ Servicios (Supabase)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📅 Citas próximas (Supabase)": {
+      "main": [[{ "node": "🧠 Construir prompt OpenAI", "type": "main", "index": 0 }]]
+    },
+    "✂️ Servicios (Supabase)": {
+      "main": [[{ "node": "🧠 Construir prompt OpenAI", "type": "main", "index": 1 }]]
+    },
+    "🧠 Construir prompt OpenAI": {
+      "main": [[{ "node": "🤖 OpenAI — Generar respuesta", "type": "main", "index": 0 }]]
+    },
+    "🤖 OpenAI — Generar respuesta": {
+      "main": [[{ "node": "💬 Extraer respuesta", "type": "main", "index": 0 }]]
+    },
+    "💬 Extraer respuesta": {
+      "main": [[{ "node": "📱 PLACEHOLDER — Enviar WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "📱 PLACEHOLDER — Enviar WhatsApp": {
+      "main": [[{ "node": "✅ Responder webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

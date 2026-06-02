@@ -28,7 +28,7 @@ export async function ClientLoyaltyCard({ clientId, barbershopId, clientName, ph
     redeemed_count: number;
   } | null = null;
 
-  let recentStamps: Array<{ id: string; created_at: string | null; notes: string | null }> = [];
+  let recentStamps: Array<{ id: string; created_at: string | null; note: string | null }> = [];
 
   try {
     const db = createServiceRoleClient();
@@ -58,7 +58,7 @@ export async function ClientLoyaltyCard({ clientId, barbershopId, clientName, ph
       if (card) {
         const { data: stampsData } = await db
           .from("loyalty_stamps")
-          .select("id, created_at, notes")
+          .select("id, created_at, note")
           .eq("card_id", card.id)
           .eq("barbershop_id", barbershopId)
           .order("created_at", { ascending: false })
@@ -218,7 +218,7 @@ export async function ClientLoyaltyCard({ clientId, barbershopId, clientName, ph
                 >
                   <span className="flex items-center gap-1.5">
                     <Star size={10} className="fill-[#D4AF37] text-[#D4AF37]" />
-                    <span className="text-neutral-600">{stamp.notes ?? "Sello manual"}</span>
+                    <span className="text-neutral-600">{stamp.note ?? "Sello manual"}</span>
                   </span>
                   <span className="text-neutral-400">{formatStampDate(stamp.created_at)}</span>
                 </div>

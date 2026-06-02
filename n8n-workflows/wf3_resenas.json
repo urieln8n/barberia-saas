@@ -1,0 +1,113 @@
+{
+  "name": "⭐ [3/4] Responder Reseñas Google — BarberíaOS",
+  "nodes": [
+    {
+      "id": "wh1",
+      "name": "⭐ Nueva reseña recibida",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-1000, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nueva-resena",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "barberiaos-resenas-v1"
+    },
+    {
+      "id": "c1",
+      "name": "📝 Extraer datos de la reseña",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-760, 300],
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\n\nconst reviewer = b.reviewer_name || b.author || b.name || 'Cliente';\nconst rating = parseInt(b.rating || b.stars || 5);\nconst review_text = b.review || b.text || b.comment || b.body || '';\nconst barbershop_name = b.barbershop_name || 'la barbería';\n\nconst OPENAI = 'TU_OPENAI_API_KEY';\n\nconst stars = '⭐'.repeat(Math.max(1, Math.min(5, rating)));\n\nreturn [{ json: { reviewer, rating, stars, review_text, barbershop_name, openai_key: OPENAI } }];"
+      }
+    },
+    {
+      "id": "h1",
+      "name": "🤖 OpenAI — Generar respuesta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-520, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.openai_key }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: `Eres el community manager de ${$json.barbershop_name}. Respondes reseñas de Google de forma profesional, cálida y en español. Si la reseña es positiva (4-5 estrellas): agradece, personaliza, invita a volver. Si es negativa (1-3 estrellas): muestra empatía, pide disculpas, ofrece solución, invita a contactar. Máximo 3-4 líneas. NO uses emojis en exceso.` }, { role: 'user', content: `Reseña de ${$json.reviewer} con ${$json.rating} estrellas: \"${$json.review_text || 'Sin texto'}\"` }], max_tokens: 200, temperature: 0.7 }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "c2",
+      "name": "✍️ Formatear respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-280, 300],
+      "parameters": {
+        "jsCode": "const reviewer = $('📝 Extraer datos de la reseña').item.json.reviewer;\nconst stars = $('📝 Extraer datos de la reseña').item.json.stars;\nconst rating = $('📝 Extraer datos de la reseña').item.json.rating;\nconst review_text = $('📝 Extraer datos de la reseña').item.json.review_text;\nconst raw = $input.first().json;\nconst response = raw.choices?.[0]?.message?.content || 'Gracias por tu reseña. ¡Nos vemos pronto!';\nreturn [{ json: { reviewer, stars, rating, review_text, response, generated_at: new Date().toISOString() } }];"
+      }
+    },
+    {
+      "id": "s1",
+      "name": "📧 PLACEHOLDER — Notificar al dueño",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-40, 300],
+      "parameters": {
+        "mode": "manual",
+        "fields": {
+          "values": [
+            { "name": "📌 INSTRUCCIÓN", "type": "stringValue", "string": "Reemplaza por: nodo Email (enviar al dueño para aprobar) O nodo HTTP para publicar directamente en Google My Business API." },
+            { "name": "reviewer", "type": "stringValue", "string": "={{ $json.reviewer }}" },
+            { "name": "rating", "type": "stringValue", "string": "={{ $json.stars }}" },
+            { "name": "original_review", "type": "stringValue", "string": "={{ $json.review_text }}" },
+            { "name": "suggested_response", "type": "stringValue", "string": "={{ $json.response }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "r1",
+      "name": "✅ Responder webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reviewer: $('✍️ Formatear respuesta').item.json.reviewer, response: $('✍️ Formatear respuesta').item.json.response }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "⭐ Nueva reseña recibida": {
+      "main": [[{ "node": "📝 Extraer datos de la reseña", "type": "main", "index": 0 }]]
+    },
+    "📝 Extraer datos de la reseña": {
+      "main": [[{ "node": "🤖 OpenAI — Generar respuesta", "type": "main", "index": 0 }]]
+    },
+    "🤖 OpenAI — Generar respuesta": {
+      "main": [[{ "node": "✍️ Formatear respuesta", "type": "main", "index": 0 }]]
+    },
+    "✍️ Formatear respuesta": {
+      "main": [[{ "node": "📧 PLACEHOLDER — Notificar al dueño", "type": "main", "index": 0 }]]
+    },
+    "📧 PLACEHOLDER — Notificar al dueño": {
+      "main": [[{ "node": "✅ Responder webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

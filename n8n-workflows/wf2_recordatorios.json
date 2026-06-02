@@ -1,0 +1,180 @@
+{
+  "name": "📅 [2/4] Recordatorios Personalizados — BarberíaOS",
+  "nodes": [
+    {
+      "id": "sc1",
+      "name": "⏰ Cron diario 17:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1200, 300],
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 17 * * *" }]
+        }
+      }
+    },
+    {
+      "id": "c1",
+      "name": "📅 Configurar fechas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-960, 300],
+      "parameters": {
+        "jsCode": "// ✏️ CAMBIA ESTE ID cuando crees tu barbería real\nconst BARBERSHOP_ID = 'TU_BARBERSHOP_ID';\nconst BASE = 'https://eslygfjpxwrjnoimsrly.supabase.co';\nconst KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzbHlnZmpweHdyam5vaW1zcmx5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzg1ODE0MCwiZXhwIjoyMDkzNDM0MTQwfQ.zTMI8PjaF6L785B69zRUDeEqPcYz4LE1DrYo-7tpaP0';\nconst OPENAI = 'TU_OPENAI_API_KEY';\n\nconst TOMORROW = new Date(Date.now() + 864e5).toISOString().split('T')[0];\nconst url = `${BASE}/rest/v1/appointments?barbershop_id=eq.${BARBERSHOP_ID}&appointment_date=eq.${TOMORROW}&status=in.(scheduled,confirmed,pending)&select=id,start_time,end_time,clients(name,phone),services(name,duration_minutes,price),barbers(name)&order=start_time.asc`;\n\nreturn [{ json: { barbershop_id: BARBERSHOP_ID, tomorrow: TOMORROW, base: BASE, key: KEY, openai: OPENAI, url } }];"
+      }
+    },
+    {
+      "id": "h1",
+      "name": "🔍 Citas de mañana (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-720, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $json.key }}" },
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.key }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "if1",
+      "name": "❓ ¿Hay citas mañana?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-480, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose", "version": 2 },
+          "conditions": [
+            {
+              "id": "cond-appts",
+              "leftValue": "={{ Array.isArray($json) ? $json.length : 0 }}",
+              "rightValue": 0,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c2",
+      "name": "🔄 Dividir por cita",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [-240, 180],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "c3",
+      "name": "🧠 Construir mensaje recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 180],
+      "parameters": {
+        "jsCode": "const appts = $input.first().json;\nconst list = Array.isArray(appts) ? appts : [appts];\nconst a = list[0];\nif (!a || !a.clients) return [];\n\nconst hora = a.start_time?.slice(0,5) || 'tu hora';\nconst cliente = a.clients?.name || 'Cliente';\nconst servicio = a.services?.name || 'el servicio';\nconst barbero = a.barbers?.name || 'tu barbero';\nconst precio = a.services?.price ? ` (${a.services.price}€)` : '';\nconst phone = a.clients?.phone || '';\n\nconst cfg = $('📅 Configurar fechas').item.json;\n\nreturn [{ json: {\n  phone,\n  cliente,\n  hora,\n  appointment_id: a.id,\n  openai_key: cfg.openai,\n  barbershop_id: cfg.barbershop_id,\n  prompt_user: `Genera un recordatorio de WhatsApp para ${cliente} que tiene cita mañana a las ${hora} para ${servicio}${precio} con ${barbero}. Máximo 2 líneas, amable y profesional, en español.`\n}}];"
+      }
+    },
+    {
+      "id": "h2",
+      "name": "🤖 OpenAI — Generar recordatorio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [240, 180],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{ 'Bearer ' + $json.openai_key }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: 'Eres el asistente de una barbería. Redactas recordatorios de cita breves, amables y profesionales en español.' }, { role: 'user', content: $json.prompt_user }], max_tokens: 150, temperature: 0.6 }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "c4",
+      "name": "💬 Extraer mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 180],
+      "parameters": {
+        "jsCode": "const phone = $('🧠 Construir mensaje recordatorio').item.json.phone;\nconst cliente = $('🧠 Construir mensaje recordatorio').item.json.cliente;\nconst hora = $('🧠 Construir mensaje recordatorio').item.json.hora;\nconst raw = $input.first().json;\nconst aiMsg = raw.choices?.[0]?.message?.content || `Hola ${cliente}, te recordamos tu cita mañana a las ${hora}. ¡Te esperamos!`;\nreturn [{ json: { phone, cliente, hora, message: aiMsg } }];"
+      }
+    },
+    {
+      "id": "s1",
+      "name": "📱 PLACEHOLDER — Enviar recordatorio WhatsApp",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [720, 180],
+      "parameters": {
+        "mode": "manual",
+        "fields": {
+          "values": [
+            { "name": "📌 INSTRUCCIÓN", "type": "stringValue", "string": "Reemplaza este nodo por tu proveedor WhatsApp cuando lo tengas. Usa $json.phone como destinatario y $json.message como mensaje." },
+            { "name": "to", "type": "stringValue", "string": "={{ $json.phone }}" },
+            { "name": "message", "type": "stringValue", "string": "={{ $json.message }}" },
+            { "name": "cliente", "type": "stringValue", "string": "={{ $json.cliente }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "noop1",
+      "name": "😴 Sin citas mañana",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [-240, 440],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "⏰ Cron diario 17:00": {
+      "main": [[{ "node": "📅 Configurar fechas", "type": "main", "index": 0 }]]
+    },
+    "📅 Configurar fechas": {
+      "main": [[{ "node": "🔍 Citas de mañana (Supabase)", "type": "main", "index": 0 }]]
+    },
+    "🔍 Citas de mañana (Supabase)": {
+      "main": [[{ "node": "❓ ¿Hay citas mañana?", "type": "main", "index": 0 }]]
+    },
+    "❓ ¿Hay citas mañana?": {
+      "main": [
+        [{ "node": "🔄 Dividir por cita", "type": "main", "index": 0 }],
+        [{ "node": "😴 Sin citas mañana", "type": "main", "index": 0 }]
+      ]
+    },
+    "🔄 Dividir por cita": {
+      "main": [[{ "node": "🧠 Construir mensaje recordatorio", "type": "main", "index": 0 }]]
+    },
+    "🧠 Construir mensaje recordatorio": {
+      "main": [[{ "node": "🤖 OpenAI — Generar recordatorio", "type": "main", "index": 0 }]]
+    },
+    "🤖 OpenAI — Generar recordatorio": {
+      "main": [[{ "node": "💬 Extraer mensaje", "type": "main", "index": 0 }]]
+    },
+    "💬 Extraer mensaje": {
+      "main": [[{ "node": "📱 PLACEHOLDER — Enviar recordatorio WhatsApp", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {}
+}

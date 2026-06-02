@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  Calendar,
   CalendarClock,
   CheckCircle,
   CreditCard,
@@ -12,9 +13,12 @@ import {
   UserX,
   X,
 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { formatTime, getAppointmentDuration, getPrimaryClientInsight } from "@/src/lib/agenda/agenda-utils";
 import { getStatusLabel } from "@/src/lib/agenda/appointment-colors";
 import type { AgendaAppointment } from "@/src/lib/agenda/types";
+import { rescheduleAppointment } from "@/app/dashboard/agenda/actions";
 
 type LoyaltyHint = {
   stamps: number;
@@ -46,6 +50,13 @@ export function AppointmentDetailsPanel({
   onStatusChange,
   loyaltyHint = null,
 }: Props) {
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [rescheduleDate, setRescheduleDate] = useState(appointment?.appointment_date ?? "");
+  const [rescheduleTime, setRescheduleTime] = useState(appointment?.start_time?.slice(0, 5) ?? "");
+  const [rescheduleError, setRescheduleError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   if (!appointment) return null;
 
   const duration = getAppointmentDuration(appointment);
@@ -56,6 +67,24 @@ export function AppointmentDetailsPanel({
   const visitCount = appointment.client?.visit_count ?? 0;
   const isNewClient = visitCount <= 1;
   const price = appointment.service?.price;
+
+  function handleReschedule() {
+    if (!rescheduleDate || !rescheduleTime) {
+      setRescheduleError("Selecciona fecha y hora.");
+      return;
+    }
+    setRescheduleError(null);
+    startTransition(async () => {
+      const result = await rescheduleAppointment(appointment!.id, rescheduleDate, rescheduleTime);
+      if ("error" in result && result.error) {
+        setRescheduleError(result.error);
+      } else {
+        setRescheduleOpen(false);
+        router.refresh();
+        onClose();
+      }
+    });
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -166,6 +195,57 @@ export function AppointmentDetailsPanel({
             </div>
           </div>
 
+          {/* Reagendar form */}
+          {rescheduleOpen && (
+            <div className="border-b border-slate-100 px-6 py-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Reagendar cita</p>
+              <div className="mt-3 space-y-3">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500">Fecha</label>
+                  <input
+                    type="date"
+                    value={rescheduleDate}
+                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setRescheduleDate(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 focus:border-[#C9922A] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-semibold text-slate-500">Hora</label>
+                  <input
+                    type="time"
+                    value={rescheduleTime}
+                    step="900"
+                    onChange={(e) => setRescheduleTime(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 focus:border-[#C9922A] focus:outline-none"
+                  />
+                </div>
+                {rescheduleError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">
+                    {rescheduleError}
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleReschedule}
+                    disabled={isPending}
+                    className="flex-1 rounded-xl bg-[#C9922A] px-4 py-2.5 text-xs font-black text-white transition hover:bg-[#b87e24] disabled:opacity-50"
+                  >
+                    {isPending ? "Guardando…" : "Confirmar reagendado"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setRescheduleOpen(false); setRescheduleError(null); }}
+                    className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Loyalty */}
           {appointment.client?.id && (
             <div className="border-b border-slate-100 px-6 py-4">
@@ -266,6 +346,17 @@ export function AppointmentDetailsPanel({
               </button>
             )}
           </div>
+
+          {!isTerminated && (
+            <button
+              type="button"
+              onClick={() => { setRescheduleOpen((v) => !v); setRescheduleError(null); }}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+            >
+              <Calendar size={12} />
+              {rescheduleOpen ? "Cerrar reagendar" : "Reagendar cita"}
+            </button>
+          )}
 
           {appointment.client?.id && (
             <Link
