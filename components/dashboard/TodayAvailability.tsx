@@ -39,7 +39,7 @@ function AvailabilityCard({ item }: { item: BarberAvailabilityItem }) {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#111111] text-sm font-black uppercase text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-sm font-black uppercase text-[#8A641F]">
               {item.barberName.charAt(0)}
             </div>
             <div>

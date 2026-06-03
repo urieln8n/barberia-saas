@@ -360,17 +360,19 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Agentes IA — inline, no sección separada */}
+        {/* Agentes IA — inline */}
         <Link
           href="/dashboard/agents"
-          className="mt-4 flex items-center gap-3 rounded-2xl border border-[#D5A84C]/20 bg-gradient-to-r from-[#0f172a] to-[#1e293b] px-4 py-3 transition-colors hover:border-[#D5A84C]/40 hover:from-[#111f3d]"
+          className="mt-4 flex items-center gap-3 rounded-2xl border border-[#D4AF37]/25 bg-[#FDFAF3] px-4 py-3 transition-colors hover:border-[#D4AF37]/40 hover:bg-[#FDF7E8]"
         >
-          <Sparkles size={14} className="shrink-0 text-[#C9922A]" />
-          <span className="text-xs font-semibold text-white/70">
-            <span className="font-bold text-[#D4AF66]">4 Agentes IA activos</span>
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/10">
+            <Sparkles size={13} className="text-[#C9922A]" />
+          </div>
+          <span className="text-xs font-semibold text-slate-600">
+            <span className="font-black text-slate-900">4 Agentes IA activos</span>
             {" — Retención · Huecos · Reseñas · Marketing"}
           </span>
-          <ArrowRight size={12} className="ml-auto shrink-0 text-white/40" />
+          <ArrowRight size={12} className="ml-auto shrink-0 text-slate-400" />
         </Link>
       </section>
 
