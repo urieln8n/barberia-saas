@@ -369,3 +369,38 @@ export async function updateAppointmentStatus(id: string, status: string) {
 
   return { success: true };
 }
+
+export async function getLoyaltyHint(clientId: string): Promise<{
+  stamps: number;
+  required: number;
+  rewardDescription: string | null;
+} | null> {
+  try {
+    const supabase = await createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+    if (!barbershopId) return null;
+
+    const { data } = await supabase
+      .from("loyalty_card_summary")
+      .select("current_stamps, stamps_required, reward_title, status")
+      .eq("barbershop_id", barbershopId)
+      .eq("client_id", clientId)
+      .in("status", ["active", "completed"])
+      .order("status", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (!data) return null;
+
+    return {
+      stamps: (data.current_stamps as number) ?? 0,
+      required: (data.stamps_required as number) ?? 8,
+      rewardDescription: (data.reward_title as string) ?? null,
+    };
+  } catch {
+    return null;
+  }
+}

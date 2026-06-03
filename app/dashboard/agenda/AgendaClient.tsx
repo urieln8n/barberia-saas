@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -29,7 +29,7 @@ import { buildBarberWorkloads } from "@/src/lib/agenda/barber-workload";
 import { detectOpportunities } from "@/src/lib/agenda/opportunities";
 import { formatTime, getTodayISO, isActiveAppointment, timeToMinutes } from "@/src/lib/agenda/agenda-utils";
 import { getAgendaNotifications } from "@/src/lib/notifications/get-agenda-notifications";
-import { createAppointment, updateAppointmentStatus } from "./actions";
+import { createAppointment, updateAppointmentStatus, getLoyaltyHint } from "./actions";
 import { AgendaStatCard } from "@/components/agenda/AgendaStatCard";
 import { AgendaFilters, type AgendaFilter } from "@/components/agenda/AgendaFilters";
 import { WeeklyCalendarGrid } from "@/components/agenda/WeeklyCalendarGrid";
@@ -119,6 +119,11 @@ export function AgendaClient({
   const [selectedService, setSelectedService] = useState(initialSelectedService);
   const [quickBookingDefaults, setQuickBookingDefaults] =
     useState<QuickBookingDefaults | null>(null);
+  const [loyaltyHint, setLoyaltyHint] = useState<{
+    stamps: number;
+    required: number;
+    rewardDescription: string | null;
+  } | null>(null);
 
   const slots = generateTimeSlots(9, 20, 30);
 
@@ -129,6 +134,17 @@ export function AgendaClient({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Load loyalty hint whenever a different client's appointment is selected
+  const loadLoyaltyHint = useCallback(async (clientId: string | null | undefined) => {
+    if (!clientId) { setLoyaltyHint(null); return; }
+    const hint = await getLoyaltyHint(clientId);
+    setLoyaltyHint(hint);
+  }, []);
+
+  useEffect(() => {
+    loadLoyaltyHint(selectedAppointment?.client?.id);
+  }, [selectedAppointment?.client?.id, loadLoyaltyHint]);
 
   function pushURL(newView: AgendaView, newDate: string, barberId = selectedBarber, serviceId = selectedService) {
     const params = new URLSearchParams();
@@ -537,6 +553,7 @@ export function AgendaClient({
         updating={updating}
         onClose={() => setSelectedAppointment(null)}
         onStatusChange={handleStatus}
+        loyaltyHint={loyaltyHint}
       />
 
       <QuickBookingPanel
