@@ -407,7 +407,7 @@ export default async function DashboardPage() {
       <QuickActionsRow services={quickServices} barbers={quickBarbers} />
 
       {/* 3 ── KPI Bar — 4 métricas del día */}
-      <PremiumDashboardMotion className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <PremiumDashboardMotion className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <PremiumDashboardItem>
           <StatCard
             kicker="Ingresos de hoy"
@@ -422,7 +422,6 @@ export default async function DashboardPage() {
             iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
             iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
             tone={cashSessionOpen ? "success" : "warning"}
-            className="shadow-[inset_4px_0_0_rgba(212,175,102,0.45)]"
             footer={
               <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
                 Ver caja <ArrowRight size={12} />

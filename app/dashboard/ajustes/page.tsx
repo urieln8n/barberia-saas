@@ -56,7 +56,7 @@ export default async function AjustesPage() {
       />
 
       {/* Info de la barbería */}
-      <div className="rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] p-6 shadow-[var(--shadow-warm)]">
+      <div className="rounded-[20px] border border-amber-200/40 bg-[#F6F1E8] p-6 shadow-card">
         <div className="mb-5 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
             <Store size={18} className="text-[#2F6FEB]" />

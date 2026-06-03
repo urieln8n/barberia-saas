@@ -25,7 +25,7 @@ export function PageHeader({
 
   return (
     <section
-      className={`relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white px-6 py-6 shadow-card md:px-8 md:py-7 ${className}`}
+      className={`relative overflow-hidden rounded-[20px] border border-slate-200/80 bg-white px-6 py-6 shadow-card md:px-8 md:py-7 ${className}`}
     >
       {/* Gold accent line */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px]

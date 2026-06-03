@@ -53,7 +53,7 @@ export function StatCard({
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[2rem] border p-5 shadow-card
+      className={`group relative overflow-hidden rounded-2xl border p-5 shadow-card
         transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover
         md:p-6 ${containerClass} ${className}`}
     >
@@ -84,13 +84,13 @@ export function StatCard({
         )}
       </div>
 
-      {/* El número — el héroe visual de la card */}
+      {/* El número — el protagonista visual */}
       <p
-        className="mt-3 font-display leading-none text-slate-900"
+        className="mt-4 font-display leading-none text-slate-900"
         style={{
-          fontSize: "clamp(2rem,4.5vw,2.75rem)",
+          fontSize: "clamp(2.25rem,5vw,3rem)",
           fontWeight: 900,
-          letterSpacing: "-0.03em",
+          letterSpacing: "-0.035em",
           fontVariantNumeric: "tabular-nums lining-nums",
           fontFeatureSettings: '"tnum","lnum","cv11","ss01"',
         }}
@@ -109,7 +109,11 @@ export function StatCard({
         </div>
       )}
 
-      {footer && <div className="mt-4 border-t border-slate-100 pt-3">{footer}</div>}
+      {footer && (
+        <div className="mt-4 border-t border-slate-100 pt-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:rounded-lg [&_a]:px-2.5 [&_a]:py-1.5 [&_a]:text-xs [&_a]:font-black [&_a]:text-slate-600 [&_a]:transition [&_a:hover]:bg-slate-100 [&_a:hover]:text-slate-900">
+          {footer}
+        </div>
+      )}
     </article>
   );
 }

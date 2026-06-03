@@ -20,23 +20,18 @@ export function SectionCard({
   variant = "default",
 }: SectionCardProps) {
   const hasHeader = title || description || action;
+
   const variantClass =
-    variant === "dark"
-      ? "rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm"
-    : variant === "premium"
-        ? "rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm"
-    : variant === "light"
-        ? "rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm"
-    : variant === "muted"
-        ? "rounded-[2rem] border border-slate-200 bg-slate-50 text-slate-900 shadow-sm"
-        : variant === "glass"
-          ? "rounded-[2rem] border border-slate-200 bg-white/95 text-slate-900 shadow-sm backdrop-blur-xl"
-          : "rounded-[2rem] border border-slate-200 bg-white text-slate-900 shadow-sm";
+    variant === "muted"
+      ? "rounded-[20px] border border-slate-200/80 bg-slate-50 text-slate-900 shadow-card"
+      : variant === "glass"
+        ? "rounded-[20px] border border-slate-200/80 bg-white/95 text-slate-900 shadow-card backdrop-blur-xl"
+        : "rounded-[20px] border border-slate-200/80 bg-white text-slate-900 shadow-card";
 
   return (
     <section className={`${variantClass} overflow-hidden p-0 ${className}`}>
       {hasHeader && (
-        <div className="border-b border-slate-100 bg-slate-50 px-5 py-5 md:px-6">
+        <div className="border-b border-slate-100 bg-slate-50/60 px-5 py-4 md:px-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               {title && (

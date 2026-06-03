@@ -61,7 +61,7 @@ export function LostMoneyCalculator() {
 
   return (
     <section id="calculadora" className="px-5 py-20 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-card)] md:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div className="mx-auto grid max-w-7xl gap-8 rounded-[20px] border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-card)] md:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <div className="metric-icon bg-[#C9922A]/10 text-[#C9922A]">
             <Calculator size={18} />
