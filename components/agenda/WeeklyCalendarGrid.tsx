@@ -26,20 +26,10 @@ function getHour(time: string) {
   return formatTime(time).slice(0, 2);
 }
 
-function getVisibleHours(appointments: AgendaAppointment[], freeSlots: FreeSlot[]) {
-  const starts = [
-    9 * 60,
-    ...appointments.map((a) => timeToMinutes(formatTime(a.start_time))),
-    ...freeSlots.map((s) => timeToMinutes(formatTime(s.start_time))),
-  ];
-  const ends = [
-    20 * 60,
-    ...appointments.map((a) => timeToMinutes(formatTime(a.end_time ?? a.start_time))),
-    ...freeSlots.map((s) => timeToMinutes(formatTime(s.end_time))),
-  ];
-  const startHour = Math.max(0, Math.floor(Math.min(...starts) / 60));
-  const endHour = Math.min(24, Math.ceil(Math.max(...ends) / 60));
-  return generateTimeSlots(startHour, endHour, 60).map((s) => s.time);
+// Rango fijo 09:00–20:00 — evita que el grid empiece a horas distintas
+// según los eventos de la semana, garantizando uniformidad visual
+function getVisibleHours() {
+  return generateTimeSlots(9, 20, 60).map((s) => s.time);
 }
 
 function getCurrentMinuteOffset(hour: string): { pct: number; label: string } | null {
@@ -81,7 +71,7 @@ export function WeeklyCalendarGrid({
   onFreeSlotBook,
   onEmptySlotClick,
 }: Props) {
-  const hours = getVisibleHours(appointments, freeSlots);
+  const hours = getVisibleHours();
   const selectedDayAppointments = appointments.filter((a) => a.appointment_date === selectedDay);
   const selectedDaySlots = freeSlots.filter((s) => s.date === selectedDay);
 
@@ -215,14 +205,33 @@ export function WeeklyCalendarGrid({
             />
           ))}
 
-          {selectedDaySlots.map((slot) => (
-            <FreeSlotCard
-              key={slot.id}
-              slot={slot}
-              services={services}
-              onBook={onFreeSlotBook}
-            />
-          ))}
+          {selectedDaySlots.length > 0 && (
+            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/50 p-4">
+              <p className="mb-2 text-[10px] font-black uppercase tracking-wide text-emerald-600">
+                {selectedDaySlots.length} hueco{selectedDaySlots.length !== 1 ? "s" : ""} libre{selectedDaySlots.length !== 1 ? "s" : ""}
+              </p>
+              <div className="flex flex-col gap-2">
+                {selectedDaySlots.map((slot) => (
+                  <button
+                    key={slot.id}
+                    type="button"
+                    onClick={() => onFreeSlotBook?.(slot)}
+                    className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-left transition hover:bg-emerald-50 active:scale-[0.98]"
+                  >
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
+                    <span className="flex-1 text-sm font-semibold text-emerald-800">
+                      {formatTime(slot.start_time)}
+                      {slot.end_time ? ` – ${formatTime(slot.end_time)}` : ""}
+                      {slot.barber?.name ? ` · ${slot.barber.name}` : ""}
+                    </span>
+                    <span className="shrink-0 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-black text-white">
+                      Reservar
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -309,7 +318,7 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[96px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
+              className="grid min-h-[72px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
             >
               {/* Hour label */}
               <div className="flex items-start justify-end bg-slate-50 px-3 pt-2">
@@ -359,23 +368,22 @@ export function WeeklyCalendarGrid({
                       />
                     ))}
 
-                    {/* Free slots — máx 2 visibles, resto colapsado */}
-                    {hourSlots.slice(0, 2).map((slot) => (
-                      <FreeSlotCard
-                        key={slot.id}
-                        slot={slot}
-                        services={services}
-                        compact
-                        onBook={onFreeSlotBook}
-                      />
-                    ))}
-                    {hourSlots.length > 2 && (
+                    {/* Free slots — chip compacto, no card completa */}
+                    {hourSlots.length > 0 && (
                       <button
                         type="button"
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1 text-[10px] font-black text-slate-500 transition hover:bg-slate-100"
-                        onClick={() => onFreeSlotBook?.(hourSlots[2])}
+                        onClick={() => onFreeSlotBook?.(hourSlots[0])}
+                        className="flex w-full items-center gap-1.5 rounded-lg border border-dashed border-emerald-200 bg-emerald-50/60 px-2 py-1.5 text-left transition hover:bg-emerald-100/60 active:scale-[0.98]"
                       >
-                        +{hourSlots.length - 2} más
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                        <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-emerald-700">
+                          {hourSlots.length > 1
+                            ? `${hourSlots.length} huecos`
+                            : hourSlots[0].barber?.name ?? "Libre"}
+                        </span>
+                        <span className="shrink-0 text-[9px] font-black text-emerald-600">
+                          + Reservar
+                        </span>
                       </button>
                     )}
 
