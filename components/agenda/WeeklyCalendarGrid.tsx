@@ -101,10 +101,10 @@ export function WeeklyCalendarGrid({
       : "";
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-[#FDFCF9] shadow-[0_4px_24px_rgba(0,0,0,0.07),0_1px_4px_rgba(0,0,0,0.04)]">
+    <section className="overflow-hidden rounded-2xl border border-slate-300 bg-[#FDFCF9] shadow-[0_4px_24px_rgba(0,0,0,0.10),0_1px_4px_rgba(0,0,0,0.06)]">
 
       {/* ── Header ── */}
-      <div className="border-b border-slate-200/70 bg-[#FDFCF9] px-4 py-4">
+      <div className="border-b border-slate-300 bg-[#FDFCF9] px-4 py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-[#C9922A]">
@@ -247,7 +247,7 @@ export function WeeklyCalendarGrid({
         <div className="min-w-[1000px]">
 
           {/* Column headers */}
-          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200">
+          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-300">
             <div className="flex items-center justify-center bg-[#F2EFE8] p-3">
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                 Hora
@@ -268,10 +268,10 @@ export function WeeklyCalendarGrid({
                   onClick={() => onSelectedDayChange(day.iso)}
                   className={`relative cursor-pointer border-l transition-colors hover:brightness-[0.98] ${
                     day.isToday
-                      ? "border-[#D4AF37]/30 bg-gradient-to-b from-[#C9922A]/8 to-[#C9922A]/3"
+                      ? "border-[#D4AF37]/60 bg-gradient-to-b from-[#C9922A]/8 to-[#C9922A]/3"
                       : weekend
-                      ? "border-slate-200/60 bg-slate-50/50"
-                      : "border-slate-200/60 bg-[#FDFCF9]"
+                      ? "border-slate-300 bg-slate-50/60"
+                      : "border-slate-300 bg-[#FDFCF9]"
                   }`}
                 >
                   <div className="px-3 pb-3 pt-3">
@@ -344,10 +344,10 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[60px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200/60 last:border-b-0"
+              className="grid min-h-[60px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-300/80 last:border-b-0"
             >
               {/* Hour label */}
-              <div className="flex items-start justify-end border-r border-slate-200 bg-[#F2EFE8] px-3 pt-2">
+              <div className="flex items-start justify-end border-r border-slate-300 bg-[#EDE9DF] px-3 pt-2">
                 <span className="text-[11px] font-black tabular-nums text-slate-600">{hour}</span>
               </div>
 
@@ -369,12 +369,12 @@ export function WeeklyCalendarGrid({
                     key={`${day.iso}-${hour}`}
                     className={`relative space-y-1.5 border-l p-1.5 transition-colors ${
                       day.isToday && !past
-                        ? "border-[#D4AF37]/20 bg-[#C9922A]/[0.03]"
+                        ? "border-[#D4AF37]/50 bg-[#C9922A]/[0.04]"
                         : past
-                        ? "border-slate-200/40 bg-slate-50/30"
+                        ? "border-slate-300/60 bg-slate-50/50"
                         : weekend
-                        ? "border-slate-200/50 bg-slate-50/50"
-                        : "border-slate-200/50"
+                        ? "border-slate-300 bg-slate-50/60"
+                        : "border-slate-300"
                     }`}
                   >
                     {/* "Ahora" line */}
@@ -441,7 +441,7 @@ export function WeeklyCalendarGrid({
           ))}
 
           {/* Footer summary */}
-          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-200 bg-[#F2EFE8]">
+          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-300 bg-[#EDE9DF]">
             <div className="p-3" />
             {days.map((day) => {
               const dayAppts = appointments.filter((a) => a.appointment_date === day.iso);
@@ -449,7 +449,7 @@ export function WeeklyCalendarGrid({
               const rev = active.reduce((s, a) => s + (a.service?.price ?? 0), 0);
               const slots = freeSlots.filter((s) => s.date === day.iso).length;
               return (
-                <div key={day.iso} className="border-l border-slate-200 px-3 py-2">
+                <div key={day.iso} className="border-l border-slate-300 px-3 py-2">
                   {active.length > 0 ? (
                     <p className="text-[10px] font-black text-slate-600">
                       {active.length} cita{active.length !== 1 ? "s" : ""}

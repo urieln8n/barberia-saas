@@ -206,7 +206,7 @@ export function DailyTimelineView({
     <div className="flex flex-col gap-4">
       {/* ── Mini KPIs ── */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-[#FEFCF9] p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+        <div className="rounded-2xl border border-slate-300 bg-[#FEFCF9] p-4 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
             {isToday ? "Restantes" : "Reservas"}
           </p>
@@ -304,11 +304,11 @@ export function DailyTimelineView({
       )}
 
       {/* ── Timeline ── */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FEFCF8] shadow-[0_2px_16px_rgba(0,0,0,0.07),0_1px_4px_rgba(0,0,0,0.04)]">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-300 bg-[#FEFCF8] shadow-[0_2px_16px_rgba(0,0,0,0.10),0_1px_4px_rgba(0,0,0,0.06)]">
         <div className="flex">
           {/* Hour labels */}
           <div
-            className="shrink-0 border-r border-slate-200 bg-[#F2EFE8]"
+            className="shrink-0 border-r border-slate-300 bg-[#EDE9DF]"
             style={{ width: 56, height: totalHeight }}
           >
             {HOURS.map((h) => (
@@ -332,7 +332,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={h}
-                className="absolute inset-x-0 border-t border-slate-200"
+                className="absolute inset-x-0 border-t border-slate-300"
                 style={{ top: i * CELL_HEIGHT }}
               />
             ))}
@@ -340,7 +340,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={`half-${h}`}
-                className="absolute inset-x-0 border-t border-slate-200/50"
+                className="absolute inset-x-0 border-t border-slate-200"
                 style={{ top: i * CELL_HEIGHT + CELL_HEIGHT / 2 }}
               />
             ))}
