@@ -60,6 +60,12 @@ function money(n: number) {
   }).format(n);
 }
 
+// Detectar si una fecha ISO es fin de semana
+function isWeekend(iso: string): boolean {
+  const d = new Date(`${iso}T00:00:00`);
+  return d.getDay() === 0 || d.getDay() === 6;
+}
+
 export function WeeklyCalendarGrid({
   days,
   appointments,
@@ -201,6 +207,7 @@ export function WeeklyCalendarGrid({
             <AppointmentCard
               key={appointment.id}
               appointment={appointment}
+              compact
               onClick={onAppointmentClick}
             />
           ))}
@@ -253,32 +260,42 @@ export function WeeklyCalendarGrid({
               const activeAppts = dayAppts.filter(isActiveAppointment);
               const dayRevenue = activeAppts.reduce((s, a) => s + (a.service?.price ?? 0), 0);
               const occupancyPct = getDayOccupancyPct(dayAppts);
+              const weekend = isWeekend(day.iso);
 
               return (
                 <div
                   key={day.iso}
                   onClick={() => onSelectedDayChange(day.iso)}
-                  className={`relative cursor-pointer border-l border-slate-200 p-3 transition-colors hover:bg-slate-50 ${
-                    day.isToday ? "bg-[#C9922A]/5" : "bg-white"
+                  className={`relative cursor-pointer border-l border-slate-200/70 p-3 transition-colors hover:bg-slate-50 ${
+                    day.isToday
+                      ? "bg-[#C9922A]/5"
+                      : weekend
+                      ? "bg-slate-50/40"
+                      : "bg-white"
                   }`}
                 >
+                  {/* HOY badge — dorado, visible */}
                   {day.isToday && (
-                    <span className="mb-1.5 inline-block rounded-full bg-[#C9922A] px-2 py-px text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
-                      Hoy
+                    <span className="mb-2 inline-flex items-center rounded-full bg-[#C9922A] px-2.5 py-px text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
+                      HOY
                     </span>
                   )}
+
+                  {/* Nombre del día */}
                   <p className={`text-[11px] font-black uppercase tracking-wide ${
-                    day.isToday ? "text-[#C9922A]" : "text-slate-400"
+                    day.isToday ? "text-[#C9922A]" : weekend ? "text-slate-400" : "text-slate-400"
                   }`}>
                     {day.label}
                   </p>
-                  <p className={`mt-0.5 text-2xl font-black tabular-nums leading-none ${
+
+                  {/* Número del día — más grande */}
+                  <p className={`mt-0.5 text-3xl font-black tabular-nums leading-none ${
                     day.isToday ? "text-[#8A641F]" : "text-slate-900"
                   }`}>
                     {day.dayNumber}
                   </p>
 
-                  {/* Day summary */}
+                  {/* Day summary chips */}
                   <div className="mt-2 flex flex-wrap gap-1">
                     {activeAppts.length > 0 && (
                       <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-600">
@@ -318,11 +335,11 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[72px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100 last:border-b-0"
+              className="grid min-h-[72px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200/60 last:border-b-0"
             >
               {/* Hour label */}
               <div className="flex items-start justify-end bg-slate-50 px-3 pt-2">
-                <span className="text-[11px] font-black tabular-nums text-slate-400">{hour}</span>
+                <span className="text-xs font-semibold tabular-nums text-slate-500">{hour}</span>
               </div>
 
               {/* Day cells */}
@@ -336,12 +353,17 @@ export function WeeklyCalendarGrid({
                 const isEmpty = hourAppts.length === 0 && hourSlots.length === 0;
                 const nowOffset = day.isToday ? getCurrentMinuteOffset(hour) : null;
                 const past = isPastCell(day.iso, hour);
+                const weekend = isWeekend(day.iso);
 
                 return (
                   <div
                     key={`${day.iso}-${hour}`}
-                    className={`relative space-y-1.5 border-l border-slate-100 p-1.5 ${
-                      day.isToday && !past ? "bg-[#D4AF37]/[0.025]" : ""
+                    className={`relative space-y-1.5 border-l border-slate-200/50 p-1.5 ${
+                      day.isToday && !past
+                        ? "bg-[#D4AF37]/[0.025]"
+                        : weekend
+                        ? "bg-slate-50/40"
+                        : ""
                     }`}
                   >
                     {/* "Ahora" line */}
@@ -387,7 +409,7 @@ export function WeeklyCalendarGrid({
                       </button>
                     )}
 
-                    {/* Empty cell — invisible until hover */}
+                    {/* Empty cell — indicador sutil siempre visible en móvil, hover en desktop */}
                     {isEmpty && !past && (
                       <button
                         type="button"
@@ -395,11 +417,10 @@ export function WeeklyCalendarGrid({
                         aria-label={`Crear cita a las ${hour} — ${day.label} ${day.dayNumber}`}
                         className="group flex min-h-[120px] w-full items-center justify-center rounded-xl transition-colors hover:bg-slate-50/80 active:bg-slate-100/60"
                       >
-                        <span className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                          <CalendarPlus size={11} className="text-slate-400" />
-                          <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">
-                            {hour}
-                          </span>
+                        {/* Siempre visible sutil en móvil, más visible en hover desktop */}
+                        <span className="flex items-center gap-1 opacity-20 transition-opacity md:opacity-0 md:group-hover:opacity-60">
+                          <CalendarPlus size={10} className="text-slate-400" />
+                          <span className="text-[9px] font-semibold text-slate-400">{hour}</span>
                         </span>
                       </button>
                     )}
