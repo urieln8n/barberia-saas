@@ -15,7 +15,7 @@ import { FreeSlotCard } from "./FreeSlotCard";
 
 const TIMELINE_START = 9;
 const TIMELINE_END = 20;
-const CELL_HEIGHT = 72; // slightly taller rows for premium feel
+const CELL_HEIGHT = 64; // reducido de 72 para mayor densidad visual
 
 function minutesToTop(timeStr: string): number {
   const mins = timeToMinutes(formatTime(timeStr));
@@ -35,6 +35,49 @@ const HOURS = Array.from(
   { length: TIMELINE_END - TIMELINE_START },
   (_, i) => TIMELINE_START + i,
 );
+
+function groupConsecutiveFreeSlots(slots: FreeSlot[]): FreeSlot[] {
+  if (slots.length === 0) return [];
+
+  // Agrupar por barbero (null barber usa "none" como clave)
+  const byBarber: Record<string, FreeSlot[]> = {};
+  for (const slot of slots) {
+    const key = slot.barber?.id ?? "none";
+    if (!byBarber[key]) byBarber[key] = [];
+    byBarber[key].push(slot);
+  }
+
+  const grouped: FreeSlot[] = [];
+
+  for (const barberSlots of Object.values(byBarber)) {
+    // Ordenar por hora de inicio
+    const sorted = [...barberSlots].sort((a, b) =>
+      a.start_time.localeCompare(b.start_time),
+    );
+
+    let current = { ...sorted[0] };
+
+    for (let i = 1; i < sorted.length; i++) {
+      const next = sorted[i];
+      // Fusionar si el siguiente slot empieza donde termina el actual (gap ≤ 5 min)
+      const currentEndMins = timeToMinutes(formatTime(current.end_time));
+      const nextStartMins = timeToMinutes(formatTime(next.start_time));
+
+      if (nextStartMins - currentEndMins <= 5) {
+        current = {
+          ...current,
+          end_time: next.end_time,
+        };
+      } else {
+        grouped.push(current);
+        current = { ...next };
+      }
+    }
+    grouped.push(current);
+  }
+
+  return grouped;
+}
 
 type Props = {
   dateISO: string;
@@ -101,6 +144,8 @@ export function DailyTimelineView({
     .filter((s) => s.date === dateISO)
     .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
+  const groupedDaySlots = groupConsecutiveFreeSlots(daySlots);
+
   const totalHeight = (TIMELINE_END - TIMELINE_START) * CELL_HEIGHT;
   const isEmpty = dayAppointments.length === 0 && daySlots.length === 0;
 
@@ -119,7 +164,12 @@ export function DailyTimelineView({
         </div>
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-600">Huecos libres</p>
-          <p className="mt-1.5 text-2xl font-black text-emerald-700">{daySlots.length}</p>
+          <p className="mt-1.5 text-2xl font-black text-emerald-700">{groupedDaySlots.length}</p>
+          <p className="text-[10px] text-emerald-600 mt-0.5">
+            {groupedDaySlots.length > 0
+              ? `${daySlots.length} slots · ${groupedDaySlots.length} bloques`
+              : "Agenda completa"}
+          </p>
         </div>
         <div className="rounded-2xl border border-[#C9922A]/20 bg-[#C9922A]/5 p-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#C9922A]/80">
@@ -211,26 +261,29 @@ export function DailyTimelineView({
               </div>
             )}
 
-            {/* Free slots */}
-            {daySlots.map((slot) => {
+            {/* Free slots — agrupados por barbero y bloques consecutivos */}
+            {groupedDaySlots.map((slot) => {
               const top = minutesToTop(slot.start_time);
               const height = durationToHeight(slot.start_time, slot.end_time, 45);
+              const durationMins =
+                timeToMinutes(formatTime(slot.end_time)) -
+                timeToMinutes(formatTime(slot.start_time));
               return (
                 <div
-                  key={slot.id}
-                  className="absolute left-1 right-2 overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]"
-                  style={{ top: top + 2, height: height - 4 }}
+                  key={`${slot.id}-grouped`}
+                  className="absolute left-1 right-2 overflow-hidden rounded-lg border border-dashed border-emerald-200 bg-emerald-50/40"
+                  style={{ top: top + 1, height: Math.max(28, height - 2) }}
                 >
-                  <div className="flex h-full items-center justify-between gap-2 px-3">
-                    <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-black text-slate-600">
-                      <Zap size={10} className="shrink-0 text-[#D4AF37]" />
-                      {formatTime(slot.start_time)} · {slot.barber?.name ?? "Hueco libre"}
+                  <div className="flex h-full items-center justify-between gap-2 px-2.5">
+                    <span className="flex min-w-0 items-center gap-1 text-[10px] font-semibold text-emerald-700 truncate">
+                      <Zap size={9} className="shrink-0 text-emerald-500" />
+                      {slot.barber?.name ?? "Libre"} · {durationMins}min
                     </span>
-                    {onFreeSlotBook ? (
+                    {onFreeSlotBook && height > 36 ? (
                       <button
                         type="button"
                         onClick={() => onFreeSlotBook(slot)}
-                        className="shrink-0 rounded-lg bg-slate-900 px-2.5 py-1 text-[9px] font-black text-white transition hover:bg-slate-700 active:scale-[0.97]"
+                        className="shrink-0 rounded-md border border-emerald-200 bg-white px-2 py-0.5 text-[9px] font-black text-emerald-700 transition hover:bg-emerald-50 active:scale-95"
                       >
                         + Reservar
                       </button>
