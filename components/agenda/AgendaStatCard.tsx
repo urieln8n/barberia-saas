@@ -27,7 +27,7 @@ const VALUE_ACCENTS = {
 
 export function AgendaStatCard({ label, value, description, icon: Icon, accent = "slate" }: Props) {
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
+    <article className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FEFCF9] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.05)] transition hover:border-slate-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.09)]">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{label}</p>

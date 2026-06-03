@@ -48,8 +48,8 @@ export function FreeSlotCard({ slot, services = [], compact = false, onBook, onP
     <article
       className={`rounded-xl border p-3 transition hover:-translate-y-0.5 hover:shadow-md ${
         isNow
-          ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/8 via-white/5 to-transparent ring-1 ring-[#D4AF37]/20 shadow-[0_4px_20px_rgba(212,175,55,0.12)]"
-          : "border-slate-200/80 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
+          ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/8 via-white/5 to-transparent ring-1 ring-[#D4AF37]/20 shadow-[0_4px_20px_rgba(212,175,55,0.15)]"
+          : "border-slate-200 bg-white shadow-[0_2px_10px_rgba(15,23,42,0.09)]"
       }`}
     >
       {/* Header row */}
