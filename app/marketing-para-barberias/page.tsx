@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/marketing-para-barberias`}
       eyebrow="Marketing digital para barberías"
       h1="Más clientes desde Google, Instagram y WhatsApp. Sin agencia."
       intro="Las barberías que más llenan no son las mejores necesariamente, son las más fáciles de encontrar y reservar. BarberíaOS te da las herramientas para aparecer donde buscan tus clientes y que reserven en el acto."

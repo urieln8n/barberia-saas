@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/crm-clientes-barberia`}
       eyebrow="CRM para barberías"
       h1="Tus clientes, su historial y las próximas acciones en un solo panel."
       intro="BarberíaOS incluye una base de clientes integrada con la agenda: cada visita queda registrada, el barbero ve el historial antes de la cita y el panel detecta clientes que llevan semanas sin aparecer."
