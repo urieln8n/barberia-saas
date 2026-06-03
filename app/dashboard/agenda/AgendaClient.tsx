@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -121,6 +121,14 @@ export function AgendaClient({
     useState<QuickBookingDefaults | null>(null);
 
   const slots = generateTimeSlots(9, 20, 30);
+
+  // On mobile, default to day view so the agenda is usable without horizontal scroll
+  useEffect(() => {
+    if (initialView === "week" && window.innerWidth < 768) {
+      setView("day");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function pushURL(newView: AgendaView, newDate: string, barberId = selectedBarber, serviceId = selectedService) {
     const params = new URLSearchParams();

@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarClock, CheckCircle, CreditCard, ExternalLink, Gift, MessageCircle, RotateCw, Star, UserX, X } from "lucide-react";
+import { useState, useTransition } from "react";
+import { CalendarClock, CalendarPlus, CheckCircle, CreditCard, ExternalLink, Gift, Loader2, MessageCircle, RotateCw, Star, UserX, X } from "lucide-react";
 import { formatTime, getAppointmentDuration, getPrimaryClientInsight } from "@/src/lib/agenda/agenda-utils";
 import { getStatusLabel } from "@/src/lib/agenda/appointment-colors";
+import { rescheduleAppointment } from "@/app/dashboard/agenda/actions";
 import type { AgendaAppointment } from "@/src/lib/agenda/types";
 
 type LoyaltyHint = {
@@ -21,6 +23,10 @@ type Props = {
 };
 
 export function AppointmentDetailsPanel({ appointment, updating, onClose, onStatusChange, loyaltyHint = null }: Props) {
+  const [showReschedule, setShowReschedule] = useState(false);
+  const [rescheduleError, setRescheduleError] = useState("");
+  const [isPending, startTransition] = useTransition();
+
   if (!appointment) return null;
 
   const duration = getAppointmentDuration(appointment);
@@ -28,6 +34,24 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
   const waPhone = phone?.replace(/\D/g, "");
   const waLink = waPhone ? `https://wa.me/${waPhone}` : null;
   const isTerminated = ["completed", "cancelled", "no_show"].includes(appointment.status);
+
+  function handleReschedule(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const date = data.get("date") as string;
+    const time = data.get("time") as string;
+    if (!date || !time) return;
+    setRescheduleError("");
+    startTransition(async () => {
+      const result = await rescheduleAppointment(appointment!.id, date, time);
+      if (result.error) {
+        setRescheduleError(result.error);
+      } else {
+        setShowReschedule(false);
+        onClose();
+      }
+    });
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/35 backdrop-blur-sm">
@@ -210,9 +234,15 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
 
           <button
             type="button"
-            disabled
-            title="Disponible próximamente"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-black text-slate-400"
+            disabled={isTerminated}
+            onClick={() => { setShowReschedule((v) => !v); setRescheduleError(""); }}
+            className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border px-3 text-xs font-black transition ${
+              isTerminated
+                ? "border-slate-200 bg-slate-50 text-slate-400"
+                : showReschedule
+                ? "border-violet-300 bg-violet-50 text-violet-700"
+                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+            }`}
           >
             <RotateCw size={14} /> Reagendar
           </button>
@@ -226,12 +256,76 @@ export function AppointmentDetailsPanel({ appointment, updating, onClose, onStat
           </button>
         </div>
 
+        {/* Inline reschedule form */}
+        {showReschedule && !isTerminated && (
+          <form
+            onSubmit={handleReschedule}
+            className="mt-3 rounded-2xl border border-violet-200 bg-violet-50 p-4"
+          >
+            <p className="mb-3 text-xs font-black uppercase tracking-wide text-violet-700">Nueva fecha y hora</p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="mb-1 block text-[11px] font-black text-slate-500">Fecha</label>
+                <input
+                  type="date"
+                  name="date"
+                  required
+                  defaultValue={appointment.appointment_date}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-black text-slate-500">Hora</label>
+                <input
+                  type="time"
+                  name="time"
+                  required
+                  defaultValue={appointment.start_time.slice(0, 5)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                />
+              </div>
+            </div>
+            {rescheduleError && (
+              <p className="mt-2 text-xs font-bold text-rose-600">{rescheduleError}</p>
+            )}
+            <div className="mt-3 flex gap-2">
+              <button
+                type="submit"
+                disabled={isPending}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 py-2.5 text-xs font-black text-white transition hover:bg-violet-700 disabled:opacity-50"
+              >
+                {isPending ? <Loader2 size={13} className="animate-spin" /> : <RotateCw size={13} />}
+                Confirmar reagenda
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowReschedule(false)}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-black text-slate-600 transition hover:bg-slate-50"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Crear próxima cita */}
+        {appointment.client?.id && (
+          <Link
+            href={`/dashboard/agenda?view=day&clientId=${appointment.client.id}&serviceId=${appointment.service?.id ?? ""}`}
+            onClick={onClose}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-800 transition hover:bg-emerald-100"
+          >
+            <CalendarPlus size={14} />
+            Crear próxima cita
+          </Link>
+        )}
+
         {/* Ver cliente completo */}
         {appointment.client?.id ? (
           <Link
             href={`/dashboard/clientes/${appointment.client.id}`}
             onClick={onClose}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-3 text-sm font-black text-[#8A641F] transition hover:bg-[#D4AF37]/15"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-3 text-sm font-black text-[#8A641F] transition hover:bg-[#D4AF37]/15"
           >
             <ExternalLink size={14} />
             Ver ficha completa del cliente
