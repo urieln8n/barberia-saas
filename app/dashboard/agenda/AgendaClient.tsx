@@ -348,10 +348,42 @@ export function AgendaClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-12 text-slate-900">
-      <div className="space-y-4">
+    <div className="relative min-h-screen overflow-x-hidden pb-12 text-slate-900"
+      style={{ backgroundColor: "#FAF8F4" }}
+    >
+      {/* Textura radial dorada — esquina inferior derecha, muy sutil */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 60% 50% at 92% 90%, rgba(201,146,42,0.055) 0%, transparent 70%)",
+            "radial-gradient(ellipse 40% 30% at 8% 10%, rgba(212,175,55,0.035) 0%, transparent 60%)",
+          ].join(", "),
+        }}
+      />
+
+      {/* Marca de agua "B" — desktop únicamente, centrada a la derecha */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 right-0 z-0 hidden select-none md:block"
+        style={{
+          fontSize: "clamp(280px, 30vw, 480px)",
+          fontWeight: 900,
+          lineHeight: 0.85,
+          color: "#C9A24D",
+          opacity: 0.042,
+          letterSpacing: "-0.06em",
+          userSelect: "none",
+          transform: "translate(12%, 8%)",
+        }}
+      >
+        B
+      </div>
+
+      <div className="relative z-10 space-y-4">
         {/* ═══ HEADER ═══ */}
-        <div className="border-b border-slate-200 bg-white px-1 pb-4 pt-1">
+        <div className="border-b border-[#EDE9E0] bg-[#FDFCF9] px-1 pb-4 pt-1 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
           {/* Top row: title + actions */}
           <div className="flex items-start justify-between gap-3">
             <div>
