@@ -1,32 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
 import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
-import {
-  CalendarCheck,
-  Users,
-  Clock,
-  Wallet,
-  QrCode,
-  ArrowRight,
-  Plus,
-  Sparkles,
-  Star,
-  RotateCcw,
-} from "lucide-react";
-import { StatCard }   from "@/components/ui/StatCard";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
-import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
-import { QuickActionsRow } from "@/components/dashboard/QuickActionsRow";
-import { RecommendedActionCard } from "@/components/dashboard/RecommendedActionCard";
-import {
-  PremiumDashboardItem,
-  PremiumDashboardMotion,
-} from "@/components/dashboard/PremiumDashboardMotion";
+import { DashboardClient } from "./DashboardClient";
 
 export const dynamic = "force-dynamic";
 
@@ -331,296 +308,34 @@ export default async function DashboardPage() {
 
   const activationPercent = Math.round((activationItems.filter((i) => i.done).length / activationItems.length) * 100);
 
-  // ─── JSX ─────────────────────────────────────────────────────────────────────
+  // ─── Render — pasar todos los datos a DashboardClient ─────────────────────
 
   return (
-    <div className="space-y-6">
-
-      {/* 1 ── Hero */}
-      <section className="surface-frame overflow-hidden">
-        {/* Top band */}
-        <div className="border-b border-slate-100 bg-slate-50/60 px-6 py-3 md:px-8">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#C9922A]">
-              {formatDateSpanish(today)}
-            </p>
-            <div className="flex items-center gap-2">
-              <Link href="/dashboard/qr"
-                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900">
-                <QrCode size={13} /> QR
-              </Link>
-              <Link href={publicBookingUrl} target="_blank"
-                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900">
-                Web pública <ArrowRight size={11} />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero content */}
-        <div className="px-6 pb-5 pt-6 md:px-8 md:pb-6 md:pt-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="min-w-0">
-              <h1
-                className="font-display font-black leading-[0.95] text-slate-900 tracking-tight"
-                style={{
-                  fontSize: "clamp(2.25rem, 5vw, 3.5rem)",
-                  letterSpacing: "-0.04em",
-                }}
-              >
-                {barbershop?.name ?? "Tu barbería"}
-              </h1>
-              <p className="mt-2 text-sm text-slate-500">
-                Panel de control · Todo bajo control.
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-2">
-              <Link href="/dashboard/agenda" className="btn-dark">
-                Ver agenda hoy
-              </Link>
-              <Link href="/dashboard/reservas"
-                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-2.5 text-sm font-bold text-[#C9922A] transition hover:bg-[#D4AF37]/14 hover:border-[#D4AF37]/50">
-                <Plus size={14} />
-                Nueva cita
-              </Link>
-            </div>
-          </div>
-
-          {/* Agentes IA — inline */}
-          <Link
-            href="/dashboard/agents"
-            className="mt-5 flex items-center gap-3 rounded-2xl border border-[#D4AF37]/22 bg-[#FDFAF3] px-4 py-3 transition-all hover:border-[#D4AF37]/38 hover:bg-[#FDF8EC] hover:shadow-[0_2px_8px_rgba(212,175,55,0.10)]"
-          >
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/12">
-              <Sparkles size={13} className="text-[#C9922A]" />
-            </div>
-            <span className="text-xs text-slate-600">
-              <span className="font-black text-slate-900">4 Agentes IA activos</span>
-              {" — Retención · Huecos · Reseñas · Marketing"}
-            </span>
-            <ArrowRight size={12} className="ml-auto shrink-0 text-slate-400" />
-          </Link>
-        </div>
-      </section>
-
-      {/* 2 ── Acciones rápidas */}
-      <QuickActionsRow services={quickServices} barbers={quickBarbers} />
-
-      {/* 3 ── KPI Bar — 4 métricas del día */}
-      <PremiumDashboardMotion className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PremiumDashboardItem>
-          <StatCard
-            kicker="Ingresos de hoy"
-            title="Caja del día"
-            value={formatCurrency(salesToday)}
-            hint={
-              cashSessionOpen
-                ? `Sesión abierta · ${clientsAttendedToday} clientes atendidos`
-                : "Sesión cerrada — abre antes de cobrar"
-            }
-            icon={Wallet}
-            iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
-            iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
-            tone={cashSessionOpen ? "success" : "warning"}
-            footer={
-              <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
-                Ver caja <ArrowRight size={12} />
-              </Link>
-            }
-          />
-        </PremiumDashboardItem>
-
-        <PremiumDashboardItem>
-          <StatCard
-            kicker="Agenda de hoy"
-            title="Reservas activas"
-            value={String(todayAppointments.length)}
-            hint={
-              todayAppointments.length > 0
-                ? `${confirmedUpcomingCount} citas futuras confirmadas`
-                : "Sin reservas hoy — revisa huecos libres"
-            }
-            icon={CalendarCheck}
-            iconBg="bg-[#C9922A]/10"
-            iconColor="text-[#C9922A]"
-            footer={
-              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
-                Abrir agenda <ArrowRight size={12} />
-              </Link>
-            }
-          />
-        </PremiumDashboardItem>
-
-        <PremiumDashboardItem>
-          <StatCard
-            kicker="Oportunidad"
-            title="Huecos libres hoy"
-            value={String(totalFreeSlotsToday)}
-            hint={
-              totalFreeSlotsToday > 0
-                ? `${barberWithMostSlots?.barberName ?? "Equipo"} tiene más disponibilidad`
-                : "Agenda completa hoy"
-            }
-            icon={Clock}
-            iconBg="bg-slate-100"
-            iconColor="text-slate-600"
-            footer={
-              <Link href="/dashboard/agents" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
-                Llenar huecos <ArrowRight size={12} />
-              </Link>
-            }
-          />
-        </PremiumDashboardItem>
-
-        <PremiumDashboardItem>
-          <StatCard
-            kicker="Retención"
-            title="Clientes para recuperar"
-            value={String(dormantClientsCount)}
-            hint={
-              dormantClientsCount > 0
-                ? "Más de 45 días sin visita registrada"
-                : "Sin clientes dormidos detectados"
-            }
-            icon={Users}
-            iconBg="bg-[#C89B3C]/10"
-            iconColor="text-[#8A641F]"
-            footer={
-              <Link href="/dashboard/recuperacion" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
-                Ver clientes <ArrowRight size={12} />
-              </Link>
-            }
-          />
-        </PremiumDashboardItem>
-      </PremiumDashboardMotion>
-
-      {/* 4 ── Agenda de hoy + Panel lateral */}
-      <section className="grid gap-5 xl:grid-cols-[1.5fr_0.75fr]">
-
-        {/* Agenda de hoy */}
-        <div className="surface-frame overflow-hidden p-0">
-          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="label-section">Reservas de hoy</p>
-                <h2 className="section-heading mt-1">Lo próximo en agenda</h2>
-              </div>
-              <Link href="/dashboard/agenda" className="btn-outline px-4 py-2.5">
-                Ver agenda completa <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-
-          {todayAppointments.length === 0 ? (
-            <div className="p-5 md:p-6">
-              <EmptyState
-                icon={CalendarCheck}
-                title="Sin reservas activas hoy"
-                description="Usa el Agente Huecos para generar el copy de Instagram y WhatsApp en segundos, o comparte tu QR."
-                action={
-                  <div className="flex flex-wrap gap-2">
-                    <Link href="/dashboard/agents" className="btn-primary">
-                      <Sparkles size={15} /> Agente Huecos IA
-                    </Link>
-                    <Link href="/dashboard/huecos" className="btn-outline">
-                      <Clock size={15} /> Ver huecos
-                    </Link>
-                  </div>
-                }
-              />
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {todayAppointments.slice(0, 6).map((appointment) => (
-                <article
-                  key={appointment.id}
-                  className="grid gap-3 bg-white p-4 transition-colors hover:bg-slate-50 sm:grid-cols-[88px_1fr_auto] sm:items-center md:px-6"
-                >
-                  <div className="inline-flex w-fit items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900">
-                    <Clock size={14} className="text-[#C9922A]" />
-                    <span className="text-sm font-black">{formatTime(appointment.start_time)}</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate font-black text-slate-900">
-                      {appointment.clients?.name ?? "Cliente sin nombre"}
-                    </p>
-                    <p className="mt-0.5 text-xs leading-5 text-slate-500">
-                      {appointment.services?.name ?? "Sin servicio"} · {appointment.barbers?.name ?? "Sin barbero"}
-                    </p>
-                  </div>
-                  <StatusBadge status={appointment.status} />
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Panel lateral — acción recomendada + caja */}
-        <div className="flex flex-col gap-4">
-          <RecommendedActionCard
-            title={
-              dormantClientsCount > 0
-                ? `${dormantClientsCount} clientes pueden volver con un mensaje`
-                : totalFreeSlotsToday > 0
-                ? `${totalFreeSlotsToday} huecos libres hoy — activa una campaña`
-                : "Activa el Agente Reseñas para mejorar tu reputación"
-            }
-            description={
-              dormantClientsCount > 0
-                ? "Activa el Agente Retención IA para preparar mensajes personalizados. El 30% vuelve."
-                : totalFreeSlotsToday > 0
-                ? "El Agente Huecos genera el copy de Stories y WhatsApp en 10 segundos."
-                : "Las reseñas de Google determinan si te encuentran. Un mensaje bien redactado tarda 10 segundos."
-            }
-            cta="Ver agentes IA"
-            ctaHref="/dashboard/agents"
-            icon={dormantClientsCount > 0 ? RotateCcw : totalFreeSlotsToday > 0 ? Clock : Star}
-            variant="gold"
-          />
-
-          {/* Caja resumen */}
-          <div className="surface-frame p-5 md:p-6">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="label-section">Caja del día</p>
-                <p className="mt-2 font-display text-4xl font-black leading-none text-slate-900">
-                  {formatCurrency(salesToday)}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {cashSessionOpen
-                    ? "Sesión abierta. Mantén cobros sincronizados."
-                    : "La caja está cerrada. Ábrela antes de cobrar."}
-                </p>
-              </div>
-              <div className={cashSessionOpen ? "badge-success" : "badge-warning"}>
-                {cashSessionOpen ? "Abierta" : "Cerrada"}
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs font-bold uppercase text-slate-600">Clientes</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{clientsAttendedToday}</p>
-              </div>
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs font-bold uppercase text-slate-600">Efectivo</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{cashPaymentsCount}</p>
-              </div>
-            </div>
-            <Link href="/dashboard/caja" className="btn-dark mt-4 w-full">
-              Ir a Caja <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 5 ── Barberos hoy */}
-      <BarberPerformance items={barberPerformanceItems} compact />
-
-      {/* 6 ── Checklist de configuración — solo si activación incompleta */}
-      {activationPercent < 80 && (
-        <ActivationChecklist percent={activationPercent} items={activationItems} />
-      )}
-
-    </div>
+    <DashboardClient
+      barbershop={barbershop}
+      today={today}
+      todayAppointments={todayAppointments}
+      upcomingAppointments={upcomingAppointments}
+      salesToday={salesToday}
+      todayRevenue={todayRevenue}
+      activeServicesCount={activeServicesCount}
+      activeBarbersCount={activeBarbersCount}
+      totalClientsCount={totalClientsCount}
+      dormantClientsCount={dormantClientsCount}
+      totalFreeSlotsToday={totalFreeSlotsToday}
+      confirmedUpcomingCount={confirmedUpcomingCount}
+      cashSessionOpen={cashSessionOpen}
+      clientsAttendedToday={clientsAttendedToday}
+      cashPaymentsCount={cashPaymentsCount}
+      barberPerformanceItems={barberPerformanceItems}
+      todayAvailabilityItems={todayAvailabilityItems}
+      activationItems={activationItems}
+      activationPercent={activationPercent}
+      publicBookingUrl={publicBookingUrl}
+      hasPublicBooking={hasPublicBooking}
+      quickServices={quickServices}
+      quickBarbers={quickBarbers}
+      barberWithMostSlots={barberWithMostSlots}
+    />
   );
 }
