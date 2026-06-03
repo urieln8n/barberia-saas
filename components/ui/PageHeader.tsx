@@ -22,24 +22,32 @@ export function PageHeader({
   className = "",
 }: PageHeaderProps) {
   const label = eyebrow ?? section;
-  const variantClass = variant === "glass"
-    ? "dashboard-hero dashboard-hero-glass"
-    : "dashboard-hero";
 
   return (
-    <section className={`${variantClass} px-5 py-6 md:px-7 md:py-7 ${className}`}>
-      <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
+    <section
+      className={`relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white px-6 py-6 shadow-card md:px-8 md:py-7 ${className}`}
+    >
+      {/* Gold accent line */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px]
+        bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
+
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div className="min-w-0">
           {label && (
-            <p className="text-xs font-black uppercase text-[#C9922A]">
-              {label}
-            </p>
+            <p className="label-section">{label}</p>
           )}
-          <h1 className="mt-1.5 text-[clamp(2rem,4vw,3.25rem)] font-black leading-tight text-slate-900">
+          <h1
+            className="text-slate-900 font-black tracking-tight leading-tight"
+            style={{
+              fontSize: "clamp(1.625rem, 3.5vw, 2.5rem)",
+              letterSpacing: "-0.03em",
+              marginTop: label ? "0.375rem" : "0",
+            }}
+          >
             {title}
           </h1>
           {description && (
-            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
               {description}
             </p>
           )}

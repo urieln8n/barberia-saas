@@ -18,24 +18,32 @@ export function EmptyState({
   className = "",
   tone = "default",
 }: EmptyStateProps) {
-  const iconClass =
+  const iconBg =
     tone === "success"
-      ? "metric-icon bg-emerald-500/10"
-      : "metric-icon bg-[#C9922A]/10";
+      ? "bg-emerald-50 border border-emerald-200/60 text-emerald-600"
+      : "bg-[#D4AF37]/8 border border-[#D4AF37]/20 text-[#C9922A]";
 
   return (
-    <div className={`relative flex flex-col items-center justify-center overflow-hidden rounded-[24px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center shadow-sm ${className}`}>
-      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#C9922A]/30 to-transparent" />
+    <div
+      className={`relative flex flex-col items-center justify-center overflow-hidden
+        rounded-[24px] border border-slate-200/80 bg-white px-8 py-12 text-center shadow-card
+        ${className}`}
+    >
+      {/* Gold accent top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px]
+        bg-gradient-to-r from-transparent via-[#D4AF37]/35 to-transparent" />
+
       {Icon && (
-        <div className={iconClass}>
-          <Icon size={22} className={tone === "success" ? "text-emerald-600" : "text-[#C9922A]"} />
+        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-[0_1px_3px_rgba(15,23,42,0.08),0_0_0_1px_rgba(15,23,42,0.04)] ${iconBg}`}>
+          <Icon size={24} />
         </div>
       )}
-      <p className="mt-4 text-xl font-black text-slate-900">{title}</p>
-      <p className="mt-2 max-w-md text-base leading-7 text-slate-600">
+
+      <p className="mt-5 text-lg font-black text-slate-900 tracking-tight">{title}</p>
+      <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
         {description}
       </p>
-      {action && <div className="mt-5">{action}</div>}
+      {action && <div className="mt-6">{action}</div>}
     </div>
   );
 }
