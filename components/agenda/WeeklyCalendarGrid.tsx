@@ -101,10 +101,10 @@ export function WeeklyCalendarGrid({
       : "";
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-[#FDFCF9] shadow-[0_4px_24px_rgba(0,0,0,0.07),0_1px_4px_rgba(0,0,0,0.04)]">
 
       {/* ── Header ── */}
-      <div className="border-b border-slate-200 bg-white px-4 py-4">
+      <div className="border-b border-slate-200/70 bg-[#FDFCF9] px-4 py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-[#C9922A]">
@@ -266,65 +266,74 @@ export function WeeklyCalendarGrid({
                 <div
                   key={day.iso}
                   onClick={() => onSelectedDayChange(day.iso)}
-                  className={`relative cursor-pointer border-l border-slate-200/70 p-3 transition-colors hover:bg-slate-50 ${
+                  className={`relative cursor-pointer border-l transition-colors hover:brightness-[0.98] ${
                     day.isToday
-                      ? "bg-[#C9922A]/5"
+                      ? "border-[#D4AF37]/30 bg-gradient-to-b from-[#C9922A]/8 to-[#C9922A]/3"
                       : weekend
-                      ? "bg-slate-50/40"
-                      : "bg-white"
+                      ? "border-slate-200/60 bg-slate-50/50"
+                      : "border-slate-200/60 bg-[#FDFCF9]"
                   }`}
                 >
-                  {/* HOY badge — dorado, visible */}
-                  {day.isToday && (
-                    <span className="mb-2 inline-flex items-center rounded-full bg-[#C9922A] px-2.5 py-px text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
-                      HOY
-                    </span>
-                  )}
+                  <div className="px-3 pb-3 pt-3">
+                    {/* Nombre del día */}
+                    <p className={`text-[10px] font-black uppercase tracking-[0.14em] ${
+                      day.isToday ? "text-[#C9922A]" : weekend ? "text-slate-400" : "text-slate-400"
+                    }`}>
+                      {day.shortLabel ?? day.label}
+                    </p>
 
-                  {/* Nombre del día */}
-                  <p className={`text-[11px] font-black uppercase tracking-wide ${
-                    day.isToday ? "text-[#C9922A]" : weekend ? "text-slate-400" : "text-slate-400"
-                  }`}>
-                    {day.label}
-                  </p>
+                    {/* Número del día */}
+                    <p className={`mt-0.5 text-[28px] font-black tabular-nums leading-none ${
+                      day.isToday
+                        ? "bg-gradient-to-b from-[#C9922A] to-[#8A641F] bg-clip-text text-transparent"
+                        : weekend
+                        ? "text-slate-400"
+                        : "text-slate-900"
+                    }`}>
+                      {day.dayNumber}
+                    </p>
 
-                  {/* Número del día — más grande */}
-                  <p className={`mt-0.5 text-3xl font-black tabular-nums leading-none ${
-                    day.isToday ? "text-[#8A641F]" : "text-slate-900"
-                  }`}>
-                    {day.dayNumber}
-                  </p>
-
-                  {/* Day summary chips */}
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {activeAppts.length > 0 && (
-                      <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-600">
-                        {activeAppts.length} cita{activeAppts.length !== 1 ? "s" : ""}
+                    {/* HOY badge */}
+                    {day.isToday && (
+                      <span className="mt-1.5 inline-flex items-center rounded-full bg-[#C9922A] px-2 py-px text-[8px] font-black uppercase tracking-widest text-white">
+                        HOY
                       </span>
                     )}
-                    {dayRevenue > 0 && (
-                      <span className="rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10 px-1.5 py-0.5 text-[9px] font-black text-[#8A641F]">
-                        ~{money(dayRevenue)}
-                      </span>
-                    )}
-                    {daySlots.length > 0 && activeAppts.length === 0 && (
-                      <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black text-emerald-700">
-                        {daySlots.length} libre{daySlots.length !== 1 ? "s" : ""}
-                      </span>
-                    )}
+
+                    {/* Stats */}
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {activeAppts.length > 0 && (
+                        <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-black ${
+                          day.isToday ? "bg-[#C9922A]/15 text-[#8A641F]" : "bg-slate-100 text-slate-600"
+                        }`}>
+                          {activeAppts.length} cita{activeAppts.length !== 1 ? "s" : ""}
+                        </span>
+                      )}
+                      {dayRevenue > 0 && (
+                        <span className="rounded-full border border-[#C9922A]/25 bg-[#C9922A]/8 px-1.5 py-0.5 text-[9px] font-black text-[#8A641F]">
+                          {money(dayRevenue)}
+                        </span>
+                      )}
+                      {daySlots.length > 0 && activeAppts.length === 0 && (
+                        <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black text-emerald-700">
+                          {daySlots.length} libre{daySlots.length !== 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Occupancy bar */}
-                  <div className="absolute inset-x-0 bottom-0 h-[3px] bg-slate-100">
-                    <div
-                      className={`h-full transition-all ${
-                        occupancyPct >= 70 ? "bg-emerald-500"
-                        : occupancyPct >= 40 ? "bg-[#C9922A]"
-                        : occupancyPct > 0 ? "bg-amber-300"
-                        : ""
-                      }`}
-                      style={{ width: `${occupancyPct}%` }}
-                    />
+                  {/* Occupancy bar — más gruesa y visible */}
+                  <div className="absolute inset-x-0 bottom-0 h-[4px] bg-slate-100/80">
+                    {occupancyPct > 0 && (
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          occupancyPct >= 80 ? "bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]"
+                          : occupancyPct >= 50 ? "bg-[#C9922A] shadow-[0_0_4px_rgba(201,146,42,0.3)]"
+                          : "bg-amber-300"
+                        }`}
+                        style={{ width: `${occupancyPct}%` }}
+                      />
+                    )}
                   </div>
                 </div>
               );
@@ -335,11 +344,11 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[72px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200/60 last:border-b-0"
+              className="grid min-h-[68px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100/80 last:border-b-0"
             >
               {/* Hour label */}
-              <div className="flex items-start justify-end bg-slate-50 px-3 pt-2">
-                <span className="text-xs font-semibold tabular-nums text-slate-500">{hour}</span>
+              <div className="flex items-start justify-end border-r border-slate-200/50 bg-[#F7F5F1] px-3 pt-2">
+                <span className="text-[11px] font-bold tabular-nums text-slate-500">{hour}</span>
               </div>
 
               {/* Day cells */}
@@ -358,12 +367,14 @@ export function WeeklyCalendarGrid({
                 return (
                   <div
                     key={`${day.iso}-${hour}`}
-                    className={`relative space-y-1.5 border-l border-slate-200/50 p-1.5 ${
+                    className={`relative space-y-1.5 border-l p-1.5 transition-colors ${
                       day.isToday && !past
-                        ? "bg-[#D4AF37]/[0.025]"
+                        ? "border-[#D4AF37]/20 bg-[#C9922A]/[0.03]"
+                        : past
+                        ? "border-slate-200/40 bg-slate-50/30"
                         : weekend
-                        ? "bg-slate-50/40"
-                        : ""
+                        ? "border-slate-200/50 bg-slate-50/50"
+                        : "border-slate-200/50"
                     }`}
                   >
                     {/* "Ahora" line */}
