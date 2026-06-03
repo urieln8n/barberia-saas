@@ -324,14 +324,27 @@ export function AgendaClient({
     setUpdating(id);
     const result = await updateAppointmentStatus(id, status);
     setUpdating(null);
-    if (!result?.error) {
-      setSelectedAppointment((cur) =>
-        cur?.id === id
-          ? { ...cur, status: status as AgendaAppointment["status"] }
-          : cur,
-      );
-      router.refresh();
+
+    if (result?.error) {
+      // Surface the error so the barbero knows something went wrong
+      alert(`Error al actualizar: ${result.error}`);
+      return;
     }
+
+    // Update local state immediately so panel reflects new status
+    setSelectedAppointment((cur) =>
+      cur?.id === id
+        ? { ...cur, status: status as AgendaAppointment["status"] }
+        : cur,
+    );
+
+    // Auto-close panel on terminal statuses so the agenda grid is visible
+    const terminal = ["completed", "cancelled", "no_show"];
+    if (terminal.includes(status)) {
+      setTimeout(() => setSelectedAppointment(null), 400);
+    }
+
+    router.refresh();
   }
 
   return (
