@@ -393,8 +393,7 @@ export default function Sidebar() {
       {/* ── Mobile header ── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/97 px-4 shadow-sm backdrop-blur-xl md:hidden">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <BarberiaOSLogo size={34} />
-          <span className="text-[15px] font-black tracking-tight text-slate-900">BarberíaOS</span>
+          <BarberiaOSLogo variant="full" size="sm" />
         </Link>
         <div className="flex items-center gap-2">
           <Link
@@ -513,16 +512,16 @@ export default function Sidebar() {
         {collapsed ? (
           <div className="mb-4 flex justify-center">
             <Link href="/dashboard" title="BarberíaOS">
-              <BarberiaOSLogo size={32} />
+              <BarberiaOSLogo variant="sidebar" size={32} />
             </Link>
           </div>
         ) : (
-          <div className="mb-4 flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/80 px-2.5 py-2">
-            <Link href="/dashboard" className="flex items-center gap-2.5">
-              <BarberiaOSLogo size={30} className="shrink-0" />
+          <div className="mb-4 rounded-2xl border border-[#E8DDBF] bg-[#FFFEFB] px-2.5 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.06)]">
+            <Link href="/dashboard" className="flex items-center gap-2.5" aria-label="Ir al dashboard de BarberíaOS">
+              <BarberiaOSLogo variant="sidebar" size={30} className="shrink-0" />
               <div className="min-w-0">
                 <span className="block text-[13px] font-black leading-none tracking-tight text-slate-900">
-                  BarberíaOS
+                  Barbería<span className="text-[#C9A227]">OS</span>
                 </span>
                 <span className="mt-0.5 block text-[10px] font-medium text-slate-400">
                   Panel de control

@@ -46,6 +46,7 @@ type Props = {
   activeProgram: ActiveProgram;
   stats: Stats;
   clientsNearReward: CardWithClient[];
+  allCards: CardWithClient[];
   pendingRewardCards: CardWithClient[];
   recentStamps: StampEvent[];
   dbReady: boolean;
@@ -299,23 +300,28 @@ function SetupState({ onOpen }: { onOpen: () => void }) {
 // ── ClientRow ─────────────────────────────────────────────────────────────────
 
 function ClientRow({
-  card, showRedeem = false, onRedeem,
+  card, showRedeem = false, onRedeem, onAddStamp, addingStamp,
 }: {
-  card: CardWithClient; showRedeem?: boolean; onRedeem?: (cardId: string) => void;
+  card: CardWithClient;
+  showRedeem?: boolean;
+  onRedeem?: (cardId: string) => void;
+  onAddStamp?: (clientId: string) => void;
+  addingStamp?: string | null;
 }) {
   const missing = card.stamps_required - card.current_stamps;
   const waLink  = card.client_phone
     ? `https://wa.me/${card.client_phone.replace(/\D/g, "")}`
     : null;
+  const isAdding = addingStamp === card.client_id;
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
-      <div className="flex flex-1 min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#C9922A]/20 bg-amber-50 text-sm font-black text-[#8A641F]">
           {card.client_name.charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-black text-slate-900 truncate">{card.client_name}</p>
+          <p className="truncate text-sm font-black text-slate-900">{card.client_name}</p>
           <p className="text-xs text-slate-400">
             {card.current_stamps}/{card.stamps_required} sellos · {formatDate(card.last_visit_at)}
           </p>
@@ -339,6 +345,19 @@ function ClientRow({
             {missing > 0 ? `Faltan ${missing}` : "¡Lista!"}
           </span>
         )}
+
+        {onAddStamp && (
+          <button
+            type="button"
+            disabled={isAdding}
+            onClick={() => onAddStamp(card.client_id)}
+            title="Añadir sello manual"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-600 transition hover:bg-emerald-100 disabled:opacity-40"
+          >
+            {isAdding ? <Minus size={13} className="animate-spin" /> : <Plus size={13} />}
+          </button>
+        )}
+
         <Link href={`/dashboard/clientes/${card.client_id}`}
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:text-slate-700">
           <ExternalLink size={13} />
@@ -374,15 +393,16 @@ const TEMPLATES = [
 ];
 
 export function FidelizacionClient({
-  activeProgram, stats, clientsNearReward, pendingRewardCards,
+  activeProgram, stats, clientsNearReward, allCards, pendingRewardCards,
   recentStamps, dbReady, barbershopId,
 }: Props) {
   const router = useRouter();
-  const [tab, setTab]           = useState<Tab>("overview");
+  const [tab, setTab]             = useState<Tab>("overview");
   const [showModal, setShowModal] = useState(false);
-  const [copiedTpl, setCopied]  = useState<string | null>(null);
+  const [copiedTpl, setCopied]    = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [feedbackMsg, setFeedback] = useState("");
+  const [addingStamp, setAddingStamp] = useState<string | null>(null);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://barberiaos.com";
 
@@ -399,6 +419,24 @@ export function FidelizacionClient({
       const res = await redeemReward(fd);
       if (res.ok) {
         setFeedback("✅ Recompensa canjeada. Nueva tarjeta iniciada.");
+        router.refresh();
+      } else {
+        setFeedback(`❌ ${res.error}`);
+      }
+      setTimeout(() => setFeedback(""), 4000);
+    });
+  }
+
+  function handleAddStamp(clientId: string) {
+    setAddingStamp(clientId);
+    startTransition(async () => {
+      const fd = new FormData();
+      fd.append("client_id", clientId);
+      fd.append("note", "Sello manual desde panel de fidelización");
+      const res = await addManualStamp(fd);
+      setAddingStamp(null);
+      if (res.ok) {
+        setFeedback("⭐ Sello añadido correctamente.");
         router.refresh();
       } else {
         setFeedback(`❌ ${res.error}`);
@@ -627,14 +665,22 @@ export function FidelizacionClient({
         {/* ── Clientes ────────────────────────────────────────────────────── */}
         {tab === "clientes" && (
           <div className="space-y-5">
+            <div className="rounded-[24px] border border-amber-100 bg-amber-50 p-4">
+              <p className="text-xs text-amber-700">
+                El botón <strong>+</strong> añade un sello manual. Úsalo cuando el cliente paga en efectivo o el sello automático no se disparó.
+              </p>
+            </div>
             <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center justify-between">
-                <h2 className="text-base font-black text-slate-900">Todos los clientes con tarjeta</h2>
+                <div>
+                  <h2 className="text-base font-black text-slate-900">Tarjetas activas</h2>
+                  <p className="text-xs text-slate-400">{allCards.length} cliente{allCards.length !== 1 ? "s" : ""}</p>
+                </div>
                 <Link href="/dashboard/clientes" className="flex items-center gap-1 text-xs font-black text-[#8A641F] hover:text-[#C9922A]">
-                  Ver todos <ArrowRight size={11} />
+                  Ver clientes <ArrowRight size={11} />
                 </Link>
               </div>
-              {clientsNearReward.length === 0 ? (
+              {allCards.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center">
                   <Users size={32} className="mb-3 text-slate-300" />
                   <p className="text-sm font-black text-slate-500">Sin tarjetas activas todavía</p>
@@ -642,7 +688,14 @@ export function FidelizacionClient({
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {clientsNearReward.map((c) => <ClientRow key={c.id} card={c} />)}
+                  {allCards.map((c) => (
+                    <ClientRow
+                      key={c.id}
+                      card={c}
+                      onAddStamp={handleAddStamp}
+                      addingStamp={addingStamp}
+                    />
+                  ))}
                 </div>
               )}
             </div>

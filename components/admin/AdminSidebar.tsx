@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, TrendingUp, PieChart, CheckSquare, LogOut, Store, ShieldCheck } from "lucide-react";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 const navItems = [
   { href: "/admin",                label: "Dashboard",   icon: LayoutDashboard },
@@ -21,7 +22,7 @@ export function AdminSidebar() {
     <aside className="flex w-60 shrink-0 flex-col border-r border-black/5 bg-white/92 shadow-[0_18px_50px_rgba(15,23,42,0.12)] backdrop-blur-xl print:hidden">
       {/* Brand */}
       <div className="flex h-16 items-center gap-2.5 border-b border-black/5 px-5">
-        <span className="h-9 w-9 rounded-2xl border border-[#D4AF66]/35 bg-[#D4AF66]/15 shadow-sm" />
+        <BarberiaOSLogo variant="sidebar" size={36} />
         <div className="min-w-0">
           <span className="block text-sm font-black uppercase tracking-[0.2em] text-[#050A14]">
             Admin

@@ -1,13 +1,13 @@
-import { Scissors } from "lucide-react";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 export default function DashboardLoading() {
   return (
     <div className="flex min-h-[72vh] flex-col items-center justify-center gap-10 px-4">
       {/* Brand mark */}
       <div className="flex flex-col items-center gap-5">
-        <div className="relative flex h-14 w-14 items-center justify-center rounded-[22px] border border-[#C9922A]/30 bg-white shadow-sm">
-          <Scissors size={22} className="text-[#C9922A]" />
-          <span className="absolute inset-0 animate-ping rounded-[22px] border border-[#C9922A]/40 motion-reduce:animate-none" />
+        <div className="relative">
+          <BarberiaOSLogo variant="icon" size={56} />
+          <span className="absolute inset-0 animate-ping rounded-[22px] border border-[#C9922A]/30 motion-reduce:animate-none" />
         </div>
         <div className="text-center">
           <p className="text-base font-black tracking-tight text-slate-900">BarberíaOS</p>

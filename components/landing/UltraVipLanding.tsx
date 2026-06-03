@@ -910,8 +910,7 @@ function StickyNav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]" aria-label="BarberíaOS inicio">
-          <BarberiaOSLogo variant="isotipo" size={30} />
-          <span className="text-sm font-black tracking-tight text-white">BarberíaOS</span>
+          <BarberiaOSLogo variant="full" size="sm" tone="dark" />
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-[#A1A1AA] lg:flex" aria-label="Navegación principal">
           <Link href="#reservas" className="transition-colors hover:text-white">Producto</Link>
@@ -2417,8 +2416,7 @@ function Footer() {
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xs">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <BarberiaOSLogo variant="isotipo" size={32} />
-              <span className="text-sm font-black tracking-tight text-white">BarberíaOS</span>
+              <BarberiaOSLogo variant="full" size="sm" tone="dark" />
             </Link>
             <p className="mt-4 text-sm leading-6 text-[#A1A1AA]">
               El sistema operativo para barberías modernas.

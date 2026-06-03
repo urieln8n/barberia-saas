@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, MessageCircle, Scissors } from "lucide-react";
+import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
 import { LenisProvider } from "@/components/LenisProvider";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 type SeoLandingPageProps = {
   eyebrow: string;
@@ -83,10 +84,7 @@ export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq, ca
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="Volver a BarberíaOS">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#080A0F] text-[#C9922A]">
-              <Scissors size={19} />
-            </span>
-            <span className="font-black tracking-tight">BarberíaOS</span>
+            <BarberiaOSLogo variant="full" size="md" />
           </Link>
           <nav aria-label="Navegación comercial">
             <ul className="flex items-center gap-3">

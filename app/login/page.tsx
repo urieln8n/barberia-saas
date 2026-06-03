@@ -106,9 +106,8 @@ export default function LoginPage() {
     <main className="premium-grid-bg flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
 
-        <div className="mb-8 flex items-center justify-center gap-3">
-          <BarberiaOSLogo variant="isotipo" size={44} />
-          <span className="text-xl font-black text-[#050A14]">BarberíaOS</span>
+        <div className="mb-8 flex items-center justify-center">
+          <BarberiaOSLogo variant="full" size="lg" />
         </div>
 
         <div className="rounded-[2rem] border border-black/5 bg-white p-7 shadow-[var(--shadow-card)] md:p-8">

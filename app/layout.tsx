@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#111111",
+  themeColor: "#FAF7EF",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

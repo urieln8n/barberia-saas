@@ -64,6 +64,7 @@ export default async function FidelizacionPage() {
   let clientsNearReward: CardWithClient[] = [];
   let pendingRewardCards: CardWithClient[] = [];
   let recentStamps: StampEvent[] = [];
+  let allCards: CardWithClient[] = [];
 
   try {
     // ── Programa activo ───────────────────────────────────────────────────────
@@ -103,10 +104,13 @@ export default async function FidelizacionPage() {
       // Pendientes de canjear
       pendingRewardCards = completedCards.slice(0, 10);
 
-      // Cerca de recompensa (activas, a 3 o menos)
+      // Cerca de recompensa (activas, a 3 o menos) — para overview
       clientsNearReward = activeCards
         .filter((c) => c.current_stamps >= activeProgram!.stamps_required - 3)
         .slice(0, 8);
+
+      // Todos los clientes con tarjeta activa — para pestaña Clientes
+      allCards = activeCards;
 
       // ── Sellos este mes ───────────────────────────────────────────────────
       const firstOfMonth = new Date();
@@ -165,6 +169,7 @@ export default async function FidelizacionPage() {
       activeProgram={activeProgram}
       stats={stats}
       clientsNearReward={clientsNearReward}
+      allCards={allCards}
       pendingRewardCards={pendingRewardCards}
       recentStamps={recentStamps}
       dbReady={dbReady}
