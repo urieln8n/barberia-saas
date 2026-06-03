@@ -285,41 +285,37 @@ export function AppointmentDetailsPanel({
 
         {/* Actions — pinned bottom */}
         <div className="shrink-0 space-y-2 border-t border-slate-100 px-6 py-4">
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              disabled={updating === appointment.id || appointment.status === "confirmed" || isTerminated}
-              onClick={() => onStatusChange(appointment.id, "confirmed")}
-              className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 text-xs font-black text-white transition hover:bg-emerald-600 disabled:opacity-30"
-            >
-              <CheckCircle size={13} /> Confirmar
-            </button>
+
+          {/* ── Acción principal: Completar ── */}
+          {!isTerminated && (
             <button
               type="button"
               disabled={updating === appointment.id || appointment.status === "completed"}
               onClick={() => onStatusChange(appointment.id, "completed")}
-              className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:opacity-30"
+              className="flex w-full flex-col items-center justify-center gap-0.5 rounded-2xl bg-slate-900 px-4 py-3.5 transition hover:bg-slate-700 disabled:opacity-30"
             >
-              <CalendarClock size={13} /> Completar
+              <span className="flex items-center gap-2 text-sm font-black text-white">
+                <CalendarClock size={15} /> Marcar como completada
+              </span>
+              <span className="text-[10px] font-medium text-white/40">
+                Añade sello de fidelización automáticamente
+              </span>
             </button>
-            <button
-              type="button"
-              disabled={updating === appointment.id || appointment.status === "no_show" || appointment.status === "completed"}
-              onClick={() => onStatusChange(appointment.id, "no_show")}
-              className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 text-xs font-black text-amber-700 transition hover:bg-amber-100 disabled:opacity-30"
-            >
-              <UserX size={13} /> No apareció
-            </button>
-            <button
-              type="button"
-              disabled={updating === appointment.id || appointment.status === "cancelled"}
-              onClick={() => onStatusChange(appointment.id, "cancelled")}
-              className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 text-xs font-black text-red-600 transition hover:bg-red-100 disabled:opacity-30"
-            >
-              Cancelar
-            </button>
-          </div>
+          )}
 
+          {/* ── Confirmar (si aún no está confirmada) ── */}
+          {!isTerminated && appointment.status !== "confirmed" && (
+            <button
+              type="button"
+              disabled={updating === appointment.id}
+              onClick={() => onStatusChange(appointment.id, "confirmed")}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 py-2.5 text-sm font-black text-white transition hover:bg-emerald-600 disabled:opacity-30"
+            >
+              <CheckCircle size={14} /> Confirmar cita
+            </button>
+          )}
+
+          {/* ── Acciones secundarias ── */}
           <div className="grid grid-cols-2 gap-2">
             <Link
               href="/dashboard/caja"
@@ -344,6 +340,26 @@ export function AppointmentDetailsPanel({
                 className="inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-xl border border-slate-100 bg-slate-50 px-3 text-xs font-bold text-slate-300"
               >
                 <MessageCircle size={13} /> WhatsApp
+              </button>
+            )}
+            {!isTerminated && (
+              <button
+                type="button"
+                disabled={updating === appointment.id}
+                onClick={() => onStatusChange(appointment.id, "no_show")}
+                className="inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 text-xs font-bold text-amber-700 transition hover:bg-amber-100 disabled:opacity-30"
+              >
+                <UserX size={13} /> No vino
+              </button>
+            )}
+            {!isTerminated && (
+              <button
+                type="button"
+                disabled={updating === appointment.id}
+                onClick={() => onStatusChange(appointment.id, "cancelled")}
+                className="inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3 text-xs font-bold text-red-500 transition hover:bg-red-100 disabled:opacity-30"
+              >
+                Cancelar
               </button>
             )}
           </div>
