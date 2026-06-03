@@ -111,7 +111,7 @@ export const SEO_INTENT_PAGES = [
   {
     path: "/software-inventario-barberia",
     intent: "Productos, stock y venta en mostrador",
-    status: "recomendada",
+    status: "publicada",
   },
   {
     path: "/crm-clientes-barberia",
@@ -126,7 +126,7 @@ export const SEO_INTENT_PAGES = [
   {
     path: "/marketing-barberias",
     intent: "Marketing y campañas para barberías",
-    status: "recomendada",
+    status: "publicada",
   },
 ] as const;
 
