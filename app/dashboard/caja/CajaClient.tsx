@@ -375,22 +375,22 @@ export function CajaClient({
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[22px] border border-[#111827] bg-[linear-gradient(135deg,#080A0F_0%,#111827_58%,#1D4ED8_130%)] p-5 text-white shadow-[0_24px_70px_rgba(8,10,15,0.24)]"
+            className="rounded-[22px] border border-[#D4AF37]/20 bg-gradient-to-br from-[#FDFAF3] to-white p-5 shadow-sm"
           >
-            <p className="text-xs font-black uppercase text-white/68">Balance operativo</p>
-            <p className="mt-3 text-4xl font-black leading-none">{formatCurrency(totals.balanceFinal)}</p>
+            <p className="text-xs font-black uppercase text-[#C9922A]">Balance operativo</p>
+            <p className="mt-3 text-4xl font-black leading-none text-slate-900">{formatCurrency(totals.balanceFinal)}</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-xs font-black uppercase text-white/68">Servicios</p>
-                <p className="mt-1 text-lg font-black">{formatCurrency(totals.serviceRevenue)}</p>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
+                <p className="text-xs font-black uppercase text-slate-500">Servicios</p>
+                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.serviceRevenue)}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-xs font-black uppercase text-white/68">Productos</p>
-                <p className="mt-1 text-lg font-black">{formatCurrency(totals.productRevenue)}</p>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
+                <p className="text-xs font-black uppercase text-slate-500">Productos</p>
+                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.productRevenue)}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3">
-                <p className="text-xs font-black uppercase text-white/68">Gastos</p>
-                <p className="mt-1 text-lg font-black">{formatCurrency(totals.expenses)}</p>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
+                <p className="text-xs font-black uppercase text-slate-500">Gastos</p>
+                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.expenses)}</p>
               </div>
             </div>
           </motion.div>

@@ -69,7 +69,7 @@ function PerformanceRow({
     <article className="rounded-[18px] border border-[#E7E2D8] bg-white p-4 shadow-sm transition-colors hover:bg-[#FDFBF7]">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111111] text-sm font-black uppercase text-white">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-sm font-black uppercase text-[#8A641F]">
             {item.barberName.charAt(0)}
           </div>
           <div className="min-w-0">

@@ -402,7 +402,7 @@ export default async function CustomerDetailPage({ params }: Props) {
                     href={publicBookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#111827] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0F172A]"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition hover:bg-slate-700"
                   >
                     Crear nueva reserva <Scissors size={15} />
                   </Link>

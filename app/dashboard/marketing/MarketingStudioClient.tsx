@@ -60,13 +60,15 @@ function getConsejoIndex(): number {
 
 function ConsejoSemana() {
   return (
-    <div className="flex gap-3 rounded-[22px] border border-[#D5A84C]/25 bg-[linear-gradient(135deg,#111827_0%,#080A0F_100%)] px-5 py-4 shadow-[var(--shadow-soft)]">
-      <Lightbulb size={18} className="mt-0.5 shrink-0 text-[#C9922A]" />
+    <div className="flex gap-3 rounded-[22px] border border-[#D4AF37]/25 bg-[#FDFAF3] px-5 py-4 shadow-sm">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10">
+        <Lightbulb size={15} className="text-[#C9922A]" />
+      </div>
       <div>
-        <p className="text-xs font-black uppercase tracking-wide text-[#D4AF66]">
+        <p className="text-xs font-black uppercase tracking-wide text-[#C9922A]">
           Consejo semanal
         </p>
-        <p className="mt-1 text-sm leading-6 text-white/70">
+        <p className="mt-1 text-sm leading-6 text-slate-600">
           {CONSEJOS[getConsejoIndex()]}
         </p>
       </div>

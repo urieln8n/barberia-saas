@@ -169,7 +169,7 @@ export function AgendaNotificationsBell({ notifications }: Props) {
                         <Link
                           href={n.actionHref}
                           onClick={() => setOpen(false)}
-                          className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-[#080A0F] px-2.5 py-1 text-[10px] font-black text-white transition hover:bg-[#1a1d26]"
+                          className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white transition hover:bg-slate-700"
                         >
                           {n.actionLabel}
                         </Link>

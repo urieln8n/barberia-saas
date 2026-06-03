@@ -22,7 +22,6 @@ import {
   Workflow,
   Rocket,
   Settings,
-  ShieldCheck,
   LogOut,
   QrCode,
   HelpCircle,
@@ -38,6 +37,7 @@ import {
   Tv,
   X,
   Gift,
+  MessageCircle,
   type LucideIcon,
 } from "lucide-react";
 import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
@@ -72,69 +72,67 @@ type MobileNavGroup = {
 
 const sidebarGroups: SidebarGroup[] = [
   {
-    label: "Operación diaria",
+    label: "Principal",
     items: [
-      { href: "/dashboard",           label: "Inicio",          icon: Home,          exact: true },
-      { href: "/dashboard/agenda",    label: "Agenda",          icon: CalendarDays               },
-      { href: "/dashboard/reservas",  label: "Reservas",        icon: ClipboardList              },
-      { href: "/dashboard/huecos",    label: "Huecos libres",   icon: Clock                      },
-      { href: "/dashboard/caja",      label: "Caja del día",    icon: Banknote                   },
-      { href: "/dashboard/clientes",  label: "Clientes",        icon: Users                      },
+      { href: "/dashboard",           label: "Inicio",        icon: Home,        exact: true },
+      { href: "/dashboard/agenda",    label: "Agenda",        icon: CalendarDays             },
+      { href: "/dashboard/reservas",  label: "Reservas",      icon: ClipboardList            },
+      { href: "/dashboard/clientes",  label: "Clientes",      icon: Users                    },
     ],
   },
   {
-    label: "Tu equipo",
+    label: "Operación",
     items: [
-      { href: "/dashboard/barberos",  label: "Barberos",        icon: User                       },
-      { href: "/dashboard/servicios", label: "Servicios",       icon: Scissors                   },
-      { href: "/dashboard/inventario",label: "Inventario",      icon: Boxes,         badge: "Pro" },
+      { href: "/dashboard/barberos",   label: "Barberos",      icon: User                       },
+      { href: "/dashboard/servicios",  label: "Servicios",     icon: Scissors                   },
+      { href: "/dashboard/caja",       label: "Caja",          icon: Banknote                   },
+      { href: "/dashboard/fidelizacion",label: "Fidelización", icon: Gift,        badge: "Nuevo" },
     ],
   },
   {
-    label: "Ingresos",
+    label: "Crecimiento",
     items: [
-      { href: "/dashboard/pagos",        label: "Pagos",        icon: CreditCard                 },
-      { href: "/dashboard/finanzas",     label: "Finanzas",     icon: Wallet,        badge: "Pro" },
-      { href: "/dashboard/estadisticas", label: "Estadísticas", icon: TrendingUp,    badge: "Pro" },
-      { href: "/dashboard/fiscalidad",   label: "Fiscalidad",   icon: Receipt                    },
+      { href: "/dashboard/resenas",       label: "Reseñas",          icon: Star                   },
+      { href: "/dashboard/marketing",     label: "Campañas",         icon: Megaphone              },
+      { href: "/dashboard/estadisticas",  label: "Reportes",         icon: TrendingUp, badge: "Pro" },
     ],
   },
   {
-    label: "Crecer y fidelizar",
+    label: "Sistema",
     items: [
-      { href: "/dashboard/marketing",      label: "Marketing Studio",  icon: Megaphone              },
-      { href: "/dashboard/fidelizacion",   label: "Fidelización",      icon: Gift,      badge: "Nuevo" },
-      { href: "/dashboard/resenas",        label: "Reseñas",           icon: Star                   },
-      { href: "/dashboard/recuperacion",   label: "Clientes perdidos", icon: RotateCcw              },
-      { href: "/dashboard/agents",         label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
-      { href: "/dashboard/growth",         label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
-    ],
-  },
-  {
-    label: "Presencia online",
-    items: [
-      { href: "/dashboard/qr",               label: "QR y reservas",     icon: QrCode                 },
-      { href: "/dashboard/lounge",            label: "Sala de espera",    icon: Tv,        badge: "Pro" },
-      { href: "/dashboard/automatizaciones",  label: "Automatizaciones",  icon: Workflow,  badge: "Pro" },
-      { href: "/dashboard/marketplace",       label: "Marketplace",       icon: ShoppingBag            },
-    ],
-  },
-  {
-    label: "Configuración",
-    items: [
-      { href: "/dashboard/ajustes",   label: "Mi barbería",  icon: Settings                       },
-      { href: "/dashboard/whatsapp",  label: "Soporte",      icon: HelpCircle                     },
+      { href: "/dashboard/ajustes",   label: "Ajustes",       icon: Settings                   },
+      { href: "/dashboard/soporte",   label: "Soporte",       icon: HelpCircle                 },
     ],
   },
 ];
 
-const allItems: NavItem[] = sidebarGroups.flatMap((g) => g.items);
+// Extra items still accessible but in mobile drawer
+const extraItems: NavItem[] = [
+  { href: "/dashboard/huecos",        label: "Huecos libres",    icon: Clock                      },
+  { href: "/dashboard/pagos",         label: "Pagos",            icon: CreditCard                 },
+  { href: "/dashboard/finanzas",      label: "Finanzas",         icon: Wallet,        badge: "Pro" },
+  { href: "/dashboard/inventario",    label: "Inventario",       icon: Boxes,         badge: "Pro" },
+  { href: "/dashboard/recuperacion",  label: "Clientes perdidos",icon: RotateCcw                  },
+  { href: "/dashboard/agents",        label: "Agentes IA",       icon: Sparkles,      badge: "Pro" },
+  { href: "/dashboard/growth",        label: "Growth Engine",    icon: Rocket,        badge: "Pro" },
+  { href: "/dashboard/qr",            label: "QR y reservas",    icon: QrCode                     },
+  { href: "/dashboard/lounge",        label: "Sala de espera",   icon: Tv,            badge: "Pro" },
+  { href: "/dashboard/automatizaciones",label:"Automatizaciones",icon: Workflow,      badge: "Pro" },
+  { href: "/dashboard/marketplace",   label: "Marketplace",      icon: ShoppingBag                },
+  { href: "/dashboard/fiscalidad",    label: "Fiscalidad",       icon: Receipt                    },
+  { href: "/dashboard/whatsapp",      label: "WhatsApp",         icon: MessageCircle              },
+];
+
+const allItems: NavItem[] = [
+  ...sidebarGroups.flatMap((g) => g.items),
+  ...extraItems,
+];
 
 const primaryMobileNav: MobilePrimaryItem[] = [
-  { href: "/dashboard",          label: "Inicio",   icon: Home,          exact: true },
-  { href: "/dashboard/agenda",   label: "Agenda",   icon: CalendarDays               },
-  { href: "/dashboard/caja",     label: "Caja",     icon: Banknote                   },
-  { href: "/dashboard/clientes", label: "Clientes", icon: Users                      },
+  { href: "/dashboard",          label: "Inicio",   icon: Home,        exact: true },
+  { href: "/dashboard/agenda",   label: "Agenda",   icon: CalendarDays             },
+  { href: "/dashboard/caja",     label: "Caja",     icon: Banknote                 },
+  { href: "/dashboard/clientes", label: "Clientes", icon: Users                    },
   { type: "drawer", label: "Más", icon: MoreHorizontal },
 ];
 
@@ -142,46 +140,37 @@ const groupedMobileNav: MobileNavGroup[] = [
   {
     title: "Operación",
     items: [
-      { href: "/dashboard/reservas",  label: "Reservas",    icon: ClipboardList              },
-      { href: "/dashboard/huecos",    label: "Huecos libres", icon: Clock                    },
-      { href: "/dashboard/barberos",  label: "Barberos",    icon: User                       },
-      { href: "/dashboard/servicios", label: "Servicios",   icon: Scissors                   },
-      { href: "/dashboard/inventario",label: "Inventario",  icon: Boxes,         badge: "Pro" },
+      { href: "/dashboard/reservas",    label: "Reservas",      icon: ClipboardList              },
+      { href: "/dashboard/huecos",      label: "Huecos libres", icon: Clock                      },
+      { href: "/dashboard/barberos",    label: "Barberos",      icon: User                       },
+      { href: "/dashboard/servicios",   label: "Servicios",     icon: Scissors                   },
+      { href: "/dashboard/inventario",  label: "Inventario",    icon: Boxes,         badge: "Pro" },
+      { href: "/dashboard/fidelizacion",label: "Fidelización",  icon: Gift,          badge: "Nuevo"},
     ],
   },
   {
     title: "Crecer",
     items: [
-      { href: "/dashboard/marketing",     label: "Marketing Studio",  icon: Megaphone              },
-      { href: "/dashboard/fidelizacion",  label: "Fidelización",      icon: Gift,      badge: "Nuevo" },
-      { href: "/dashboard/resenas",       label: "Reseñas",           icon: Star                   },
-      { href: "/dashboard/recuperacion",  label: "Clientes perdidos", icon: RotateCcw              },
-      { href: "/dashboard/agents",        label: "Agentes IA",        icon: Sparkles,  badge: "Pro" },
-      { href: "/dashboard/lounge",        label: "Sala de espera",    icon: Tv,        badge: "Pro" },
-      { href: "/dashboard/growth",        label: "Growth Engine",     icon: Rocket,    badge: "Pro" },
+      { href: "/dashboard/marketing",     label: "Campañas",         icon: Megaphone              },
+      { href: "/dashboard/resenas",       label: "Reseñas",          icon: Star                   },
+      { href: "/dashboard/recuperacion",  label: "Clientes perdidos",icon: RotateCcw              },
+      { href: "/dashboard/agents",        label: "Agentes IA",       icon: Sparkles,  badge: "Pro" },
+      { href: "/dashboard/lounge",        label: "Sala de espera",   icon: Tv,        badge: "Pro" },
+      { href: "/dashboard/growth",        label: "Growth Engine",    icon: Rocket,    badge: "Pro" },
     ],
   },
   {
     title: "Negocio",
     items: [
-      { href: "/dashboard/pagos",        label: "Pagos",        icon: CreditCard                 },
-      { href: "/dashboard/finanzas",     label: "Finanzas",     icon: Wallet,        badge: "Pro" },
-      { href: "/dashboard/estadisticas", label: "Estadísticas", icon: TrendingUp,    badge: "Pro" },
-      { href: "/dashboard/qr",           label: "QR público",   icon: QrCode                     },
-      { href: "/dashboard/marketplace",  label: "Marketplace",  icon: ShoppingBag                },
-      { href: "/dashboard/ajustes",      label: "Configuración",icon: Settings                   },
-      { href: "/dashboard/whatsapp",     label: "Soporte",      icon: HelpCircle                 },
+      { href: "/dashboard/pagos",         label: "Pagos",            icon: CreditCard             },
+      { href: "/dashboard/finanzas",      label: "Finanzas",         icon: Wallet,    badge: "Pro" },
+      { href: "/dashboard/estadisticas",  label: "Reportes",         icon: TrendingUp,badge: "Pro" },
+      { href: "/dashboard/qr",            label: "QR público",       icon: QrCode                 },
+      { href: "/dashboard/marketplace",   label: "Marketplace",      icon: ShoppingBag            },
+      { href: "/dashboard/ajustes",       label: "Ajustes",          icon: Settings               },
+      { href: "/dashboard/soporte",       label: "Soporte",          icon: HelpCircle             },
     ],
   },
-];
-
-const quickMobileActions: NavItem[] = [
-  { href: "/dashboard/reservas",  label: "Nueva reserva",    icon: ClipboardList },
-  { href: "/dashboard/huecos",    label: "Huecos libres",    icon: Clock         },
-  { href: "/dashboard/qr",        label: "QR público",       icon: QrCode        },
-  { href: "/dashboard/marketing", label: "Marketing",        icon: Megaphone     },
-  { href: "/dashboard/agents",    label: "Agentes IA",       icon: Sparkles      },
-  { href: "/dashboard/resenas",   label: "Reseñas",          icon: Star          },
 ];
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -198,16 +187,13 @@ function getInitialMobileGroup(pathname: string): string {
   );
 }
 
-// ─── Badge component ──────────────────────────────────────────────────────────
+// ─── Badge ────────────────────────────────────────────────────────────────────
 
-function NavBadge({ badge, dark }: { badge: BadgeType; dark?: boolean }) {
+function NavBadge({ badge }: { badge: BadgeType }) {
   const styles: Record<BadgeType, string> = {
-    Pro:   dark ? "border-[#B88917]/25 bg-[#B88917]/12 text-[#B88917]"
-                : "border-[#D5A84C]/25 bg-[#D5A84C]/10 text-[#8A641F]",
-    Nuevo: dark ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                : "border-emerald-600/25 bg-emerald-600/10 text-emerald-700",
-    Beta:  dark ? "border-slate-500/30 bg-slate-500/10 text-slate-400"
-                : "border-slate-400/30 bg-slate-100 text-slate-500",
+    Pro:   "border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#A07820]",
+    Nuevo: "border-emerald-300/40 bg-emerald-50 text-emerald-700",
+    Beta:  "border-slate-200 bg-slate-100 text-slate-500",
   };
   return (
     <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide ${styles[badge]}`}>
@@ -216,18 +202,16 @@ function NavBadge({ badge, dark }: { badge: BadgeType; dark?: boolean }) {
   );
 }
 
-// ─── NavLink (expanded) ────────────────────────────────────────────────────────
+// ─── NavLink ──────────────────────────────────────────────────────────────────
 
 function NavLink({
   item,
   pathname,
   onClick,
-  dark,
 }: {
   item: NavItem;
   pathname: string;
   onClick?: () => void;
-  dark?: boolean;
 }) {
   const Icon = item.icon;
   const active = isActive(pathname, item);
@@ -236,30 +220,19 @@ function NavLink({
     <Link
       href={item.href}
       onClick={onClick}
-      className={`nav-link transition-all duration-150 ${
-        dark
-          ? active
-            ? "font-semibold text-white shadow-[inset_3px_0_0_#D4AF37]"
-            : "font-medium text-slate-300/85 hover:bg-white/[0.07] hover:text-white"
-          : active
-            ? "bg-[#B88917]/10 font-semibold text-[#080A0F] shadow-[inset_3px_0_0_#B88917]"
-            : "font-medium text-neutral-500 hover:bg-[#B88917]/5 hover:text-neutral-900"
+      className={`nav-link ${
+        active
+          ? "bg-[#D4AF37]/8 font-semibold text-slate-900 shadow-[inset_3px_0_0_#D4AF37]"
+          : "font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
       }`}
-      style={
-        dark && active
-          ? { background: "linear-gradient(90deg, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0.06) 60%, transparent 100%)" }
-          : undefined
-      }
     >
       <Icon
-        size={18}
+        size={17}
         strokeWidth={1.75}
-        className={`shrink-0 transition-colors ${
-          active ? "text-[#D4AF37]" : dark ? "text-slate-400/75" : "text-neutral-400"
-        }`}
+        className={`shrink-0 transition-colors ${active ? "text-[#D4AF37]" : "text-slate-400"}`}
       />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
-      {item.badge && <NavBadge badge={item.badge} dark={dark} />}
+      {item.badge && <NavBadge badge={item.badge} />}
     </Link>
   );
 }
@@ -274,17 +247,16 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
     <Link
       href={item.href}
       title={item.label}
-      className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-150 ${
+      className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-150 ${
         active
-          ? "shadow-[inset_3px_0_0_#D4AF37,0_0_14px_rgba(212,175,55,0.12)]"
-          : "hover:bg-white/[0.07]"
+          ? "bg-[#D4AF37]/10 shadow-[inset_2px_0_0_#D4AF37]"
+          : "hover:bg-slate-100"
       }`}
-      style={active ? { background: "linear-gradient(90deg, rgba(212,175,55,0.18), transparent)" } : undefined}
     >
       <Icon
-        size={18}
+        size={17}
         strokeWidth={1.75}
-        className={`transition-colors ${active ? "text-[#D4AF37]" : "text-slate-400/65"}`}
+        className={active ? "text-[#D4AF37]" : "text-slate-400"}
       />
     </Link>
   );
@@ -306,8 +278,7 @@ function MobileBottomNav({
   return (
     <nav
       aria-label="Navegación principal móvil"
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/[0.09] px-2 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] pt-2 shadow-[0_-16px_40px_rgba(5,10,20,0.42)] backdrop-blur-xl md:hidden"
-      style={{ background: "linear-gradient(0deg, rgba(8,17,30,0.97) 0%, rgba(12,24,44,0.95) 100%)" }}
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] pt-2 backdrop-blur-xl md:hidden"
     >
       <div className="grid grid-cols-5 gap-1">
         {primaryMobileNav.map((item) => {
@@ -321,13 +292,13 @@ function MobileBottomNav({
                 aria-label="Abrir más opciones"
                 aria-current={moreActive ? "page" : undefined}
                 onClick={onOpenMore}
-                className={`flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-xs font-bold transition-colors ${
+                className={`flex min-h-[56px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors ${
                   moreActive
-                    ? "bg-[#D4AF37]/18 text-white"
-                    : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
+                    ? "text-[#C9922A]"
+                    : "text-slate-500 hover:text-slate-900"
                 }`}
               >
-                <Icon size={21} className={moreActive ? "text-[#D4AF37]" : "text-slate-300/70"} />
+                <Icon size={20} className={moreActive ? "text-[#D4AF37]" : "text-slate-400"} />
                 <span className="max-w-full truncate">{item.label}</span>
               </button>
             );
@@ -339,13 +310,13 @@ function MobileBottomNav({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-[62px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-xs font-bold transition-colors ${
+              className={`flex min-h-[56px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors ${
                 active
-                  ? "bg-[#D4AF37]/18 text-white"
-                  : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
+                  ? "text-[#C9922A]"
+                  : "text-slate-500 hover:text-slate-900"
               }`}
             >
-              <Icon size={21} className={active ? "text-[#D4AF37]" : "text-slate-300/70"} />
+              <Icon size={20} className={active ? "text-[#D4AF37]" : "text-slate-400"} />
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
@@ -355,19 +326,19 @@ function MobileBottomNav({
   );
 }
 
-// ─── Desktop sidebar grouped nav ──────────────────────────────────────────────
+// ─── Desktop grouped nav ──────────────────────────────────────────────────────
 
 function DesktopGroupedNav({ pathname }: { pathname: string }) {
   return (
     <nav className="flex flex-1 flex-col overflow-y-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {sidebarGroups.map((group, i) => (
-        <div key={group.label} className={i > 0 ? "mt-2 border-t border-white/[0.07] pt-3" : ""}>
-          <p className="mb-1.5 px-3 text-[9px] font-black uppercase tracking-[0.12em] text-slate-500/80">
+        <div key={group.label} className={i > 0 ? "mt-3 border-t border-slate-100 pt-3" : ""}>
+          <p className="mb-1.5 px-3 text-[9px] font-black uppercase tracking-[0.14em] text-slate-400">
             {group.label}
           </p>
           <div className="flex flex-col gap-0.5">
             {group.items.map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} dark />
+              <NavLink key={item.href} item={item} pathname={pathname} />
             ))}
           </div>
         </div>
@@ -404,39 +375,36 @@ export default function Sidebar() {
     router.refresh();
   }
 
-  // ── Mobile header ────────────────────────────────────────────────────────────
   return (
     <>
-      <header
-        className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/[0.09] px-4 shadow-[0_2px_28px_rgba(5,10,20,0.38)] backdrop-blur-xl md:hidden"
-        style={{ background: "linear-gradient(135deg, rgba(15,32,64,0.97) 0%, rgba(8,17,30,0.97) 100%)" }}
-      >
+      {/* ── Mobile header ── */}
+      <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 shadow-sm backdrop-blur-xl md:hidden">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <BarberiaOSLogo size={40} />
-          <span className="font-black tracking-tight text-white">BarberíaOS</span>
+          <BarberiaOSLogo size={36} />
+          <span className="font-black tracking-tight text-slate-900">BarberíaOS</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
             href="/dashboard/reservas"
             aria-label="Nueva reserva"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 text-[#D4AF37] shadow-sm transition-colors hover:bg-[#D4AF37]/20 hover:border-[#D4AF37]/45"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 text-[#C9922A] transition-colors hover:bg-[#D4AF37]/15"
           >
-            <Plus size={17} />
+            <Plus size={16} />
           </Link>
           <button
             type="button"
             onClick={handleLogout}
             aria-label="Cerrar sesión"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] text-slate-300 shadow-sm transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
           >
-            <LogOut size={17} />
+            <LogOut size={16} />
           </button>
         </div>
       </header>
 
       <MobileBottomNav pathname={pathname} onOpenMore={() => setDrawerOpen(true)} />
 
-      {/* ── Mobile more drawer ── */}
+      {/* ── Mobile drawer ── */}
       <div
         className={`fixed inset-0 z-50 transition-opacity duration-200 md:hidden ${
           drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
@@ -446,110 +414,78 @@ export default function Sidebar() {
           type="button"
           aria-label="Cerrar menú"
           onClick={() => setDrawerOpen(false)}
-          className="absolute inset-0 bg-[#050A14]/55 backdrop-blur-[3px]"
+          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
         />
         <aside
           aria-label="Más opciones de navegación"
-          className={`absolute bottom-0 left-0 right-0 flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden rounded-t-[2rem] border-t border-white/10 bg-[#07101F] shadow-[0_-24px_60px_rgba(5,10,20,0.42)] transition-transform duration-200 ${
+          className={`absolute bottom-0 left-0 right-0 flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden rounded-t-[28px] border-t border-slate-200 bg-white shadow-[0_-24px_60px_rgba(15,23,42,0.18)] transition-transform duration-300 ${
             drawerOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >
+          {/* Drawer handle */}
+          <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-slate-200" />
+
           {/* Drawer header */}
-          <div className="flex shrink-0 items-center justify-between px-5 pb-4 pt-5">
+          <div className="flex shrink-0 items-center justify-between px-5 pb-3 pt-4">
             <div>
-              <p className="text-xl font-black leading-none text-white">Más opciones</p>
-              <p className="mt-1 text-sm font-medium text-slate-400">Accede a cualquier sección</p>
+              <p className="text-lg font-black text-slate-900">Más opciones</p>
+              <p className="text-sm text-slate-500">Accede a cualquier sección</p>
             </div>
             <button
               type="button"
               aria-label="Cerrar"
               onClick={() => setDrawerOpen(false)}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] text-slate-300 shadow-sm transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition-colors hover:border-slate-300 hover:bg-slate-100"
             >
-              <X size={17} />
+              <X size={16} />
             </button>
           </div>
 
-          <nav className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain px-5 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {/* Quick actions */}
-            <section aria-labelledby="mobile-quick-actions">
-              <h2 id="mobile-quick-actions" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
-                Accesos rápidos
-              </h2>
-              <div className="grid grid-cols-2 gap-2">
-                {quickMobileActions.map((item) => {
-                  const Icon = item.icon;
-                  const active = isActive(pathname, item);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setDrawerOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={`min-h-[72px] rounded-[20px] border p-3 transition-colors ${
-                        active
-                          ? "border-[#D4AF37]/40 bg-[#D4AF37]/15 text-white"
-                          : "border-white/10 bg-white/[0.06] text-slate-300 hover:border-[#D4AF37]/35 hover:bg-white/[0.10]"
-                      }`}
-                    >
-                      <Icon size={18} className={active ? "text-[#D4AF37]" : "text-slate-500"} />
-                      <span className="mt-3 block text-sm font-black leading-tight">{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
+          <nav className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-5 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {/* Group tabs */}
+            <div className="grid grid-cols-3 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+              {groupedMobileNav.map((group) => {
+                const active = group.title === activeMobileGroup;
+                return (
+                  <button
+                    key={group.title}
+                    type="button"
+                    onClick={() => setActiveMobileGroup(group.title)}
+                    className={`min-h-9 rounded-lg text-xs font-black transition-all ${
+                      active
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-500 hover:text-slate-700"
+                    }`}
+                  >
+                    {group.title}
+                  </button>
+                );
+              })}
+            </div>
 
-            {/* Grouped nav */}
-            <section aria-labelledby="mobile-grouped-nav" className="min-h-0">
-              <h2 id="mobile-grouped-nav" className="mb-2 px-1 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
-                Secciones
-              </h2>
-              {/* Group tabs */}
-              <div className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-white/10 bg-white/[0.05] p-1">
-                {groupedMobileNav.map((group) => {
-                  const active = group.title === activeMobileGroup;
-                  return (
-                    <button
-                      key={group.title}
-                      type="button"
-                      onClick={() => setActiveMobileGroup(group.title)}
-                      className={`min-h-10 rounded-xl text-xs font-black transition-colors ${
-                        active
-                          ? "bg-[#D4AF37] text-[#050A14] shadow-sm"
-                          : "text-slate-300 hover:bg-white/[0.08] hover:text-white"
-                      }`}
-                    >
-                      {group.title}
-                    </button>
-                  );
-                })}
-              </div>
-              {/* Group items */}
-              <div className="grid gap-1.5">
-                {(
-                  groupedMobileNav.find((g) => g.title === activeMobileGroup) ??
-                  groupedMobileNav[0]
-                ).items.map((item) => (
-                  <NavLink
-                    key={item.href}
-                    item={item}
-                    pathname={pathname}
-                    onClick={() => setDrawerOpen(false)}
-                    dark
-                  />
-                ))}
-              </div>
-            </section>
+            {/* Group items */}
+            <div className="grid gap-1">
+              {(
+                groupedMobileNav.find((g) => g.title === activeMobileGroup) ??
+                groupedMobileNav[0]
+              ).items.map((item) => (
+                <NavLink
+                  key={item.href}
+                  item={item}
+                  pathname={pathname}
+                  onClick={() => setDrawerOpen(false)}
+                />
+              ))}
+            </div>
           </nav>
 
-          <footer className="shrink-0 border-t border-white/[0.08] bg-[#07101F] px-5 pb-[calc(24px+env(safe-area-inset-bottom))] pt-4">
+          <footer className="shrink-0 border-t border-slate-100 px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-4">
             <button
               type="button"
               onClick={async () => { setDrawerOpen(false); await handleLogout(); }}
-              className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-slate-400 transition-colors hover:border-[#E5484D]/25 hover:bg-[#E5484D]/8 hover:text-[#E5484D]/80"
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
             >
-              <LogOut size={16} className="shrink-0" />
+              <LogOut size={15} className="shrink-0" />
               Cerrar sesión
             </button>
           </footer>
@@ -558,82 +494,61 @@ export default function Sidebar() {
 
       {/* ── Desktop sidebar ── */}
       <aside
-        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-white/[0.09] shadow-[4px_0_32px_rgba(5,10,20,0.44)] transition-all duration-300 ease-in-out md:flex ${
-          collapsed ? "w-16 px-2 py-4" : "w-64 p-5"
+        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-slate-200 bg-white shadow-[1px_0_0_0_#f1f5f9] transition-all duration-300 ease-in-out md:flex ${
+          collapsed ? "w-16 px-2 py-5" : "w-64 p-5"
         }`}
-        style={{
-          background:
-            "radial-gradient(circle at 88% 4%, rgba(212,175,55,0.07), transparent 36%)," +
-            "radial-gradient(circle at 6% 92%, rgba(37,99,235,0.09), transparent 42%)," +
-            "linear-gradient(168deg, #0F2040 0%, #0B1A2E 44%, #07111E 100%)",
-        }}
       >
-        {/* Top gold accent line */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-0 right-0 top-0 h-[2px]"
-          style={{ background: "linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.55) 50%, transparent 100%)" }}
-        />
-
         {/* Collapse toggle */}
         <button
           type="button"
           onClick={toggle}
           title={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF37]/20 bg-[#0F2040] shadow-[0_2px_10px_rgba(5,10,20,0.45)] transition-all duration-150 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/12 hover:shadow-[0_0_12px_rgba(212,175,55,0.20)]"
+          className="absolute -right-3.5 top-6 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm transition-all duration-150 hover:border-slate-300 hover:shadow-md"
         >
           {collapsed ? (
-            <ChevronRight size={13} className="text-[#D4AF37]/70" />
+            <ChevronRight size={12} className="text-slate-500" />
           ) : (
-            <ChevronLeft size={13} className="text-[#D4AF37]/70" />
+            <ChevronLeft size={12} className="text-slate-500" />
           )}
         </button>
 
         {/* Brand */}
         {collapsed ? (
-          <div className="mb-4 flex justify-center">
+          <div className="mb-5 flex justify-center">
             <Link href="/dashboard" title="BarberíaOS — Inicio">
-              <BarberiaOSLogo size={40} />
+              <BarberiaOSLogo size={36} />
             </Link>
           </div>
         ) : (
-          <div
-            className="mb-5 rounded-[20px] border border-[#D4AF37]/18 px-3 py-3"
-            style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(255,255,255,0.03) 100%)" }}
-          >
+          <div className="mb-5 flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/60 px-3 py-2.5">
             <Link href="/dashboard" className="flex items-center gap-3">
-              <BarberiaOSLogo size={40} className="shrink-0" />
+              <BarberiaOSLogo size={36} className="shrink-0" />
               <div className="min-w-0">
-                <span className="block text-[15px] font-black leading-none tracking-tight text-white">
+                <span className="block text-[15px] font-black leading-none tracking-tight text-slate-900">
                   BarberíaOS
                 </span>
-                <span className="mt-1 flex items-center gap-1.5">
-                  <span className="block truncate text-[10px] font-semibold leading-tight text-slate-400">
-                    Panel de control
-                  </span>
-                  <span className="shrink-0 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/12 px-1.5 py-px text-[9px] font-black uppercase tracking-wide text-[#D4AF37]">
-                    Pro
-                  </span>
+                <span className="mt-1 block truncate text-[10px] font-semibold leading-tight text-slate-400">
+                  Panel de control
                 </span>
               </div>
             </Link>
           </div>
         )}
 
-        {/* Quick CTA — Nueva cita */}
+        {/* Quick CTA */}
         {!collapsed && (
           <Link
             href="/dashboard/reservas"
-            className="mb-3 flex items-center justify-center gap-2 rounded-2xl border border-[#D4AF37]/22 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-black text-[#D4AF37] transition-all duration-150 hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/18"
+            className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-2.5 text-sm font-black text-[#C9922A] transition-all hover:bg-[#D4AF37]/14 hover:border-[#D4AF37]/45"
           >
-            <Plus size={15} />
+            <Plus size={14} />
             Nueva cita
           </Link>
         )}
 
         {/* Nav */}
         {collapsed ? (
-          <nav className="flex flex-1 flex-col items-center gap-0.5 overflow-y-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <nav className="flex flex-1 flex-col items-center gap-1 overflow-y-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {allItems.map((item) => (
               <IconNavLink key={item.href} item={item} pathname={pathname} />
             ))}
@@ -644,24 +559,24 @@ export default function Sidebar() {
 
         {/* Footer */}
         {collapsed ? (
-          <div className="flex flex-col items-center gap-1 border-t border-white/[0.08] pt-3">
+          <div className="flex flex-col items-center gap-1 border-t border-slate-100 pt-3">
             <button
               type="button"
               onClick={handleLogout}
               title="Cerrar sesión"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl text-slate-400/70 transition-all duration-150 hover:bg-[#E5484D]/10 hover:text-[#E5484D]/80"
+              className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-all hover:bg-red-50 hover:text-red-500"
             >
-              <LogOut size={17} />
+              <LogOut size={16} />
             </button>
           </div>
         ) : (
-          <div className="mt-4 flex flex-col gap-1.5 border-t border-white/[0.08] pt-4">
+          <div className="mt-4 border-t border-slate-100 pt-4">
             <button
               type="button"
               onClick={handleLogout}
-              className="nav-link w-full border border-white/[0.07] bg-white/[0.04] font-medium text-slate-400 transition-all duration-150 hover:border-[#E5484D]/25 hover:bg-[#E5484D]/8 hover:text-[#E5484D]/85"
+              className="nav-link w-full font-medium text-slate-500 hover:bg-red-50 hover:text-red-500"
             >
-              <LogOut size={16} className="shrink-0 opacity-70" />
+              <LogOut size={15} className="shrink-0" />
               Cerrar sesión
             </button>
           </div>
