@@ -1183,49 +1183,74 @@ export function PremiumHero() {
       </div>
 
       <div className="relative mx-auto max-w-5xl text-center">
-        {/* Live badge */}
-        <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#232323] bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-[#A1A1AA]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E] shadow-[0_0_6px_#22C55E]" />
+        {/* Live badge — entra primero */}
+        <div className="flex justify-center animate-fade-up" style={{ animationDelay: "0ms" }}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-1.5 text-xs font-semibold text-[#A1A1AA] backdrop-blur-sm">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22C55E] shadow-[0_0_6px_#22C55E]" />
+            </span>
             Sistema operativo para barberías modernas
           </div>
         </div>
 
-        {/* H1 — infrastructure positioning, Stripe-level */}
-        <h1 className="mx-auto mt-7 max-w-4xl text-6xl font-black leading-[0.90] tracking-[-0.045em] text-white md:text-7xl lg:text-[88px]">
+        {/* H1 — entra segundo con retraso */}
+        <h1
+          className="mx-auto mt-7 max-w-4xl font-black leading-[0.88] tracking-[-0.045em] text-white animate-fade-up"
+          style={{
+            fontSize: "clamp(3rem, 8vw, 88px)",
+            animationDelay: "60ms",
+          }}
+        >
           El sistema operativo{" "}
-          <span className="bg-gradient-to-b from-[#F4D03F] to-[#D4AF37] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-b from-[#F4D03F] via-[#EFC84A] to-[#D4AF37] bg-clip-text text-transparent">
             de tu barbería.
           </span>
         </h1>
 
-        {/* Sub — outcome-focused, confident */}
-        <p className="mx-auto mt-7 max-w-xl text-xl leading-9 text-[#A1A1AA]">
-          Reservas, agenda, caja, clientes y WhatsApp. Conectados. Sin comisiones, sin dependencias, desde el primer día.
+        {/* Sub — tercer elemento */}
+        <p
+          className="mx-auto mt-7 max-w-xl text-xl leading-[1.8] text-[#A1A1AA] animate-fade-up"
+          style={{ animationDelay: "120ms" }}
+        >
+          Reservas, agenda, caja, clientes y WhatsApp.{" "}
+          <span className="text-white/80">Conectados. Sin comisiones. Desde el primer día.</span>
         </p>
 
-        {/* CTAs — centered */}
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        {/* CTAs */}
+        <div
+          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row animate-fade-up"
+          style={{ animationDelay: "180ms" }}
+        >
           <a
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-8 text-sm font-black text-[#070707] shadow-[0_0_0_1px_rgba(212,175,55,0.3),0_8px_32px_rgba(212,175,55,0.25)] transition-all hover:-translate-y-0.5 hover:bg-[#F4D03F] hover:shadow-[0_0_0_1px_rgba(244,208,63,0.4),0_12px_40px_rgba(212,175,55,0.35)] active:scale-[0.98]"
+            className="inline-flex min-h-[54px] items-center justify-center gap-2.5 rounded-2xl bg-[#D4AF37] px-9 text-sm font-black text-[#070707]
+              shadow-[0_1px_2px_rgba(212,175,55,0.24),0_8px_28px_rgba(212,175,55,0.30),0_0_0_1px_rgba(212,175,55,0.35)]
+              transition-all duration-200 hover:-translate-y-0.5
+              hover:bg-[#EFC84A] hover:shadow-[0_2px_4px_rgba(212,175,55,0.30),0_16px_44px_rgba(212,175,55,0.40),0_0_0_1px_rgba(244,208,63,0.50)]
+              active:scale-[0.98]"
           >
             <MessageCircle size={16} />
             Pedir demo gratis
           </a>
           <Link
             href="#reservas"
-            className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-[#232323] bg-white/[0.03] px-8 text-sm font-semibold text-[#A1A1AA] transition-all hover:border-[#333] hover:bg-white/[0.06] hover:text-white active:scale-[0.98]"
+            className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-9 text-sm font-semibold text-[#A1A1AA]
+              shadow-[0_0_0_1px_rgba(255,255,255,0.04)]
+              transition-all hover:border-white/18 hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
           >
             Ver cómo funciona
             <ArrowRight size={15} />
           </Link>
         </div>
 
-        {/* Social proof inline */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+        {/* Social proof */}
+        <div
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 animate-fade-up"
+          style={{ animationDelay: "240ms" }}
+        >
           <div className="flex items-center gap-2">
             <div className="flex">
               {["bg-[#D4AF37]", "bg-emerald-500", "bg-sky-500", "bg-slate-600", "bg-rose-500"].map((bg, i) => (
