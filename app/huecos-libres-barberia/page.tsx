@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/huecos-libres-barberia`}
       eyebrow="Huecos libres en barbería"
       h1="Detecta huecos libres y llénalos antes de que cuesten dinero."
       intro="Cada cancelación o hueco sin reserva es ingreso perdido. BarberíaOS muestra los huecos disponibles en tiempo real para que puedas publicarlos, compartirlos o dejar que los clientes los reserven directamente."

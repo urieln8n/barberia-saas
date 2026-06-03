@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/reservas-online-barberia`}
       eyebrow="Reservas online para barberías"
       h1="Reservas online para barberías sin llamadas ni comisiones."
       intro="BarberíaOS convierte Instagram, WhatsApp, Google y el QR del local en citas ordenadas dentro de la agenda de cada barbero."

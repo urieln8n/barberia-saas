@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/software-barberias-sin-comision`}
       eyebrow="Sin comisión por reserva"
       h1="Software para barberías sin comisión por cada cita."
       intro="BarberíaOS te da reservas online, agenda, caja, QR y clientes propios con precio mensual. La relación con el cliente sigue siendo tuya."

@@ -84,6 +84,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${SITE_URL}/software-inventario-barberia`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/marketing-barberias`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/pedir-demo`,
       lastModified: now,
       changeFrequency: "weekly" as const,
@@ -127,5 +139,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "weekly" as const,
         priority: profileSlug(profile) === "demo-barber" ? 0.6 : 0.7,
       })),
+    // Páginas de ciudad del directorio — ciudades con masa crítica de barberías en España
+    ...["madrid", "barcelona", "sevilla", "valencia", "bilbao", "malaga", "zaragoza", "murcia"].map(
+      (city) => ({
+        url: `${SITE_URL}/barberias/${city}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.75,
+      }),
+    ),
   ];
 }

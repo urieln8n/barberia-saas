@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/caja-para-barberias`}
       eyebrow="Caja para barberías"
       h1="Controla caja, productos y cierre diario sin hojas sueltas."
       intro="BarberíaOS conecta cada servicio, producto y propina con el día real de trabajo para que el dueño sepa qué entra y de dónde viene."

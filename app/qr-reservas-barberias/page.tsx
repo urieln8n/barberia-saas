@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/qr-reservas-barberias`}
       eyebrow="QR de reservas para barberías"
       h1="Tu QR propio. Tus clientes reservan desde el móvil en segundos."
       intro="BarberíaOS genera un QR único para tu barbería que puedes poner en el escaparate, en Instagram o en la mesa del local. El cliente lo escanea, elige barbero, servicio y hora, y confirma al instante."

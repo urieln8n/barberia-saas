@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/whatsapp-barberias`}
       eyebrow="WhatsApp para barberías"
       h1="WhatsApp como canal de reservas, no como agenda caótica."
       intro="Muchas barberías gestionan citas por WhatsApp: notas de voz, capturas, mensajes perdidos y dobles reservas. BarberíaOS da a tus clientes un link y un QR para reservar solos, y WhatsApp vuelve a ser un canal de comunicación, no el sistema de gestión."

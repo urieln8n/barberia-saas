@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/programa-fidelizacion-barberias`}
       eyebrow="Fidelización de clientes para barberías"
       h1="Conoce a tus clientes, cuídalos y que vuelvan solos."
       intro="Un cliente que repite vale más que diez que prueban y no vuelven. BarberíaOS guarda el historial de visitas, servicios y notas de cada cliente para que el barbero sepa siempre con quién trabaja y cuándo toca llamarle."

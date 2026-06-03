@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <SeoLandingPage
+      canonicalUrl={`${BUSINESS_CONFIG.siteUrl}/software-barberias-barcelona`}
+      city="Barcelona"
       eyebrow="Barberías en Barcelona"
       h1="Software para barberías en Barcelona que quieren reservas propias."
       intro="BarberíaOS ayuda a barberías urbanas a convertir búsquedas locales, Instagram, WhatsApp y QR de mostrador en reservas controladas por el negocio."
