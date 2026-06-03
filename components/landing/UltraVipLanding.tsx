@@ -936,6 +936,48 @@ function StickyNav() {
   );
 }
 
+function ClientFlowSection() {
+  const steps = [
+    { icon: "📱", label: "Escanea QR", sub: "Instagram, Google o mostrador" },
+    { icon: "📅", label: "Reserva", sub: "Elige servicio, barbero y hora" },
+    { icon: "🗓️", label: "Entra en agenda", sub: "Sin WhatsApp ni llamadas" },
+    { icon: "💰", label: "Se registra en caja", sub: "Pago anotado automáticamente" },
+    { icon: "👤", label: "Queda en CRM", sub: "Historial, visitas y preferencias" },
+    { icon: "⭐", label: "Se pide reseña", sub: "Google o reseña interna" },
+  ] as const;
+
+  return (
+    <section className="bg-[#070707] px-5 pb-20 pt-4 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <p className="mb-8 text-center text-[11px] font-black uppercase tracking-[0.2em] text-[#C9922A]/70">
+          El flujo completo — de QR a reseña
+        </p>
+        <div className="relative flex flex-col items-start gap-0 sm:flex-row sm:items-stretch sm:gap-0">
+          {steps.map((step, i) => (
+            <div key={step.label} className="flex flex-1 items-start gap-3 sm:flex-col sm:items-center sm:gap-0">
+              {/* Step card */}
+              <div className="flex flex-1 flex-col items-start rounded-2xl border border-white/8 bg-white/[0.04] p-4 sm:mx-1 sm:w-full sm:items-center sm:text-center">
+                <span className="text-2xl">{step.icon}</span>
+                <p className="mt-2 text-[13px] font-black text-white">{step.label}</p>
+                <p className="mt-0.5 text-[11px] leading-4 text-white/40">{step.sub}</p>
+              </div>
+              {/* Arrow between steps */}
+              {i < steps.length - 1 && (
+                <div className="hidden items-center justify-center text-white/20 sm:flex sm:w-0">
+                  <span className="absolute text-lg">→</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-center text-xs text-white/25">
+          Todo en un solo panel. Sin apps extra. Sin comisiones.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function SocialProofBar() {
   const items = [
     { value: "200+", label: "barberías activas" },
@@ -1212,8 +1254,8 @@ export function PremiumHero() {
           className="mx-auto mt-7 max-w-xl text-xl leading-[1.8] text-[#A1A1AA] animate-fade-up"
           style={{ animationDelay: "120ms" }}
         >
-          Reservas, agenda, caja, clientes y WhatsApp.{" "}
-          <span className="text-white/80">Conectados. Sin comisiones. Desde el primer día.</span>
+          Reservas, caja, clientes y WhatsApp para barberías{" "}
+          <span className="text-white/80">que quieren operar con control.</span>
         </p>
 
         {/* CTAs */}
@@ -1232,15 +1274,15 @@ export function PremiumHero() {
               active:scale-[0.98]"
           >
             <MessageCircle size={16} />
-            Pedir demo gratis
+            Pedir demo por WhatsApp
           </a>
           <Link
-            href="#reservas"
+            href="/r/demo-barber"
             className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-9 text-sm font-semibold text-[#A1A1AA]
               shadow-[0_0_0_1px_rgba(255,255,255,0.04)]
               transition-all hover:border-white/18 hover:bg-white/[0.08] hover:text-white active:scale-[0.98]"
           >
-            Ver cómo funciona
+            Ver demo interactiva
             <ArrowRight size={15} />
           </Link>
         </div>
@@ -2894,6 +2936,7 @@ export function UltraVipLanding() {
       <div id="contenido-principal">
         {/* 1. Hook — quién eres y qué prometes */}
         <PremiumHero />
+        <ClientFlowSection />
         <SocialProofBar />
 
         {/* 2. El problema y el coste de no actuar */}

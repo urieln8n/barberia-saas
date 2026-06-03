@@ -227,9 +227,11 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
     : null;
   const trackingSource = "direct";
   const isDemoBarber = barbershop.slug === "demo-barber";
+  const displayName = isDemoBarber ? "FadeLab Barbers" : barbershop.name;
   const heroDescription =
-    publicProfile?.description ??
-    "Elige servicio, profesional y hora real disponible en menos de un minuto.";
+    isDemoBarber
+      ? "Así reservan tus clientes desde Instagram, Google, WhatsApp o el QR de tu mostrador. Sin app, sin llamadas, sin WhatsApp perdido."
+      : (publicProfile?.description ?? "Elige servicio, profesional y hora real disponible en menos de un minuto.");
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_12%_0%,rgba(37,99,235,0.18),transparent_28rem),radial-gradient(circle_at_88%_5%,rgba(212,175,102,0.14),transparent_24rem),linear-gradient(180deg,#050A14_0%,#07101F_48%,#0B1220_100%)] pb-24 text-white md:pb-12">
@@ -246,7 +248,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               {getInitials(barbershop.name) || <Scissors size={20} />}
             </div>
             <div className="min-w-0">
-              <p className="truncate font-black text-white">{barbershop.name}</p>
+              <p className="truncate font-black text-white">{displayName}</p>
               {locationLabel && (
                 <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm font-medium text-slate-300">
                   <MapPin size={13} className="shrink-0" />
@@ -298,17 +300,18 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 text-white sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-10 lg:px-8">
         <div>
           <p className="text-xs font-black uppercase text-[#D9B766]">Reserva pública</p>
+          {isDemoBarber && (
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D9B766]/40 bg-[#D9B766]/10 px-4 py-1.5 text-xs font-black text-[#F6E2A6]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D9B766] animate-pulse" />
+              Demo interactiva de BarberíaOS — powered by BarberíaOS
+            </div>
+          )}
           <h1 className="mt-2 max-w-3xl text-4xl font-black tracking-normal text-white sm:text-5xl">
-            Reserva tu cita en {barbershop.name}
+            Reserva tu cita en {displayName}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
             {heroDescription}
           </p>
-          {isDemoBarber && (
-            <p className="mt-3 max-w-2xl rounded-2xl border border-[#D9B766]/25 bg-[#D9B766]/10 px-4 py-3 text-sm font-bold leading-6 text-[#F6E2A6]">
-              Demo interactiva. Tus clientes reservarían desde Instagram, Google, WhatsApp o QR sin descargar ninguna app.
-            </p>
-          )}
           <a
             href="#reservar"
             className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF66] px-6 py-3 text-base font-black text-[#050A14] shadow-lg shadow-[#D4AF66]/20 transition hover:bg-[#E4C87B]"
@@ -428,6 +431,31 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </p>
         </aside>
       </div>
+
+      {/* CTA para dueños — solo en demo */}
+      {isDemoBarber && (
+        <div className="mx-auto mt-8 max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+          <div className="rounded-[2rem] border border-[#D9B766]/30 bg-gradient-to-br from-[#0B1220] to-[#07101F] p-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#D9B766]/70">
+              ¿Eres dueño de una barbería?
+            </p>
+            <h2 className="mt-3 text-2xl font-black text-white">
+              Quiero esto para mi barbería
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-400">
+              Reservas online, agenda, caja, clientes y QR. Sin comisiones. Listo en un día.
+            </p>
+            <a
+              href="https://wa.me/34645466308?text=Hola%2C%20acabo%20de%20ver%20la%20demo%20y%20quiero%20BarberíaOS%20para%20mi%20barbería"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-2xl bg-[#D4AF37] px-8 text-sm font-black text-[#070707] shadow-[0_8px_28px_rgba(212,175,55,0.35)] transition hover:-translate-y-0.5 hover:bg-[#EFC84A]"
+            >
+              Pedir demo por WhatsApp →
+            </a>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
