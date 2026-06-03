@@ -206,7 +206,7 @@ export function DailyTimelineView({
       </div>
 
       {/* Timeline */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FDFCF9] shadow-sm">
         <div className="flex">
           {/* Hour labels */}
           <div
@@ -219,7 +219,7 @@ export function DailyTimelineView({
                 className="flex items-start justify-end pr-2.5 pt-1.5"
                 style={{ height: CELL_HEIGHT }}
               >
-                <span className="text-[10px] font-bold tabular-nums text-slate-400">
+                <span className="text-xs font-semibold tabular-nums text-slate-500">
                   {String(h).padStart(2, "0")}:00
                 </span>
               </div>
@@ -241,7 +241,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={`half-${h}`}
-                className="absolute inset-x-0 border-t border-slate-50"
+                className="absolute inset-x-0 border-t border-slate-100/50"
                 style={{ top: i * CELL_HEIGHT + CELL_HEIGHT / 2 }}
               />
             ))}
