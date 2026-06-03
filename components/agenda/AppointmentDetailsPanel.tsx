@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   Calendar,
   CalendarClock,
+  CalendarPlus,
   CheckCircle,
   CreditCard,
   ExternalLink,
@@ -17,8 +18,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { formatTime, getAppointmentDuration, getPrimaryClientInsight } from "@/src/lib/agenda/agenda-utils";
 import { getStatusLabel } from "@/src/lib/agenda/appointment-colors";
-import type { AgendaAppointment } from "@/src/lib/agenda/types";
 import { rescheduleAppointment } from "@/app/dashboard/agenda/actions";
+import type { AgendaAppointment } from "@/src/lib/agenda/types";
 
 type LoyaltyHint = {
   stamps: number;
@@ -356,6 +357,17 @@ export function AppointmentDetailsPanel({
               <Calendar size={12} />
               {rescheduleOpen ? "Cerrar reagendar" : "Reagendar cita"}
             </button>
+          )}
+
+          {appointment.client?.id && (
+            <Link
+              href={`/dashboard/agenda?view=day&clientId=${appointment.client.id}&serviceId=${appointment.service?.id ?? ""}`}
+              onClick={onClose}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 transition hover:bg-emerald-100"
+            >
+              <CalendarPlus size={12} />
+              Crear próxima cita
+            </Link>
           )}
 
           {appointment.client?.id && (
