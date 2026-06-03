@@ -248,8 +248,8 @@ export function WeeklyCalendarGrid({
 
           {/* Column headers */}
           <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200">
-            <div className="flex items-center justify-center bg-slate-50 p-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <div className="flex items-center justify-center bg-[#F2EFE8] p-3">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                 Hora
               </span>
             </div>
@@ -344,11 +344,11 @@ export function WeeklyCalendarGrid({
           {hours.map((hour) => (
             <div
               key={hour}
-              className="grid min-h-[68px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-100/80 last:border-b-0"
+              className="grid min-h-[60px] grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-b border-slate-200/60 last:border-b-0"
             >
               {/* Hour label */}
-              <div className="flex items-start justify-end border-r border-slate-200/50 bg-[#F7F5F1] px-3 pt-2">
-                <span className="text-[11px] font-bold tabular-nums text-slate-500">{hour}</span>
+              <div className="flex items-start justify-end border-r border-slate-200 bg-[#F2EFE8] px-3 pt-2">
+                <span className="text-[11px] font-black tabular-nums text-slate-600">{hour}</span>
               </div>
 
               {/* Day cells */}
@@ -420,18 +420,17 @@ export function WeeklyCalendarGrid({
                       </button>
                     )}
 
-                    {/* Empty cell — indicador sutil siempre visible en móvil, hover en desktop */}
+                    {/* Empty cell — siempre visible con fondo sutil, "+" al hover */}
                     {isEmpty && !past && (
                       <button
                         type="button"
                         onClick={() => onEmptySlotClick?.(day.iso, hour)}
-                        aria-label={`Crear cita a las ${hour} — ${day.label} ${day.dayNumber}`}
-                        className="group flex min-h-[120px] w-full items-center justify-center rounded-xl transition-colors hover:bg-slate-50/80 active:bg-slate-100/60"
+                        aria-label={`Crear cita a las ${hour}`}
+                        className="group flex min-h-[40px] w-full items-center justify-center rounded-lg transition-colors hover:bg-[#D4AF37]/6 active:bg-[#D4AF37]/10"
                       >
-                        {/* Siempre visible sutil en móvil, más visible en hover desktop */}
-                        <span className="flex items-center gap-1 opacity-20 transition-opacity md:opacity-0 md:group-hover:opacity-60">
-                          <CalendarPlus size={10} className="text-slate-400" />
-                          <span className="text-[9px] font-semibold text-slate-400">{hour}</span>
+                        <span className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                          <CalendarPlus size={10} className="text-[#C9922A]" />
+                          <span className="text-[9px] font-black text-[#C9922A]">+ Reservar</span>
                         </span>
                       </button>
                     )}
@@ -442,7 +441,7 @@ export function WeeklyCalendarGrid({
           ))}
 
           {/* Footer summary */}
-          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-200 bg-slate-50">
+          <div className="grid grid-cols-[72px_repeat(7,minmax(132px,1fr))] border-t border-slate-200 bg-[#F2EFE8]">
             <div className="p-3" />
             {days.map((day) => {
               const dayAppts = appointments.filter((a) => a.appointment_date === day.iso);

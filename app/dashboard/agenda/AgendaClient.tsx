@@ -383,7 +383,7 @@ export function AgendaClient({
 
       <div className="relative z-10 space-y-4">
         {/* ═══ HEADER ═══ */}
-        <div className="border-b border-[#EDE9E0] bg-[#FDFCF9] px-1 pb-4 pt-1 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+        <div className="border-b border-slate-200 bg-white px-1 pb-4 pt-1 shadow-[0_2px_12px_rgba(0,0,0,0.06),0_1px_0_rgba(0,0,0,0.05)]">
           {/* Top row: title + actions */}
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -425,8 +425,8 @@ export function AgendaClient({
                 { label: "Clientes nuevos",value: visibleMetrics.newClients,                                                       color: "text-blue-600", sub: "esta semana" },
                 { label: "Próxima cita",   value: nextApptLabel,                                                                   color: "text-slate-900", sub: "hoy" },
               ].map(({ label, value, color, sub }) => (
-                <div key={label} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">{label}</p>
+                <div key={label} className="rounded-xl border border-slate-200/80 bg-[#FEFCF9] px-3 py-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
                   <p className={`mt-1 text-lg font-black tabular-nums leading-none ${color}`}>{value}</p>
                   <p className="mt-0.5 text-[9px] text-slate-400">{sub}</p>
                 </div>

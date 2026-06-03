@@ -15,7 +15,7 @@ import { FreeSlotCard } from "./FreeSlotCard";
 
 const TIMELINE_START = 9;
 const TIMELINE_END   = 20;
-const CELL_HEIGHT    = 64;
+const CELL_HEIGHT    = 56;
 
 function minutesToTop(timeStr: string): number {
   const mins   = timeToMinutes(formatTime(timeStr));
@@ -206,8 +206,8 @@ export function DailyTimelineView({
     <div className="flex flex-col gap-4">
       {/* ── Mini KPIs ── */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+        <div className="rounded-2xl border border-slate-200 bg-[#FEFCF9] p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
             {isToday ? "Restantes" : "Reservas"}
           </p>
           <p className="mt-1.5 text-2xl font-black text-slate-900">{displayAppts.length}</p>
@@ -304,11 +304,11 @@ export function DailyTimelineView({
       )}
 
       {/* ── Timeline ── */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FDFCF9] shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FEFCF8] shadow-[0_2px_16px_rgba(0,0,0,0.07),0_1px_4px_rgba(0,0,0,0.04)]">
         <div className="flex">
           {/* Hour labels */}
           <div
-            className="shrink-0 border-r border-slate-100 bg-slate-50"
+            className="shrink-0 border-r border-slate-200 bg-[#F2EFE8]"
             style={{ width: 56, height: totalHeight }}
           >
             {HOURS.map((h) => (
@@ -317,8 +317,8 @@ export function DailyTimelineView({
                 className="flex items-start justify-end pr-2.5 pt-1.5"
                 style={{ height: CELL_HEIGHT }}
               >
-                <span className={`text-xs font-semibold tabular-nums ${
-                  isToday && h * 60 < nowMins ? "text-slate-300" : "text-slate-500"
+                <span className={`text-xs font-black tabular-nums ${
+                  isToday && h * 60 < nowMins ? "text-slate-400" : "text-slate-700"
                 }`}>
                   {String(h).padStart(2, "0")}:00
                 </span>
@@ -332,7 +332,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={h}
-                className="absolute inset-x-0 border-t border-slate-100"
+                className="absolute inset-x-0 border-t border-slate-200"
                 style={{ top: i * CELL_HEIGHT }}
               />
             ))}
@@ -340,7 +340,7 @@ export function DailyTimelineView({
             {HOURS.map((h, i) => (
               <div
                 key={`half-${h}`}
-                className="absolute inset-x-0 border-t border-slate-100/50"
+                className="absolute inset-x-0 border-t border-slate-200/50"
                 style={{ top: i * CELL_HEIGHT + CELL_HEIGHT / 2 }}
               />
             ))}
@@ -415,7 +415,7 @@ export function DailyTimelineView({
               return (
                 <div
                   key={`${slot.id}-grouped`}
-                  className="absolute left-1 right-2 overflow-hidden rounded-lg border border-dashed border-emerald-200 bg-emerald-50/40"
+                  className="absolute left-1 right-2 overflow-hidden rounded-lg border border-dashed border-emerald-300 bg-emerald-50/70"
                   style={{ top: top + 1, height: Math.max(28, height - 2) }}
                 >
                   <div className="flex h-full items-center justify-between gap-2 px-2.5">

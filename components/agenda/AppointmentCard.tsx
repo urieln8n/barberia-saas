@@ -43,8 +43,8 @@ export function AppointmentCard({ appointment, compact = false, onClick }: Props
       <button
         type="button"
         onClick={() => onClick(appointment)}
-        className={`group relative w-full cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-white text-left shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all duration-150 hover:shadow-[0_3px_12px_rgba(0,0,0,0.10)] ${
-          isTerminal ? "opacity-55" : ""
+        className={`group relative w-full cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-white text-left shadow-[0_1px_4px_rgba(0,0,0,0.09)] transition-all duration-150 hover:shadow-[0_4px_14px_rgba(0,0,0,0.13)] ${
+          isTerminal ? "opacity-50" : ""
         }`}
       >
         <span className={`absolute inset-y-0 left-0 w-[3px] ${color.dot}`} aria-hidden="true" />
@@ -67,8 +67,8 @@ export function AppointmentCard({ appointment, compact = false, onClick }: Props
     <button
       type="button"
       onClick={() => onClick(appointment)}
-      className={`group relative w-full cursor-pointer overflow-hidden rounded-xl border border-slate-200/80 bg-white text-left shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,0,0,0.12)] active:scale-[0.99] ${
-        isTerminal ? "opacity-55" : ""
+      className={`group relative w-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-[0_2px_10px_rgba(0,0,0,0.09)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.14)] active:scale-[0.99] ${
+        isTerminal ? "opacity-50" : ""
       }`}
     >
       {/* Franja izquierda — 4px, altura completa */}
