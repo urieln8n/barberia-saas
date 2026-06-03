@@ -20,37 +20,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── Dark backgrounds ─────────────────────────────────
-        carbon:     "#09090B",   // Negro carbón principal (sidebar, hero)
-        carbonSoft: "#111111",   // Negro premium (cards oscuras)
-        graphite:   "#1D2433",   // Grafito elevado
-
-        // ── Gold system ─────────────────────────────────────
-        gold:       "#D4AF37",   // Dorado principal
-        goldDark:   "#B88917",   // Dorado oscuro (texto sobre claro, accents)
-
-        // ── Light backgrounds ────────────────────────────────
-        cream:      "#F7F3EA",   // Crema fondo (dashboard bg)
-        warmWhite:  "#FAFAF7",   // Blanco cálido (cards, panels)
-
-        // ── Text grays ───────────────────────────────────────
-        grayText:   "#52525B",   // Texto secundario
-        graySoft:   "#E4E4E7",   // Bordes suaves
-
-        // ── Semantic states ──────────────────────────────────
-        freeSlot:   "#DDF8E7",   // Verde hueco libre (agenda)
-        success:    "#16A34A",   // Verde éxito
-        amberAlert: "#F59E0B",   // Ámbar alerta (no sobreescribe la paleta amber de Tailwind)
-        danger:     "#EF4444",   // Rojo suave
-
-        // ── Actions ──────────────────────────────────────────
-        accent:     "#2563EB",   // Azul acción CTA
-        teal:       "#06B6D4",   // Teal acento
-
-        // ── Borders ──────────────────────────────────────────
+        carbon:     "#09090B",
+        carbonSoft: "#111111",
+        graphite:   "#1D2433",
+        gold:       "#D4AF37",
+        goldDark:   "#B88917",
+        cream:      "#F7F3EA",
+        warmWhite:  "#FAFAF7",
+        grayText:   "#52525B",
+        graySoft:   "#E4E4E7",
+        freeSlot:   "#DDF8E7",
+        success:    "#16A34A",
+        amberAlert: "#F59E0B",
+        danger:     "#EF4444",
+        accent:     "#2563EB",
+        teal:       "#06B6D4",
         border:     "#E2E8F0",
-
-        // ── Premium blue system (mantener compatibilidad) ────
         premiumBlue: {
           DEFAULT: "#2563EB",
           glow:    "#38BDF8",
@@ -62,7 +47,6 @@ const config: Config = {
       },
 
       fontFamily: {
-        // Body — Inter (legibilidad perfecta en UI)
         sans: [
           "var(--font-inter)",
           "Inter",
@@ -72,7 +56,6 @@ const config: Config = {
           "ui-sans-serif",
           "sans-serif",
         ],
-        // Headings — Geist Sans (premium, moderna, de Vercel)
         display: [
           "var(--font-geist-sans)",
           "var(--font-inter)",
@@ -80,7 +63,6 @@ const config: Config = {
           "system-ui",
           "sans-serif",
         ],
-        // Mono — Geist Mono
         mono: [
           "var(--font-geist-mono)",
           "ui-monospace",
@@ -94,14 +76,63 @@ const config: Config = {
         "5xl": "2.5rem",
       },
 
+      // Premium multi-layer shadow system — profundidad real, no gris plano
       boxShadow: {
-        card:        "0 1px 2px rgb(8 10 15 / 0.04), 0 18px 50px rgb(15 23 42 / 0.08)",
-        "card-md":   "0 1px 2px rgb(8 10 15 / 0.05), 0 24px 70px rgb(15 23 42 / 0.10)",
-        "card-lg":   "0 1px 2px rgb(8 10 15 / 0.05), 0 34px 100px rgb(15 23 42 / 0.14)",
-        glow:        "0 18px 60px rgb(37 99 235 / 0.14)",
-        "premium-blue": "0 22px 70px rgb(37 99 235 / 0.28), 0 0 34px rgb(56 189 248 / 0.16)",
-        gold:        "0 0 0 3px rgb(212 175 55 / 0.18)",
-        "gold-glow": "0 18px 54px rgb(212 175 55 / 0.22)",
+        // Cards en reposo — 3 capas: borde sutil, elevación media, tinte cálido
+        card:
+          "0 0 0 1px rgba(15,23,42,0.04), 0 2px 4px rgba(15,23,42,0.04), 0 12px 32px rgba(15,23,42,0.07)",
+        "card-md":
+          "0 0 0 1px rgba(15,23,42,0.05), 0 4px 8px rgba(15,23,42,0.06), 0 20px 48px rgba(15,23,42,0.10)",
+        "card-lg":
+          "0 0 0 1px rgba(15,23,42,0.06), 0 8px 16px rgba(15,23,42,0.08), 0 32px 80px rgba(15,23,42,0.13)",
+        // Hover — sombra más alta + tinte dorado
+        "card-hover":
+          "0 0 0 1px rgba(212,175,55,0.18), 0 4px 8px rgba(15,23,42,0.08), 0 16px 44px rgba(15,23,42,0.12)",
+        // Cards con acento dorado visible
+        "card-gold":
+          "0 0 0 1px rgba(212,175,55,0.20), 0 2px 8px rgba(212,175,55,0.08), 0 16px 40px rgba(212,175,55,0.10)",
+        // Glow azul para acciones primarias
+        glow:
+          "0 0 0 1px rgba(37,99,235,0.12), 0 8px 24px rgba(37,99,235,0.16)",
+        "premium-blue":
+          "0 22px 70px rgb(37 99 235 / 0.28), 0 0 34px rgb(56 189 248 / 0.16)",
+        // Gold para focus/ring
+        gold:
+          "0 0 0 3px rgba(212,175,55,0.22), 0 4px 16px rgba(212,175,55,0.12)",
+        "gold-glow":
+          "0 4px 12px rgba(212,175,55,0.14), 0 20px 56px rgba(212,175,55,0.20)",
+        // Inner bottom accent line
+        "inset-gold":
+          "inset 0 -1px 0 rgba(212,175,55,0.35)",
+      },
+
+      // Keyframes para animaciones premium
+      keyframes: {
+        "fade-up": {
+          "0%":   { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%":   { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        shimmer: {
+          "0%":   { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "scale-in": {
+          "0%":   { opacity: "0", transform: "scale(0.96)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+      },
+      animation: {
+        "fade-up":   "fade-up 0.4s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-up-1": "fade-up 0.4s 0.05s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-up-2": "fade-up 0.4s 0.10s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-up-3": "fade-up 0.4s 0.15s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-up-4": "fade-up 0.4s 0.20s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-in":   "fade-in 0.3s ease both",
+        "scale-in":  "scale-in 0.3s cubic-bezier(0.16,1,0.3,1) both",
       },
     },
   },

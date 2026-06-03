@@ -13,7 +13,7 @@ type StatCardProps = {
   icon?: LucideIcon;
   iconBg?: string;
   iconColor?: string;
-  tone?: "default" | "dark" | "success" | "warning";
+  tone?: "default" | "dark" | "success" | "warning" | "gold";
   variant?: "default" | "dark" | "premium" | "highlight";
   className?: string;
 };
@@ -36,56 +36,80 @@ export function StatCard({
 }: StatCardProps) {
   const effectiveTone =
     tone ?? (variant === "dark" ? "dark" : variant === "highlight" ? "highlight" : "default");
-  const isDark = effectiveTone === "dark";
 
   const containerClass =
-    effectiveTone === "dark"
-      ? "border-slate-200 bg-white text-slate-900 shadow-card hover:border-slate-300 hover:shadow-card-md"
-      : effectiveTone === "success"
-        ? "border-emerald-200/70 bg-white shadow-card hover:shadow-card-md"
-        : effectiveTone === "warning"
-          ? "border-amber-200/70 bg-white shadow-card hover:shadow-card-md"
+    effectiveTone === "success"
+      ? "border-emerald-200/70 bg-white hover:border-emerald-300/50"
+      : effectiveTone === "warning"
+        ? "border-amber-200/70 bg-white hover:border-amber-300/50"
+        : effectiveTone === "gold"
+          ? "border-[#D4AF37]/25 bg-white hover:border-[#D4AF37]/40"
           : effectiveTone === "highlight"
-            ? "border-[#2563EB]/20 bg-white ring-1 ring-[#2563EB]/10 shadow-card hover:shadow-card-md"
-            : "border-slate-200 bg-white shadow-card hover:border-slate-300 hover:shadow-card-md";
+            ? "border-[#2563EB]/20 bg-white ring-1 ring-[#2563EB]/10 hover:border-[#2563EB]/35"
+            : "border-slate-200/80 bg-white hover:border-slate-300/60";
 
   const topLabel = label ?? title;
   const supportingText = hint ?? description;
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[2rem] border p-5 transition-all duration-200 hover:-translate-y-0.5 md:p-6 ${containerClass} ${className}`}
+      className={`group relative overflow-hidden rounded-[2rem] border p-5 shadow-card
+        transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover
+        md:p-6 ${containerClass} ${className}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C9922A]/55 to-transparent opacity-80" />
+      {/* Gold accent line at top — se intensifica en hover */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px]
+        bg-gradient-to-r from-transparent via-[#D4AF37]/45 to-transparent opacity-60
+        transition-opacity duration-200 group-hover:opacity-100" />
+
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           {kicker && (
-            <p className="text-xs font-black uppercase text-[#C9922A]">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#C9922A]">
               {kicker}
             </p>
           )}
           {topLabel && (
-            <p className="text-xs font-bold uppercase text-slate-500">
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
               {topLabel}
             </p>
           )}
         </div>
         {Icon && (
-          <div className={`metric-icon ${iconBg}`}>
-            <Icon size={20} className={iconColor} />
+          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl
+            shadow-[0_1px_3px_rgba(15,23,42,0.08),0_0_0_1px_rgba(15,23,42,0.04)]
+            transition-transform duration-200 group-hover:scale-105 ${iconBg}`}>
+            <Icon size={19} className={iconColor} />
           </div>
         )}
       </div>
-      <p className="mt-4 font-display text-[clamp(2.25rem,5vw,3.25rem)] font-black leading-none text-slate-900">
+
+      {/* El número — el héroe visual de la card */}
+      <p
+        className="mt-3 font-display leading-none text-slate-900"
+        style={{
+          fontSize: "clamp(2rem,4.5vw,2.75rem)",
+          fontWeight: 900,
+          letterSpacing: "-0.03em",
+          fontVariantNumeric: "tabular-nums lining-nums",
+          fontFeatureSettings: '"tnum","lnum","cv11","ss01"',
+        }}
+      >
         {value}
       </p>
+
       {(supportingText || trend) && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm leading-6 text-slate-600">
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs leading-5 text-slate-500">
           {supportingText && <span>{supportingText}</span>}
-          {trend && <span className="font-bold text-emerald-700">{trend}</span>}
+          {trend && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">
+              {trend}
+            </span>
+          )}
         </div>
       )}
-      {footer && <div className="mt-4">{footer}</div>}
+
+      {footer && <div className="mt-4 border-t border-slate-100 pt-3">{footer}</div>}
     </article>
   );
 }

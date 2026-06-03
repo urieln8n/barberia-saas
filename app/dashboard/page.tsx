@@ -11,6 +11,7 @@ import {
   Wallet,
   QrCode,
   ArrowRight,
+  Plus,
   Sparkles,
   Star,
   RotateCcw,
@@ -335,52 +336,78 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
 
-      {/* 1 ── Hero compacto */}
-      <section className="surface-frame overflow-hidden p-5 md:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0">
-            <p className="label-section">{formatDateSpanish(today)}</p>
-            <h1 className="mt-1 text-3xl font-black tracking-tight text-[#111111] md:text-4xl">
-              {barbershop?.name ?? "Tu barbería"}
-            </h1>
-            <p className="mt-1.5 text-sm leading-6 text-slate-500">
-              Esto es lo que está pasando hoy en tu barbería.
+      {/* 1 ── Hero */}
+      <section className="surface-frame overflow-hidden">
+        {/* Top band */}
+        <div className="border-b border-slate-100 bg-slate-50/60 px-6 py-3 md:px-8">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#C9922A]">
+              {formatDateSpanish(today)}
             </p>
-          </div>
-          <div className="flex shrink-0 flex-wrap gap-2">
-            <Link href="/dashboard/agenda" className="btn-dark">
-              Ver agenda hoy
-            </Link>
-            <Link href="/dashboard/qr" className="btn-outline">
-              <QrCode size={15} /> QR
-            </Link>
-            <Link href={publicBookingUrl} target="_blank" className="btn-outline">
-              Página pública <ArrowRight size={15} />
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/dashboard/qr"
+                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900">
+                <QrCode size={13} /> QR
+              </Link>
+              <Link href={publicBookingUrl} target="_blank"
+                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900">
+                Web pública <ArrowRight size={11} />
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Agentes IA — inline */}
-        <Link
-          href="/dashboard/agents"
-          className="mt-4 flex items-center gap-3 rounded-2xl border border-[#D4AF37]/25 bg-[#FDFAF3] px-4 py-3 transition-colors hover:border-[#D4AF37]/40 hover:bg-[#FDF7E8]"
-        >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/10">
-            <Sparkles size={13} className="text-[#C9922A]" />
+        {/* Hero content */}
+        <div className="px-6 pb-5 pt-6 md:px-8 md:pb-6 md:pt-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="min-w-0">
+              <h1
+                className="font-display font-black leading-[0.95] text-slate-900 tracking-tight"
+                style={{
+                  fontSize: "clamp(2.25rem, 5vw, 3.5rem)",
+                  letterSpacing: "-0.04em",
+                }}
+              >
+                {barbershop?.name ?? "Tu barbería"}
+              </h1>
+              <p className="mt-2 text-sm text-slate-500">
+                Panel de control · Todo bajo control.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Link href="/dashboard/agenda" className="btn-dark">
+                Ver agenda hoy
+              </Link>
+              <Link href="/dashboard/reservas"
+                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-2.5 text-sm font-bold text-[#C9922A] transition hover:bg-[#D4AF37]/14 hover:border-[#D4AF37]/50">
+                <Plus size={14} />
+                Nueva cita
+              </Link>
+            </div>
           </div>
-          <span className="text-xs font-semibold text-slate-600">
-            <span className="font-black text-slate-900">4 Agentes IA activos</span>
-            {" — Retención · Huecos · Reseñas · Marketing"}
-          </span>
-          <ArrowRight size={12} className="ml-auto shrink-0 text-slate-400" />
-        </Link>
+
+          {/* Agentes IA — inline */}
+          <Link
+            href="/dashboard/agents"
+            className="mt-5 flex items-center gap-3 rounded-2xl border border-[#D4AF37]/22 bg-[#FDFAF3] px-4 py-3 transition-all hover:border-[#D4AF37]/38 hover:bg-[#FDF8EC] hover:shadow-[0_2px_8px_rgba(212,175,55,0.10)]"
+          >
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/12">
+              <Sparkles size={13} className="text-[#C9922A]" />
+            </div>
+            <span className="text-xs text-slate-600">
+              <span className="font-black text-slate-900">4 Agentes IA activos</span>
+              {" — Retención · Huecos · Reseñas · Marketing"}
+            </span>
+            <ArrowRight size={12} className="ml-auto shrink-0 text-slate-400" />
+          </Link>
+        </div>
       </section>
 
       {/* 2 ── Acciones rápidas */}
       <QuickActionsRow services={quickServices} barbers={quickBarbers} />
 
       {/* 3 ── KPI Bar — 4 métricas del día */}
-      <PremiumDashboardMotion className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <PremiumDashboardMotion className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <PremiumDashboardItem>
           <StatCard
             kicker="Ingresos de hoy"
