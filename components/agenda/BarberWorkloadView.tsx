@@ -64,7 +64,7 @@ function BarberWorkloadCard({ workload, index, onViewAgenda }: CardProps) {
 
       {/* Header */}
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#080A0F] text-[#D4AF37]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-[#8A641F]">
           <Scissors size={16} />
         </div>
         <div>
@@ -196,7 +196,7 @@ export function BarberWorkloadView({ workloads, onViewBarberAgenda }: Props) {
         </p>
         <a
           href="/dashboard/barberos"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-2xl bg-[#080A0F] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#1a1d26]"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition hover:bg-slate-700"
         >
           <ArrowRight size={13} /> Añadir barberos
         </a>

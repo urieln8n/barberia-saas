@@ -209,7 +209,7 @@ export default async function AutomatizacionesPage() {
             <article key={rule.type} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111111] text-[#D9B766]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-[#8A641F]">
                     <Icon size={18} />
                   </div>
                   <div>

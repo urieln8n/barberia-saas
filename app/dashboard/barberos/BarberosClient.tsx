@@ -299,7 +299,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#111111] text-xl font-black uppercase text-[#D9B766]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-xl font-black uppercase text-[#8A641F]">
                     {b.name.charAt(0)}
                   </div>
                   <div className="flex items-center gap-1">
@@ -359,7 +359,7 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                     <button
                       type="submit"
                       disabled={savingSchedule === b.id}
-                      className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#111827] px-3 text-xs font-black text-white transition hover:bg-[#0F172A] disabled:opacity-40"
+                      className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 text-xs font-black text-white transition hover:bg-slate-700 disabled:opacity-40"
                     >
                       <Save size={14} />
                       {savingSchedule === b.id ? "Guardando" : "Guardar"}
