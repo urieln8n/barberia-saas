@@ -172,16 +172,14 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
     { data: rawProfile },
   ] = await Promise.all([
     // image_url/photo_url disponibles tras migración 035
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any)
+      (supabase as any)
       .from("services")
       .select("id, name, description, price, duration_minutes, image_url")
       .eq("barbershop_id", barbershop.id)
       .eq("active", true)
       .order("created_at", { ascending: true }),
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any)
+      (supabase as any)
       .from("barbers")
       .select("id, name, photo_url")
       .eq("barbershop_id", barbershop.id)

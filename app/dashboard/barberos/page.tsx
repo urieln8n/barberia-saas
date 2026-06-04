@@ -14,7 +14,6 @@ export default async function BarberosPage() {
   if (!barbershopId) redirect("/onboarding");
 
   // photo_url disponible tras migración 035 — cast necesario hasta regenerar tipos
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: barbers } = await (supabase as any)
     .from("barbers")
     .select("id, name, phone, active, photo_url")

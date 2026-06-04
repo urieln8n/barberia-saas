@@ -105,7 +105,6 @@ export async function uploadServiceImage(serviceId: string, file: File): Promise
   const { data: { publicUrl } } = supabase.storage.from("barberiaos-media").getPublicUrl(path);
 
   // image_url existe tras migración 035
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (supabase as any)
     .from("services")
     .update({ image_url: publicUrl })

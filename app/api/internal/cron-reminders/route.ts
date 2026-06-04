@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
   // Buscar citas activas de mañana con email de cliente y sin recordatorio enviado.
   // Se usa `as any` porque reminder_24h_sent_at requiere ejecutar la migración 036
   // antes de que Supabase regenere los tipos TypeScript.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: appointments, error } = await (supabase as any)
     .from("appointments")
     .select(`
@@ -86,8 +85,7 @@ export async function GET(req: NextRequest) {
       });
 
       // Marcar como enviado para evitar duplicados
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
+          await (supabase as any)
         .from("appointments")
         .update({ reminder_24h_sent_at: new Date().toISOString() })
         .eq("id", (appt as any).id);
