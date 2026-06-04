@@ -9,24 +9,20 @@ import {
   Check,
   ChevronDown,
   Clock3,
-  CreditCard,
   Crown,
   Instagram,
   MessageCircle,
   QrCode,
   ReceiptText,
-  Scissors,
   ShieldCheck,
   Star,
   TrendingUp,
   Users,
   WalletCards,
-  Zap,
-  Smartphone,
   Bell,
-  FileText,
 } from "lucide-react";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -118,7 +114,7 @@ const journeySteps = [
   { icon: Instagram, label: "Instagram / QR / Google", desc: "El cliente ve tu link" },
   { icon: CalendarDays, label: "Elige fecha y barbero", desc: "En 60 segundos" },
   { icon: ShieldCheck, label: "Confirmación por email", desc: "Automática" },
-  { icon: Scissors, label: "Visita a la barbería", desc: "Recordatorio 24h antes" },
+  { icon: Star, label: "Visita a la barbería", desc: "Recordatorio 24h antes" },
   { icon: Star, label: "Solicitud de reseña", desc: "Automática al salir" },
 ];
 
@@ -362,12 +358,9 @@ function DashboardMockup() {
 function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#EAEAEA] bg-white/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#111111]">
-            <Scissors size={16} className="text-[#D4AF37]" />
-          </div>
-          <span className="text-[15px] font-black text-[#111111]">BarberíaOS</span>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 lg:px-8">
+        <Link href="/" aria-label="BarberíaOS — inicio">
+          <BarberiaOSLogo variant="full" size={36} showText tone="light" />
         </Link>
 
         <nav className="hidden items-center gap-7 text-[13px] font-semibold text-slate-600 md:flex">
@@ -980,12 +973,9 @@ function Footer() {
     <footer className="border-t border-[#EAEAEA] bg-[#FAFAFA] px-5 py-12 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#111111]">
-              <Scissors size={16} className="text-[#D4AF37]" />
-            </div>
-            <span className="text-[15px] font-black text-[#111111]">BarberíaOS</span>
-          </div>
+          <Link href="/" aria-label="BarberíaOS — inicio">
+            <BarberiaOSLogo variant="full" size={32} showText tone="light" />
+          </Link>
 
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[13px] text-slate-500">
             {links.map((l) => (
