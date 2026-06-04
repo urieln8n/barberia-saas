@@ -18,6 +18,7 @@ import {
   createAutomationEvent,
 } from "@/src/lib/automation/events";
 import { sendBookingConfirmation } from "@/src/lib/email/send-booking-confirmation";
+import { sendOwnerBookingNotification } from "@/src/lib/email/send-owner-booking-notification";
 
 const ACTIVE_STATUSES = BLOCKING_STATUSES;
 const ACTIVE_STATUS_QUERY_VALUES = [...BLOCKING_STATUSES] as unknown as [
@@ -62,6 +63,7 @@ type BarberRow = {
 
 type ServiceRow = {
   name: string | null;
+  price: number | null;
   duration_minutes: number | null;
 };
 
@@ -501,7 +503,7 @@ export async function createPublicBooking(
 
   const { data: barbershop, error: barbershopError } = await supabase
     .from("barbershops")
-    .select("id, name, slug, phone, address, city, public_booking_enabled")
+    .select("id, name, slug, phone, address, city, public_booking_enabled, owner_id")
     .eq("id", barbershopId)
     .maybeSingle();
 
@@ -527,7 +529,7 @@ export async function createPublicBooking(
 
   const { data: serviceData, error: serviceError } = await supabase
     .from("services")
-    .select("name, duration_minutes")
+    .select("name, price, duration_minutes")
     .eq("id", serviceId)
     .eq("barbershop_id", barbershopId)
     .eq("active", true)
@@ -704,10 +706,11 @@ export async function createPublicBooking(
       }),
     });
 
-    // Email de confirmación al cliente (no bloquea la reserva si falla)
     const clientEmail = parsed.data.email?.trim();
+    const assignedBarber = activeBarbers.find((b) => b.id === barberId);
+
+    // Email de confirmación al cliente (falla en silencio)
     if (clientEmail) {
-      const assignedBarber = activeBarbers.find((b) => b.id === barberId);
       await sendBookingConfirmation({
         clientName: name,
         clientEmail,
@@ -720,6 +723,35 @@ export async function createPublicBooking(
         appointmentDate: date,
         appointmentTime: time,
       });
+    }
+
+    // Email de notificación al dueño (falla de forma independiente al del cliente)
+    if (barbershop.owner_id) {
+      const { data: ownerProfile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", barbershop.owner_id)
+        .maybeSingle();
+
+      const ownerEmail = ownerProfile?.email?.trim();
+      if (ownerEmail) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+        await sendOwnerBookingNotification({
+          clientName: name,
+          clientPhone: phone,
+          clientEmail: clientEmail ?? null,
+          barbershopName: barbershop.name ?? barbershop.slug,
+          serviceName: service.name ?? serviceId,
+          servicePrice: service.price ?? null,
+          barberName: assignedBarber?.name ?? null,
+          appointmentDate: date,
+          appointmentTime: time,
+          barbershopAddress: barbershop.address ?? null,
+          barbershopCity: barbershop.city ?? null,
+          ownerEmail,
+          dashboardUrl: `${appUrl}/dashboard/agenda`,
+        });
+      }
     }
   }
 
