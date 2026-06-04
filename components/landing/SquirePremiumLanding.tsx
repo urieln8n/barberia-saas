@@ -73,7 +73,7 @@ function FadeIn({
 function CountUpNumber({ target, suffix, duration = 1600 }: { target: number; suffix: string; duration?: number }) {
   const [val, setVal]   = useState(0);
   const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
 
   // IntersectionObserver — no hooks from framer-motion needed here
   useEffect(() => {
@@ -100,7 +100,7 @@ function CountUpNumber({ target, suffix, duration = 1600 }: { target: number; su
     return () => clearInterval(id);
   }, [started, target, duration]);
 
-  return <div ref={ref} className="tabular-nums">{val}{suffix}</div>;
+  return <span ref={ref} className="tabular-nums">{val}{suffix}</span>;
 }
 
 // ─── Reusable atoms ──────────────────────────────────────────────────────────
