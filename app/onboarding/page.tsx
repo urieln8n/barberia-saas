@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Scissors, Store, MapPin, Phone, Link2 } from "lucide-react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Scissors, Store, MapPin, Phone, Link2, AlertCircle } from "lucide-react";
 import { createBarbershop } from "./actions";
 import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 
@@ -17,9 +18,19 @@ function toSlug(value: string) {
 }
 
 export default function OnboardingPage() {
+  return (
+    <Suspense>
+      <OnboardingForm />
+    </Suspense>
+  );
+}
+
+function OnboardingForm() {
   const [name, setName]   = useState("");
   const [slug, setSlug]   = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
+  const searchParams = useSearchParams();
+  const slugError = searchParams.get("error") === "slug";
 
   function handleNameChange(value: string) {
     setName(value);
@@ -49,6 +60,13 @@ export default function OnboardingPage() {
           <p className="mt-1 text-sm text-neutral-500">
             Configura los datos básicos. Podrás cambiarlos después.
           </p>
+
+          {slugError && (
+            <div className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <AlertCircle size={16} className="mt-0.5 shrink-0" />
+              <span>Esa URL ya está en uso. Elige otra diferente para tu barbería.</span>
+            </div>
+          )}
 
           <form action={createBarbershop} className="mt-6 flex flex-col gap-4">
 

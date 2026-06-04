@@ -30,21 +30,40 @@ export async function createClient_(formData: FormData) {
 }
 
 export async function updateClient_(formData: FormData) {
-  const { supabase } = await getBarbershopId();
+  const { supabase, barbershopId } = await getBarbershopId();
+  if (!barbershopId) return { error: "Sin barbería" };
+
   const id = formData.get("id") as string;
 
-  await supabase.from("clients").update({
-    name:  (formData.get("name") as string).trim(),
-    phone: (formData.get("phone") as string)?.trim() || null,
-    email: (formData.get("email") as string)?.trim() || null,
-    notes: (formData.get("notes") as string)?.trim() || null,
-  }).eq("id", id);
+  const { error } = await supabase
+    .from("clients")
+    .update({
+      name:  (formData.get("name") as string).trim(),
+      phone: (formData.get("phone") as string)?.trim() || null,
+      email: (formData.get("email") as string)?.trim() || null,
+      notes: (formData.get("notes") as string)?.trim() || null,
+    })
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
+
+  if (error) return { error: error.message };
 
   revalidatePath("/dashboard/clientes");
+  return { error: null };
 }
 
 export async function deleteClient_(id: string) {
-  const { supabase } = await getBarbershopId();
-  await supabase.from("clients").delete().eq("id", id);
+  const { supabase, barbershopId } = await getBarbershopId();
+  if (!barbershopId) return { error: "Sin barbería" };
+
+  const { error } = await supabase
+    .from("clients")
+    .delete()
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
+
+  if (error) return { error: error.message };
+
   revalidatePath("/dashboard/clientes");
+  return { error: null };
 }
