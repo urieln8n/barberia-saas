@@ -17,6 +17,7 @@ import {
   buildAppointmentCreatedPayload,
   createAutomationEvent,
 } from "@/src/lib/automation/events";
+import { sendBookingConfirmation } from "@/src/lib/email/send-booking-confirmation";
 
 const ACTIVE_STATUSES = BLOCKING_STATUSES;
 const ACTIVE_STATUS_QUERY_VALUES = [...BLOCKING_STATUSES] as unknown as [
@@ -60,6 +61,7 @@ type BarberRow = {
 };
 
 type ServiceRow = {
+  name: string | null;
   duration_minutes: number | null;
 };
 
@@ -499,7 +501,7 @@ export async function createPublicBooking(
 
   const { data: barbershop, error: barbershopError } = await supabase
     .from("barbershops")
-    .select("id, slug, public_booking_enabled")
+    .select("id, name, slug, phone, address, city, public_booking_enabled")
     .eq("id", barbershopId)
     .maybeSingle();
 
@@ -525,7 +527,7 @@ export async function createPublicBooking(
 
   const { data: serviceData, error: serviceError } = await supabase
     .from("services")
-    .select("duration_minutes")
+    .select("name, duration_minutes")
     .eq("id", serviceId)
     .eq("barbershop_id", barbershopId)
     .eq("active", true)
@@ -701,6 +703,24 @@ export async function createPublicBooking(
         startTime: time,
       }),
     });
+
+    // Email de confirmación al cliente (no bloquea la reserva si falla)
+    const clientEmail = parsed.data.email?.trim();
+    if (clientEmail) {
+      const assignedBarber = activeBarbers.find((b) => b.id === barberId);
+      await sendBookingConfirmation({
+        clientName: name,
+        clientEmail,
+        barbershopName: barbershop.name ?? barbershop.slug,
+        barbershopAddress: barbershop.address ?? null,
+        barbershopCity: barbershop.city ?? null,
+        barbershopPhone: barbershop.phone ?? null,
+        serviceName: service.name ?? serviceId,
+        barberName: assignedBarber?.name ?? null,
+        appointmentDate: date,
+        appointmentTime: time,
+      });
+    }
   }
 
   revalidatePath("/dashboard");
