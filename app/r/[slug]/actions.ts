@@ -298,6 +298,7 @@ export async function getUnavailableSlots(
 ): Promise<{
   unavailableSlots: string[];
   allSlots: string[];
+  slotAvailableCount: Record<string, number>; // nº barberos libres por slot
   closedReason: string | null;
   usesFallbackSchedule: boolean;
   error: string | null;
@@ -312,15 +313,16 @@ export async function getUnavailableSlots(
       ? input.barberId.trim()
       : null;
 
-  if (!barbershopId || !date) {
-    return {
-      unavailableSlots: [],
-      allSlots: [],
-      closedReason: null,
-      usesFallbackSchedule: true,
-      error: null,
-    };
-  }
+  const EMPTY_RESULT = {
+    unavailableSlots: [] as string[],
+    allSlots: [] as string[],
+    slotAvailableCount: {} as Record<string, number>,
+    closedReason: null,
+    usesFallbackSchedule: true,
+    error: null,
+  };
+
+  if (!barbershopId || !date) return { ...EMPTY_RESULT };
 
   let durationMinutes = 30;
 
@@ -336,13 +338,7 @@ export async function getUnavailableSlots(
     const service = serviceData as ServiceRow | null;
 
     if (serviceError || !service) {
-      return {
-        unavailableSlots: [],
-        allSlots: [],
-        closedReason: null,
-        usesFallbackSchedule: true,
-        error: "Servicio no disponible.",
-      };
+      return { ...EMPTY_RESULT, error: "Servicio no disponible." };
     }
 
     durationMinutes = service.duration_minutes ?? 30;
@@ -362,25 +358,13 @@ export async function getUnavailableSlots(
   const { data: barbersData, error: barbersError } = await barbersQuery;
 
   if (barbersError) {
-    return {
-      unavailableSlots: [],
-      allSlots: [],
-      closedReason: null,
-      usesFallbackSchedule: true,
-      error: barbersError.message,
-    };
+    return { ...EMPTY_RESULT, error: barbersError.message };
   }
 
   const activeBarbers = (barbersData ?? []) as BarberRow[];
 
   if (activeBarbers.length === 0) {
-    return {
-      unavailableSlots: [],
-      allSlots: [],
-      closedReason: null,
-      usesFallbackSchedule: true,
-      error: "Esta barbería no tiene barberos activos.",
-    };
+    return { ...EMPTY_RESULT, error: "Esta barbería no tiene barberos activos." };
   }
 
   const activeBarberIds = activeBarbers.map((barber) => barber.id);
@@ -390,17 +374,11 @@ export async function getUnavailableSlots(
     .select("start_time, end_time, barber_id")
     .eq("barbershop_id", barbershopId)
     .eq("appointment_date", date)
-        .in("status", ACTIVE_STATUS_QUERY_VALUES)
+    .in("status", ACTIVE_STATUS_QUERY_VALUES)
     .in("barber_id", activeBarberIds);
 
   if (appointmentsError) {
-    return {
-      unavailableSlots: [],
-      allSlots: [],
-      closedReason: null,
-      usesFallbackSchedule: true,
-      error: appointmentsError.message,
-    };
+    return { ...EMPTY_RESULT, error: appointmentsError.message };
   }
 
   const [
@@ -421,30 +399,48 @@ export async function getUnavailableSlots(
 
   if (schedulesError || closuresError) {
     return {
-      unavailableSlots: [],
-      allSlots: [],
-      closedReason: null,
-      usesFallbackSchedule: true,
-      error:
-        schedulesError?.message ??
-        closuresError?.message ??
-        "No se pudo comprobar la disponibilidad.",
+      ...EMPTY_RESULT,
+      error: schedulesError?.message ?? closuresError?.message ?? "No se pudo comprobar la disponibilidad.",
     };
   }
+
+  const schedules  = (schedulesData  ?? []) as ScheduleWindow[];
+  const closures   = (closuresData   ?? []) as ClosureWindow[];
+  const appointments = (appointmentsData ?? []) as AppointmentWindow[];
 
   const availability = buildRealAvailability({
     activeBarberIds,
     selectedBarberId: barberId,
     date,
     durationMinutes,
-    schedules: (schedulesData ?? []) as ScheduleWindow[],
-    closures: (closuresData ?? []) as ClosureWindow[],
-    appointments: (appointmentsData ?? []) as AppointmentWindow[],
+    schedules,
+    closures,
+    appointments,
   });
+
+  // Calcular cuántos barberos están libres por slot (para badges visuales)
+  const slotAvailableCount: Record<string, number> = {};
+  for (const slot of availability.allSlots) {
+    let freeCount = 0;
+    for (const bid of activeBarberIds) {
+      const barberAvail = buildRealAvailability({
+        activeBarberIds,
+        selectedBarberId: bid,
+        date,
+        durationMinutes,
+        schedules,
+        closures,
+        appointments,
+      });
+      if (barberAvail.availableSlots.includes(slot)) freeCount++;
+    }
+    slotAvailableCount[slot] = freeCount;
+  }
 
   return {
     unavailableSlots: availability.unavailableSlots,
     allSlots: availability.allSlots,
+    slotAvailableCount,
     closedReason: availability.closedReason,
     usesFallbackSchedule: availability.usesFallbackSchedule,
     error: null,

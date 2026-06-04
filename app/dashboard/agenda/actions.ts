@@ -6,6 +6,7 @@ import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { assertCanCreateBooking, getBarbershopPlanUsage } from "@/src/lib/plans/limits";
 import { checkSlotAvailability } from "@/src/lib/appointments/check-availability";
+import { sendCancellationEmail } from "@/src/lib/email/send-cancellation-email";
 
 type ExistingAppointmentRow = {
   id: string;
@@ -353,6 +354,20 @@ export async function updateAppointmentStatus(id: string, status: string) {
 
   const supabase = createServiceRoleClient();
 
+  // Fetch datos completos antes de actualizar (necesarios para el email de cancelación)
+  const { data: apptData } = await supabase
+    .from("appointments")
+    .select(`
+      id, status, appointment_date, start_time,
+      clients(name, email),
+      services(name),
+      barbers(name),
+      barbershops(name, slug, phone)
+    `)
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from("appointments")
     .update({ status: status as AppointmentStatus })
@@ -361,6 +376,30 @@ export async function updateAppointmentStatus(id: string, status: string) {
 
   if (error) {
     return { error: error.message };
+  }
+
+  // Enviar email de cancelación si procede (falla en silencio)
+  if (status === "cancelled" && apptData) {
+    const client = Array.isArray(apptData.clients) ? apptData.clients[0] : apptData.clients;
+    const service = Array.isArray(apptData.services) ? apptData.services[0] : apptData.services;
+    const barber = Array.isArray(apptData.barbers) ? apptData.barbers[0] : apptData.barbers;
+    const barbershop = Array.isArray(apptData.barbershops) ? apptData.barbershops[0] : apptData.barbershops;
+    const clientEmail = (client as { email?: string | null } | null)?.email?.trim();
+
+    if (clientEmail && barbershop && service) {
+      await sendCancellationEmail({
+        clientName: (client as { name?: string | null } | null)?.name ?? "Cliente",
+        clientEmail,
+        barbershopName: (barbershop as { name?: string | null }).name ?? "",
+        barbershopSlug: (barbershop as { slug?: string | null }).slug ?? "",
+        barbershopPhone: (barbershop as { phone?: string | null }).phone ?? null,
+        serviceName: (service as { name?: string | null }).name ?? "",
+        barberName: (barber as { name?: string | null } | null)?.name ?? null,
+        appointmentDate: apptData.appointment_date,
+        appointmentTime: apptData.start_time,
+        appUrl: process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "",
+      });
+    }
   }
 
   revalidatePath("/dashboard");
