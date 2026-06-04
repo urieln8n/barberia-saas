@@ -71,3 +71,47 @@ export async function deleteService(id: string) {
   revalidatePath("/dashboard/servicios");
   return { success: true };
 }
+
+export async function uploadServiceImage(serviceId: string, file: File): Promise<{ url: string | null; error: string | null }> {
+  const { supabase, barbershopId } = await getBarbershopId();
+  if (!barbershopId) return { url: null, error: "No se encontró la barbería." };
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    return { url: null, error: "Solo se aceptan imágenes JPG, PNG o WebP." };
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    return { url: null, error: "La imagen no puede superar 2 MB." };
+  }
+
+  const { data: service } = await supabase
+    .from("services")
+    .select("id")
+    .eq("id", serviceId)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  if (!service) return { url: null, error: "Servicio no válido." };
+
+  const ext = file.type === "image/webp" ? "webp" : file.type === "image/png" ? "png" : "jpg";
+  const path = `services/${barbershopId}/${serviceId}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("barberiaos-media")
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (uploadError) return { url: null, error: uploadError.message };
+
+  const { data: { publicUrl } } = supabase.storage.from("barberiaos-media").getPublicUrl(path);
+
+  // image_url existe tras migración 035
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any)
+    .from("services")
+    .update({ image_url: publicUrl })
+    .eq("id", serviceId)
+    .eq("barbershop_id", barbershopId);
+
+  revalidatePath("/dashboard/servicios");
+  return { url: publicUrl, error: null };
+}

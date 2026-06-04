@@ -363,6 +363,7 @@ export function BookingForm({
   const [saving, setSaving] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
+  const [slotAvailableCount, setSlotAvailableCount] = useState<Record<string, number>>({});
   const [bookableSlots, setBookableSlots] = useState<string[]>(() =>
     generateTimeSlots(
       PUBLIC_BOOKING_FALLBACK_START_HOUR,
@@ -479,6 +480,7 @@ export function BookingForm({
 
       setUnavailableSlots(result.unavailableSlots);
       setBookableSlots(result.allSlots);
+      setSlotAvailableCount(result.slotAvailableCount ?? {});
       setClosedReason(result.closedReason);
 
       if (time && result.unavailableSlots.includes(time)) {
@@ -509,6 +511,7 @@ export function BookingForm({
     setSaving(false);
     setCheckingAvailability(false);
     setUnavailableSlots([]);
+    setSlotAvailableCount({});
     setClosedReason(null);
     setFormError(null);
   }
@@ -813,9 +816,20 @@ export function BookingForm({
                   </p>
                 )}
 
-                <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {visibleSlots.map((slot) => {
                     const isUnavailable = unavailableSlots.includes(slot);
+                    const isSelected = time === slot;
+                    const freeCount = slotAvailableCount[slot] ?? 0;
+
+                    let badge: { label: string; cls: string } | null = null;
+                    if (!isUnavailable && !isSelected && !checkingAvailability) {
+                      if (freeCount === 1) {
+                        badge = { label: "Última plaza", cls: "text-amber-600 bg-amber-50" };
+                      } else if (freeCount >= 2 && freeCount <= 3) {
+                        badge = { label: `${freeCount} plazas`, cls: "text-emerald-700 bg-emerald-50" };
+                      }
+                    }
 
                     return (
                       <button
@@ -824,28 +838,26 @@ export function BookingForm({
                         disabled={checkingAvailability || isUnavailable}
                         onClick={() => {
                           if (isUnavailable) {
-                            setFormError(
-                              "Esta hora ya no está disponible. Elige otra."
-                            );
+                            setFormError("Esta hora ya no está disponible. Elige otra.");
                             return;
                           }
-
                           setTime(slot);
                           setFormError(null);
                           setStep(4);
                         }}
-                        className={`min-h-12 rounded-xl border py-2 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
+                        className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border py-2.5 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
-                          : time === slot
+                            : isSelected
                             ? "border-[#111827] bg-[#111827] text-white"
-                            : "border-neutral-200 hover:border-[#111827] hover:bg-neutral-50"
+                            : "border-neutral-200 hover:border-[#D4AF66] hover:bg-[#FEFCF8]"
                         }`}
                       >
                         <span>{slot}</span>
-                        {isUnavailable && (
-                          <span className="block text-xs no-underline">
-                            Ocupado
+                        {isUnavailable && <span className="text-[10px] font-normal no-underline">Ocupado</span>}
+                        {badge && !isSelected && (
+                          <span className={`rounded-full px-1.5 py-px text-[9px] font-black ${badge.cls}`}>
+                            {badge.label}
                           </span>
                         )}
                       </button>

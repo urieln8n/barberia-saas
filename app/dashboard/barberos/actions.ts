@@ -199,3 +199,51 @@ export async function deleteClosure(id: string) {
   revalidatePath("/dashboard/barberos");
   return { success: true };
 }
+
+// Subida de foto de barbero a Supabase Storage
+// Requiere bucket 'barberiaos-media' creado en Supabase Dashboard
+export async function uploadBarberPhoto(barberId: string, file: File): Promise<{ url: string | null; error: string | null }> {
+  const { supabase, barbershopId } = await getBarbershopId();
+  if (!barbershopId) return { url: null, error: "No se encontró la barbería." };
+
+  // Validar tipo y tamaño
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    return { url: null, error: "Solo se aceptan imágenes JPG, PNG o WebP." };
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    return { url: null, error: "La imagen no puede superar 2 MB." };
+  }
+
+  // Verificar que el barbero pertenece a esta barbería
+  const { data: barber } = await supabase
+    .from("barbers")
+    .select("id")
+    .eq("id", barberId)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  if (!barber) return { url: null, error: "Barbero no válido." };
+
+  const ext = file.type === "image/webp" ? "webp" : file.type === "image/png" ? "png" : "jpg";
+  const path = `barbers/${barbershopId}/${barberId}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("barberiaos-media")
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (uploadError) return { url: null, error: uploadError.message };
+
+  const { data: { publicUrl } } = supabase.storage.from("barberiaos-media").getPublicUrl(path);
+
+  // Guardar URL en la tabla barbers (photo_url existe tras migración 035)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any)
+    .from("barbers")
+    .update({ photo_url: publicUrl })
+    .eq("id", barberId)
+    .eq("barbershop_id", barbershopId);
+
+  revalidatePath("/dashboard/barberos");
+  return { url: publicUrl, error: null };
+}
