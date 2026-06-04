@@ -40,7 +40,17 @@ export async function createPayment(formData: FormData) {
 }
 
 export async function deletePayment(id: string) {
-  const { supabase } = await getBarbershopId();
-  await supabase.from("payments").delete().eq("id", id);
+  const { supabase, barbershopId } = await getBarbershopId();
+  if (!barbershopId) return { error: "Sin barbería" };
+
+  const { error } = await supabase
+    .from("payments")
+    .delete()
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
+
+  if (error) return { error: error.message };
+
   revalidatePath("/dashboard/pagos");
+  return { error: null };
 }

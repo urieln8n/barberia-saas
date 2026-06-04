@@ -4,12 +4,10 @@ import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
-import { RetentionActions } from "./RetentionActions";
+import { ClientesClient } from "./ClientesClient";
 
 export const dynamic = "force-dynamic";
 
@@ -66,72 +64,6 @@ function getLocalDateISO() {
   return `${year}-${month}-${day}`;
 }
 
-function formatDate(date?: string | null) {
-  if (!date) return "Sin visitas";
-  return new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatTime(time?: string | null) {
-  if (!time) return "";
-  return time.slice(0, 5);
-}
-
-function statusLabel(status?: string | null) {
-  const labels: Record<string, string> = {
-    pending: "Pendiente",
-    scheduled: "Programada",
-    confirmed: "Confirmada",
-    completed: "Completada",
-    cancelled: "Cancelada",
-    no_show: "No apareció",
-  };
-
-  return status ? labels[status] ?? status : "Sin estado";
-}
-
-function statusBadgeClass(status?: string | null): string {
-  const classes: Record<string, string> = {
-    pending:   "bg-amber-50 text-amber-700 border-amber-100",
-    scheduled: "bg-amber-50 text-amber-700 border-amber-100",
-    confirmed: "bg-blue-50  text-blue-700  border-blue-100",
-    completed: "bg-green-50 text-green-700 border-green-100",
-    cancelled: "bg-red-50   text-red-700   border-red-100",
-    no_show:   "bg-red-50   text-red-700   border-red-100",
-  };
-  return classes[status ?? ""] ?? "bg-neutral-100 text-neutral-600 border-neutral-200";
-}
-
-function getPublicBaseUrl() {
-  return getConfiguredSiteUrl();
-}
-
-function buildRepeatBookingUrl({
-  baseUrl,
-  slug,
-  serviceId,
-  barberId,
-}: {
-  baseUrl: string;
-  slug: string;
-  serviceId: string | null;
-  barberId: string | null;
-}) {
-  const url = new URL(`/r/${slug}`, baseUrl);
-
-  if (serviceId) {
-    url.searchParams.set("service", serviceId);
-  }
-
-  if (barberId) {
-    url.searchParams.set("barber", barberId);
-  }
-
-  return url.toString();
-}
 
 async function getDataClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -391,9 +323,6 @@ export default async function ClientesPage() {
     );
     return !hasFuture;
   }).length;
-  const publicBaseUrl = getPublicBaseUrl();
-  const barbershopSlug = barbershopResult.data?.slug ?? null;
-
   const errorMessage =
     clientsResult.error?.message ??
     appointmentsResult.error?.message ??
@@ -528,207 +457,8 @@ export default async function ClientesPage() {
           </form>
         </div>
 
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-xl font-black text-neutral-950">
-                Clientes CRM
-              </h2>
-
-              <p className="mt-1 text-sm text-neutral-500">
-                Ficha comercial con estado, ultima visita, servicio, barbero favorito y acciones rapidas.
-              </p>
-            </div>
-          </div>
-
-          {clients.length === 0 ? (
-            <EmptyState
-              icon={UserPlus}
-              title="Todavía no hay clientes guardados"
-              description="Los clientes aparecerán automáticamente cuando hagan una reserva desde tu link o QR. También puedes crear un cliente de prueba manualmente."
-              action={
-                <a href="#crear-cliente" className="btn-primary">
-                  Crear cliente de prueba
-                </a>
-              }
-            />
-          ) : (
-            <>
-              <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-neutral-200 md:block">
-                <table className="w-full min-w-[640px] text-left text-sm">
-                  <thead className="bg-neutral-50 text-xs uppercase text-neutral-500">
-                    <tr>
-                      <th className="px-4 py-3">Cliente</th>
-                      <th className="px-4 py-3">Teléfono</th>
-                      <th className="px-4 py-3">Última visita</th>
-                      <th className="px-4 py-3">Servicio</th>
-                      <th className="px-4 py-3">Citas</th>
-                      <th className="px-4 py-3">Estado</th>
-                      <th className="px-4 py-3 text-right">Retención</th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="divide-y divide-neutral-100">
-                    {clients.map((client) => (
-                      <tr key={client.id} className="hover:bg-neutral-50">
-                        <td className="px-4 py-4">
-                          <Link
-                            href={`/dashboard/clientes/${client.id}`}
-                            className="font-bold text-neutral-950 transition hover:text-[#2F6FEB]"
-                          >
-                            {client.name}
-                          </Link>
-                          {client.email && (
-                            <p className="text-xs text-neutral-500">
-                              {client.email}
-                            </p>
-                          )}
-                        </td>
-
-                        <td className="px-4 py-4 text-neutral-600">
-                          {client.phone || "Sin teléfono"}
-                        </td>
-
-                        <td className="px-4 py-4 text-neutral-600">
-                          <p>{formatDate(client.lastAppointmentDate)}</p>
-                          {client.lastAppointmentTime && (
-                            <p className="text-xs text-neutral-500">
-                              {formatTime(client.lastAppointmentTime)}
-                            </p>
-                          )}
-                        </td>
-
-                        <td className="px-4 py-4 text-neutral-600">
-                          {client.lastServiceName || "Sin servicio"}
-                        </td>
-
-                        <td className="px-4 py-4 font-semibold text-neutral-950">
-                          {client.totalAppointments}
-                        </td>
-
-                        <td className="px-4 py-4">
-                          <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(client.lastStatus)}`}>
-                            {statusLabel(client.lastStatus)}
-                          </span>
-                        </td>
-
-                        <td className="px-4 py-4">
-                          {barbershopSlug ? (
-                            <RetentionActions
-                              clientName={client.name}
-                              bookingUrl={buildRepeatBookingUrl({
-                                baseUrl: publicBaseUrl,
-                                slug: barbershopSlug,
-                                serviceId: client.lastServiceId,
-                                barberId: client.lastBarberActive
-                                  ? client.lastBarberId
-                                  : null,
-                              })}
-                              canReserveAgain={Boolean(
-                                client.lastServiceId && client.lastServiceActive
-                              )}
-                            />
-                          ) : (
-                            <span className="text-xs text-neutral-500">
-                              Sin enlace público
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-6 grid gap-3 md:hidden">
-                {clients.map((client) => (
-                  <article
-                    key={client.id}
-                    className="rounded-2xl border border-neutral-200 bg-white p-4"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-bold text-neutral-950">
-                          {client.name}
-                        </p>
-                        <p className="text-sm text-neutral-500">
-                          {client.phone || "Sin teléfono"}
-                        </p>
-                      </div>
-
-                      <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-700">
-                        {client.totalAppointments} citas
-                      </span>
-                    </div>
-
-                    <div className="mt-4 grid gap-2 text-sm text-neutral-600">
-                      <p>
-                        <span className="font-semibold text-neutral-950">
-                          Última visita:
-                        </span>{" "}
-                        {formatDate(client.lastAppointmentDate)}
-                      </p>
-
-                      <p>
-                        <span className="font-semibold text-neutral-950">
-                          Servicio:
-                        </span>{" "}
-                        {client.lastServiceName || "Sin servicio"}
-                      </p>
-
-                      <p>
-                        <span className="font-semibold text-neutral-950">
-                          Barbero:
-                        </span>{" "}
-                        {client.lastBarberName || "Sin barbero"}
-                      </p>
-
-                      <p className="flex items-center gap-2">
-                        <span className="font-semibold text-neutral-950">Estado:</span>
-                        <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(client.lastStatus)}`}>
-                          {statusLabel(client.lastStatus)}
-                        </span>
-                      </p>
-                    </div>
-
-                    {client.notes && (
-                      <p className="mt-3 rounded-2xl bg-neutral-50 p-3 text-xs text-neutral-500">
-                        {client.notes}
-                      </p>
-                    )}
-
-                    {barbershopSlug && (
-                      <div className="mt-4 border-t border-neutral-100 pt-4">
-                        <RetentionActions
-                          clientName={client.name}
-                          bookingUrl={buildRepeatBookingUrl({
-                            baseUrl: publicBaseUrl,
-                            slug: barbershopSlug,
-                            serviceId: client.lastServiceId,
-                            barberId: client.lastBarberActive
-                              ? client.lastBarberId
-                              : null,
-                          })}
-                          canReserveAgain={Boolean(
-                            client.lastServiceId && client.lastServiceActive
-                          )}
-                        />
-                      </div>
-                    )}
-
-                    <div className="mt-3">
-                      <Link
-                        href={`/dashboard/clientes/${client.id}`}
-                        className="inline-flex min-h-10 items-center justify-center rounded-xl border border-neutral-200 px-3 py-2 text-xs font-bold text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-950"
-                      >
-                        Ver ficha
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </>
-          )}
+        <div className="min-w-0">
+          <ClientesClient clients={clients} barbershopId={barbershopId} />
         </div>
       </section>
     </div>

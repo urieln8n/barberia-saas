@@ -201,18 +201,27 @@ export async function deleteClosure(id: string) {
 }
 
 // Subida de foto de barbero a Supabase Storage
-// Requiere bucket 'barberiaos-media' creado en Supabase Dashboard
-export async function uploadBarberPhoto(barberId: string, file: File): Promise<{ url: string | null; error: string | null }> {
+// Recibe FormData con campos "barber_id" y "file" — Server Actions no pueden
+// serializar File directamente; FormData es el único canal correcto en Next.js.
+export async function uploadBarberPhoto(formData: FormData): Promise<{ url: string | null; error: string | null }> {
   const { supabase, barbershopId } = await getBarbershopId();
   if (!barbershopId) return { url: null, error: "No se encontró la barbería." };
+
+  const barberId = String(formData.get("barber_id") ?? "").trim();
+  const file = formData.get("file");
+
+  if (!barberId) return { url: null, error: "ID de barbero no proporcionado." };
+  if (!(file instanceof File) || file.size === 0) {
+    return { url: null, error: "No se recibió ningún archivo." };
+  }
 
   // Validar tipo y tamaño
   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
   if (!allowedTypes.includes(file.type)) {
     return { url: null, error: "Solo se aceptan imágenes JPG, PNG o WebP." };
   }
-  if (file.size > 2 * 1024 * 1024) {
-    return { url: null, error: "La imagen no puede superar 2 MB." };
+  if (file.size > 5 * 1024 * 1024) {
+    return { url: null, error: "La imagen no puede superar 5 MB." };
   }
 
   // Verificar que el barbero pertenece a esta barbería
