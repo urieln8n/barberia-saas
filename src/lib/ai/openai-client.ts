@@ -2,7 +2,7 @@ import "server-only";
 import OpenAI from "openai";
 import { OWNER_AI_RESPONSE_SCHEMA } from "./owner-ai-prompts";
 
-export const DEFAULT_OWNER_AI_MODEL = "gpt-5.4-mini";
+export const DEFAULT_OWNER_AI_MODEL = "gpt-4o-mini";
 
 let cachedClient: OpenAI | null = null;
 
