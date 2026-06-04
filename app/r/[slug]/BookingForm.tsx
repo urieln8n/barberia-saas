@@ -6,7 +6,10 @@ import {
   Clock,
   ChevronLeft,
   CalendarDays,
+  CalendarPlus,
   CheckCircle,
+  Download,
+  Navigation,
   User,
   Scissors,
   Phone,
@@ -42,6 +45,8 @@ type Props = {
   barbershopSlug: string;
   barbershopName: string;
   barbershopCity: string;
+  barbershopPhone: string | null;
+  barbershopMapsHref: string | null;
   services: Service[];
   barbers: Barber[];
   initialServiceId?: string | null;
@@ -269,11 +274,76 @@ function ConfirmButton({
   );
 }
 
+// ─── Avatar color palette para barberos ─────────────────────────────────────
+const BARBER_COLORS = [
+  "bg-violet-100 text-violet-700",
+  "bg-blue-100 text-blue-700",
+  "bg-emerald-100 text-emerald-700",
+  "bg-amber-100 text-amber-700",
+  "bg-rose-100 text-rose-700",
+  "bg-cyan-100 text-cyan-700",
+];
+
+function getBarberColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return BARBER_COLORS[Math.abs(hash) % BARBER_COLORS.length];
+}
+
+// ─── Generadores de calendario ───────────────────────────────────────────────
+function buildCalendarTimes(date: string, time: string, durationMinutes: number) {
+  const dateCompact = date.replace(/-/g, "");
+  const timeCompact = time.replace(":", "");
+  const startDT = `${dateCompact}T${timeCompact}00`;
+  const [h, m] = time.split(":").map(Number);
+  const endTotal = h * 60 + m + durationMinutes;
+  const endH = String(Math.floor(endTotal / 60)).padStart(2, "0");
+  const endM = String(endTotal % 60).padStart(2, "0");
+  const endDT = `${dateCompact}T${endH}${endM}00`;
+  return { startDT, endDT };
+}
+
+function buildGoogleCalendarUrl(title: string, date: string, time: string, durationMinutes: number, location: string, description: string): string {
+  const { startDT, endDT } = buildCalendarTimes(date, time, durationMinutes);
+  const params = new URLSearchParams({ text: title, dates: `${startDT}/${endDT}`, details: description, location });
+  return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
+}
+
+function downloadICS(title: string, date: string, time: string, durationMinutes: number, location: string, description: string) {
+  const { startDT, endDT } = buildCalendarTimes(date, time, durationMinutes);
+  const uid = `barberiaos-${date}-${time.replace(":", "")}-${Math.random().toString(36).slice(2)}@barberiaos.com`;
+  const ics = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BarberíaOS//ES", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTART:${startDT}`,
+    `DTEND:${endDT}`,
+    `SUMMARY:${title}`,
+    `DESCRIPTION:${description.replace(/\n/g, "\\n")}`,
+    location ? `LOCATION:${location}` : "",
+    "STATUS:CONFIRMED",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
+
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cita-barberia.ics";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 export function BookingForm({
   barbershopId,
   barbershopSlug,
   barbershopName,
   barbershopCity,
+  barbershopPhone,
+  barbershopMapsHref,
   services,
   barbers,
   initialServiceId = null,
@@ -675,13 +745,15 @@ export function BookingForm({
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F8FAFC] text-sm font-black uppercase text-[#111827]">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl text-sm font-black uppercase ${getBarberColor(b.name)}`}>
                       {b.name.charAt(0)}
                     </div>
-
                     <div>
                       <p className="font-bold">{b.name}</p>
-                      <p className="text-sm text-neutral-500">Barbero</p>
+                      <p className="flex items-center gap-1 text-sm text-neutral-500">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                        Disponible
+                      </p>
                     </div>
                   </div>
                 </ChoiceButton>
@@ -1013,77 +1085,111 @@ export function BookingForm({
           </section>
         )}
 
-        {/* ── Reserva recibida ── */}
-        {step === 6 && (
-          <section>
-            <div className="text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-                <CheckCircle size={36} className="text-green-600" />
+        {/* ── Reserva confirmada ── */}
+        {step === 6 && (() => {
+          const durationMinutes = service?.duration_minutes ?? 30;
+          const barberLabel = barber?.id === "any" ? "Primer barbero disponible" : (barber?.name ?? "");
+          const calTitle = `Cita en ${barbershopName}`;
+          const calDesc = [`${service?.name ?? ""}`, barberLabel ? `Con ${barberLabel}` : ""].filter(Boolean).join(" · ");
+          const calLocation = [barbershopCity].filter(Boolean).join(", ");
+          const googleCalUrl = date && time ? buildGoogleCalendarUrl(calTitle, date, time, durationMinutes, calLocation, calDesc) : null;
+
+          return (
+            <section className="space-y-4">
+
+              {/* Hero confirmación */}
+              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 p-6 text-center">
+                <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 shadow-[0_0_0_6px_rgba(16,185,129,0.12)]">
+                  <CheckCircle size={34} className="text-emerald-600" />
+                </div>
+                <h2 className="mt-4 text-2xl font-black text-slate-950">¡Reserva confirmada!</h2>
+                <p className="mt-1.5 text-sm text-slate-500">
+                  Tu cita en <span className="font-semibold text-slate-800">{barbershopName}</span> está registrada.
+                </p>
+                {email && (
+                  <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-emerald-700">
+                    <Mail size={12} />
+                    Te enviamos un email de confirmación a <span className="font-semibold">{email}</span>
+                  </p>
+                )}
               </div>
 
-              <h2 className="mt-4 text-2xl font-black">¡Reserva recibida!</h2>
-
-              <p className="mt-2 text-neutral-500">
-                Tu cita en{" "}
-                <span className="font-semibold text-[#111111]">{barbershopName}</span>{" "}
-                está registrada.
-              </p>
-            </div>
-
-            <div className="mt-6">
-              <ReservationSummary
-                service={service}
-                barber={barber}
-                date={date}
-                time={time}
-              />
-              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3 text-sm text-neutral-600">
+              {/* Resumen */}
+              <ReservationSummary service={service} barber={barber} date={date} time={time} />
+              <div className="flex items-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3 text-sm text-neutral-600">
                 <Phone size={14} className="shrink-0 text-slate-500" />
                 <span>{name} · {phone}</span>
               </div>
-            </div>
 
-            {/* Aviso confirmación */}
-            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <p className="text-sm font-bold text-amber-800">
-                La barbería confirmará tu cita en breve.
+              {/* Acciones: calendario, llamar, maps */}
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {googleCalUrl && (
+                  <a
+                    href={googleCalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                  >
+                    <CalendarPlus size={15} className="text-[#C9922A]" />
+                    Google Calendar
+                  </a>
+                )}
+                {date && time && (
+                  <button
+                    type="button"
+                    onClick={() => downloadICS(calTitle, date, time, durationMinutes, calLocation, calDesc)}
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                  >
+                    <Download size={15} className="text-slate-500" />
+                    iPhone / Outlook (.ics)
+                  </button>
+                )}
+                {barbershopPhone && (
+                  <a
+                    href={`tel:${barbershopPhone}`}
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                  >
+                    <Phone size={15} className="text-slate-500" />
+                    Llamar a la barbería
+                  </a>
+                )}
+                {barbershopMapsHref && (
+                  <a
+                    href={barbershopMapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                  >
+                    <Navigation size={15} className="text-slate-500" />
+                    Cómo llegar
+                  </a>
+                )}
+              </div>
+
+              {/* Nota cancelación */}
+              <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-slate-400" />
+                <p className="text-xs text-slate-500">
+                  Para cambiar o cancelar tu cita, contacta directamente con <span className="font-semibold text-slate-600">{barbershopName}</span>.
+                </p>
+              </div>
+
+              {/* CTA secundarios */}
+              <button
+                type="button"
+                onClick={reset}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E7EB] py-3.5 text-sm font-bold text-slate-700 transition hover:bg-[#F8FAFC] active:scale-[0.98]"
+              >
+                <CalendarDays size={15} />
+                Reservar otra cita
+              </button>
+
+              <p className="text-center text-xs text-slate-400">
+                Reserva gestionada con <span className="font-semibold text-slate-500">BarberíaOS</span> · Sin comisiones
               </p>
-              <p className="mt-1 text-sm text-amber-700">
-                Si tienes alguna duda, contacta directamente con {barbershopName}.
-              </p>
-            </div>
-
-            {/* Botón compartir por WhatsApp */}
-            {(() => {
-              const waText = encodeURIComponent(
-                `Hola, acabo de reservar en ${barbershopName}:\n` +
-                `• ${service?.name} · ${service?.price} €\n` +
-                `• ${barber?.id === "any" ? "Primer barbero disponible" : barber?.name}\n` +
-                `• ${date} a las ${time}h\n` +
-                `¡Nos vemos!`
-              );
-              return (
-                <a
-                  href={`https://wa.me/?text=${waText}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-green-200 bg-green-50 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100 active:scale-[0.98]"
-                >
-                  <MessageCircle size={16} />
-                  Compartir cita por WhatsApp
-                </a>
-              );
-            })()}
-
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-3 min-h-11 w-full rounded-xl border border-[#E5E7EB] py-3 text-sm font-bold text-slate-700 transition hover:bg-[#F8FAFC]"
-            >
-              Hacer otra reserva
-            </button>
-          </section>
-        )}
+            </section>
+          );
+        })()}
         </div>
       </div>
 

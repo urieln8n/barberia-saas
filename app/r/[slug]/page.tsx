@@ -352,8 +352,10 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           <BookingForm
             barbershopId={barbershop.id}
             barbershopSlug={barbershop.slug}
-            barbershopName={barbershop.name}
+            barbershopName={displayName}
             barbershopCity={barbershop.city ?? ""}
+            barbershopPhone={barbershop.phone ?? null}
+            barbershopMapsHref={mapsHref}
             services={activeServices}
             barbers={activeBarbers}
             initialServiceId={initialServiceId}
