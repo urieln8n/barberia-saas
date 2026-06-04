@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Phone, ToggleLeft, ToggleRight, User, BadgeEuro, CalendarClock, Scissors, TrendingUp, Save, CalendarX } from "lucide-react";
-import { createBarber, updateBarber, deleteBarber, toggleBarber, updateBarberSchedules, createClosure, deleteClosure } from "./actions";
+import { Camera, Loader2, Plus, Pencil, Trash2, X, Phone, ToggleLeft, ToggleRight, User, BadgeEuro, CalendarClock, Scissors, TrendingUp, Save, CalendarX } from "lucide-react";
+import { createBarber, updateBarber, deleteBarber, toggleBarber, updateBarberSchedules, createClosure, deleteClosure, uploadBarberPhoto } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -15,6 +15,7 @@ type Barber = {
   name: string;
   phone: string | null;
   active: boolean;
+  photo_url?: string | null;
 };
 
 type BarberSchedule = {
@@ -62,6 +63,8 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
   const [deleting,  setDeleting]  = useState<string | null>(null);
   const [toggling,  setToggling]  = useState<string | null>(null);
   const [saving,    setSaving]    = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [savingSchedule, setSavingSchedule] = useState<string | null>(null);
   const [closureSaving, setClosureSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -137,6 +140,16 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
     setToggling(id);
     await toggleBarber(id, !current);
     setToggling(null);
+  }
+
+  async function handlePhotoUpload(barberId: string, e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(barberId);
+    setPhotoError(null);
+    const result = await uploadBarberPhoto(barberId, file);
+    if (result.error) setPhotoError(result.error);
+    setUploadingPhoto(null);
   }
 
   async function handleSubmit(formData: FormData) {
@@ -290,7 +303,11 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
           title="Equipo"
           description={`${barbers.length} barberos configurados.`}
         >
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {photoError && (
+          <p className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{photoError}</p>
+        )}
+        <p className="mb-3 text-xs text-neutral-400">Haz clic en la foto del barbero para cambiarla · JPG, PNG o WebP · máx. 2 MB</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {barbers.map((b) => (
               <article
                 key={b.id}
@@ -299,9 +316,31 @@ export function BarberosClient({ barbers, schedules, closures, barbershopId, pla
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-xl font-black uppercase text-[#8A641F]">
-                    {b.name.charAt(0)}
-                  </div>
+                  {/* Avatar con foto o inicial + botón de upload */}
+                  <label
+                    htmlFor={`photo-barber-${b.id}`}
+                    className="group relative flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/12"
+                    title="Subir foto del barbero"
+                  >
+                    {b.photo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={b.photo_url} alt={b.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-xl font-black uppercase text-[#8A641F]">{b.name.charAt(0)}</span>
+                    )}
+                    <span className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 opacity-0 transition group-hover:opacity-100">
+                      {uploadingPhoto === b.id
+                        ? <Loader2 size={18} className="animate-spin text-white" />
+                        : <Camera size={18} className="text-white" />}
+                    </span>
+                    <input
+                      id={`photo-barber-${b.id}`}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="sr-only"
+                      onChange={(e) => handlePhotoUpload(b.id, e)}
+                    />
+                  </label>
                   <div className="flex items-center gap-1">
                     <button
                       type="button"

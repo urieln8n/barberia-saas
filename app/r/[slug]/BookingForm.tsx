@@ -33,11 +33,13 @@ type Service = {
   description: string | null;
   price: number;
   duration_minutes: number;
+  image_url?: string | null;
 };
 
 type Barber = {
   id: string;
   name: string;
+  photo_url?: string | null;
 };
 
 type Props = {
@@ -680,16 +682,27 @@ export function BookingForm({
                     setStep(2);
                   }}
                 >
-                  <div>
-                    <p className="font-bold">{s.name}</p>
-                    {s.description && (
-                      <p className="mt-1 text-sm leading-5 text-neutral-500">
-                        {s.description}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Miniatura del servicio */}
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/5 bg-[#F3EDE1]">
+                      {s.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={s.image_url} alt={s.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <Scissors size={18} className="text-[#8A641F]" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold">{s.name}</p>
+                      {s.description && (
+                        <p className="mt-0.5 line-clamp-1 text-sm text-neutral-500">
+                          {s.description}
+                        </p>
+                      )}
+                      <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
+                        <Clock size={12} /> {s.duration_minutes} min
                       </p>
-                    )}
-                    <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
-                      <Clock size={12} /> {s.duration_minutes} min
-                    </p>
+                    </div>
                   </div>
 
                   <span className="shrink-0 text-xl font-black">{s.price} €</span>
@@ -748,8 +761,11 @@ export function BookingForm({
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl text-sm font-black uppercase ${getBarberColor(b.name)}`}>
-                      {b.name.charAt(0)}
+                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl text-sm font-black uppercase ${b.photo_url ? "" : getBarberColor(b.name)}`}>
+                      {b.photo_url
+                        // eslint-disable-next-line @next/next/no-img-element
+                        ? <img src={b.photo_url} alt={b.name} className="h-full w-full object-cover" />
+                        : b.name.charAt(0)}
                     </div>
                     <div>
                       <p className="font-bold">{b.name}</p>
