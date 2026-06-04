@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Bell, CalendarDays, Check, ChevronDown,
   Clock, Crown, Instagram, MessageCircle, QrCode, ReceiptText,
@@ -18,13 +18,8 @@ const WA_URL      = BUSINESS_CONFIG.whatsappUrl;
 const LOGIN_URL   = BUSINESS_CONFIG.loginUrl;
 
 // ─── Animation primitives ────────────────────────────────────────────────────
-
-function useFadeIn(delay = 0) {
-  const ref  = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true, margin: "-60px" });
-  const skip = useReducedMotion();
-  return { ref, seen, skip, delay };
-}
+// Uses whileInView — canonical Framer Motion pattern, no hook violations,
+// SSR-safe (renders visible, animates on scroll in browser).
 
 function FadeUp({
   children,
@@ -35,12 +30,12 @@ function FadeUp({
   delay?: number;
   className?: string;
 }) {
-  const { ref, seen, skip } = useFadeIn(delay);
+  const skip = useReducedMotion();
   return (
     <motion.div
-      ref={ref}
-      initial={skip ? false : { opacity: 0, y: 28 }}
-      animate={seen || skip ? { opacity: 1, y: 0 } : {}}
+      initial={skip ? false : { opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
@@ -58,12 +53,12 @@ function FadeIn({
   delay?: number;
   className?: string;
 }) {
-  const { ref, seen, skip } = useFadeIn(delay);
+  const skip = useReducedMotion();
   return (
     <motion.div
-      ref={ref}
       initial={skip ? false : { opacity: 0 }}
-      animate={seen || skip ? { opacity: 1 } : {}}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.7, delay, ease: "easeOut" }}
       className={className}
     >
@@ -72,28 +67,40 @@ function FadeIn({
   );
 }
 
-// ─── Count-up hook ────────────────────────────────────────────────────────────
+// ─── Count-up component ───────────────────────────────────────────────────────
+// Implemented as a component (not a hook) so it can be safely used inside maps.
 
-function useCountUp(target: number, duration = 1600) {
+function CountUpNumber({ target, suffix, duration = 1600 }: { target: number; suffix: string; duration?: number }) {
   const [val, setVal]   = useState(0);
-  const ref             = useRef<HTMLSpanElement>(null);
-  const seen            = useInView(ref, { once: true, margin: "-40px" });
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // IntersectionObserver — no hooks from framer-motion needed here
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setStarted(true); observer.disconnect(); } },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (!seen) return;
+    if (!started) return;
     const steps = 60;
-    let step    = 0;
-    const id    = setInterval(() => {
+    let step = 0;
+    const id = setInterval(() => {
       step++;
-      const t = step / steps;
-      const ease = 1 - Math.pow(1 - t, 3);
+      const ease = 1 - Math.pow(1 - step / steps, 3);
       setVal(Math.round(ease * target));
       if (step >= steps) clearInterval(id);
     }, duration / steps);
     return () => clearInterval(id);
-  }, [seen, target, duration]);
+  }, [started, target, duration]);
 
-  return { ref, val };
+  return <div ref={ref} className="tabular-nums">{val}{suffix}</div>;
 }
 
 // ─── Reusable atoms ──────────────────────────────────────────────────────────
@@ -399,11 +406,11 @@ function Hero() {
 // ─── Stats bar ───────────────────────────────────────────────────────────────
 
 function StatsBar() {
-  const stats: { target: number; suffix: string; label: string }[] = [
-    { target: 500,  suffix: "+", label: "barberías activas" },
-    { target: 98,   suffix: "%", label: "satisfacción" },
-    { target: 0,    suffix: "€", label: "comisión por reserva" },
-    { target: 30,   suffix: "min", label: "para estar operativo" },
+  const stats = [
+    { target: 500, suffix: "+",   label: "barberías activas" },
+    { target: 98,  suffix: "%",   label: "satisfacción" },
+    { target: 0,   suffix: "€",   label: "comisión por reserva" },
+    { target: 30,  suffix: "min", label: "para estar operativo" },
   ];
 
   return (
@@ -415,17 +422,14 @@ function StatsBar() {
           </p>
         </FadeUp>
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-          {stats.map((s, i) => {
-            const { ref, val } = useCountUp(s.target);
-            return (
-              <FadeUp key={s.label} delay={i * 0.1} className="text-center">
-                <p className="text-4xl font-black tabular-nums text-[#111111] lg:text-5xl">
-                  <span ref={ref}>{val}</span>{s.suffix}
-                </p>
-                <p className="mt-2 text-[13px] text-slate-500">{s.label}</p>
-              </FadeUp>
-            );
-          })}
+          {stats.map((s, i) => (
+            <FadeUp key={s.label} delay={i * 0.1} className="text-center">
+              <p className="text-4xl font-black text-[#111111] lg:text-5xl">
+                <CountUpNumber target={s.target} suffix={s.suffix} />
+              </p>
+              <p className="mt-2 text-[13px] text-slate-500">{s.label}</p>
+            </FadeUp>
+          ))}
         </div>
       </div>
     </section>
