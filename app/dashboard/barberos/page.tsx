@@ -13,9 +13,11 @@ export default async function BarberosPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  const { data: barbers } = await supabase
+  // photo_url disponible tras migración 035 — cast necesario hasta regenerar tipos
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: barbers } = await (supabase as any)
     .from("barbers")
-    .select("id, name, phone, active")
+    .select("id, name, phone, active, photo_url")
     .eq("barbershop_id", barbershopId)
     .order("created_at", { ascending: true });
 

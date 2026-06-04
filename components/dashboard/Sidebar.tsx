@@ -19,6 +19,7 @@ import {
   HelpCircle,
   Home,
   LogOut,
+  Mail,
   Megaphone,
   MoreHorizontal,
   Plus,
@@ -172,8 +173,9 @@ const sidebarGroups: SidebarGroup[] = [
     label: "Configuración",
     color: "slate",
     items: [
-      { href: "/dashboard/ajustes",  label: "Ajustes",  icon: Settings              },
-      { href: "/dashboard/soporte",  label: "Soporte",  icon: HelpCircle            },
+      { href: "/dashboard/ajustes",     label: "Ajustes",        icon: Settings    },
+      { href: "/dashboard/soporte",     label: "Soporte",        icon: HelpCircle  },
+      { href: "/dashboard/emails-test", label: "Probar emails",  icon: Mail        },
     ],
   },
 ];

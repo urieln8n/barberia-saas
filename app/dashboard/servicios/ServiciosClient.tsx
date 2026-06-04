@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
-import { createService, updateService, deleteService } from "./actions";
+import { Camera, ImageIcon, Loader2, Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
+import { createService, updateService, deleteService, uploadServiceImage } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -18,6 +18,7 @@ type Service = {
   price: number;
   duration_minutes: number;
   active: boolean;
+  image_url?: string | null;
 };
 
 type Props = {
@@ -34,8 +35,10 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [editing,   setEditing]   = useState<Service | null>(null);
   const [deleting,  setDeleting]  = useState<string | null>(null);
-  const [saving,    setSaving]    = useState(false);
-  const [formError, setFormError] = useState("");
+  const [saving,         setSaving]         = useState(false);
+  const [formError,      setFormError]      = useState("");
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
+  const [imageError,     setImageError]     = useState<string | null>(null);
 
   const serviceLimit = planUsage.limits.maxServices;
   const isAtServiceLimit = serviceLimit !== null && services.length >= serviceLimit;
@@ -46,6 +49,16 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
   function openCreate() { setEditing(null); setFormError(""); setShowModal(true); }
   function openEdit(s: Service) { setEditing(s); setFormError(""); setShowModal(true); }
   function closeModal() { setShowModal(false); setEditing(null); setFormError(""); }
+
+  async function handleImageUpload(serviceId: string, e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(serviceId);
+    setImageError(null);
+    const result = await uploadServiceImage(serviceId, file);
+    if (result.error) setImageError(result.error);
+    setUploadingImage(null);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este servicio?")) return;
@@ -135,10 +148,15 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
           description={`${services.length} servicios configurados.`}
           bodyClassName="p-0"
         >
+          {imageError && (
+            <p className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{imageError}</p>
+          )}
+          <p className="mb-2 text-xs text-neutral-400">Haz clic en el icono de imagen para añadir foto · JPG, PNG o WebP · máx. 2 MB</p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="border-b border-[#E7E2D8] bg-[#F8F5EF]">
                 <tr>
+                  <th className="table-header-cell w-12">Img</th>
                   <th className="table-header-cell">Servicio</th>
                   <th className="table-header-cell">Duración</th>
                   <th className="table-header-cell">Precio</th>
@@ -150,6 +168,33 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
               <tbody className="divide-y divide-[#E7E2D8]">
                 {services.map((s) => (
                   <tr key={s.id} className="transition-colors hover:bg-[#FAF8F4]">
+                    {/* Columna imagen con upload */}
+                    <td className="px-3 py-3">
+                      <label
+                        htmlFor={`img-service-${s.id}`}
+                        className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-[#E7E2D8] bg-[#F8F5EF]"
+                        title="Subir imagen del servicio"
+                      >
+                        {s.image_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={s.image_url} alt={s.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <ImageIcon size={14} className="text-neutral-400" />
+                        )}
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
+                          {uploadingImage === s.id
+                            ? <Loader2 size={12} className="animate-spin text-white" />
+                            : <Camera size={12} className="text-white" />}
+                        </span>
+                        <input
+                          id={`img-service-${s.id}`}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="sr-only"
+                          onChange={(e) => handleImageUpload(s.id, e)}
+                        />
+                      </label>
+                    </td>
                     <td className="px-6 py-4">
                       <p className="font-semibold text-[#111827]">{s.name}</p>
                       {s.description && <p className="mt-0.5 text-xs text-neutral-400">{s.description}</p>}
