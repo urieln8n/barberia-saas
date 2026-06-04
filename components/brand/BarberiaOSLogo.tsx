@@ -18,12 +18,12 @@ type Props = {
 const MARK_SIZE: Record<LogoSize, number> = {
   sm: 28,
   md: 38,
-  lg: 48,
+  lg: 52,
 };
 
 const TEXT_SIZE: Record<LogoSize, string> = {
   sm: "text-[13px]",
-  md: "text-[16px]",
+  md: "text-[15px]",
   lg: "text-[20px]",
 };
 
@@ -41,73 +41,176 @@ function normalizeSize(size: LogoSize | number | undefined, variant: "full" | "i
   return { px: 38, token: "md" as LogoSize };
 }
 
+// ─── Premium B Mark ───────────────────────────────────────────────────────────
+// Compound path with evenodd fill — outer B silhouette minus inner counters.
+// Proportions: bottom bowl slightly larger than top (optical balance).
+// Gold: 7-stop gradient simulating real metal luster from top-left light source.
+
 function PremiumBMark({ px, uid }: { px: number; uid: string }) {
-  const gold = `barberia-gold-${uid}`;
-  const goldDark = `barberia-gold-dark-${uid}`;
-  const shine = `barberia-shine-${uid}`;
-  const shadow = `barberia-shadow-${uid}`;
+  const ids = {
+    bgGrad:    `bg-${uid}`,
+    goldMain:  `gm-${uid}`,
+    goldInner: `gi-${uid}`,
+    shine:     `sh-${uid}`,
+    shineB:    `sb-${uid}`,
+    rim:       `rm-${uid}`,
+    shadow:    `sd-${uid}`,
+    clip:      `cl-${uid}`,
+  };
+
+  const r = Math.max(10, Math.round(px * 0.26)); // border-radius of container
 
   return (
-    <span
-      className="relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-[#E8DDBF] bg-[#FFFEFB] shadow-[0_10px_24px_rgba(17,17,17,0.12),0_1px_0_rgba(255,255,255,0.92)_inset]"
-      style={{
-        width: px,
-        height: px,
-        borderRadius: Math.max(12, Math.round(px * 0.34)),
-      }}
-      aria-hidden="true"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      width={px}
+      height={px}
+      role="img"
+      aria-label="BarberíaOS"
+      className="block shrink-0"
     >
-      <svg
-        viewBox="0 0 100 100"
-        width={Math.round(px * 0.68)}
-        height={Math.round(px * 0.68)}
-        xmlns="http://www.w3.org/2000/svg"
-        focusable="false"
-        className="block"
-      >
-        <defs>
-          <linearGradient id={gold} x1="20%" y1="10%" x2="78%" y2="88%">
-            <stop offset="0%" stopColor="#B8860B" />
-            <stop offset="34%" stopColor="#F5D76E" />
-            <stop offset="62%" stopColor="#C9A227" />
-            <stop offset="100%" stopColor="#8F6508" />
-          </linearGradient>
-          <linearGradient id={goldDark} x1="25%" y1="0%" x2="75%" y2="100%">
-            <stop offset="0%" stopColor="#FFF0A8" />
-            <stop offset="42%" stopColor="#C9A227" />
-            <stop offset="100%" stopColor="#8A5F08" />
-          </linearGradient>
-          <linearGradient id={shine} x1="12%" y1="0%" x2="70%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.78" />
-            <stop offset="35%" stopColor="#FFFFFF" stopOpacity="0.16" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-          </linearGradient>
-          <filter id={shadow} x="-18%" y="-14%" width="136%" height="132%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2.4" floodColor="#111111" floodOpacity="0.22" />
-          </filter>
-        </defs>
+      <defs>
+        {/* Container background — very subtle cream-to-ivory radial */}
+        <radialGradient id={ids.bgGrad} cx="38%" cy="32%" r="70%">
+          <stop offset="0%"   stopColor="#FFFEF9" />
+          <stop offset="55%"  stopColor="#FFFBF0" />
+          <stop offset="100%" stopColor="#FFF4D6" />
+        </radialGradient>
 
+        {/* Main gold — 7 stops, top-left to bottom-right light source */}
+        <linearGradient id={ids.goldMain} x1="18%" y1="6%" x2="82%" y2="94%">
+          <stop offset="0%"   stopColor="#FFF59C" />
+          <stop offset="14%"  stopColor="#F5D76E" />
+          <stop offset="32%"  stopColor="#D4AF37" />
+          <stop offset="50%"  stopColor="#C9A227" />
+          <stop offset="68%"  stopColor="#B8870C" />
+          <stop offset="84%"  stopColor="#9A6E08" />
+          <stop offset="100%" stopColor="#7A5506" />
+        </linearGradient>
+
+        {/* Inner highlight — adds depth/dimension to the B face */}
+        <linearGradient id={ids.goldInner} x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%"   stopColor="#FFFDE0" stopOpacity="0.55" />
+          <stop offset="40%"  stopColor="#F5D76E" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="#C9A227" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Diagonal shine — mimics specular highlight on polished gold */}
+        <linearGradient id={ids.shine} x1="8%" y1="2%" x2="62%" y2="60%">
+          <stop offset="0%"   stopColor="#FFFFFF" stopOpacity="0.82" />
+          <stop offset="28%"  stopColor="#FFFFFF" stopOpacity="0.30" />
+          <stop offset="60%"  stopColor="#FFFFFF" stopOpacity="0.06" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Shine on B letterform */}
+        <linearGradient id={ids.shineB} x1="10%" y1="0%" x2="55%" y2="55%">
+          <stop offset="0%"   stopColor="#FFFFFF" stopOpacity="0.60" />
+          <stop offset="40%"  stopColor="#FFFFFF" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Gold rim around container */}
+        <linearGradient id={ids.rim} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor="#E8D070" stopOpacity="0.90" />
+          <stop offset="50%"  stopColor="#C9A227" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#8A6510" stopOpacity="0.80" />
+        </linearGradient>
+
+        {/* Drop shadow for B letterform */}
+        <filter id={ids.shadow} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="1.8" stdDeviation="1.8" floodColor="#5A3A00" floodOpacity="0.35" />
+        </filter>
+
+        {/* Clip to rounded-rect container */}
+        <clipPath id={ids.clip}>
+          <rect x="0" y="0" width="100" height="100" rx={r} />
+        </clipPath>
+      </defs>
+
+      {/* Container background */}
+      <rect x="0" y="0" width="100" height="100" rx={r} fill={`url(#${ids.bgGrad})`} />
+
+      {/* Gold rim / border */}
+      <rect x="0.75" y="0.75" width="98.5" height="98.5" rx={r} fill="none" stroke={`url(#${ids.rim})`} strokeWidth="1.5" />
+
+      {/* Inner white rim — creates a "coin edge" depth effect */}
+      <rect x="2" y="2" width="96" height="96" rx={Math.max(8, r - 2)} fill="none" stroke="#FFFFFF" strokeWidth="1" strokeOpacity="0.65" />
+
+      <g clipPath={`url(#${ids.clip})`}>
+        {/* ── B letterform ────────────────────────────────────────────
+            Compound path (evenodd): outer silhouette minus inner counters.
+
+            Outer B:
+              Stem runs x=23→36, y=13→88
+              Top bump: rightmost ~x=77 at y=31
+              Bottom bump: rightmost ~x=80 at y=68 (slightly larger)
+
+            Top counter (hole): x=36→66, y=22→42
+            Bottom counter (hole): x=36→70, y=50→80
+        ──────────────────────────────────────────────────────────── */}
         <path
-          d="M31 16H51.5C65.5 16 74.4 23.2 74.4 34.2C74.4 42 70.2 47.5 63.9 50C72.8 52.2 78.5 59.5 78.5 69.2C78.5 82.1 68.6 90 52.2 90H31V16ZM48.7 45.2C57.4 45.2 62.2 41.3 62.2 34.8C62.2 28.7 57.5 25.2 49.4 25.2H42.7V45.2H48.7ZM51.5 80.5C61.4 80.5 66.8 76.1 66.8 68.6C66.8 61.2 61.1 56.8 51.2 56.8H42.7V80.5H51.5Z"
-          fill={`url(#${gold})`}
-          filter={`url(#${shadow})`}
+          fillRule="evenodd"
+          fill={`url(#${ids.goldMain})`}
+          filter={`url(#${ids.shadow})`}
+          d="
+            M 23,13 H 51
+            C 70,13 78,21 78,31
+            C 78,41 70,48 56,50
+            C 72,52 81,60 81,70
+            C 81,81 71,88 51,88
+            H 23 Z
+            M 36,23 H 49
+            C 62,23 66,27 66,31
+            C 66,37 62,41 49,41
+            H 36 Z
+            M 36,50 H 51
+            C 65,50 69,55 69,70
+            C 69,78 65,80 51,80
+            H 36 Z
+          "
         />
+
+        {/* Inner depth layer — adds dimension to the B face */}
         <path
-          d="M42.7 25.2H49.4C57.5 25.2 62.2 28.7 62.2 34.8C62.2 41.3 57.4 45.2 48.7 45.2H42.7V25.2ZM42.7 56.8H51.2C61.1 56.8 66.8 61.2 66.8 68.6C66.8 76.1 61.4 80.5 51.5 80.5H42.7V56.8Z"
-          fill={`url(#${goldDark})`}
-          opacity="0.38"
+          fillRule="evenodd"
+          fill={`url(#${ids.goldInner})`}
+          d="
+            M 23,13 H 51
+            C 70,13 78,21 78,31
+            C 78,41 70,48 56,50
+            C 72,52 81,60 81,70
+            C 81,81 71,88 51,88
+            H 23 Z
+            M 36,23 H 49
+            C 62,23 66,27 66,31
+            C 66,37 62,41 49,41
+            H 36 Z
+            M 36,50 H 51
+            C 65,50 69,55 69,70
+            C 69,78 65,80 51,80
+            H 36 Z
+          "
         />
+
+        {/* Shine highlight on B — top-left specular */}
         <path
-          d="M37.8 18.6H52.8C64.5 18.6 71 24.4 71 34.1C71 40.5 67.2 45.6 60.5 48.4"
           fill="none"
-          stroke={`url(#${shine})`}
-          strokeWidth="4.2"
+          stroke={`url(#${ids.shineB})`}
+          strokeWidth="5"
           strokeLinecap="round"
+          d="M 28,16 H 50 C 66,16 74,22 74,31 C 74,39 68,45 57,48"
         />
-      </svg>
-    </span>
+
+        {/* Container top-left shine overlay */}
+        <rect x="0" y="0" width="100" height="100" rx={r} fill={`url(#${ids.shine})`} />
+      </g>
+    </svg>
   );
 }
+
+// ─── Logo component ───────────────────────────────────────────────────────────
 
 export function BarberiaOSLogo({
   variant = "icon",
@@ -116,12 +219,12 @@ export function BarberiaOSLogo({
   tone = "light",
   className = "",
 }: Props) {
-  const uid = useId().replace(/:/g, "");
+  const uid = useId().replace(/:/g, "").replace(/-/g, "");
   const normalizedVariant = normalizeVariant(variant);
   const { px, token } = normalizeSize(size, normalizedVariant);
   const shouldShowText = showText ?? normalizedVariant === "full";
-  const textTone = tone === "dark" ? "text-white" : "text-[#111111]";
-  const subTone = tone === "dark" ? "text-white/45" : "text-slate-400";
+  const textColor   = tone === "dark" ? "text-white"       : "text-[#111111]";
+  const subColor    = tone === "dark" ? "text-white/40"    : "text-slate-400";
 
   if (!shouldShowText || normalizedVariant === "icon" || normalizedVariant === "sidebar") {
     return (
@@ -135,11 +238,21 @@ export function BarberiaOSLogo({
     <span className={cn("inline-flex items-center gap-3", className)} aria-label="BarberíaOS" role="img">
       <PremiumBMark px={px} uid={uid} />
       <span className="flex min-w-0 flex-col justify-center leading-none">
-        <span className={cn("select-none font-bold tracking-normal", TEXT_SIZE[token], textTone)}>
-          Barbería<span className="bg-gradient-to-br from-[#B8860B] via-[#F5D76E] to-[#C9A227] bg-clip-text text-transparent">OS</span>
+        <span className={cn("select-none font-black tracking-tight", TEXT_SIZE[token], textColor)}>
+          Barbería
+          <span
+            style={{
+              background: "linear-gradient(135deg, #C9A227 0%, #F5D76E 45%, #C9A227 70%, #8F6508 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            OS
+          </span>
         </span>
         {normalizedVariant === "full" && token === "lg" && (
-          <span className={cn("mt-1 text-[10px] font-semibold uppercase tracking-[0.14em]", subTone)}>
+          <span className={cn("mt-1 text-[10px] font-semibold uppercase tracking-[0.14em]", subColor)}>
             Sistema operativo para barberías
           </span>
         )}

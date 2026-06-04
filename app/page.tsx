@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { UltraVipLanding } from "@/components/landing/UltraVipLanding";
+import { SquirePremiumLanding } from "@/components/landing/SquirePremiumLanding";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 const faqs = [
@@ -116,7 +116,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
-      <UltraVipLanding />
+      <SquirePremiumLanding />
     </>
   );
 }
