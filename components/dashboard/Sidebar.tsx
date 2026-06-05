@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useSidebarCollapse } from "./sidebar-context";
 import {
@@ -31,10 +31,9 @@ import {
 import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-// Gold (Core):      #B88A2A  /  #A87412  /  #F3E7C9
-// Purple (AI only): #6D28D9  /  #7C3AED  /  #F3E8FF
-// Sidebar bg:       #F7F6F2   Card bg: #FFFFFF   Border: #EAE4D8
-// Text primary:     #151515   Text secondary: #6F6F6F
+// Gold:   #B88A2A / #A87412 / #F3E7C9
+// Purple: #6D28D9 / #7C3AED / #F3E8FF  (AI only)
+// Bg:     #F7F6F2   Card: #FFFFFF   Border: #EAE4D8
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,14 +48,14 @@ type NavItem = {
   badgeVariant?: BadgeVariant;
   exact?: boolean;
   isAI?: boolean;
+  notification?: number;
 };
 
-type NavSection = {
-  section: string;
-  items: NavItem[];
-};
+type NavSection = { section: string; items: NavItem[] };
 
-// ─── Mobile bottom nav ────────────────────────────────────────────────────────
+type TodayStats = { total: number; completed: number; revenue: number };
+
+// ─── Mobile bottom nav (static) ───────────────────────────────────────────────
 
 const MOBILE_QUICK = [
   { href: "/dashboard",        label: "Inicio",  icon: Home,        exact: true  } as const,
@@ -65,11 +64,19 @@ const MOBILE_QUICK = [
   { href: "/dashboard/studio", label: "Studio",  icon: Clapperboard              } as const,
 ];
 
+const PLAN_LABELS: Record<string, string> = {
+  free: "Starter", starter: "Starter", pro: "Profesional", growth: "Growth", premium: "Premium",
+};
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function isActive(pathname: string, item: { href: string; exact?: boolean }): boolean {
   if (item.exact) return pathname === item.href;
   return pathname === item.href || pathname.startsWith(item.href + "/");
+}
+
+function getTodayISO(): string {
+  return new Date().toISOString().split("T")[0];
 }
 
 // ─── PremiumBadge ─────────────────────────────────────────────────────────────
@@ -85,6 +92,20 @@ function PremiumBadge({ label, variant = "gold" }: { label: string; variant?: Ba
   return (
     <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-wide ${BADGE_STYLES[variant]}`}>
       {label}
+    </span>
+  );
+}
+
+// ─── NotificationDot ──────────────────────────────────────────────────────────
+
+function NotificationDot({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span
+      aria-label={`${count} pendiente${count > 1 ? "s" : ""}`}
+      className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white"
+    >
+      {count > 9 ? "9+" : count}
     </span>
   );
 }
@@ -108,12 +129,8 @@ function PremiumSidebarItem({
     : active ? "bg-[#B88A2A]/12 text-[#A87412]" : "bg-[#F5F3EE] text-slate-500";
 
   const rowCls = item.isAI
-    ? active
-      ? "bg-[#F3E8FF]/60 shadow-[inset_3px_0_0_#6D28D9]"
-      : "bg-[#F3E8FF]/20 hover:bg-[#F3E8FF]/50"
-    : active
-      ? "bg-white shadow-[inset_3px_0_0_#B88A2A]"
-      : "hover:bg-[#F5F3EE]/70";
+    ? active ? "bg-[#F3E8FF]/60 shadow-[inset_3px_0_0_#6D28D9]" : "bg-[#F3E8FF]/20 hover:bg-[#F3E8FF]/50"
+    : active ? "bg-white shadow-[inset_3px_0_0_#B88A2A]"         : "hover:bg-[#F5F3EE]/70";
 
   const titleCls = item.isAI
     ? active ? "font-semibold text-[#4C1D95]" : "font-medium text-[#5B21B6]"
@@ -129,13 +146,17 @@ function PremiumSidebarItem({
         item.isAI ? "focus-visible:ring-[#7C3AED]" : "focus-visible:ring-[#B88A2A]"
       } ${rowCls}`}
     >
-      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors ${iconCls}`}>
+      {/* Icon with notification overlay */}
+      <span className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors ${iconCls}`}>
         <Icon size={17} strokeWidth={active ? 2.2 : 1.8} />
+        <NotificationDot count={item.notification ?? 0} />
       </span>
+
       <div className="min-w-0 flex-1">
         <p className={`text-[13px] leading-tight ${titleCls}`}>{item.title}</p>
         <p className="mt-[3px] truncate text-[11px] leading-tight text-[#6F6F6F]">{item.description}</p>
       </div>
+
       <div className="flex shrink-0 items-center gap-1.5">
         {item.badge && <PremiumBadge label={item.badge} variant={item.badgeVariant} />}
         <ChevronRight size={12} className={active ? "text-slate-400" : "text-slate-300"} aria-hidden="true" />
@@ -186,16 +207,47 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       aria-label={item.title}
       className={`relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
         item.isAI
-          ? active
-            ? "bg-[#6D28D9] text-white shadow-md focus-visible:ring-[#7C3AED]"
-            : "bg-[#F3E8FF] text-[#6D28D9] hover:bg-[#EDE9FE] focus-visible:ring-[#7C3AED]"
-          : active
-            ? "bg-white text-[#A87412] shadow-sm focus-visible:ring-[#B88A2A]"
-            : "text-slate-500 hover:bg-white hover:text-slate-700 focus-visible:ring-[#B88A2A]"
+          ? active ? "bg-[#6D28D9] text-white shadow-md focus-visible:ring-[#7C3AED]"
+                   : "bg-[#F3E8FF] text-[#6D28D9] hover:bg-[#EDE9FE] focus-visible:ring-[#7C3AED]"
+          : active ? "bg-white text-[#A87412] shadow-sm focus-visible:ring-[#B88A2A]"
+                   : "text-slate-500 hover:bg-white hover:text-slate-700 focus-visible:ring-[#B88A2A]"
       }`}
     >
       <Icon size={16} strokeWidth={active ? 2.2 : 1.75} />
+      <NotificationDot count={item.notification ?? 0} />
     </Link>
+  );
+}
+
+// ─── HoyStrip ─────────────────────────────────────────────────────────────────
+
+function HoyStrip({ stats }: { stats: TodayStats }) {
+  return (
+    <div className="mb-4 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+      <div className="flex items-center justify-between px-3.5 pb-1.5 pt-2.5">
+        <span className="text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">Hoy en vivo</span>
+        <span className="flex items-center gap-1 text-[10px] font-semibold text-green-600">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" aria-hidden="true" />
+          En vivo
+        </span>
+      </div>
+      <div className="grid grid-cols-3 divide-x divide-[#F0EBE1] border-t border-[#F0EBE1]">
+        <div className="flex flex-col items-center py-2.5">
+          <span className="text-[17px] font-black leading-none text-[#151515]">{stats.total}</span>
+          <span className="mt-0.5 text-[9px] text-[#6F6F6F]">reservas</span>
+        </div>
+        <div className="flex flex-col items-center py-2.5">
+          <span className="text-[17px] font-black leading-none text-green-600">{stats.completed}</span>
+          <span className="mt-0.5 text-[9px] text-[#6F6F6F]">completas</span>
+        </div>
+        <div className="flex flex-col items-center py-2.5">
+          <span className="text-[17px] font-black leading-none text-[#B88A2A]">
+            {stats.revenue > 0 ? `${stats.revenue}€` : "—"}
+          </span>
+          <span className="mt-0.5 text-[9px] text-[#6F6F6F]">ingresos</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -203,9 +255,11 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 function MobileBottomNav({
   pathname,
+  pendingAppts,
   onOpenMore,
 }: {
   pathname: string;
+  pendingAppts: number;
   onOpenMore: () => void;
 }) {
   return (
@@ -218,24 +272,32 @@ function MobileBottomNav({
           const Icon     = item.icon;
           const active   = isActive(pathname, item);
           const isStudio = item.href.includes("studio");
+          const isAgenda = item.href.includes("agenda");
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+              className={`relative flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
                 active
                   ? isStudio ? "text-[#6D28D9] focus-visible:ring-[#7C3AED]"
                              : "text-[#B88A2A] focus-visible:ring-[#B88A2A]"
                   : "text-slate-500 hover:text-slate-800 focus-visible:ring-slate-400"
               }`}
             >
-              <Icon
-                size={20}
-                strokeWidth={active ? 2.2 : 1.75}
-                aria-hidden="true"
-                className={active ? (isStudio ? "text-[#6D28D9]" : "text-[#B88A2A]") : "text-slate-500"}
-              />
+              <span className="relative">
+                <Icon
+                  size={20}
+                  strokeWidth={active ? 2.2 : 1.75}
+                  aria-hidden="true"
+                  className={active ? (isStudio ? "text-[#6D28D9]" : "text-[#B88A2A]") : "text-slate-500"}
+                />
+                {isAgenda && pendingAppts > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[7px] font-black text-white">
+                    {pendingAppts > 9 ? "9+" : pendingAppts}
+                  </span>
+                )}
+              </span>
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
@@ -254,6 +316,28 @@ function MobileBottomNav({
   );
 }
 
+// ─── BarbershopIdentityRow ────────────────────────────────────────────────────
+
+function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: string }) {
+  const initial = name.charAt(0).toUpperCase();
+  return (
+    <div className="flex items-center gap-3 px-3.5 py-2.5">
+      {/* Gold avatar with initial */}
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[13px] font-black text-white shadow-sm"
+        style={{ background: "linear-gradient(135deg, #B88A2A 0%, #D4AF37 55%, #A87412 100%)" }}
+      >
+        {initial}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[12px] font-bold leading-tight text-[#151515]">{name}</p>
+        <p className="text-[10px] leading-tight text-[#6F6F6F]">Plan {planLabel}</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export default function Sidebar() {
@@ -261,7 +345,103 @@ export default function Sidebar() {
   const { collapsed, toggle } = useSidebarCollapse();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // ── Live data state ──
+  const [barbershopName, setBarbershopName] = useState("");
+  const [planLabel, setPlanLabel]           = useState("Pro");
+  const [todayStats, setTodayStats]         = useState<TodayStats | null>(null);
+  const [pendingAppts, setPendingAppts]     = useState(0);
+  const [pendingReviews, setPendingReviews] = useState(0);
+
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
+  // ── Fetch all sidebar data on mount ──
+  useEffect(() => {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
+    );
+
+    async function fetchData() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Resolve barbershop_id
+        let bsId: string | null = null;
+        const { data: member } = await supabase
+          .from("barbershop_members")
+          .select("barbershop_id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (member?.barbershop_id) {
+          bsId = member.barbershop_id as string;
+        } else {
+          const { data: owned } = await supabase
+            .from("barbershops")
+            .select("id")
+            .eq("owner_id", user.id)
+            .maybeSingle();
+          bsId = (owned?.id as string | undefined) ?? null;
+        }
+        if (!bsId) return;
+
+        const today = getTodayISO();
+
+        // Parallel fetches: shop name, plan, today appts, pending reviews
+        const [shopRes, subRes, todayRes, pendingRes, reviewsRes] = await Promise.all([
+          supabase.from("barbershops").select("name").eq("id", bsId).single(),
+          supabase
+            .from("subscriptions")
+            .select("plan_name")
+            .eq("barbershop_id", bsId)
+            .in("status", ["trial", "active"])
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          supabase
+            .from("appointments")
+            .select("status, services(price)")
+            .eq("barbershop_id", bsId)
+            .eq("appointment_date", today)
+            .in("status", ["scheduled", "pending", "confirmed", "completed"]),
+          supabase
+            .from("appointments")
+            .select("id", { count: "exact", head: true })
+            .eq("barbershop_id", bsId)
+            .eq("appointment_date", today)
+            .in("status", ["pending", "scheduled"]),
+          supabase
+            .from("reviews")
+            .select("id", { count: "exact", head: true })
+            .eq("business_id", bsId)
+            .eq("status", "pending"),
+        ]);
+
+        if (shopRes.data?.name) setBarbershopName(shopRes.data.name as string);
+
+        const rawPlan = subRes.data?.plan_name as string | undefined;
+        if (rawPlan) setPlanLabel(PLAN_LABELS[rawPlan] ?? "Pro");
+
+        if (todayRes.data) {
+          type ApptRow = { status: string; services: { price: number | null } | null };
+          const rows = todayRes.data as unknown as ApptRow[];
+          const total     = rows.length;
+          const completed = rows.filter((r) => r.status === "completed").length;
+          const revenue   = rows
+            .filter((r) => r.status === "completed")
+            .reduce((sum, r) => sum + (r.services?.price ?? 0), 0);
+          setTodayStats({ total, completed, revenue: Math.round(revenue) });
+        }
+
+        setPendingAppts(pendingRes.count ?? 0);
+        setPendingReviews(reviewsRes.count ?? 0);
+      } catch {
+        // sidebar data is non-critical — fail silently
+      }
+    }
+
+    fetchData();
+  }, []);
 
   async function handleLogout() {
     const supabase = createClient(
@@ -272,11 +452,12 @@ export default function Sidebar() {
     window.location.href = "/login";
   }
 
-  const sections: NavSection[] = [
+  // ── Nav sections (re-computed when notification counts change) ──
+  const sections: NavSection[] = useMemo(() => [
     {
       section: "Negocio",
       items: [
-        { icon: CalendarDays, title: "Agenda",   description: "Reservas y disponibilidad", href: "/dashboard/agenda"   },
+        { icon: CalendarDays, title: "Agenda",   description: "Reservas y disponibilidad", href: "/dashboard/agenda",   notification: pendingAppts },
         { icon: Users,        title: "Clientes", description: "Historial y seguimiento",   href: "/dashboard/clientes" },
         { icon: Scissors,     title: "Barberos", description: "Equipo y comisiones",       href: "/dashboard/barberos" },
         { icon: Banknote,     title: "Caja",     description: "Cobros y ventas",           href: "/dashboard/caja"     },
@@ -289,48 +470,45 @@ export default function Sidebar() {
           icon: Wand2, title: "Studio IA", description: "Contenido y videos automáticos",
           href: "/dashboard/studio", badge: "NUEVO", badgeVariant: "purple", isAI: true,
         },
-        { icon: Gift,     title: "Fidelización", description: "Programas y recompensas", href: "/dashboard/fidelizacion" },
-        { icon: Star,     title: "Reseñas",      description: "Opiniones y reputación",  href: "/dashboard/resenas"      },
-        { icon: Megaphone,title: "Promociones",  description: "Ofertas y campañas",      href: "/dashboard/marketing"    },
+        { icon: Gift,      title: "Fidelización", description: "Programas y recompensas", href: "/dashboard/fidelizacion"               },
+        { icon: Star,      title: "Reseñas",      description: "Opiniones y reputación",  href: "/dashboard/resenas", notification: pendingReviews },
+        { icon: Megaphone, title: "Promociones",  description: "Ofertas y campañas",      href: "/dashboard/marketing"                  },
       ],
     },
     {
       section: "Cuenta",
       items: [
-        {
-          icon: Settings,  title: "Ajustes",          description: "Plan, negocio, horarios y facturación",  href: "/dashboard/ajustes",        badge: "Activo", badgeVariant: "green",
-        },
-        {
-          icon: Sparkles,  title: "Créditos Studio",  description: "Gestiona créditos para videos IA",       href: "/dashboard/studio/credits", badge: "IA",     badgeVariant: "purple", isAI: true,
-        },
-        {
-          icon: QrCode,    title: "QR y enlace",      description: "Código QR y link público de reservas",   href: "/dashboard/qr",
-        },
+        { icon: Settings, title: "Ajustes",        description: "Plan, negocio, horarios y facturación",  href: "/dashboard/ajustes",        badge: "Activo", badgeVariant: "green"                    },
+        { icon: Sparkles, title: "Créditos Studio", description: "Gestiona créditos para videos IA",      href: "/dashboard/studio/credits", badge: "IA",     badgeVariant: "purple", isAI: true },
+        { icon: QrCode,   title: "QR y enlace",    description: "Código QR y link público de reservas",  href: "/dashboard/qr"                                                                           },
       ],
     },
-  ];
+  ], [pendingAppts, pendingReviews]);
 
-  // Primary items for collapsed icon list (skip account section)
   const primaryItems = sections
     .filter((s) => s.section !== "Cuenta")
     .flatMap((s) => s.items);
 
   return (
     <>
-      {/* ── Mobile top header ──────────────────────────────────────────────── */}
+      {/* ── Mobile top header ─────────────────────────────────────────────── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#EAE4D8] bg-[#F7F6F2]/97 px-4 shadow-[0_1px_0_#EAE4D8] backdrop-blur-xl md:hidden">
         <Link
           href="/dashboard"
-          aria-label="BarberíaOS — Ir al dashboard"
+          aria-label="BarberíaOS — Dashboard"
           className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
         >
           <BarberiaOSLogo variant="sidebar" size={28} />
-          <span className="text-[14px] font-black text-[#151515]">
-            Barbería<span className="text-[#B88A2A]">OS</span>
-          </span>
+          <div>
+            <span className="text-[14px] font-black text-[#151515]">
+              Barbería<span className="text-[#B88A2A]">OS</span>
+            </span>
+            {barbershopName && (
+              <p className="text-[10px] leading-none text-[#6F6F6F]">{barbershopName}</p>
+            )}
+          </div>
         </Link>
         <div className="flex items-center gap-2">
-          {/* Nueva reserva → agenda con autoOpen */}
           <Link
             href="/dashboard/agenda?new=1"
             aria-label="Nueva reserva"
@@ -350,9 +528,13 @@ export default function Sidebar() {
         </div>
       </header>
 
-      <MobileBottomNav pathname={pathname} onOpenMore={() => setDrawerOpen(true)} />
+      <MobileBottomNav
+        pathname={pathname}
+        pendingAppts={pendingAppts}
+        onOpenMore={() => setDrawerOpen(true)}
+      />
 
-      {/* ── Mobile drawer ────────────────────────────────────────────────────── */}
+      {/* ── Mobile drawer ──────────────────────────────────────────────────── */}
       <div
         role="dialog"
         aria-modal="true"
@@ -376,8 +558,10 @@ export default function Sidebar() {
           <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-[#EAE4D8]" aria-hidden="true" />
           <div className="flex shrink-0 items-center justify-between px-5 pb-3 pt-4">
             <div>
-              <p className="text-base font-black text-[#151515]">Navegación</p>
-              <p className="text-[11px] text-[#6F6F6F]">Panel premium BarberíaOS</p>
+              <p className="text-base font-black text-[#151515]">
+                {barbershopName || "Navegación"}
+              </p>
+              <p className="text-[11px] text-[#6F6F6F]">Plan {planLabel} · BarberíaOS</p>
             </div>
             <button
               type="button"
@@ -388,6 +572,13 @@ export default function Sidebar() {
               <X size={15} aria-hidden="true" />
             </button>
           </div>
+
+          {/* Hoy strip in drawer */}
+          {todayStats !== null && (
+            <div className="shrink-0 px-5 pb-3">
+              <HoyStrip stats={todayStats} />
+            </div>
+          )}
 
           {/* Quick actions */}
           <div className="flex shrink-0 gap-2 px-5 pb-4">
@@ -434,7 +625,7 @@ export default function Sidebar() {
         </aside>
       </div>
 
-      {/* ── Desktop sidebar ───────────────────────────────────────────────────── */}
+      {/* ── Desktop sidebar ────────────────────────────────────────────────── */}
       <aside
         aria-label="Navegación del panel"
         className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-[#EAE4D8] bg-[#F7F6F2] transition-all duration-300 ease-in-out md:flex ${
@@ -467,39 +658,45 @@ export default function Sidebar() {
           </div>
         ) : (
           <div className="mb-4 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
+            {/* Logo + product name */}
             <Link
               href="/dashboard"
               aria-label="BarberíaOS Dashboard"
               className="flex items-center gap-3.5 px-3.5 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B88A2A]"
             >
-              {/* Premium B mark — bigger for presence */}
               <BarberiaOSLogo variant="sidebar" size={44} className="shrink-0" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[15px] font-black leading-none tracking-tight text-[#151515]">
-                    Barbería<span
-                      style={{
-                        background: "linear-gradient(135deg, #B88A2A 0%, #D4AF37 45%, #B88A2A 80%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
-                      }}
-                    >OS</span>
+                    Barbería
+                    <span style={{
+                      background: "linear-gradient(135deg, #B88A2A 0%, #D4AF37 45%, #B88A2A 80%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}>OS</span>
                   </span>
                   <span className="rounded-full border border-[#B88A2A]/35 bg-[#F3E7C9]/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#A87412]">
-                    Pro
+                    {planLabel}
                   </span>
                 </div>
                 <span className="mt-0.5 block text-[11px] font-medium text-[#6F6F6F]">Panel premium</span>
               </div>
             </Link>
+
+            {/* ── Identity block — barbershop name + avatar ── */}
+            {barbershopName && (
+              <>
+                <div className="mx-3.5 h-px bg-[#F0EBE1]" aria-hidden="true" />
+                <BarbershopIdentityRow name={barbershopName} planLabel={planLabel} />
+              </>
+            )}
           </div>
         )}
 
         {/* ── Quick actions ── */}
         {!collapsed && (
           <div className="mb-4 flex flex-col gap-2">
-            {/* Nueva reserva → agenda con panel auto-abierto */}
             <Link
               href="/dashboard/agenda?new=1"
               aria-label="Crear nueva reserva"
@@ -508,7 +705,6 @@ export default function Sidebar() {
               <Plus size={13} aria-hidden="true" />
               Nueva reserva
             </Link>
-            {/* Crear video IA → studio con tipo fill_empty_slots pre-seleccionado */}
             <Link
               href="/dashboard/studio?type=fill_empty_slots"
               aria-label="Crear video con Studio IA"
@@ -518,6 +714,11 @@ export default function Sidebar() {
               Crear video IA
             </Link>
           </div>
+        )}
+
+        {/* ── Hoy en vivo strip ── */}
+        {!collapsed && todayStats !== null && (
+          <HoyStrip stats={todayStats} />
         )}
 
         {/* ── Navigation ── */}
