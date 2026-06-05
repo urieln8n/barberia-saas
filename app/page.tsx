@@ -4,42 +4,60 @@ import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 const faqs = [
   [
-    "¿BarberíaOS es solo una agenda?",
-    "No. BarberíaOS une reservas, agenda, caja, clientes, barberos, huecos libres, QR, marketing e IA en un solo panel operativo.",
-  ],
-  [
-    "¿Cobra comisión por reserva?",
-    "No. BarberíaOS funciona con plan mensual y setup inicial. Tus reservas, clientes y datos siguen siendo tuyos.",
+    "¿Necesito conocimientos técnicos para usar BarberíaOS?",
+    "No. BarberíaOS está diseñado para dueños de barberías, no para técnicos. La configuración inicial tarda menos de 30 minutos y tienes soporte por WhatsApp si necesitas ayuda.",
   ],
   [
     "¿Mis clientes tienen que instalar una app?",
-    "No. Reservan desde tu link público, tu QR, Instagram, Google Business o WhatsApp, directamente desde el navegador.",
+    "No. Reservan desde cualquier navegador — desde tu link, QR, Instagram o Google Business. Sin descargas ni registros de ningún tipo.",
   ],
   [
-    "¿También podéis crear la web premium de mi barbería?",
-    "Sí. Podemos plantear una Web VIP con SEO local, WhatsApp, QR de reservas, agenda online y BarberíaOS conectado.",
+    "¿Puedo poner mi QR en la puerta de la barbería?",
+    "Sí. Cada barbería tiene su propio QR único e imprimible. Ponlo en la puerta, en el mostrador, en tarjetas o en Instagram — los clientes escanean y reservan en 2 minutos.",
+  ],
+  [
+    "¿Puedo recibir reservas desde Instagram y Google?",
+    "Sí. Compartes tu link de reservas en la bio de Instagram, en tu ficha de Google Business y por WhatsApp. Sin configuraciones avanzadas.",
+  ],
+  [
+    "¿Puedo gestionar varios barberos?",
+    "Sí. Cada barbero tiene su horario propio, agenda individual y estadísticas. Los planes Pro y Elite permiten equipos sin límite de barberos.",
+  ],
+  [
+    "¿El plan Elite incluye página web?",
+    "Sí. El plan Elite incluye una web premium con SEO local optimizado para que tu barbería aparezca en Google cuando alguien busca barberías en tu ciudad.",
+  ],
+  [
+    "¿BarberíaOS cobra comisión por cada reserva?",
+    "No. Cuota mensual fija. Tus reservas, clientes y datos son siempre tuyos. Sin sorpresas ni cargos ocultos.",
+  ],
+  [
+    "¿Puedo cancelar cuando quiera?",
+    "Sí. Sin permanencia, sin penalizaciones, sin preguntas. Puedes cancelar desde el panel en cualquier momento.",
   ],
 ] as const;
 
 export const metadata: Metadata = {
-  title: "BarberíaOS | Software para barberías con reservas, caja y QR sin comisión",
+  title: "BarberíaOS | Sistema de reservas y gestión para barberías modernas",
   description:
-    "Controla reservas, caja, clientes, barberos y huecos libres desde un solo panel. BarberíaOS es el software para barberías que quieren agenda online, QR propio y cero comisiones por reserva.",
+    "Gestiona reservas online, agenda, clientes, barberos, caja y crea contenido para Instagram con IA. Software premium para barberías. Desde 39 €/mes sin comisiones.",
   keywords: [
     "software para barberías",
-    "agenda online barberías",
-    "reservas barbería",
-    "caja para barberías",
-    "QR reservas barbería",
-    "software barbería sin comisión",
+    "sistema de reservas barberías",
     "app para barberías",
-    "sistema de reservas barbería",
+    "agenda para barberías",
+    "gestión de barberías",
+    "reservas online barbería",
+    "barbería software España",
+    "software barbería sin comisión",
+    "BarberíaOS",
+    "QR reservas barbería",
   ],
   alternates: { canonical: `${BUSINESS_CONFIG.siteUrl}/` },
   openGraph: {
-    title: "BarberíaOS | Software para barberías con reservas, caja y QR sin comisión",
+    title: "BarberíaOS | Sistema de reservas y gestión para barberías modernas",
     description:
-      "Reservas, agenda, caja, clientes, barberos, huecos libres, QR y marketing en un solo panel para barberías.",
+      "Reservas online, agenda, clientes, barberos, caja, reseñas y Studio IA en un solo panel. Desde 39 €/mes sin comisiones.",
     url: `${BUSINESS_CONFIG.siteUrl}/`,
     siteName: BUSINESS_CONFIG.commercialName,
     type: "website",
