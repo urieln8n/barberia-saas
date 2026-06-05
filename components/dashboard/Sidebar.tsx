@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useSidebarCollapse } from "./sidebar-context";
+import { CommandPalette } from "./CommandPalette";
 import {
   Banknote,
   CalendarDays,
@@ -13,7 +14,6 @@ import {
   Clapperboard,
   Clock,
   Gift,
-  Tv,
   HelpCircle,
   Home,
   LogOut,
@@ -22,9 +22,13 @@ import {
   Plus,
   QrCode,
   Scissors,
+  Search,
   Settings,
   Sparkles,
   Star,
+  Store,
+  Tv,
+  XCircle,
   Users,
   Wand2,
   X,
@@ -54,10 +58,10 @@ type NavItem = {
 };
 
 type NavSection = { section: string; items: NavItem[] };
-
 type TodayStats = { total: number; completed: number; revenue: number };
+type NextAppt   = { time: string; clientName: string; serviceName: string };
 
-// ─── Mobile bottom nav (static) ───────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const MOBILE_QUICK = [
   { href: "/dashboard",        label: "Inicio",  icon: Home,        exact: true  } as const,
@@ -79,6 +83,16 @@ function isActive(pathname: string, item: { href: string; exact?: boolean }): bo
 
 function getTodayISO(): string {
   return new Date().toISOString().split("T")[0];
+}
+
+function minutesUntil(timeHHMM: string): number {
+  const [h, m] = timeHHMM.split(":").map(Number);
+  const now = new Date();
+  return h * 60 + m - (now.getHours() * 60 + now.getMinutes());
+}
+
+function getOpenKey(bsId: string) {
+  return `bs_open_${bsId}_${getTodayISO()}`;
 }
 
 // ─── PremiumBadge ─────────────────────────────────────────────────────────────
@@ -114,15 +128,7 @@ function NotificationDot({ count }: { count: number }) {
 
 // ─── PremiumSidebarItem ───────────────────────────────────────────────────────
 
-function PremiumSidebarItem({
-  item,
-  pathname,
-  onClick,
-}: {
-  item: NavItem;
-  pathname: string;
-  onClick?: () => void;
-}) {
+function PremiumSidebarItem({ item, pathname, onClick }: { item: NavItem; pathname: string; onClick?: () => void }) {
   const Icon   = item.icon;
   const active = isActive(pathname, item);
 
@@ -148,17 +154,14 @@ function PremiumSidebarItem({
         item.isAI ? "focus-visible:ring-[#7C3AED]" : "focus-visible:ring-[#B88A2A]"
       } ${rowCls}`}
     >
-      {/* Icon with notification overlay */}
       <span className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors ${iconCls}`}>
         <Icon size={17} strokeWidth={active ? 2.2 : 1.8} />
         <NotificationDot count={item.notification ?? 0} />
       </span>
-
       <div className="min-w-0 flex-1">
         <p className={`text-[13px] leading-tight ${titleCls}`}>{item.title}</p>
         <p className="mt-[3px] truncate text-[11px] leading-tight text-[#6F6F6F]">{item.description}</p>
       </div>
-
       <div className="flex shrink-0 items-center gap-1.5">
         {item.badge && <PremiumBadge label={item.badge} variant={item.badgeVariant} />}
         <ChevronRight size={12} className={active ? "text-slate-400" : "text-slate-300"} aria-hidden="true" />
@@ -169,22 +172,10 @@ function PremiumSidebarItem({
 
 // ─── PremiumSidebarSection ────────────────────────────────────────────────────
 
-function PremiumSidebarSection({
-  section,
-  items,
-  pathname,
-  onItemClick,
-}: {
-  section: string;
-  items: NavItem[];
-  pathname: string;
-  onItemClick?: () => void;
-}) {
+function PremiumSidebarSection({ section, items, pathname, onItemClick }: { section: string; items: NavItem[]; pathname: string; onItemClick?: () => void }) {
   return (
     <div>
-      <p className="mb-1.5 px-1 text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">
-        {section}
-      </p>
+      <p className="mb-1.5 px-1 text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">{section}</p>
       <div className="overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
         {items.map((item, i) => (
           <div key={item.href}>
@@ -209,10 +200,8 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       aria-label={item.title}
       className={`relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
         item.isAI
-          ? active ? "bg-[#6D28D9] text-white shadow-md focus-visible:ring-[#7C3AED]"
-                   : "bg-[#F3E8FF] text-[#6D28D9] hover:bg-[#EDE9FE] focus-visible:ring-[#7C3AED]"
-          : active ? "bg-white text-[#A87412] shadow-sm focus-visible:ring-[#B88A2A]"
-                   : "text-slate-500 hover:bg-white hover:text-slate-700 focus-visible:ring-[#B88A2A]"
+          ? active ? "bg-[#6D28D9] text-white shadow-md focus-visible:ring-[#7C3AED]" : "bg-[#F3E8FF] text-[#6D28D9] hover:bg-[#EDE9FE] focus-visible:ring-[#7C3AED]"
+          : active ? "bg-white text-[#A87412] shadow-sm focus-visible:ring-[#B88A2A]"  : "text-slate-500 hover:bg-white hover:text-slate-700 focus-visible:ring-[#B88A2A]"
       }`}
     >
       <Icon size={16} strokeWidth={active ? 2.2 : 1.75} />
@@ -227,7 +216,7 @@ function HoyStrip({ stats }: { stats: TodayStats | null }) {
   const loading = stats === null;
   const shimmer = "h-4 w-6 animate-pulse rounded bg-[#EAE4D8]";
   return (
-    <div className="mb-4 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+    <div className="mb-3 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
       <div className="flex items-center justify-between px-3.5 pb-1.5 pt-2.5">
         <span className="text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">Hoy en vivo</span>
         <span className="flex items-center gap-1 text-[10px] font-semibold text-green-600">
@@ -245,11 +234,7 @@ function HoyStrip({ stats }: { stats: TodayStats | null }) {
           <span className="mt-0.5 text-[9px] text-[#6F6F6F]">completas</span>
         </div>
         <div className="flex flex-col items-center py-2.5">
-          {loading ? <span className={shimmer} /> : (
-            <span className="text-[17px] font-black leading-none text-[#B88A2A]">
-              {stats.revenue > 0 ? `${stats.revenue}€` : "—"}
-            </span>
-          )}
+          {loading ? <span className={shimmer} /> : <span className="text-[17px] font-black leading-none text-[#B88A2A]">{stats.revenue > 0 ? `${stats.revenue}€` : "—"}</span>}
           <span className="mt-0.5 text-[9px] text-[#6F6F6F]">ingresos</span>
         </div>
       </div>
@@ -257,68 +242,71 @@ function HoyStrip({ stats }: { stats: TodayStats | null }) {
   );
 }
 
-// ─── MobileBottomNav ──────────────────────────────────────────────────────────
+// ─── ProximaCitaCard ──────────────────────────────────────────────────────────
 
-function MobileBottomNav({
-  pathname,
-  pendingAppts,
-  onOpenMore,
-}: {
-  pathname: string;
-  pendingAppts: number;
-  onOpenMore: () => void;
-}) {
+function ProximaCitaCard({ appt, loaded }: { appt: NextAppt | null; loaded: boolean }) {
+  const minsLeft = appt ? minutesUntil(appt.time) : 0;
+  const imminent = appt !== null && minsLeft > 0 && minsLeft <= 10;
+  const soon     = appt !== null && minsLeft > 0 && minsLeft <= 30;
+
   return (
-    <nav
-      aria-label="Navegación principal móvil"
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#EAE4D8] bg-[#F7F6F2]/97 px-2 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] pt-2 backdrop-blur-xl md:hidden"
-    >
-      <div className="grid grid-cols-5 gap-1">
-        {MOBILE_QUICK.map((item) => {
-          const Icon     = item.icon;
-          const active   = isActive(pathname, item);
-          const isStudio = item.href.includes("studio");
-          const isAgenda = item.href.includes("agenda");
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={`relative flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
-                active
-                  ? isStudio ? "text-[#6D28D9] focus-visible:ring-[#7C3AED]"
-                             : "text-[#B88A2A] focus-visible:ring-[#B88A2A]"
-                  : "text-slate-500 hover:text-slate-800 focus-visible:ring-slate-400"
-              }`}
-            >
-              <span className="relative">
-                <Icon
-                  size={20}
-                  strokeWidth={active ? 2.2 : 1.75}
-                  aria-hidden="true"
-                  className={active ? (isStudio ? "text-[#6D28D9]" : "text-[#B88A2A]") : "text-slate-500"}
-                />
-                {isAgenda && pendingAppts > 0 && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[7px] font-black text-white">
-                    {pendingAppts > 9 ? "9+" : pendingAppts}
-                  </span>
-                )}
-              </span>
-              <span className="max-w-full truncate">{item.label}</span>
-            </Link>
-          );
-        })}
-        <button
-          type="button"
-          aria-label="Abrir menú completo"
-          onClick={onOpenMore}
-          className="flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold text-slate-500 transition-colors hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1"
-        >
-          <MoreHorizontal size={20} strokeWidth={1.75} aria-hidden="true" />
-          <span>Más</span>
-        </button>
+    <div className={`mb-3 overflow-hidden rounded-2xl border bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.04)] transition-colors ${
+      imminent ? "border-red-200 bg-red-50/20"
+      : soon   ? "border-[#B88A2A]/30 bg-[#FDFBF5]"
+               : "border-[#EAE4D8]"
+    }`}>
+      <div className="flex items-center justify-between">
+        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">Próxima cita</p>
+        {appt && minsLeft > 0 && (
+          <span className={`flex items-center gap-1 text-[10px] font-semibold ${imminent ? "text-red-500" : soon ? "text-[#B88A2A]" : "text-[#6F6F6F]"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${imminent ? "animate-pulse bg-red-500" : soon ? "animate-pulse bg-[#B88A2A]" : "bg-slate-300"}`} aria-hidden="true" />
+            {minsLeft < 60 ? `${minsLeft} min` : `${Math.floor(minsLeft / 60)}h ${minsLeft % 60}m`}
+          </span>
+        )}
       </div>
-    </nav>
+      {!loaded ? (
+        <div className="mt-2 space-y-1.5">
+          <div className="h-3.5 w-28 animate-pulse rounded bg-[#EAE4D8]" />
+          <div className="h-2.5 w-20 animate-pulse rounded bg-[#EAE4D8]" />
+        </div>
+      ) : appt ? (
+        <div className="mt-1.5">
+          <p className="text-[14px] font-black leading-tight text-[#151515]">{appt.time} · {appt.clientName}</p>
+          {appt.serviceName && <p className="mt-0.5 text-[11px] text-[#6F6F6F]">{appt.serviceName}</p>}
+        </div>
+      ) : (
+        <p className="mt-1.5 text-[12px] text-[#6F6F6F]">Sin citas pendientes hoy</p>
+      )}
+    </div>
+  );
+}
+
+// ─── OpenCloseToggle ──────────────────────────────────────────────────────────
+
+function OpenCloseToggle({ isOpen, onToggle, disabled }: { isOpen: boolean; onToggle: () => void; disabled: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      disabled={disabled}
+      aria-label={isOpen ? "Marcar barbería como cerrada hoy" : "Marcar barbería como abierta hoy"}
+      className={`mb-2 flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1 ${
+        disabled ? "opacity-40 cursor-not-allowed border-[#EAE4D8] bg-white"
+        : isOpen  ? "border-green-200 bg-green-50 hover:bg-green-100"
+                  : "border-slate-200 bg-slate-50 hover:bg-slate-100"
+      }`}
+    >
+      {isOpen
+        ? <Store size={14} className="shrink-0 text-green-600" aria-hidden="true" />
+        : <XCircle size={14} className="shrink-0 text-slate-400" aria-hidden="true" />}
+      <span className={`flex-1 text-left text-[12px] font-semibold ${isOpen ? "text-green-700" : "text-slate-500"}`}>
+        {isOpen ? "Abierto hoy" : "Cerrado hoy"}
+      </span>
+      {/* Toggle pill */}
+      <span className={`relative h-5 w-9 rounded-full transition-colors ${isOpen ? "bg-green-500" : "bg-slate-300"}`}>
+        <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${isOpen ? "translate-x-4" : "translate-x-0.5"}`} />
+      </span>
+    </button>
   );
 }
 
@@ -329,7 +317,6 @@ function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: s
   const initial = name ? name.charAt(0).toUpperCase() : "B";
   return (
     <div className="flex items-center gap-3 px-3.5 py-2.5">
-      {/* Gold avatar with initial */}
       <span
         aria-hidden="true"
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[13px] font-black text-white shadow-sm"
@@ -347,21 +334,76 @@ function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: s
   );
 }
 
+// ─── MobileBottomNav ──────────────────────────────────────────────────────────
+
+function MobileBottomNav({ pathname, pendingAppts, onOpenMore }: { pathname: string; pendingAppts: number; onOpenMore: () => void }) {
+  return (
+    <nav aria-label="Navegación principal móvil" className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#EAE4D8] bg-[#F7F6F2]/97 px-2 pb-[calc(env(safe-area-inset-bottom)+0.45rem)] pt-2 backdrop-blur-xl md:hidden">
+      <div className="grid grid-cols-5 gap-1">
+        {MOBILE_QUICK.map((item) => {
+          const Icon     = item.icon;
+          const active   = isActive(pathname, item);
+          const isStudio = item.href.includes("studio");
+          const isAgenda = item.href.includes("agenda");
+          return (
+            <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}
+              className={`relative flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+                active
+                  ? isStudio ? "text-[#6D28D9] focus-visible:ring-[#7C3AED]" : "text-[#B88A2A] focus-visible:ring-[#B88A2A]"
+                  : "text-slate-500 hover:text-slate-800 focus-visible:ring-slate-400"
+              }`}
+            >
+              <span className="relative">
+                <Icon size={20} strokeWidth={active ? 2.2 : 1.75} aria-hidden="true"
+                  className={active ? (isStudio ? "text-[#6D28D9]" : "text-[#B88A2A]") : "text-slate-500"} />
+                {isAgenda && pendingAppts > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[7px] font-black text-white">
+                    {pendingAppts > 9 ? "9+" : pendingAppts}
+                  </span>
+                )}
+              </span>
+              <span className="max-w-full truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+        <button type="button" aria-label="Abrir menú completo" onClick={onOpenMore}
+          className="flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-1 text-[11px] font-bold text-slate-500 transition-colors hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1">
+          <MoreHorizontal size={20} strokeWidth={1.75} aria-hidden="true" />
+          <span>Más</span>
+        </button>
+      </div>
+    </nav>
+  );
+}
+
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export default function Sidebar() {
   const pathname              = usePathname();
   const { collapsed, toggle } = useSidebarCollapse();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen]     = useState(false);
 
-  // ── Live data state ──
+  // ── Live data ──
+  const [barbershopId, setBarbershopId] = useState<string | null>(null);
   const [barbershopName, setBarbershopName] = useState("");
   const [planLabel, setPlanLabel]           = useState("Pro");
   const [todayStats, setTodayStats]         = useState<TodayStats | null>(null);
+  const [nextAppt, setNextAppt]             = useState<NextAppt | null>(null);
+  const [apptLoaded, setApptLoaded]         = useState(false);
   const [pendingAppts, setPendingAppts]     = useState(0);
   const [pendingReviews, setPendingReviews] = useState(0);
 
+  // ── Open/Closed state (localStorage, day-scoped) ──
+  const [isOpen, setIsOpen] = useState(true);
+
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
+  // Read open state from localStorage once barbershopId loads
+  useEffect(() => {
+    if (!barbershopId) return;
+    const stored = localStorage.getItem(getOpenKey(barbershopId));
+    if (stored === "false") setIsOpen(false);
+  }, [barbershopId]);
 
   // ── Fetch all sidebar data on mount ──
   useEffect(() => {
@@ -377,53 +419,24 @@ export default function Sidebar() {
 
         // Resolve barbershop_id
         let bsId: string | null = null;
-        const { data: member } = await supabase
-          .from("barbershop_members")
-          .select("barbershop_id")
-          .eq("user_id", user.id)
-          .maybeSingle();
+        const { data: member } = await supabase.from("barbershop_members").select("barbershop_id").eq("user_id", user.id).maybeSingle();
         if (member?.barbershop_id) {
           bsId = member.barbershop_id as string;
         } else {
-          const { data: owned } = await supabase
-            .from("barbershops")
-            .select("id")
-            .eq("owner_id", user.id)
-            .maybeSingle();
+          const { data: owned } = await supabase.from("barbershops").select("id").eq("owner_id", user.id).maybeSingle();
           bsId = (owned?.id as string | undefined) ?? null;
         }
         if (!bsId) return;
+        setBarbershopId(bsId);
 
         const today = getTodayISO();
 
-        // Parallel fetches: shop name, plan, today appts, pending reviews
         const [shopRes, subRes, todayRes, pendingRes, reviewsRes] = await Promise.all([
           supabase.from("barbershops").select("name").eq("id", bsId).single(),
-          supabase
-            .from("subscriptions")
-            .select("plan_name")
-            .eq("barbershop_id", bsId)
-            .in("status", ["trial", "active"])
-            .order("created_at", { ascending: false })
-            .limit(1)
-            .maybeSingle(),
-          supabase
-            .from("appointments")
-            .select("status, services(price)")
-            .eq("barbershop_id", bsId)
-            .eq("appointment_date", today)
-            .in("status", ["scheduled", "pending", "confirmed", "completed"]),
-          supabase
-            .from("appointments")
-            .select("id", { count: "exact", head: true })
-            .eq("barbershop_id", bsId)
-            .eq("appointment_date", today)
-            .in("status", ["pending", "scheduled"]),
-          supabase
-            .from("reviews")
-            .select("id", { count: "exact", head: true })
-            .eq("business_id", bsId)
-            .eq("status", "pending"),
+          supabase.from("subscriptions").select("plan_name").eq("barbershop_id", bsId).in("status", ["trial", "active"]).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+          supabase.from("appointments").select("status, start_time, clients(name), services(name, price)").eq("barbershop_id", bsId).eq("appointment_date", today).in("status", ["scheduled", "confirmed", "completed"]).order("start_time", { ascending: true }),
+          supabase.from("appointments").select("id", { count: "exact", head: true }).eq("barbershop_id", bsId).eq("appointment_date", today).in("status", ["scheduled"]),
+          supabase.from("reviews").select("id", { count: "exact", head: true }).eq("business_id", bsId).eq("status", "pending"),
         ]);
 
         if (shopRes.data?.name) setBarbershopName(shopRes.data.name as string);
@@ -432,20 +445,33 @@ export default function Sidebar() {
         if (rawPlan) setPlanLabel(PLAN_LABELS[rawPlan] ?? "Pro");
 
         if (todayRes.data) {
-          type ApptRow = { status: string; services: { price: number | null } | null };
+          type ApptRow = { status: string; start_time: string; clients: { name: string } | null; services: { name: string; price: number | null } | null };
           const rows = todayRes.data as unknown as ApptRow[];
+
+          // Today stats
           const total     = rows.length;
           const completed = rows.filter((r) => r.status === "completed").length;
-          const revenue   = rows
-            .filter((r) => r.status === "completed")
-            .reduce((sum, r) => sum + (r.services?.price ?? 0), 0);
+          const revenue   = rows.filter((r) => r.status === "completed").reduce((s, r) => s + (r.services?.price ?? 0), 0);
           setTodayStats({ total, completed, revenue: Math.round(revenue) });
+
+          // Next upcoming appointment (start_time > now)
+          const nowHHMM = new Date().toTimeString().slice(0, 5);
+          const upcoming = rows.find((r) =>
+            ["scheduled", "confirmed"].includes(r.status) &&
+            r.start_time.slice(0, 5) >= nowHHMM
+          );
+          setNextAppt(upcoming
+            ? { time: upcoming.start_time.slice(0, 5), clientName: upcoming.clients?.name ?? "Cliente", serviceName: upcoming.services?.name ?? "" }
+            : null
+          );
+          setApptLoaded(true);
         }
 
         setPendingAppts(pendingRes.count ?? 0);
         setPendingReviews(reviewsRes.count ?? 0);
       } catch {
-        // sidebar data is non-critical — fail silently
+        // sidebar data non-critical — fail silently
+        setApptLoaded(true);
       }
     }
 
@@ -453,37 +479,38 @@ export default function Sidebar() {
   }, []);
 
   async function handleLogout() {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-    );
+    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "");
     await supabase.auth.signOut();
     window.location.href = "/login";
   }
 
-  // ── Nav sections (re-computed when notification counts change) ──
+  function toggleOpen() {
+    const next = !isOpen;
+    setIsOpen(next);
+    if (barbershopId) localStorage.setItem(getOpenKey(barbershopId), next ? "true" : "false");
+  }
+
+  // ── Nav sections ──
   const sections: NavSection[] = useMemo(() => [
     {
       section: "Negocio",
       items: [
-        { icon: CalendarDays, title: "Agenda",        description: "Reservas y disponibilidad", href: "/dashboard/agenda",       notification: pendingAppts },
-        { icon: Clock, title: "Sala de espera", description: "Cola de turnos en tiempo real",   href: "/dashboard/sala-espera" },
-        { icon: Tv,    title: "Lounge",        description: "Pantalla de sala y promociones", href: "/dashboard/lounge"       },
-        { icon: Users, title: "Clientes",      description: "Historial y seguimiento",        href: "/dashboard/clientes"    },
-        { icon: Scissors,     title: "Barberos", description: "Equipo y comisiones",       href: "/dashboard/barberos" },
-        { icon: Banknote,     title: "Caja",     description: "Cobros y ventas",           href: "/dashboard/caja"     },
+        { icon: Home,         title: "Dashboard",     description: "Resumen general del negocio",    href: "/dashboard",              exact: true               },
+        { icon: CalendarDays, title: "Agenda",        description: "Reservas y disponibilidad",      href: "/dashboard/agenda",       notification: pendingAppts },
+        { icon: Clock,        title: "Sala de espera",description: "Cola de turnos en tiempo real",   href: "/dashboard/sala-espera"   },
+        { icon: Tv,           title: "Lounge",         description: "Pantalla de sala y promociones", href: "/dashboard/lounge"        },
+        { icon: Users,        title: "Clientes",       description: "Historial y seguimiento",        href: "/dashboard/clientes"      },
+        { icon: Scissors,     title: "Barberos",       description: "Equipo y comisiones",            href: "/dashboard/barberos"      },
+        { icon: Banknote,     title: "Caja",           description: "Cobros y ventas",                href: "/dashboard/caja"          },
       ],
     },
     {
       section: "Crecimiento",
       items: [
-        {
-          icon: Wand2, title: "Studio IA", description: "Contenido y videos automáticos",
-          href: "/dashboard/studio", badge: "NUEVO", badgeVariant: "purple", isAI: true,
-        },
-        { icon: Gift,      title: "Fidelización", description: "Programas y recompensas", href: "/dashboard/fidelizacion"               },
-        { icon: Star,      title: "Reseñas",      description: "Opiniones y reputación",  href: "/dashboard/resenas", notification: pendingReviews },
-        { icon: Megaphone, title: "Promociones",  description: "Ofertas y campañas",      href: "/dashboard/marketing"                  },
+        { icon: Wand2,     title: "Studio IA",    description: "Contenido y videos automáticos", href: "/dashboard/studio",       badge: "NUEVO", badgeVariant: "purple", isAI: true },
+        { icon: Gift,      title: "Fidelización", description: "Programas y recompensas",        href: "/dashboard/fidelizacion"  },
+        { icon: Star,      title: "Reseñas",      description: "Opiniones y reputación",         href: "/dashboard/resenas",      notification: pendingReviews },
+        { icon: Megaphone, title: "Promociones",  description: "Ofertas y campañas",             href: "/dashboard/marketing"     },
       ],
     },
     {
@@ -496,137 +523,72 @@ export default function Sidebar() {
     },
   ], [pendingAppts, pendingReviews]);
 
-  const primaryItems = sections
-    .filter((s) => s.section !== "Cuenta")
-    .flatMap((s) => s.items);
+  const primaryItems = sections.filter((s) => s.section !== "Cuenta").flatMap((s) => s.items);
 
   return (
     <>
       {/* ── Mobile top header ─────────────────────────────────────────────── */}
       <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#EAE4D8] bg-[#F7F6F2]/97 px-4 shadow-[0_1px_0_#EAE4D8] backdrop-blur-xl md:hidden">
-        <Link
-          href="/dashboard"
-          aria-label="BarberíaOS — Dashboard"
-          className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-        >
+        <Link href="/dashboard" aria-label="BarberíaOS — Dashboard"
+          className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
           <BarberiaOSLogo variant="sidebar" size={28} />
           <div>
-            <span className="text-[14px] font-black text-[#151515]">
-              Barbería<span className="text-[#B88A2A]">OS</span>
-            </span>
-            {barbershopName && (
-              <p className="text-[10px] leading-none text-[#6F6F6F]">{barbershopName}</p>
-            )}
+            <span className="text-[14px] font-black text-[#151515]">Barbería<span className="text-[#B88A2A]">OS</span></span>
+            {barbershopName && <p className="text-[10px] leading-none text-[#6F6F6F]">{barbershopName}</p>}
           </div>
         </Link>
         <div className="flex items-center gap-2">
-          <Link
-            href="/dashboard/agenda?new=1"
-            aria-label="Nueva reserva"
-            className="flex h-9 items-center gap-1.5 rounded-xl bg-[#111111] px-3 text-[12px] font-black text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-          >
-            <Plus size={13} aria-hidden="true" />
-            <span>Reserva</span>
+          <Link href="/dashboard/agenda?new=1" aria-label="Nueva reserva"
+            className="flex h-9 items-center gap-1.5 rounded-xl bg-[#111111] px-3 text-[12px] font-black text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
+            <Plus size={13} aria-hidden="true" /><span>Reserva</span>
           </Link>
-          <button
-            type="button"
-            onClick={handleLogout}
-            aria-label="Cerrar sesión"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#EAE4D8] bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1"
-          >
+          <button type="button" onClick={handleLogout} aria-label="Cerrar sesión"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#EAE4D8] bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1">
             <LogOut size={15} aria-hidden="true" />
           </button>
         </div>
       </header>
 
-      <MobileBottomNav
-        pathname={pathname}
-        pendingAppts={pendingAppts}
-        onOpenMore={() => setDrawerOpen(true)}
-      />
+      <MobileBottomNav pathname={pathname} pendingAppts={pendingAppts} onOpenMore={() => setDrawerOpen(true)} />
 
       {/* ── Mobile drawer ──────────────────────────────────────────────────── */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menú de navegación"
-        className={`fixed inset-0 z-50 transition-opacity duration-200 md:hidden ${
-          drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      >
-        <button
-          type="button"
-          aria-label="Cerrar menú"
-          onClick={() => setDrawerOpen(false)}
-          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
-          tabIndex={drawerOpen ? 0 : -1}
-        />
-        <aside
-          className={`absolute bottom-0 left-0 right-0 flex max-h-[92dvh] flex-col overflow-hidden rounded-t-[24px] bg-[#F7F6F2] shadow-[0_-24px_60px_rgba(15,23,42,0.14)] transition-transform duration-300 ${
-            drawerOpen ? "translate-y-0" : "translate-y-full"
-          }`}
-        >
+      <div role="dialog" aria-modal="true" aria-label="Menú de navegación"
+        className={`fixed inset-0 z-50 transition-opacity duration-200 md:hidden ${drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}>
+        <button type="button" aria-label="Cerrar menú" onClick={() => setDrawerOpen(false)}
+          className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" tabIndex={drawerOpen ? 0 : -1} />
+        <aside className={`absolute bottom-0 left-0 right-0 flex max-h-[92dvh] flex-col overflow-hidden rounded-t-[24px] bg-[#F7F6F2] shadow-[0_-24px_60px_rgba(15,23,42,0.14)] transition-transform duration-300 ${drawerOpen ? "translate-y-0" : "translate-y-full"}`}>
           <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-[#EAE4D8]" aria-hidden="true" />
           <div className="flex shrink-0 items-center justify-between px-5 pb-3 pt-4">
             <div>
-              <p className="text-base font-black text-[#151515]">
-                {barbershopName || "Navegación"}
-              </p>
+              <p className="text-base font-black text-[#151515]">{barbershopName || "Navegación"}</p>
               <p className="text-[11px] text-[#6F6F6F]">Plan {planLabel} · BarberíaOS</p>
             </div>
-            <button
-              type="button"
-              aria-label="Cerrar menú"
-              onClick={() => setDrawerOpen(false)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#EAE4D8] bg-white text-slate-500 transition hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1"
-            >
+            <button type="button" aria-label="Cerrar menú" onClick={() => setDrawerOpen(false)}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#EAE4D8] bg-white text-slate-500 transition hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1">
               <X size={15} aria-hidden="true" />
             </button>
           </div>
-
-          {/* Hoy strip in drawer */}
-          <div className="shrink-0 px-5 pb-3">
-            <HoyStrip stats={todayStats} />
-          </div>
-
-          {/* Quick actions */}
+          <div className="shrink-0 px-5 pb-3"><HoyStrip stats={todayStats} /></div>
           <div className="flex shrink-0 gap-2 px-5 pb-4">
-            <Link
-              href="/dashboard/agenda?new=1"
-              onClick={() => setDrawerOpen(false)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#111111] px-3 py-2.5 text-[12px] font-black text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-            >
+            <Link href="/dashboard/agenda?new=1" onClick={() => setDrawerOpen(false)}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#111111] px-3 py-2.5 text-[12px] font-black text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
               <Plus size={12} aria-hidden="true" /> Nueva reserva
             </Link>
-            <Link
-              href="/dashboard/studio?type=fill_empty_slots"
-              onClick={() => setDrawerOpen(false)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] px-3 py-2.5 text-[12px] font-black text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1"
-            >
+            <Link href="/dashboard/studio?type=fill_empty_slots" onClick={() => setDrawerOpen(false)}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] px-3 py-2.5 text-[12px] font-black text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1">
               <Clapperboard size={12} aria-hidden="true" /> Crear video IA
             </Link>
           </div>
-
           <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="flex flex-col gap-4">
               {sections.map((s) => (
-                <PremiumSidebarSection
-                  key={s.section}
-                  section={s.section}
-                  items={s.items}
-                  pathname={pathname}
-                  onItemClick={() => setDrawerOpen(false)}
-                />
+                <PremiumSidebarSection key={s.section} section={s.section} items={s.items} pathname={pathname} onItemClick={() => setDrawerOpen(false)} />
               ))}
             </div>
           </div>
-
           <div className="shrink-0 border-t border-[#EAE4D8] px-4 pb-[calc(16px+env(safe-area-inset-bottom))] pt-3">
-            <button
-              type="button"
-              onClick={async () => { setDrawerOpen(false); await handleLogout(); }}
-              className="flex w-full items-center gap-3 rounded-xl border border-[#EAE4D8] bg-white px-4 py-3 text-sm font-semibold text-[#6F6F6F] transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1"
-            >
+            <button type="button" onClick={async () => { setDrawerOpen(false); await handleLogout(); }}
+              className="flex w-full items-center gap-3 rounded-xl border border-[#EAE4D8] bg-white px-4 py-3 text-sm font-semibold text-[#6F6F6F] transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1">
               <LogOut size={14} className="shrink-0" aria-hidden="true" />
               Cerrar sesión
             </button>
@@ -635,65 +597,39 @@ export default function Sidebar() {
       </div>
 
       {/* ── Desktop sidebar ────────────────────────────────────────────────── */}
-      <aside
-        aria-label="Navegación del panel"
-        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-[#EAE4D8] bg-[#F7F6F2] transition-all duration-300 ease-in-out md:flex ${
-          collapsed ? "w-16 px-2 py-4" : "w-72 px-3 py-4"
-        }`}
+      <aside aria-label="Navegación del panel"
+        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-[#EAE4D8] bg-[#F7F6F2] transition-all duration-300 ease-in-out md:flex ${collapsed ? "w-16 px-2 py-4" : "w-72 px-3 py-4"}`}
         style={{ boxShadow: "1px 0 0 0 #EAE4D8" }}
       >
         {/* Collapse toggle */}
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-[#EAE4D8] bg-white shadow-sm transition hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-        >
-          {collapsed
-            ? <ChevronRight size={11} className="text-slate-500" aria-hidden="true" />
-            : <ChevronLeft  size={11} className="text-slate-500" aria-hidden="true" />}
+        <button type="button" onClick={toggle} aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
+          className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-[#EAE4D8] bg-white shadow-sm transition hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
+          {collapsed ? <ChevronRight size={11} className="text-slate-500" aria-hidden="true" /> : <ChevronLeft size={11} className="text-slate-500" aria-hidden="true" />}
         </button>
 
         {/* ── Brand header ── */}
         {collapsed ? (
           <div className="mb-4 flex justify-center">
-            <Link
-              href="/dashboard"
-              aria-label="BarberíaOS — Dashboard"
-              className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-            >
+            <Link href="/dashboard" aria-label="BarberíaOS — Dashboard"
+              className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
               <BarberiaOSLogo variant="sidebar" size={36} />
             </Link>
           </div>
         ) : (
           <div className="mb-4 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_4px_rgba(15,23,42,0.06)]">
-            {/* Logo + product name */}
-            <Link
-              href="/dashboard"
-              aria-label="BarberíaOS Dashboard"
-              className="flex items-center gap-3.5 px-3.5 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B88A2A]"
-            >
+            <Link href="/dashboard" aria-label="BarberíaOS Dashboard"
+              className="flex items-center gap-3.5 px-3.5 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B88A2A]">
               <BarberiaOSLogo variant="sidebar" size={44} className="shrink-0" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[15px] font-black leading-none tracking-tight text-[#151515]">
-                    Barbería
-                    <span style={{
-                      background: "linear-gradient(135deg, #B88A2A 0%, #D4AF37 45%, #B88A2A 80%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}>OS</span>
+                    Barbería<span style={{ background: "linear-gradient(135deg, #B88A2A 0%, #D4AF37 45%, #B88A2A 80%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>OS</span>
                   </span>
-                  <span className="rounded-full border border-[#B88A2A]/35 bg-[#F3E7C9]/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#A87412]">
-                    {planLabel}
-                  </span>
+                  <span className="rounded-full border border-[#B88A2A]/35 bg-[#F3E7C9]/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#A87412]">{planLabel}</span>
                 </div>
                 <span className="mt-0.5 block text-[11px] font-medium text-[#6F6F6F]">Panel premium</span>
               </div>
             </Link>
-
-            {/* ── Identity block — barbershop name + avatar ── */}
             <div className="mx-3.5 h-px bg-[#F0EBE1]" aria-hidden="true" />
             <BarbershopIdentityRow name={barbershopName} planLabel={planLabel} />
           </div>
@@ -701,47 +637,41 @@ export default function Sidebar() {
 
         {/* ── Quick actions ── */}
         {!collapsed && (
-          <div className="mb-4 flex flex-col gap-2">
-            <Link
-              href="/dashboard/agenda?new=1"
-              aria-label="Crear nueva reserva"
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-[#111111] px-3 py-2.5 text-[12px] font-black text-white transition hover:bg-[#333] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-            >
-              <Plus size={13} aria-hidden="true" />
-              Nueva reserva
+          <div className="mb-3 flex flex-col gap-2">
+            <Link href="/dashboard/agenda?new=1" aria-label="Crear nueva reserva"
+              className="flex items-center justify-center gap-1.5 rounded-xl bg-[#111111] px-3 py-2.5 text-[12px] font-black text-white transition hover:bg-[#333] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
+              <Plus size={13} aria-hidden="true" /> Nueva reserva
             </Link>
-            <Link
-              href="/dashboard/studio?type=fill_empty_slots"
-              aria-label="Crear video con Studio IA"
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] px-3 py-2.5 text-[12px] font-black text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1"
-            >
-              <Clapperboard size={13} aria-hidden="true" />
-              Crear video IA
+            <Link href="/dashboard/studio?type=fill_empty_slots" aria-label="Crear video con Studio IA"
+              className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] px-3 py-2.5 text-[12px] font-black text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1">
+              <Clapperboard size={13} aria-hidden="true" /> Crear video IA
             </Link>
           </div>
         )}
 
-        {/* ── Hoy en vivo strip ── */}
+        {/* ── ⌘K Search ── */}
+        {!collapsed && <CommandPalette barbershopId={barbershopId} />}
+
+        {/* ── Hoy en vivo ── */}
         {!collapsed && <HoyStrip stats={todayStats} />}
+
+        {/* ── Próxima cita ── */}
+        {!collapsed && <ProximaCitaCard appt={nextAppt} loaded={apptLoaded} />}
 
         {/* ── Navigation ── */}
         {collapsed ? (
-          <nav
-            aria-label="Navegación principal"
-            className="flex flex-1 flex-col items-center gap-1 overflow-y-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            <Link
-              href="/dashboard/agenda?new=1"
-              aria-label="Nueva reserva"
-              className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl bg-[#111111] text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-            >
+          <nav aria-label="Navegación principal" className="flex flex-1 flex-col items-center gap-1 overflow-y-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {/* Search icon (collapsed) */}
+            <button type="button" aria-label="Abrir búsqueda — Ctrl K" onClick={() => {}}
+              className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl border border-[#EAE4D8] bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
+              <Search size={15} aria-hidden="true" />
+            </button>
+            <Link href="/dashboard/agenda?new=1" aria-label="Nueva reserva"
+              className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl bg-[#111111] text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
               <Plus size={15} aria-hidden="true" />
             </Link>
-            <Link
-              href="/dashboard/studio?type=fill_empty_slots"
-              aria-label="Crear video IA"
-              className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-b from-[#6D28D9] to-[#7C3AED] text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1"
-            >
+            <Link href="/dashboard/studio?type=fill_empty_slots" aria-label="Crear video IA"
+              className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-b from-[#6D28D9] to-[#7C3AED] text-white transition hover:from-[#5B21B6] hover:to-[#6D28D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-1">
               <Clapperboard size={15} aria-hidden="true" />
             </Link>
             <div className="my-1 h-px w-8 bg-[#EAE4D8]" aria-hidden="true" />
@@ -750,53 +680,44 @@ export default function Sidebar() {
             ))}
           </nav>
         ) : (
-          <nav
-            aria-label="Navegación principal"
-            className="flex flex-1 flex-col gap-4 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
+          <nav aria-label="Navegación principal" className="flex flex-1 flex-col gap-4 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {sections.map((s) => (
-              <PremiumSidebarSection
-                key={s.section}
-                section={s.section}
-                items={s.items}
-                pathname={pathname}
-              />
+              <PremiumSidebarSection key={s.section} section={s.section} items={s.items} pathname={pathname} />
             ))}
           </nav>
         )}
 
-        {/* ── Logout ── */}
+        {/* ── Open/Close toggle + Logout ── */}
         {collapsed ? (
           <div className="mt-3 flex flex-col items-center gap-1 border-t border-[#EAE4D8] pt-3">
-            <Link
-              href="/dashboard/soporte"
-              aria-label="Soporte"
-              title="Soporte — Ayuda y contacto"
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1"
-            >
+            {/* Open/close dot indicator */}
+            <button type="button" onClick={toggleOpen} aria-label={isOpen ? "Abierto — marcar como cerrado" : "Cerrado — marcar como abierto"}
+              title={isOpen ? "Abierto hoy" : "Cerrado hoy"}
+              className="flex h-9 w-9 items-center justify-center rounded-xl transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
+              <span className={`h-3 w-3 rounded-full ${isOpen ? "bg-green-500" : "bg-slate-300"}`} aria-hidden="true" />
+            </button>
+            <Link href="/dashboard/soporte" aria-label="Soporte" title="Soporte — Ayuda y contacto"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B88A2A] focus-visible:ring-offset-1">
               <HelpCircle size={15} aria-hidden="true" />
             </Link>
-            <button
-              type="button"
-              onClick={handleLogout}
-              aria-label="Cerrar sesión"
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1"
-            >
+            <button type="button" onClick={handleLogout} aria-label="Cerrar sesión"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1">
               <LogOut size={15} aria-hidden="true" />
             </button>
           </div>
         ) : (
           <div className="mt-3 border-t border-[#EAE4D8] pt-3">
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#6F6F6F] transition hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1"
-            >
+            <OpenCloseToggle isOpen={isOpen} onToggle={toggleOpen} disabled={!barbershopId} />
+            <button type="button" onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#6F6F6F] transition hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1">
               <LogOut size={15} className="shrink-0" aria-hidden="true" />
               Cerrar sesión
             </button>
           </div>
         )}
+
+        {/* ⌘K palette is rendered globally (available even in collapsed mode) */}
+        {collapsed && <CommandPalette barbershopId={barbershopId} />}
       </aside>
     </>
   );
