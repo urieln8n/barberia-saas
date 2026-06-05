@@ -23,6 +23,7 @@ type Props = {
     fecha?: string; // backward compat
     barber?: string;
     service?: string;
+    new?: string;
   };
 };
 
@@ -77,6 +78,7 @@ export default async function AgendaPage({ searchParams }: Props) {
       monthData={monthData}
       initialSelectedBarber={searchParams?.barber ?? ""}
       initialSelectedService={searchParams?.service ?? ""}
+      autoOpen={searchParams?.new === "1"}
     />
   );
 }
