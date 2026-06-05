@@ -60,49 +60,59 @@ type NavGroup = {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: "Control",
+    label: "Inicio",
     items: [
-      { href: "/dashboard",          label: "Dashboard",       icon: Home,         exact: true },
-      { href: "/dashboard/agenda",   label: "Agenda",          icon: CalendarDays              },
-      { href: "/dashboard/reservas", label: "Reservas",        icon: CalendarCheck             },
-      { href: "/dashboard/caja",     label: "Caja",            icon: Banknote                  },
-      { href: "/dashboard/pagos",    label: "Pagos",           icon: CreditCard                },
+      { href: "/dashboard",          label: "Dashboard",   icon: Home,         exact: true },
+      { href: "/dashboard/agenda",   label: "Agenda",      icon: CalendarDays              },
+      { href: "/dashboard/reservas", label: "Reservas",    icon: CalendarCheck             },
+    ],
+  },
+  {
+    label: "Operaciones",
+    items: [
+      { href: "/dashboard/caja",      label: "Caja",          icon: Banknote  },
+      { href: "/dashboard/pagos",     label: "Pagos",         icon: CreditCard },
+      { href: "/dashboard/huecos",    label: "Huecos libres", icon: Zap        },
+      { href: "/dashboard/inventario",label: "Inventario",    icon: Package    },
+    ],
+  },
+  {
+    label: "Clientes",
+    items: [
+      { href: "/dashboard/clientes",   label: "Clientes",         icon: Users  },
+      { href: "/dashboard/fidelizacion",label: "Fidelización",    icon: Gift   },
+      { href: "/dashboard/recuperacion",label: "Recuperación",    icon: UserX  },
+      { href: "/dashboard/resenas",     label: "Reseñas",         icon: Star   },
+      { href: "/dashboard/lounge",      label: "Sala de espera",  icon: Monitor},
+    ],
+  },
+  {
+    label: "Equipo",
+    items: [
+      { href: "/dashboard/barberos",  label: "Barberos",  icon: Scissors  },
+      { href: "/dashboard/servicios", label: "Servicios", icon: Briefcase },
     ],
   },
   {
     label: "Crecimiento",
     items: [
-      { href: "/dashboard/studio",       label: "Studio IA",        icon: Clapperboard, badge: "nuevo", studio: true },
-      { href: "/dashboard/marketing",    label: "Marketing",        icon: Megaphone                                  },
-      { href: "/dashboard/ia",           label: "IA del Dueño",     icon: Bot,          badge: "pro"                 },
-      { href: "/dashboard/huecos",       label: "Huecos libres",    icon: Zap                                            },
-      { href: "/dashboard/fidelizacion", label: "Fidelización",     icon: Gift                                       },
-      { href: "/dashboard/lounge",       label: "Sala de espera",   icon: Monitor                                    },
-      { href: "/dashboard/resenas",      label: "Reseñas",          icon: Star                                       },
-      { href: "/dashboard/recuperacion", label: "Clientes perdidos",icon: UserX                                      },
+      { href: "/dashboard/marketing",    label: "Marketing",    icon: Megaphone                 },
+      { href: "/dashboard/ia",           label: "IA del Dueño", icon: Bot,      badge: "pro"   },
+      { href: "/dashboard/estadisticas", label: "Reportes",     icon: BarChart3                },
     ],
   },
   {
-    label: "Operación",
+    label: "Studio IA",
     items: [
-      { href: "/dashboard/clientes",   label: "Clientes",   icon: Users     },
-      { href: "/dashboard/barberos",   label: "Barberos",   icon: Scissors  },
-      { href: "/dashboard/servicios",  label: "Servicios",  icon: Briefcase },
-      { href: "/dashboard/inventario", label: "Inventario", icon: Package   },
-    ],
-  },
-  {
-    label: "Análisis",
-    items: [
-      { href: "/dashboard/estadisticas",     label: "Reportes",        icon: BarChart3              },
-      { href: "/dashboard/studio/credits",   label: "Créditos Studio", icon: Sparkles, badge: "pro" },
+      { href: "/dashboard/studio",         label: "Studio IA",       icon: Wand2,    badge: "nuevo", studio: true },
+      { href: "/dashboard/studio/credits", label: "Créditos Studio", icon: Sparkles, badge: "pro"                },
     ],
   },
   {
     label: "Sistema",
     items: [
-      { href: "/dashboard/ajustes", label: "Ajustes", icon: Settings    },
-      { href: "/dashboard/soporte", label: "Soporte", icon: HelpCircle  },
+      { href: "/dashboard/ajustes", label: "Ajustes", icon: Settings   },
+      { href: "/dashboard/soporte", label: "Soporte", icon: HelpCircle },
     ],
   },
 ];
@@ -325,18 +335,34 @@ function DesktopGroupedNav({ pathname }: { pathname: string }) {
     <nav
       className="flex flex-1 flex-col gap-0.5 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
-      {NAV_GROUPS.map((group, gi) => (
-        <div key={group.label} className={gi > 0 ? "mt-1 border-t border-[#E8E2D4] pt-2" : ""}>
-          <p className="mb-1 px-3 text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">
-            {group.label}
-          </p>
-          <div className="flex flex-col gap-0.5">
-            {group.items.map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} />
-            ))}
+      {NAV_GROUPS.map((group, gi) => {
+        const isStudioGroup = group.label === "Studio IA";
+        return (
+          <div
+            key={group.label}
+            className={
+              isStudioGroup
+                ? "mt-2 rounded-xl border border-[#A78BFA]/25 bg-[#F6F3FF] px-2 py-2"
+                : gi > 0
+                ? "mt-1 border-t border-[#E8E2D4] pt-2"
+                : ""
+            }
+          >
+            <p
+              className={`mb-1 px-1 text-[9px] font-black uppercase tracking-[0.15em] ${
+                isStudioGroup ? "text-[#6D28D9]" : "text-[#B8A990]"
+              }`}
+            >
+              {group.label}
+            </p>
+            <div className="flex flex-col gap-0.5">
+              {group.items.map((item) => (
+                <NavLink key={item.href} item={item} pathname={pathname} />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </nav>
   );
 }
@@ -443,23 +469,39 @@ export default function Sidebar() {
 
           {/* Nav groups scrollable */}
           <div className="flex-1 overflow-y-auto overscroll-contain px-3 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {NAV_GROUPS.map((group, gi) => (
-              <div key={group.label} className={gi > 0 ? "mt-3 border-t border-[#E8E2D4] pt-3" : "pt-1"}>
-                <p className="mb-1.5 px-2 text-[9px] font-black uppercase tracking-[0.15em] text-[#B8A990]">
-                  {group.label}
-                </p>
-                <div className="flex flex-col gap-0.5">
-                  {group.items.map((item) => (
-                    <NavLink
-                      key={item.href}
-                      item={item}
-                      pathname={pathname}
-                      onClick={() => setDrawerOpen(false)}
-                    />
-                  ))}
+            {NAV_GROUPS.map((group, gi) => {
+              const isStudioGroup = group.label === "Studio IA";
+              return (
+                <div
+                  key={group.label}
+                  className={
+                    isStudioGroup
+                      ? "mt-3 rounded-xl border border-[#A78BFA]/25 bg-[#F6F3FF] px-2 py-2"
+                      : gi > 0
+                      ? "mt-3 border-t border-[#E8E2D4] pt-3"
+                      : "pt-1"
+                  }
+                >
+                  <p
+                    className={`mb-1.5 px-2 text-[9px] font-black uppercase tracking-[0.15em] ${
+                      isStudioGroup ? "text-[#6D28D9]" : "text-[#B8A990]"
+                    }`}
+                  >
+                    {group.label}
+                  </p>
+                  <div className="flex flex-col gap-0.5">
+                    {group.items.map((item) => (
+                      <NavLink
+                        key={item.href}
+                        item={item}
+                        pathname={pathname}
+                        onClick={() => setDrawerOpen(false)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Footer logout */}

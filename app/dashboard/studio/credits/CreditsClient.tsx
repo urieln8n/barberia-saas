@@ -5,6 +5,7 @@ import { useState } from "react";
 import {
   ArrowLeft, Check, CreditCard, Sparkles, TrendingUp, X,
 } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { CREDIT_PACKS } from "@/lib/studio/generate-content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -102,17 +103,20 @@ export function CreditsClient({ wallet, history }: Props) {
     <>
       {showModal && <BuyCreditsModal onClose={() => setShowModal(false)} />}
 
-      <div className="min-h-screen bg-slate-50">
-        <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
+      <div className="space-y-5">
 
           {/* Header */}
-          <div className="mb-6">
-            <Link href="/dashboard/studio" className="mb-4 flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700">
-              <ArrowLeft size={12} /> Volver a Studio
-            </Link>
-            <h1 className="text-xl font-black text-slate-900">Créditos Studio IA</h1>
-            <p className="text-sm text-slate-500">Gestiona y recarga tus créditos de contenido</p>
-          </div>
+          <PageHeader
+            variant="studio"
+            section="Studio IA"
+            title="Créditos Studio IA"
+            description="Gestiona y recarga tus créditos para crear reels, ofertas y campañas con IA."
+            action={
+              <Link href="/dashboard/studio" className="btn-outline text-sm">
+                <ArrowLeft size={14} /> Volver a Studio
+              </Link>
+            }
+          />
 
           {/* Wallet card */}
           <div className="mb-5 rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-600 to-violet-700 p-6 text-white shadow-lg shadow-violet-200">
@@ -246,7 +250,6 @@ export function CreditsClient({ wallet, history }: Props) {
               </div>
             )}
           </div>
-        </div>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import {
   Sparkles, Star, TrendingUp, Trophy, Users, X, Zap,
 } from "lucide-react";
 import { useState, useTransition } from "react";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   upsertLoyaltyProgram, addManualStamp, removeManualStamp,
   redeemReward,
@@ -459,37 +460,27 @@ export function FidelizacionClient({
       )}
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <div className="border-b border-slate-200 bg-white px-4 py-5 sm:px-5 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="label-section">Programa</p>
-                {dbReady
-                  ? <span className="badge-success">Activo</span>
-                  : <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500">Sin configurar</span>
-                }
-              </div>
-              <h1 className="mt-1 text-2xl font-black text-slate-900">Fidelización</h1>
-              <p className="mt-1 text-sm text-slate-500">
-                Convierte cada visita en una razón para volver.
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
-              {dbReady && (
-                <button type="button" onClick={() => setTab("clientes")} className="btn-outline justify-center text-sm">
-                  <Users size={15} /> Clientes
-                </button>
-              )}
-              <button type="button" onClick={() => setShowModal(true)} className="btn-gold justify-center text-sm">
-                {dbReady ? <Settings size={15} /> : <Sparkles size={15} />}
-                {dbReady ? "Editar programa" : "Crear programa"}
+      <PageHeader
+        section="Clientes"
+        title="Fidelización"
+        description="Convierte cada visita en una razón para volver. Sellos digitales, recompensas y recordatorios automáticos."
+        action={
+          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+            {dbReady && (
+              <button type="button" onClick={() => setTab("clientes")} className="btn-outline justify-center text-sm">
+                <Users size={15} /> Clientes
               </button>
-            </div>
+            )}
+            <button type="button" onClick={() => setShowModal(true)} className="btn-gold justify-center text-sm">
+              {dbReady ? <Settings size={15} /> : <Sparkles size={15} />}
+              {dbReady ? "Editar programa" : "Crear programa"}
+            </button>
           </div>
+        }
+      />
 
-          {/* Tabs */}
-          <div className="mt-5 flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-100 p-1 sm:w-fit">
+      {/* ── Tabs ─────────────────────────────────────────────────────────────── */}
+      <div className="flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-100 p-1 sm:w-fit">
             {TABS.map((t) => (
               <button key={t.id} type="button" onClick={() => setTab(t.id)}
                 className={`min-h-9 shrink-0 rounded-xl px-4 text-sm font-black transition-colors ${
@@ -499,8 +490,6 @@ export function FidelizacionClient({
               </button>
             ))}
           </div>
-        </div>
-      </div>
 
       {/* ── Content ─────────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8">

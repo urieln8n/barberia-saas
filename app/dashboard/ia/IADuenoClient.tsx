@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Bot, Clipboard, Instagram, Loader2, MessageCircle, Send, Sparkles } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { askOwnerAI } from "./actions";
 import type { OwnerAIResult } from "@/src/lib/ai/owner-ai";
 
@@ -75,22 +76,17 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
 
   return (
     <div className="space-y-6">
-      <section className="section-band-dark p-5 md:p-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D9B766]">Agente IA · Copiloto</p>
-            <h1 className="mt-3 text-3xl font-black text-white md:text-4xl">
-              Tu IA analiza la barbería y te dice qué hacer
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">
-              Pregunta cualquier cosa sobre tu negocio: huecos, clientes perdidos, qué promover esta semana o cuánto puedes facturar. La IA usa tus datos reales.
-            </p>
-          </div>
+      <PageHeader
+        variant="studio"
+        section="Studio IA"
+        title="IA del Dueño"
+        description="Pregunta cualquier cosa sobre tu negocio: huecos, clientes perdidos, qué promover esta semana o cuánto puedes facturar. La IA usa tus datos reales."
+        action={
           <span className={openAIConfigured ? "badge-success" : "badge-warning"}>
             {openAIConfigured ? "OpenAI conectado" : "Modo análisis local activo"}
           </span>
-        </div>
-      </section>
+        }
+      />
 
       <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row">
