@@ -7,7 +7,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <main
-      className={`min-h-screen px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-20 transition-all duration-300 ease-in-out md:px-8 md:py-8 lg:px-10 lg:py-9 ${
+      className={`min-h-screen px-4 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-20 transition-[margin] duration-300 ease-in-out md:px-8 md:py-8 lg:px-10 lg:py-9 ${
         collapsed ? "md:ml-16" : "md:ml-64"
       }`}
       style={{
