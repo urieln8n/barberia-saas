@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clapperboard,
+  Clock,
   Gift,
   HelpCircle,
   Home,
@@ -221,7 +222,9 @@ function IconNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 // ─── HoyStrip ─────────────────────────────────────────────────────────────────
 
-function HoyStrip({ stats }: { stats: TodayStats }) {
+function HoyStrip({ stats }: { stats: TodayStats | null }) {
+  const loading = stats === null;
+  const shimmer = "h-4 w-6 animate-pulse rounded bg-[#EAE4D8]";
   return (
     <div className="mb-4 overflow-hidden rounded-2xl border border-[#EAE4D8] bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
       <div className="flex items-center justify-between px-3.5 pb-1.5 pt-2.5">
@@ -233,17 +236,19 @@ function HoyStrip({ stats }: { stats: TodayStats }) {
       </div>
       <div className="grid grid-cols-3 divide-x divide-[#F0EBE1] border-t border-[#F0EBE1]">
         <div className="flex flex-col items-center py-2.5">
-          <span className="text-[17px] font-black leading-none text-[#151515]">{stats.total}</span>
+          {loading ? <span className={shimmer} /> : <span className="text-[17px] font-black leading-none text-[#151515]">{stats.total}</span>}
           <span className="mt-0.5 text-[9px] text-[#6F6F6F]">reservas</span>
         </div>
         <div className="flex flex-col items-center py-2.5">
-          <span className="text-[17px] font-black leading-none text-green-600">{stats.completed}</span>
+          {loading ? <span className={shimmer} /> : <span className="text-[17px] font-black leading-none text-green-600">{stats.completed}</span>}
           <span className="mt-0.5 text-[9px] text-[#6F6F6F]">completas</span>
         </div>
         <div className="flex flex-col items-center py-2.5">
-          <span className="text-[17px] font-black leading-none text-[#B88A2A]">
-            {stats.revenue > 0 ? `${stats.revenue}€` : "—"}
-          </span>
+          {loading ? <span className={shimmer} /> : (
+            <span className="text-[17px] font-black leading-none text-[#B88A2A]">
+              {stats.revenue > 0 ? `${stats.revenue}€` : "—"}
+            </span>
+          )}
           <span className="mt-0.5 text-[9px] text-[#6F6F6F]">ingresos</span>
         </div>
       </div>
@@ -319,7 +324,8 @@ function MobileBottomNav({
 // ─── BarbershopIdentityRow ────────────────────────────────────────────────────
 
 function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: string }) {
-  const initial = name.charAt(0).toUpperCase();
+  const loading = !name;
+  const initial = name ? name.charAt(0).toUpperCase() : "B";
   return (
     <div className="flex items-center gap-3 px-3.5 py-2.5">
       {/* Gold avatar with initial */}
@@ -331,8 +337,10 @@ function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: s
         {initial}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[12px] font-bold leading-tight text-[#151515]">{name}</p>
-        <p className="text-[10px] leading-tight text-[#6F6F6F]">Plan {planLabel}</p>
+        {loading
+          ? <span className="block h-3 w-28 animate-pulse rounded bg-[#EAE4D8]" />
+          : <p className="truncate text-[12px] font-bold leading-tight text-[#151515]">{name}</p>}
+        <p className="mt-0.5 text-[10px] leading-tight text-[#6F6F6F]">Plan {planLabel}</p>
       </div>
     </div>
   );
@@ -457,8 +465,9 @@ export default function Sidebar() {
     {
       section: "Negocio",
       items: [
-        { icon: CalendarDays, title: "Agenda",   description: "Reservas y disponibilidad", href: "/dashboard/agenda",   notification: pendingAppts },
-        { icon: Users,        title: "Clientes", description: "Historial y seguimiento",   href: "/dashboard/clientes" },
+        { icon: CalendarDays, title: "Agenda",        description: "Reservas y disponibilidad", href: "/dashboard/agenda",       notification: pendingAppts },
+        { icon: Clock,        title: "Sala de espera", description: "Cola de turnos en tiempo real", href: "/dashboard/sala-espera"  },
+        { icon: Users,        title: "Clientes",       description: "Historial y seguimiento",       href: "/dashboard/clientes"     },
         { icon: Scissors,     title: "Barberos", description: "Equipo y comisiones",       href: "/dashboard/barberos" },
         { icon: Banknote,     title: "Caja",     description: "Cobros y ventas",           href: "/dashboard/caja"     },
       ],
@@ -574,11 +583,9 @@ export default function Sidebar() {
           </div>
 
           {/* Hoy strip in drawer */}
-          {todayStats !== null && (
-            <div className="shrink-0 px-5 pb-3">
-              <HoyStrip stats={todayStats} />
-            </div>
-          )}
+          <div className="shrink-0 px-5 pb-3">
+            <HoyStrip stats={todayStats} />
+          </div>
 
           {/* Quick actions */}
           <div className="flex shrink-0 gap-2 px-5 pb-4">
@@ -685,12 +692,8 @@ export default function Sidebar() {
             </Link>
 
             {/* ── Identity block — barbershop name + avatar ── */}
-            {barbershopName && (
-              <>
-                <div className="mx-3.5 h-px bg-[#F0EBE1]" aria-hidden="true" />
-                <BarbershopIdentityRow name={barbershopName} planLabel={planLabel} />
-              </>
-            )}
+            <div className="mx-3.5 h-px bg-[#F0EBE1]" aria-hidden="true" />
+            <BarbershopIdentityRow name={barbershopName} planLabel={planLabel} />
           </div>
         )}
 
@@ -717,9 +720,7 @@ export default function Sidebar() {
         )}
 
         {/* ── Hoy en vivo strip ── */}
-        {!collapsed && todayStats !== null && (
-          <HoyStrip stats={todayStats} />
-        )}
+        {!collapsed && <HoyStrip stats={todayStats} />}
 
         {/* ── Navigation ── */}
         {collapsed ? (
