@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   CalendarCheck,
@@ -109,7 +110,8 @@ function formatTime(time: string): string {
 }
 
 function getTodayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function getWeekRange(): { start: string; end: string } {
@@ -732,6 +734,8 @@ export function ReservasClient({
   // Side panel
   const [selectedAppt, setSelectedAppt] = useState<ReservationItem | null>(null);
 
+  const router = useRouter();
+
   // Action feedback
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{
@@ -781,6 +785,9 @@ export function ReservasClient({
           ? "Estado actualizado"
           : result.error ?? "Error al actualizar",
       });
+      if (result.success) {
+        router.refresh(); // refresca el server component con datos nuevos
+      }
       setTimeout(() => setFeedback(null), 3000);
     });
   }
@@ -960,23 +967,14 @@ export function ReservasClient({
       </div>
 
       {/* ── List ──────────────────────────────────────────────────── */}
-      {isPending ? (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         tab === "today" && search === "" && selectedBarber === "" ? (
           <EmptyState
             icon={CalendarCheck}
             title="Sin reservas para hoy"
             description="Comparte tu link público o QR para empezar a recibir citas."
             action={
-              <Link
-                href="/dashboard/qr"
-                className="btn-primary"
-              >
+              <Link href="/dashboard/qr" className="btn-primary">
                 <QrCode size={14} /> Compartir QR
               </Link>
             }
