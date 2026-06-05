@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, CalendarClock, Scissors, TrendingUp, Users, XCircle } from "lucide-react";
+import { ArrowRight, CalendarClock, Clapperboard, Scissors, Sparkles, TrendingUp, Users, XCircle } from "lucide-react";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -275,6 +275,60 @@ export default async function EstadisticasPage() {
             </div>
           )}
         </SectionCard>
+      </div>
+
+      {/* Studio IA Report Card */}
+      <div className="overflow-hidden rounded-2xl border border-[#A78BFA]/30 bg-[#F6F3FF]">
+        <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:justify-between md:p-6">
+          <div className="min-w-0">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#6D28D9]/15">
+                <Clapperboard size={14} className="text-[#6D28D9]" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#6D28D9]">
+                Studio IA · Impacto de contenido
+              </span>
+            </div>
+            <h2 className="text-lg font-black text-slate-900">Contenido creado con Studio IA</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Reels, promos y campañas generadas para tu barbería este mes.
+            </p>
+          </div>
+          <Link
+            href="/dashboard/studio"
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#6D28D9] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#5B21B6]"
+          >
+            <Sparkles size={13} />
+            Crear contenido
+          </Link>
+        </div>
+
+        {/* Métricas mock — TODO: conectar con studio_credit_transactions */}
+        <div className="grid grid-cols-2 gap-3 border-t border-[#A78BFA]/20 bg-white/60 p-5 sm:grid-cols-3 md:grid-cols-6">
+          {[
+            { label: "Contenido generado", value: "0", sub: "este mes" },
+            { label: "Créditos usados",    value: "0", sub: "de 5 disponibles" },
+            { label: "Promos creadas",     value: "0", sub: "activas" },
+            { label: "Reels de servicio",  value: "0", sub: "publicados" },
+            { label: "Videos de reseña",   value: "0", sub: "convertidos" },
+            { label: "Campañas activas",   value: "0", sub: "en circulación" },
+          ].map(({ label, value, sub }) => (
+            <div key={label} className="text-center">
+              <p className="text-2xl font-black text-[#5B21B6]">{value}</p>
+              <p className="mt-0.5 text-[11px] font-black text-slate-700">{label}</p>
+              <p className="text-[10px] text-slate-400">{sub}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-[#A78BFA]/20 px-5 py-3">
+          <p className="text-[11px] text-slate-500">
+            Las métricas se activarán automáticamente cuando se aplique la migración de base de datos de Studio IA.{" "}
+            <Link href="/dashboard/studio/credits" className="font-black text-[#6D28D9] hover:underline">
+              Ver créditos →
+            </Link>
+          </p>
+        </div>
       </div>
 
       <SectionCard

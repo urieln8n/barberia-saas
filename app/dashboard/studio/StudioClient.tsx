@@ -26,6 +26,9 @@ type Props = {
   services: { id: string; name: string; price: number | null }[];
   products: { id: string; name: string }[];
   studioCredits: StudioCredits;
+  initialType?: ContentType;
+  initialServiceName?: string;
+  initialReviewId?: string;
 };
 
 // ─── Step indicator ──────────────────────────────────────────────────────────
@@ -180,15 +183,16 @@ function ResultCard({ result, onReset }: { result: StudioContentOutput; onReset:
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function StudioClient({ barbershopName, barbers, services, products, studioCredits }: Props) {
-  const [step, setStep] = useState(1);
-  const [selectedType, setSelectedType] = useState<ContentType | null>(null);
+export function StudioClient({ barbershopName, barbers, services, products, studioCredits, initialType, initialServiceName, initialReviewId }: Props) {
+  // If a type is preselected via query params, start on step 2 (Detalles)
+  const [step, setStep] = useState(initialType ? 2 : 1);
+  const [selectedType, setSelectedType] = useState<ContentType | null>(initialType ?? null);
   const [selectedStyle, setSelectedStyle] = useState<ContentStyle>("premium_morado");
   const [message, setMessage] = useState("");
-  const [selectedService, setSelectedService] = useState("");
+  const [selectedService, setSelectedService] = useState(initialServiceName ?? "");
   const [selectedBarber, setSelectedBarber] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [reviewText, setReviewText] = useState("");
+  const [reviewText, setReviewText] = useState(initialReviewId ? "Reseña vinculada — añade el texto aquí." : "");
   const [result, setResult] = useState<StudioContentOutput | null>(null);
   const [generating, setGenerating] = useState(false);
 
@@ -224,6 +228,10 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
     setSelectedProduct("");
     setReviewText("");
     setResult(null);
+    // Clear URL params without full page reload
+    if (typeof window !== "undefined") {
+      window.history.replaceState({}, "", "/dashboard/studio");
+    }
   }
 
   const needsService  = selectedType === "corte_premium" || selectedType === "antes_despues";

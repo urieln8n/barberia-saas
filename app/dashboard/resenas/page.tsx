@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import {
+  Clapperboard,
   ExternalLink,
   Link as LinkIcon,
   MessageSquareText,
@@ -290,6 +291,12 @@ export default async function ReviewsDashboardPage() {
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <a
+                href="/dashboard/studio?type=review_video"
+                className="inline-flex items-center gap-2 rounded-xl border border-[#A78BFA]/30 bg-[#F6F3FF] px-4 py-2 text-sm font-bold text-[#6D28D9] transition-colors hover:bg-[#EDE9FE]"
+              >
+                <Clapperboard size={14} /> Studio IA para reseñas
+              </a>
+              <a
                 href="/dashboard/agents"
                 className="inline-flex items-center gap-2 rounded-xl border border-[#C9922A]/30 bg-[#C9922A]/10 px-4 py-2 text-sm font-bold text-[#8A641F] transition-colors hover:bg-[#C9922A]/20"
               >
@@ -351,6 +358,17 @@ export default async function ReviewsDashboardPage() {
                           <span className="font-bold">Respuesta sugerida futura:</span>{" "}
                           {review.respuesta_sugerida}
                         </p>
+                      )}
+
+                      {/* Studio IA CTA — solo para reseñas positivas con comentario */}
+                      {(review.rating ?? 0) >= 4 && review.comment && (
+                        <a
+                          href={`/dashboard/studio?type=review_video&reviewId=${encodeURIComponent(review.id)}`}
+                          className="mt-3 inline-flex items-center gap-2 rounded-xl border border-[#A78BFA]/30 bg-[#F6F3FF] px-3 py-2 text-xs font-black text-[#6D28D9] transition hover:bg-[#EDE9FE] hover:border-[#A78BFA]/60"
+                        >
+                          <Clapperboard size={12} />
+                          Convertir reseña en video
+                        </a>
                       )}
                     </div>
 

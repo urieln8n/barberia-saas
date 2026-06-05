@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { StudioClient } from "./StudioClient";
+import type { ContentType } from "@/lib/studio/generate-content";
 
 export const metadata: Metadata = {
   title: "Studio IA — BarberíaOS",
@@ -11,7 +12,20 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function StudioPage() {
+// Query param → ContentType mapping
+const QUERY_TYPE_MAP: Record<string, ContentType> = {
+  fill_empty_slots: "llenar_huecos",
+  service_promo:    "corte_premium",
+  review_video:     "resena_cliente",
+  product_promo:    "producto_destacado",
+  lost_clients:     "recuperar_clientes",
+};
+
+export default async function StudioPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const supabase = await createServerClient();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) redirect("/login");
@@ -42,6 +56,15 @@ export default async function StudioPage() {
   // Mock credits — TODO: replace with real wallet query once table exists
   const studioCredits = { current: 5, monthly: 5, extra: 0, plan: "Growth" };
 
+  // Resolve initial state from query params
+  const rawType   = typeof searchParams?.type        === "string" ? searchParams.type        : undefined;
+  const rawSvcId  = typeof searchParams?.serviceId   === "string" ? searchParams.serviceId   : undefined;
+  const rawSvcNm  = typeof searchParams?.serviceName === "string" ? searchParams.serviceName : undefined;
+  const rawRevId  = typeof searchParams?.reviewId    === "string" ? searchParams.reviewId    : undefined;
+
+  const initialType: ContentType | undefined = rawType ? QUERY_TYPE_MAP[rawType] : undefined;
+  const initialServiceName = rawSvcNm ?? (rawSvcId ? services.find(s => s.id === rawSvcId)?.name : undefined);
+
   return (
     <StudioClient
       barbershopName={barbershop?.name ?? "Mi Barbería"}
@@ -49,6 +72,9 @@ export default async function StudioPage() {
       services={services}
       products={products}
       studioCredits={studioCredits}
+      initialType={initialType}
+      initialServiceName={initialServiceName}
+      initialReviewId={rawRevId}
     />
   );
 }
