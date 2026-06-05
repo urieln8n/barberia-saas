@@ -89,7 +89,7 @@ function StatChip({ label, value, accent = false }: { label: string; value: stri
   return (
     <div className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
       <span className={`text-xl font-black tabular-nums ${accent ? "text-[#C9922A]" : "text-slate-900"}`}>{value}</span>
-      <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">{label}</span>
+      <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500">{label}</span>
     </div>
   );
 }
@@ -233,15 +233,15 @@ export function BarberosClient({
             <Plus size={16} /> Añadir barbero
           </PrimaryButton>
         }
+        metrics={
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatChip label="Barberos" value={barbers.length} />
+            <StatChip label="Activos hoy" value={activeBarbers.length} />
+            <StatChip label="Citas esta semana" value={totalWeek} />
+            <StatChip label="Facturado (sem.)" value={money(totalRevenue)} accent />
+          </div>
+        }
       />
-
-      {/* ── KPI strip ── */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatChip label="Barberos" value={barbers.length} />
-        <StatChip label="Activos hoy" value={activeBarbers.length} />
-        <StatChip label="Citas esta semana" value={totalWeek} />
-        <StatChip label="Facturado (sem.)" value={money(totalRevenue)} accent />
-      </div>
 
       {/* ── Aviso de límite de plan ── */}
       {isAtBarberLimit && (

@@ -316,7 +316,7 @@ export default async function EstadisticasPage() {
             <div key={label} className="text-center">
               <p className="text-2xl font-black text-[#5B21B6]">{value}</p>
               <p className="mt-0.5 text-[11px] font-black text-slate-700">{label}</p>
-              <p className="text-[10px] text-slate-400">{sub}</p>
+              <p className="text-[10px] text-slate-500">{sub}</p>
             </div>
           ))}
         </div>

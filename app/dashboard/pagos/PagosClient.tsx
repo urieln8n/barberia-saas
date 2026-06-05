@@ -91,14 +91,14 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
             <Plus size={16} /> Registrar pago
           </PrimaryButton>
         }
+        metrics={
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <StatCard label="Total cobrado hoy" value={`${total.toFixed(2)} €`} description="Pagos con estado cobrado" icon={TrendingUp} />
+            <StatCard label="Nº de cobros" value={payments.length} description="Registros del día" icon={CreditCard} />
+            <StatCard label="Ticket medio" value={`${ticketMedio} €`} description="Importe medio por cobro" icon={Banknote} />
+          </div>
+        }
       />
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="Total cobrado hoy" value={`${total.toFixed(2)} €`} description="Pagos con estado cobrado" icon={TrendingUp} />
-        <StatCard label="Nº de cobros" value={payments.length} description="Registros del día" icon={CreditCard} />
-        <StatCard label="Ticket medio" value={`${ticketMedio} €`} description="Importe medio por cobro" icon={Banknote} />
-      </div>
 
       {/* Lista de pagos */}
       {payments.length === 0 ? (
