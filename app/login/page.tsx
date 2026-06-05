@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowRight, Chrome } from "lucide-react";
 import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 import { supabase } from "@/src/lib/supabase/client";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,8 +38,7 @@ export default function LoginPage() {
           setError(error.message);
         }
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } else {
       if (!fullName.trim()) {
@@ -72,8 +69,7 @@ export default function LoginPage() {
           setError(error.message);
         }
       } else {
-        router.push("/onboarding");
-        router.refresh();
+        window.location.href = "/onboarding";
       }
     }
 

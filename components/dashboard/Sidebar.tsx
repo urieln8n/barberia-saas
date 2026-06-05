@@ -8,6 +8,7 @@ import { useSidebarCollapse } from "./sidebar-context";
 import {
   BarChart3,
   Banknote,
+  Bot,
   Briefcase,
   CalendarCheck,
   CalendarDays,
@@ -32,6 +33,7 @@ import {
   UserX,
   Wand2,
   X,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
@@ -72,7 +74,8 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/dashboard/studio",       label: "Studio IA",        icon: Clapperboard, badge: "nuevo", studio: true },
       { href: "/dashboard/marketing",    label: "Marketing",        icon: Megaphone                                  },
-      { href: "/dashboard/ia",           label: "Huecos libres",    icon: Wand2,        badge: "pro"                 },
+      { href: "/dashboard/ia",           label: "IA del Dueño",     icon: Bot,          badge: "pro"                 },
+      { href: "/dashboard/huecos",       label: "Huecos libres",    icon: Zap                                            },
       { href: "/dashboard/fidelizacion", label: "Fidelización",     icon: Gift                                       },
       { href: "/dashboard/lounge",       label: "Sala de espera",   icon: Monitor                                    },
       { href: "/dashboard/resenas",      label: "Reseñas",          icon: Star                                       },
