@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Huecos libres | BarberíaOS",
+  description: "Mira qué barbero está libre ahora y llena la agenda en segundos.",
+};
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { ArrowRight, CalendarPlus, Megaphone } from "lucide-react";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
