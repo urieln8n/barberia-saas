@@ -21,11 +21,18 @@ type Barber = {
 type Props = {
   services: Service[]
   barbers: Barber[]
+  // Optional external control — when provided, panel state lives in the parent
+  externalOpen?: boolean
+  onExternalOpenChange?: (open: boolean) => void
 }
 
-export function QuickActionsRow({ services, barbers }: Props) {
-  const [panelOpen, setPanelOpen] = useState(false)
+export function QuickActionsRow({ services, barbers, externalOpen, onExternalOpenChange }: Props) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const router = useRouter()
+
+  // Use external state if provided, otherwise fall back to internal
+  const panelOpen = externalOpen !== undefined ? externalOpen : internalOpen
+  const setPanelOpen = onExternalOpenChange ?? setInternalOpen
 
   function handleBookingSuccess() {
     router.refresh()

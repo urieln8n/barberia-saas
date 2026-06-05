@@ -12,6 +12,7 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {
   title: "Soporte | BarberíaOS",
@@ -25,7 +26,7 @@ const helpCards = [
     description: "Aprende a configurar tu barbería, añadir barberos, crear servicios y recibir tu primera reserva en menos de 10 minutos.",
     cta: "Ver guía",
     href: "https://docs.barberiaos.com/guia-rapida",
-    color: "blue",
+    tone: "gold",
   },
   {
     icon: MessageCircle,
@@ -33,7 +34,7 @@ const helpCards = [
     description: "¿Tienes un problema o una pregunta? Escríbenos directamente por WhatsApp y te respondemos en menos de 24 horas.",
     cta: "Abrir chat",
     href: "https://wa.me/34645466308?text=Hola%2C%20necesito%20ayuda%20con%20Barber%C3%ADaOS",
-    color: "green",
+    tone: "success",
     external: true,
   },
   {
@@ -42,7 +43,7 @@ const helpCards = [
     description: "Respuestas a las dudas más comunes: reservas, pagos, barberos, fidelización, QR y configuración de la cuenta.",
     cta: "Ver FAQ",
     href: "https://docs.barberiaos.com/faq",
-    color: "gold",
+    tone: "gold",
   },
   {
     icon: Shield,
@@ -50,7 +51,7 @@ const helpCards = [
     description: "Consulta el estado en tiempo real de todos los servicios de BarberíaOS: reservas, pagos, notificaciones y API.",
     cta: "Ver estado",
     href: "https://status.barberiaos.com",
-    color: "slate",
+    tone: "neutral",
     external: true,
   },
   {
@@ -59,7 +60,7 @@ const helpCards = [
     description: "Descubre las últimas funciones añadidas: fidelización digital, reagendar citas, reportes y mejoras de la agenda.",
     cta: "Ver novedades",
     href: "https://docs.barberiaos.com/novedades",
-    color: "purple",
+    tone: "neutral",
   },
   {
     icon: LifeBuoy,
@@ -67,18 +68,31 @@ const helpCards = [
     description: "¿Falta algo que mejoraría tu barbería? Cuéntanos y lo añadimos al roadmap. Tu opinión define el producto.",
     cta: "Enviar idea",
     href: "https://wa.me/34645466308?text=Hola%2C%20tengo%20una%20idea%20para%20BarberíaOS%3A%20",
-    color: "orange",
+    tone: "success",
     external: true,
   },
 ];
 
-const colorMap: Record<string, { icon: string; border: string; bg: string; cta: string }> = {
-  blue:   { icon: "text-blue-600",    border: "border-blue-100",   bg: "bg-blue-50",   cta: "text-blue-700 hover:bg-blue-100 border-blue-200"   },
-  green:  { icon: "text-emerald-600", border: "border-emerald-100",bg: "bg-emerald-50",cta: "text-emerald-700 hover:bg-emerald-100 border-emerald-200" },
-  gold:   { icon: "text-[#C9922A]",   border: "border-[#D4AF37]/20",bg:"bg-[#D4AF37]/5",cta:"text-[#C9922A] hover:bg-[#D4AF37]/12 border-[#D4AF37]/25" },
-  slate:  { icon: "text-slate-600",   border: "border-slate-200",  bg: "bg-slate-50",  cta: "text-slate-700 hover:bg-slate-100 border-slate-200" },
-  purple: { icon: "text-violet-600",  border: "border-violet-100", bg: "bg-violet-50", cta: "text-violet-700 hover:bg-violet-100 border-violet-200" },
-  orange: { icon: "text-orange-600",  border: "border-orange-100", bg: "bg-orange-50", cta: "text-orange-700 hover:bg-orange-100 border-orange-200" },
+// Design system: 3 tonos semánticos únicamente
+const toneMap: Record<string, { icon: string; border: string; bg: string; cta: string }> = {
+  gold:    {
+    icon: "text-[#C9922A]",
+    border: "border-[#D4AF37]/25",
+    bg: "bg-[#D4AF37]/5",
+    cta: "text-[#8A641F] hover:bg-[#D4AF37]/12 border-[#D4AF37]/30",
+  },
+  success: {
+    icon: "text-emerald-600",
+    border: "border-emerald-100",
+    bg: "bg-emerald-50",
+    cta: "text-emerald-700 hover:bg-emerald-100 border-emerald-200",
+  },
+  neutral: {
+    icon: "text-slate-500",
+    border: "border-slate-200",
+    bg: "bg-slate-50",
+    cta: "text-slate-600 hover:bg-slate-100 border-slate-200",
+  },
 };
 
 const quickLinks = [
@@ -92,29 +106,27 @@ const quickLinks = [
 
 export default function SoportePage() {
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
+    <div className="mx-auto max-w-4xl space-y-6">
 
-      {/* Header */}
-      <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#C9922A]">Soporte</p>
-        <h1 className="mt-1 text-2xl font-black text-slate-900">Centro de ayuda</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Encuentra guías, resuelve dudas o contacta con nuestro equipo.
-        </p>
-      </div>
+      <PageHeader
+        section="Sistema"
+        title="Centro de ayuda"
+        description="Encuentra guías, resuelve dudas o contacta con nuestro equipo."
+        variant="compact"
+      />
 
       {/* Cards grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {helpCards.map((card) => {
           const Icon = card.icon;
-          const c = colorMap[card.color];
+          const t = toneMap[card.tone ?? "neutral"];
           return (
             <article
               key={card.title}
-              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-card-md"
             >
-              <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border ${c.border} ${c.bg}`}>
-                <Icon size={18} className={c.icon} />
+              <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border ${t.border} ${t.bg}`}>
+                <Icon size={18} className={t.icon} />
               </div>
               <h2 className="text-sm font-black text-slate-900">{card.title}</h2>
               <p className="mt-2 flex-1 text-xs leading-5 text-slate-500">{card.description}</p>
@@ -122,7 +134,7 @@ export default function SoportePage() {
                 href={card.href}
                 target={card.external ? "_blank" : undefined}
                 rel={card.external ? "noopener noreferrer" : undefined}
-                className={`mt-4 inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black transition ${c.cta}`}
+                className={`mt-4 inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black transition ${t.cta}`}
               >
                 {card.cta}
                 {card.external ? <ExternalLink size={11} /> : <ArrowRight size={11} />}
@@ -133,8 +145,8 @@ export default function SoportePage() {
       </div>
 
       {/* Quick links */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+        <div className="mb-4 flex items-center gap-2">
           <Zap size={16} className="text-[#D4AF37]" />
           <h2 className="text-sm font-black text-slate-900">Accesos rápidos</h2>
         </div>
@@ -145,7 +157,7 @@ export default function SoportePage() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-slate-200 hover:bg-white hover:text-slate-900"
+              className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-[#D4AF37]/30 hover:bg-[#FDFAF3] hover:text-slate-900"
             >
               <CheckCircle2 size={13} className="shrink-0 text-slate-400" />
               {link.label}
@@ -156,7 +168,7 @@ export default function SoportePage() {
       </div>
 
       {/* Direct contact */}
-      <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#FDFAF3] p-6">
+      <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#FDFAF3] p-6 shadow-card">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-black text-slate-900">¿Necesitas ayuda personalizada?</p>
@@ -168,9 +180,9 @@ export default function SoportePage() {
             href="https://wa.me/34645466308?text=Hola%2C%20necesito%20ayuda%20con%20BarberíaOS"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-black text-white transition hover:bg-slate-700"
+            className="btn-dark btn-sm shrink-0"
           >
-            <MessageCircle size={15} />
+            <MessageCircle size={14} />
             Contactar por WhatsApp
           </a>
         </div>
