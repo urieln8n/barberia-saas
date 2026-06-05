@@ -21,6 +21,7 @@ import {
   Info,
   CheckCircle2,
   XCircle,
+  TrendingUp,
 } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -105,6 +106,30 @@ function getMinutesUntil(startTime: string): number {
   const appt = new Date();
   appt.setHours(Number(h), Number(m), 0, 0);
   return Math.round((appt.getTime() - now.getTime()) / 60000);
+}
+
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 13) return "Buenos días";
+  if (h < 21) return "Buenas tardes";
+  return "Buenas noches";
+}
+
+// ─── OccupancyBar ─────────────────────────────────────────────────────────────
+
+function OccupancyBar({ pct }: { pct: number }) {
+  const color =
+    pct >= 80 ? "from-emerald-500 to-emerald-400" :
+    pct >= 50 ? "from-[#C9A227] to-[#F5D76E]" :
+                "from-slate-300 to-slate-200";
+  return (
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+      <div
+        className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
+        style={{ width: `${Math.min(100, pct)}%` }}
+      />
+    </div>
+  );
 }
 
 // ─── Sub-componentes internos ─────────────────────────────────────────────────
@@ -243,9 +268,19 @@ export function DashboardClient({
   // ── Próxima cita ──────────────────────────────────────────────────────────
   const nextAppointment = todayAppointments.find((a) => {
     const mins = getMinutesUntil(a.start_time ?? "00:00");
-    return mins >= -15; // incluir citas que empezaron hace menos de 15 min
+    return mins >= -15;
   });
   const minsUntilNext = nextAppointment ? getMinutesUntil(nextAppointment.start_time) : null;
+
+  // ── Ocupación y revenue estimado ─────────────────────────────────────────
+  const totalSlotsToday = todayAppointments.length + totalFreeSlotsToday;
+  const occupancyPct = totalSlotsToday > 0
+    ? Math.round((todayAppointments.length / totalSlotsToday) * 100)
+    : 0;
+  const estimatedRevenue = salesToday > 0
+    ? salesToday
+    : todayAppointments.reduce((s, a) => s + (a.services?.price ?? 0), 0);
+  const greeting = getGreeting();
 
   // ── Alertas contextuales ─────────────────────────────────────────────────
   const alerts: Array<{ type: AlertType; text: string; action?: string; href?: string }> = [];
@@ -358,158 +393,290 @@ export function DashboardClient({
   ] as const;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      {/* ── A. HEADER PREMIUM ─────────────────────────────────────────────── */}
-      <section className="surface-frame overflow-hidden">
-        {/* Top band */}
-        <div className="border-b border-slate-100 bg-slate-50/60 px-6 py-3 md:px-8">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#C9922A]">
-              {formatDateSpanish(today)}
+      {/* ══════════════════════════════════════════════════════════════════
+          EXECUTIVE HEADER — Stripe/Linear/Apple Wallet inspired
+          Compacto, denso, toda la info del día visible sin scroll.
+      ══════════════════════════════════════════════════════════════════ */}
+      <section className="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.04)]">
+
+        {/* ── Fila 1: Saludo + fecha + status pills ── */}
+        <div className="flex items-start justify-between gap-3 px-5 pb-3 pt-4 md:px-6">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B8A990]">
+              {greeting} · {formatDateSpanish(today)}
             </p>
-            <div className="flex items-center gap-2">
-              {cashSessionOpen !== undefined && (
-                <span
-                  className={`inline-flex h-7 items-center rounded-full border px-2.5 text-[10px] font-black ${
-                    cashSessionOpen
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      : "border-amber-200 bg-amber-50 text-amber-700"
-                  }`}
-                >
-                  Caja {cashSessionOpen ? "abierta" : "cerrada"}
-                </span>
-              )}
-              <Link
-                href="/dashboard/qr"
-                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900"
-              >
-                <QrCode size={13} /> QR
-              </Link>
-              <Link
-                href={publicBookingUrl}
-                target="_blank"
-                className="inline-flex h-8 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900"
-              >
-                Web pública <ArrowRight size={11} />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero content */}
-        <div className="px-6 pb-5 pt-6 md:px-8 md:pb-6 md:pt-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="min-w-0">
-              <h1
-                className="font-display font-black leading-[0.95] text-slate-900 tracking-tight"
-                style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", letterSpacing: "-0.04em" }}
-              >
-                {barbershop?.name ?? "Tu barbería"}
-              </h1>
-              <p className="mt-2 text-sm text-slate-500">
-                Así va tu barbería hoy · Todo bajo control.
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-2">
-              <Link href="/dashboard/agenda" className="btn-dark">
-                Ver agenda hoy
-              </Link>
-              <Link
-                href="/dashboard/reservas"
-                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-2.5 text-sm font-bold text-[#C9922A] transition hover:bg-[#D4AF37]/14 hover:border-[#D4AF37]/50"
-              >
-                <Plus size={14} />
-                Nueva cita
-              </Link>
-            </div>
+            <h1 className="mt-0.5 truncate text-xl font-black tracking-tight text-[#111111] md:text-2xl">
+              {barbershop?.name ?? "Tu barbería"}
+            </h1>
           </div>
 
-          {/* Agentes IA inline */}
-          <Link
-            href="/dashboard/agents"
-            className="mt-5 flex items-center gap-3 rounded-2xl border border-[#D4AF37]/22 bg-[#FDFAF3] px-4 py-3 transition-all hover:border-[#D4AF37]/38 hover:bg-[#FDF8EC] hover:shadow-[0_2px_8px_rgba(212,175,55,0.10)]"
-          >
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/12">
-              <Sparkles size={13} className="text-[#C9922A]" />
-            </div>
-            <span className="text-xs text-slate-600">
-              <span className="font-black text-slate-900">4 Agentes IA activos</span>
-              {" — Retención · Huecos · Reseñas · Marketing"}
+          {/* Status chips — desktop */}
+          <div className="hidden shrink-0 items-center gap-2 sm:flex">
+            <span className={`inline-flex h-7 items-center rounded-full border px-2.5 text-[10px] font-black ${
+              cashSessionOpen
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                : "border-amber-200 bg-amber-50 text-amber-700"
+            }`}>
+              Caja {cashSessionOpen ? "abierta" : "cerrada"}
             </span>
-            <ArrowRight size={12} className="ml-auto shrink-0 text-slate-400" />
-          </Link>
-        </div>
-      </section>
-
-      {/* ── B. BLOQUE "AHORA MISMO" (protagonista) ──────────────────────── */}
-      {nextAppointment ? (
-        <section className="rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-br from-[#FDF8EE] to-white p-5 shadow-sm md:p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#C9922A]">
-                {minsUntilNext !== null && minsUntilNext >= 0
-                  ? `Próxima cita en ${minsUntilNext} min`
-                  : "En curso ahora mismo"}
-              </p>
-              <h2 className="mt-1 text-xl font-black text-slate-900">
-                {nextAppointment.clients?.name ?? "Cliente sin nombre"}
-              </h2>
-              <p className="mt-0.5 text-sm text-slate-600">
-                {nextAppointment.services?.name ?? "Sin servicio"}
-                {nextAppointment.services?.price != null && (
-                  <> · <span className="font-bold text-emerald-600">{formatCurrency(nextAppointment.services.price)}</span></>
-                )}
-                {nextAppointment.barbers?.name && (
-                  <> · {nextAppointment.barbers.name}</>
-                )}
-              </p>
-              <p className="mt-1 text-sm font-black text-slate-700">
-                {formatTime(nextAppointment.start_time)}
-                {nextAppointment.end_time && ` → ${formatTime(nextAppointment.end_time)}`}
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-2">
-              <StatusBadge status={nextAppointment.status} />
-              <Link
-                href="/dashboard/agenda"
-                className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 text-xs font-black text-white transition hover:bg-slate-700"
-              >
-                Ver en agenda <ArrowRight size={12} />
-              </Link>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
-                Ahora mismo
-              </p>
-              <p className="mt-1 font-black text-slate-700">Sin más citas hoy</p>
-              <p className="mt-0.5 text-xs text-slate-500">
-                Comparte tu link para captar reservas de última hora.
-              </p>
-            </div>
+            <Link
+              href="/dashboard/qr"
+              className="flex h-7 items-center gap-1 rounded-full border border-slate-200 px-2.5 text-[10px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-800"
+            >
+              <QrCode size={11} /> QR
+            </Link>
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 text-xs font-bold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+              className="flex h-7 items-center gap-1 rounded-full border border-slate-200 px-2.5 text-[10px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-800"
             >
-              Link de reserva <ArrowRight size={12} />
+              Web <ArrowRight size={9} />
             </Link>
           </div>
-        </section>
-      )}
+        </div>
 
-      {/* ── C. 6 KPI CARDS EN GRID ──────────────────────────────────────── */}
-      <PremiumDashboardMotion className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
-        {kpis.map((kpi) => (
-          <PremiumDashboardItem key={kpi.label}>
-            <KpiCard {...kpi} />
-          </PremiumDashboardItem>
-        ))}
+        {/* ── Fila 2: 3 métricas inline ── */}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-5 pb-3 md:px-6">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-black tabular-nums text-[#111111]">
+              {todayAppointments.length}
+            </span>
+            <span className="text-xs text-slate-500">reservas hoy</span>
+          </div>
+          <div className="h-4 w-px bg-slate-200" />
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-black tabular-nums text-[#C9922A]">
+              {formatCurrency(estimatedRevenue)}
+            </span>
+            <span className="text-xs text-slate-500">
+              {salesToday > 0 ? "cobrados" : "previstos"}
+            </span>
+          </div>
+          <div className="h-4 w-px bg-slate-200" />
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-black tabular-nums text-slate-700">
+              {clientsAttendedToday}
+            </span>
+            <span className="text-xs text-slate-500">atendidos</span>
+          </div>
+        </div>
+
+        {/* ── Fila 3: Barra de ocupación ── */}
+        <div className="px-5 pb-3 md:px-6">
+          <div className="mb-1.5 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+              Ocupación del día
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-black text-slate-700">{occupancyPct}%</span>
+              {/* TODO: conectar variación real comparando con semana anterior */}
+              {occupancyPct > 0 && (
+                <span className="flex items-center gap-0.5 text-[10px] font-semibold text-emerald-600">
+                  <TrendingUp size={10} />
+                  {occupancyPct >= 80 ? "Alta demanda" : occupancyPct >= 50 ? "Buena ocupación" : "Huecos disponibles"}
+                </span>
+              )}
+            </div>
+          </div>
+          <OccupancyBar pct={occupancyPct} />
+          {totalFreeSlotsToday > 0 && (
+            <p className="mt-1 text-[10px] text-slate-400">
+              {totalFreeSlotsToday} huecos libres · {todayAppointments.length} de {totalSlotsToday} ocupados
+            </p>
+          )}
+        </div>
+
+        {/* ── Fila 4: CTAs + próxima cita chip ── */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-[#FAFAF8] px-5 py-3 md:px-6">
+          {/* CTAs */}
+          <div className="flex flex-wrap gap-2">
+            {/* CTA principal dorado — "Nueva Reserva" */}
+            <Link
+              href="/dashboard/reservas"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#C9A227] px-4 text-[13px] font-black text-[#111111] shadow-[0_2px_8px_rgba(201,162,39,0.30)] transition hover:-translate-y-px hover:bg-[#D4AF37] hover:shadow-[0_4px_12px_rgba(201,162,39,0.40)] active:scale-[0.98]"
+            >
+              <Plus size={13} strokeWidth={2.5} />
+              Nueva Reserva
+            </Link>
+            <Link
+              href="/dashboard/agenda"
+              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+            >
+              Ver agenda hoy
+            </Link>
+          </div>
+
+          {/* Próxima cita chip */}
+          {nextAppointment ? (
+            <Link
+              href="/dashboard/agenda"
+              className="flex items-center gap-2.5 rounded-xl border border-[#D4AF37]/25 bg-[#FFFBEB] px-3 py-1.5 transition hover:border-[#D4AF37]/50 hover:bg-[#FFF8E1]"
+            >
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black uppercase tracking-widest text-[#C9922A]">
+                  {minsUntilNext !== null && minsUntilNext >= 0
+                    ? `en ${minsUntilNext} min`
+                    : "Ahora"}
+                </span>
+                <span className="text-[12px] font-black text-slate-900 leading-tight">
+                  {formatTime(nextAppointment.start_time)} — {nextAppointment.clients?.name ?? "Cliente"}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {nextAppointment.services?.name ?? "Sin servicio"}
+                  {nextAppointment.services?.price != null && (
+                    <> · <span className="font-bold text-emerald-600">{formatCurrency(nextAppointment.services.price)}</span></>
+                  )}
+                </span>
+              </div>
+              <ArrowRight size={12} className="shrink-0 text-[#C9922A]" />
+            </Link>
+          ) : (
+            <Link
+              href={publicBookingUrl}
+              target="_blank"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+            >
+              Sin citas activas · Compartir link <ArrowRight size={10} />
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          KPI CARDS — 4 tarjetas compactas (de 6 a 4, -33% altura)
+          Layout: 2×2 en mobile, 4 columnas en desktop
+      ══════════════════════════════════════════════════════════════════ */}
+      <PremiumDashboardMotion className="grid gap-3 grid-cols-2 xl:grid-cols-4">
+
+        {/* KPI 1 — Caja */}
+        <PremiumDashboardItem>
+          <Link href="/dashboard/caja" className="group block">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Caja del día</p>
+                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                    {formatCurrency(salesToday)}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    {cashSessionOpen
+                      ? <span className="text-emerald-600 font-semibold">Sesión abierta</span>
+                      : <span className="text-amber-600 font-semibold">Sesión cerrada</span>}
+                    {clientsAttendedToday > 0 && ` · ${clientsAttendedToday} clientes`}
+                  </p>
+                </div>
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}`}>
+                  <Wallet size={16} className={cashSessionOpen ? "text-emerald-600" : "text-amber-500"} />
+                </div>
+              </div>
+              {/* Mini barra de progreso caja */}
+              {salesToday > 0 && (
+                <div className="mt-3 h-1 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300" style={{ width: "100%" }} />
+                </div>
+              )}
+            </div>
+          </Link>
+        </PremiumDashboardItem>
+
+        {/* KPI 2 — Reservas + ocupación */}
+        <PremiumDashboardItem>
+          <Link href="/dashboard/agenda" className="group block">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+              <div className="flex items-start justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Reservas hoy</p>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <p className="text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                      {todayAppointments.length}
+                    </p>
+                    <span className="text-xs font-bold text-slate-400">
+                      / {totalSlotsToday > 0 ? totalSlotsToday : "—"}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    {confirmedUpcomingCount > 0
+                      ? `${confirmedUpcomingCount} confirmadas`
+                      : "Sin pendientes"}
+                  </p>
+                </div>
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50">
+                  <CalendarCheck size={16} className="text-blue-600" />
+                </div>
+              </div>
+              {/* Barra ocupación inline */}
+              <div className="mt-3">
+                <OccupancyBar pct={occupancyPct} />
+                <p className="mt-1 text-[10px] text-slate-400">{occupancyPct}% ocupado</p>
+              </div>
+            </div>
+          </Link>
+        </PremiumDashboardItem>
+
+        {/* KPI 3 — Huecos libres */}
+        <PremiumDashboardItem>
+          <Link href="/dashboard/huecos" className="group block">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Huecos libres</p>
+                  <p className={`mt-2 text-[1.65rem] font-black tabular-nums leading-none ${totalFreeSlotsToday > 0 ? "text-violet-600" : "text-slate-400"}`}>
+                    {totalFreeSlotsToday}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    {totalFreeSlotsToday > 0
+                      ? barberWithMostSlots
+                        ? `Más: ${barberWithMostSlots.barberName}`
+                        : "Disponibles hoy"
+                      : "Agenda completa"}
+                  </p>
+                </div>
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${totalFreeSlotsToday > 0 ? "bg-violet-50" : "bg-slate-100"}`}>
+                  <Clock size={16} className={totalFreeSlotsToday > 0 ? "text-violet-600" : "text-slate-400"} />
+                </div>
+              </div>
+              {totalFreeSlotsToday > 0 && (
+                <div className="mt-3 flex items-center gap-1 text-[10px] font-semibold text-violet-600">
+                  <Clapperboard size={10} />
+                  <span>Crea una promo para llenarlos</span>
+                </div>
+              )}
+            </div>
+          </Link>
+        </PremiumDashboardItem>
+
+        {/* KPI 4 — Clientes + equipo */}
+        <PremiumDashboardItem>
+          <Link href="/dashboard/clientes" className="group block">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Clientes</p>
+                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                    {totalClientsCount}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    {dormantClientsCount > 0
+                      ? <span className="text-amber-600 font-semibold">{dormantClientsCount} sin volver +45d</span>
+                      : "Base activa"}
+                  </p>
+                </div>
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                  <Users size={16} className="text-slate-600" />
+                </div>
+              </div>
+              <div className="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+                <span className="flex items-center gap-1">
+                  <Scissors size={10} />
+                  {activeBarbersCount} barberos · {activeServicesCount} servicios
+                </span>
+              </div>
+            </div>
+          </Link>
+        </PremiumDashboardItem>
+
       </PremiumDashboardMotion>
 
       {/* ── ACCIONES RÁPIDAS ──────────────────────────────────────────────── */}
