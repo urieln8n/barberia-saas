@@ -62,6 +62,7 @@ type Props = {
   monthData: MonthData | null;
   initialSelectedBarber?: string;
   initialSelectedService?: string;
+  autoOpen?: boolean;
   errors: string[];
 };
 
@@ -103,6 +104,7 @@ export function AgendaClient({
   monthData,
   initialSelectedBarber = "",
   initialSelectedService = "",
+  autoOpen = false,
   errors,
 }: Props) {
   const router = useRouter();
@@ -120,6 +122,14 @@ export function AgendaClient({
   const [selectedService, setSelectedService] = useState(initialSelectedService);
   const [quickBookingDefaults, setQuickBookingDefaults] =
     useState<QuickBookingDefaults | null>(null);
+
+  useEffect(() => {
+    if (autoOpen) {
+      setQuickBookingDefaults({ date: initialDate, time: "", barberId: "", serviceId: "" });
+    }
+    // Only fires once on mount when ?new=1
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [loyaltyHint, setLoyaltyHint] = useState<{
     stamps: number;
     required: number;
