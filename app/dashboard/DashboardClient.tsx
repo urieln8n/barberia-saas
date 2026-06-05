@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   CalendarCheck,
+  CalendarPlus,
   Clapperboard,
   Gift,
   Monitor,
@@ -272,6 +274,9 @@ export function DashboardClient({
   });
   const minsUntilNext = nextAppointment ? getMinutesUntil(nextAppointment.start_time) : null;
 
+  // ── Quick booking panel ───────────────────────────────────────────────────
+  const [quickBookingOpen, setQuickBookingOpen] = useState(false);
+
   // ── Ocupación y revenue estimado ─────────────────────────────────────────
   const totalSlotsToday = todayAppointments.length + totalFreeSlotsToday;
   const occupancyPct = totalSlotsToday > 0
@@ -492,14 +497,15 @@ export function DashboardClient({
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-[#FAFAF8] px-5 py-3 md:px-6">
           {/* CTAs */}
           <div className="flex flex-wrap gap-2">
-            {/* CTA principal dorado — "Nueva Reserva" */}
-            <Link
-              href="/dashboard/reservas"
+            {/* CTA principal dorado — abre QuickBookingPanel */}
+            <button
+              type="button"
+              onClick={() => setQuickBookingOpen(true)}
               className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#C9A227] px-4 text-[13px] font-black text-[#111111] shadow-[0_2px_8px_rgba(201,162,39,0.30)] transition hover:-translate-y-px hover:bg-[#D4AF37] hover:shadow-[0_4px_12px_rgba(201,162,39,0.40)] active:scale-[0.98]"
             >
-              <Plus size={13} strokeWidth={2.5} />
+              <CalendarPlus size={13} strokeWidth={2.5} />
               Nueva Reserva
-            </Link>
+            </button>
             <Link
               href="/dashboard/agenda"
               className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
@@ -680,7 +686,12 @@ export function DashboardClient({
       </PremiumDashboardMotion>
 
       {/* ── ACCIONES RÁPIDAS ──────────────────────────────────────────────── */}
-      <QuickActionsRow services={quickServices} barbers={quickBarbers} />
+      <QuickActionsRow
+        services={quickServices}
+        barbers={quickBarbers}
+        externalOpen={quickBookingOpen}
+        onExternalOpenChange={setQuickBookingOpen}
+      />
 
       {/* ── STUDIO IA + SALA DE ESPERA + FIDELIZACIÓN ────────────────────── */}
       <div className="grid gap-4 sm:grid-cols-3">

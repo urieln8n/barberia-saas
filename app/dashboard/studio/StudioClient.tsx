@@ -6,6 +6,7 @@ import {
   ArrowLeft, ArrowRight, Check, Clapperboard, Copy,
   CreditCard, Download, RefreshCw, Sparkles, Zap,
 } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   generateStudioContent,
   CONTENT_TYPES,
@@ -244,25 +245,18 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
       <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
 
         {/* ── Header ── */}
-        <div className="mb-8">
-          <div className="mb-3 flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-200">
-              <Clapperboard size={18} />
-            </div>
-            <div>
-              <h1 className="text-xl font-black text-slate-900">
-                BarberíaOS <span className="text-violet-600">Studio IA</span>
-              </h1>
-              <p className="text-xs text-slate-500">Crea reels, ofertas y campañas para llenar tu agenda</p>
-            </div>
-            <div className="ml-auto">
-              <CreditsPill credits={studioCredits} />
-            </div>
-          </div>
+        <div className="mb-6">
+          <PageHeader
+            section="Studio IA"
+            title="Crear contenido"
+            description="Genera reels, ofertas y campañas para llenar tu agenda."
+            variant="studio"
+            action={<CreditsPill credits={studioCredits} />}
+          />
 
           {/* Step indicator */}
           {step < 5 && (
-            <div className="mt-4 flex items-center gap-2">
+            <div className="mt-4 flex items-center gap-2 px-1">
               {steps.map((label, i) => (
                 <div key={i} className="flex flex-1 items-center">
                   <StepDot step={i + 1} current={step} label={label} />

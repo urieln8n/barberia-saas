@@ -71,6 +71,15 @@
   --ivory:               #FAFAF7;
   --slate:               #1D2433;
 
+  /* ── Violet system (Studio IA) ──────────────────────── */
+  --violet:           #6D28D9;
+  --violet-mid:       #7C3AED;
+  --violet-soft:      #A78BFA;
+  --violet-tint:      rgba(109, 40, 217, 0.08);
+  --violet-border:    rgba(167, 139, 250, 0.30);
+  --violet-surface:   #F6F3FF;
+  --violet-glow:      rgba(109, 40, 217, 0.22);
+
   /* ── Semantic states ─────────────────────────────────── */
   --success:          #16A34A;
   --success-tint:     rgba(22, 163, 74, 0.10);
@@ -300,6 +309,21 @@
            transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-[0_12px_30px_rgba(229,72,77,0.30)] active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50;
   }
+  .btn-studio {
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl
+           bg-[#6D28D9] px-4 py-2.5 text-base font-bold text-white
+           shadow-[0_8px_24px_rgba(109,40,217,0.28)]
+           transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#5B21B6]
+           hover:shadow-[0_14px_36px_rgba(109,40,217,0.38)]
+           active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  /* Size modifiers — apply after any btn-* class */
+  .btn-sm {
+    @apply min-h-9 rounded-xl px-3 py-2 text-sm;
+  }
+  .btn-xs {
+    @apply min-h-8 rounded-lg px-2.5 py-1.5 text-xs;
+  }
 
   /* ── Form inputs (canonical names) ─────────────────────── */
   .input-field {
@@ -364,9 +388,21 @@
   .badge-neutral {
     @apply inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-neutral-100 px-2.5 py-0.5 text-xs font-semibold text-neutral-600;
   }
+  .badge-violet {
+    @apply inline-flex items-center gap-1 rounded-full border border-[#A78BFA]/35 bg-[#F6F3FF] px-2.5 py-0.5 text-xs font-semibold text-[#6D28D9];
+  }
+  .badge-info {
+    @apply inline-flex items-center gap-1 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700;
+  }
 
   .label-section {
     @apply text-[10px] font-black uppercase tracking-[0.16em] text-[#C9922A];
+  }
+  .label-section-violet {
+    @apply text-[10px] font-black uppercase tracking-[0.16em] text-[#6D28D9];
+  }
+  .label-section-muted {
+    @apply text-[10px] font-black uppercase tracking-[0.16em] text-slate-400;
   }
   .page-shell {
     @apply mx-auto w-full max-w-7xl space-y-5 px-0;
