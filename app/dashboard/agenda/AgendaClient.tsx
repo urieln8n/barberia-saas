@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CalendarDays,
+  Clapperboard,
   Clock,
   Euro,
   Plus,
@@ -431,6 +432,27 @@ export function AgendaClient({
                   <p className="mt-0.5 text-[9px] text-slate-400">{sub}</p>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Studio IA — banner contextual huecos libres */}
+          {visibleMetrics.freeSlots > 0 && view !== "opportunities" && (
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[#A78BFA]/30 bg-[#F6F3FF] px-4 py-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#6D28D9]/15">
+                  <Clapperboard size={13} className="text-[#6D28D9]" />
+                </div>
+                <p className="truncate text-xs text-slate-700">
+                  <span className="font-black text-[#5B21B6]">{visibleMetrics.freeSlots} huecos libres</span>
+                  {" — Crea una promo en video para llenarlos."}
+                </p>
+              </div>
+              <a
+                href="/dashboard/studio?type=fill_empty_slots"
+                className="shrink-0 rounded-lg bg-[#6D28D9] px-3 py-1.5 text-[11px] font-black text-white transition hover:bg-[#5B21B6] active:scale-95"
+              >
+                Crear promo con IA
+              </a>
             </div>
           )}
 

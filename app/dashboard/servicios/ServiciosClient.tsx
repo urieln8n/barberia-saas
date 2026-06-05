@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Camera, ImageIcon, Loader2, Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
+import { Camera, Clapperboard, ImageIcon, Loader2, Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
 import { createService, updateService, deleteService, uploadServiceImage } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -211,6 +211,14 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
+                        <a
+                          href={`/dashboard/studio?type=service_promo&serviceName=${encodeURIComponent(s.name)}`}
+                          aria-label={`Crear video para ${s.name}`}
+                          title="Crear video con Studio IA"
+                          className="rounded-xl p-2 text-violet-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                        >
+                          <Clapperboard size={15} aria-hidden="true" />
+                        </a>
                         <button
                           type="button"
                           onClick={() => openEdit(s)}
