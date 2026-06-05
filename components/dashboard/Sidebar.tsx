@@ -11,15 +11,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Clapperboard,
-  CreditCard,
   Gift,
   HelpCircle,
   Home,
   LogOut,
-  Mail,
   Megaphone,
   MoreHorizontal,
   Plus,
+  QrCode,
   Scissors,
   Settings,
   Sparkles,
@@ -261,17 +260,6 @@ export default function Sidebar() {
   const pathname              = usePathname();
   const { collapsed, toggle } = useSidebarCollapse();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userEmail, setUserEmail]   = useState("");
-
-  useEffect(() => {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-    );
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user?.email) setUserEmail(user.email);
-    });
-  }, []);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
@@ -310,13 +298,14 @@ export default function Sidebar() {
       section: "Cuenta",
       items: [
         {
-          icon: CreditCard, title: "Plan Profesional",
-          description: "Funciones avanzadas para tu negocio",
-          href: "/dashboard/ajustes", badge: "Activo", badgeVariant: "green",
+          icon: Settings,  title: "Ajustes",          description: "Plan, negocio, horarios y facturación",  href: "/dashboard/ajustes",        badge: "Activo", badgeVariant: "green",
         },
-        { icon: Sparkles,   title: "Membresía",        description: "Premium · Growth", href: "/dashboard/studio/credits" },
-        { icon: Mail,       title: "Correo electrónico", description: userEmail || "Mi cuenta", href: "/dashboard/ajustes" },
-        { icon: Settings,   title: "Apariencia",       description: "Claro premium",    href: "/dashboard/ajustes"       },
+        {
+          icon: Sparkles,  title: "Créditos Studio",  description: "Gestiona créditos para videos IA",       href: "/dashboard/studio/credits", badge: "IA",     badgeVariant: "purple", isAI: true,
+        },
+        {
+          icon: QrCode,    title: "QR y enlace",      description: "Código QR y link público de reservas",   href: "/dashboard/qr",
+        },
       ],
     },
   ];
