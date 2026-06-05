@@ -316,13 +316,30 @@ function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[12px] font-semibold text-white/60 backdrop-blur-sm"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[12px] font-semibold text-white/60 backdrop-blur-sm"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
             Software para barberías · Sin comisión por reserva
+          </motion.div>
+
+          {/* Studio IA badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+            className="mb-8"
+          >
+            <Link
+              href="#studio"
+              className="inline-flex items-center gap-2 rounded-full border border-[#A78BFA]/30 bg-[#6D28D9]/20 px-4 py-1.5 text-[12px] font-black text-[#C4B5FD] backdrop-blur-sm transition hover:bg-[#6D28D9]/30"
+            >
+              <Sparkles size={11} className="text-[#A78BFA]" />
+              Nuevo: BarberíaOS Studio IA — Crea reels y campañas con IA
+              <ArrowRight size={10} />
+            </Link>
           </motion.div>
 
           {/* Headline */}
@@ -332,9 +349,9 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="text-[44px] font-black leading-[1.04] tracking-tight sm:text-[60px] lg:text-[80px]"
           >
-            Tu barbería,<br />
+            Gestiona tu barbería<br />
             <span className="bg-gradient-to-r from-[#FFF59C] via-[#F5D76E] to-[#C9A227] bg-clip-text text-transparent">
-              gestionada al máximo.
+              y llena tu agenda.
             </span>
           </motion.h1>
 
@@ -345,8 +362,8 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-white/55 lg:text-xl"
           >
-            Reservas, agenda, clientes, fidelización, caja y marketing en un solo panel.
-            Tus clientes reservan desde cualquier sitio. Tú controlas todo.
+            Reservas, agenda, clientes, fidelización, caja y <strong className="text-white/80">Studio IA</strong> para crear
+            reels, promociones y campañas que llenan tu agenda — todo en un solo panel.
           </motion.p>
 
           {/* CTAs */}
@@ -360,13 +377,14 @@ function Hero() {
               href={DEMO_URL}
               className="inline-flex min-h-[54px] items-center justify-center gap-2.5 rounded-2xl bg-[#D4AF37] px-9 text-[15px] font-black text-[#111111] shadow-[0_8px_32px_rgba(212,175,55,0.40)] transition hover:-translate-y-0.5 hover:bg-[#E8C547] hover:shadow-[0_12px_40px_rgba(212,175,55,0.50)] active:scale-[0.98]"
             >
-              Solicitar demo gratuita <ArrowRight size={17} />
+              Quiero probar BarberíaOS <ArrowRight size={17} />
             </Link>
             <Link
-              href="#como-funciona"
-              className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-9 text-[15px] font-semibold text-white/70 backdrop-blur transition hover:bg-white/[0.10] hover:text-white"
+              href="#studio"
+              className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-2xl border border-[#A78BFA]/25 bg-[#6D28D9]/15 px-9 text-[15px] font-semibold text-[#C4B5FD] backdrop-blur transition hover:bg-[#6D28D9]/25 hover:text-white"
             >
-              Ver cómo funciona
+              <Sparkles size={15} />
+              Ver Studio IA
             </Link>
           </motion.div>
 
@@ -823,14 +841,115 @@ function ModulesSection() {
 
 // ─── Pricing ─────────────────────────────────────────────────────────────────
 
+// ─── Studio IA Section ────────────────────────────────────────────────────────
+
+function StudioIASection() {
+  const features = [
+    { icon: "🎬", title: "Reels de ofertas",        desc: "Genera un reel listo para publicar en 60 segundos" },
+    { icon: "↔️", title: "Videos antes/después",   desc: "El formato más viral para mostrar transformaciones" },
+    { icon: "⚡", title: "Promos de última hora",  desc: "Llena huecos del día con contenido urgente" },
+    { icon: "📱", title: "Historias Instagram",     desc: "Formato vertical optimizado para Stories y Reels" },
+    { icon: "💬", title: "Mensajes WhatsApp",       desc: "Copies listos para enviar a clientes directamente" },
+    { icon: "📅", title: "Campañas semanales",      desc: "Plan de contenido completo para toda la semana" },
+    { icon: "⭐", title: "Videos de reseñas",       desc: "Convierte opiniones positivas en contenido visual" },
+    { icon: "🧴", title: "Promoción de productos",  desc: "Muestra y vende productos de la barbería" },
+    { icon: "💈", title: "Barbero destacado",       desc: "Presenta tu equipo y genera confianza" },
+  ];
+
+  return (
+    <section id="studio" className="overflow-hidden bg-[#F6F3FF] px-5 py-24 lg:px-8 lg:py-32">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <FadeUp>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#A78BFA]/40 bg-white px-4 py-1.5 text-[11px] font-black uppercase tracking-widest text-[#6D28D9]">
+              <Sparkles size={11} />
+              Nuevo · BarberíaOS Studio IA
+            </span>
+          </FadeUp>
+          <FadeUp delay={0.1}>
+            <h2 className="mt-6 text-[34px] font-black leading-tight tracking-tight text-[#111111] sm:text-[48px]">
+              Tu barbería necesita contenido<br />
+              <span className="bg-gradient-to-r from-[#6D28D9] to-[#A78BFA] bg-clip-text text-transparent">
+                todos los días. BarberíaOS lo crea por ti.
+              </span>
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.2}>
+            <p className="mt-5 text-lg text-slate-500">
+              Mientras otros sistemas organizan tu agenda, BarberíaOS también crea contenido para llenar tus huecos.
+              Genera reels, historias, promociones y campañas listos para publicar en minutos.
+            </p>
+          </FadeUp>
+        </div>
+
+        {/* Features grid */}
+        <div className="mb-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f, i) => (
+            <FadeUp key={f.title} delay={i * 0.05}>
+              <div className="group flex items-start gap-4 rounded-2xl border border-[#DDD6FE]/50 bg-white p-5 transition hover:border-[#A78BFA]/40 hover:shadow-[0_4px_20px_rgba(109,40,217,0.08)]">
+                <span className="text-2xl">{f.icon}</span>
+                <div>
+                  <p className="text-sm font-black text-[#111111]">{f.title}</p>
+                  <p className="mt-0.5 text-[13px] text-slate-500">{f.desc}</p>
+                </div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <FadeUp>
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#6D28D9] to-[#5B21B6] p-10 text-center text-white shadow-[0_20px_60px_rgba(109,40,217,0.30)]">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute right-0 top-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(167,139,250,0.25)_0%,transparent_70%)]" />
+              <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/2 translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(196,181,253,0.15)_0%,transparent_70%)]" />
+            </div>
+            <div className="relative">
+              <div className="mb-3 flex items-center justify-center gap-2">
+                <Sparkles size={18} className="text-[#C4B5FD]" />
+                <p className="text-[11px] font-black uppercase tracking-widest text-[#C4B5FD]">Studio IA</p>
+              </div>
+              <h3 className="text-[28px] font-black leading-tight sm:text-[36px]">
+                Mientras el cliente espera,<br />BarberíaOS vende por ti.
+              </h3>
+              <p className="mx-auto mt-4 max-w-xl text-base text-white/60">
+                No solo reservas. BarberíaOS te ayuda a vender más con contenido que atrae clientes automáticamente.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link
+                  href={DEMO_URL}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-[14px] font-black text-[#6D28D9] shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
+                >
+                  Probar Studio IA gratis <ArrowRight size={14} />
+                </Link>
+                <Link
+                  href="#precios"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-8 py-3.5 text-[14px] font-semibold text-white/80 transition hover:bg-white/20"
+                >
+                  Ver qué incluye cada plan
+                </Link>
+              </div>
+            </div>
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+// ─── Pricing Section ──────────────────────────────────────────────────────────
+
 function PricingSection() {
   const plans = [
     {
-      name: "Inicio",
+      name: "Essential",
       price: "39",
+      oferta: "29",
       highlight: "Para 1–2 barberos",
-      desc: "Ordena tu barbería desde el primer día.",
+      desc: "Empieza a gestionar tu barbería desde hoy.",
       featured: false,
+      studioCredits: "1 crédito/mes",
       features: [
         "Agenda — día, semana, barbero",
         "Reservas online sin comisión",
@@ -839,40 +958,46 @@ function PricingSection() {
         "QR imprimible",
         "Página pública de reservas",
         "Recordatorios 24h automáticos",
-        "Fiscalidad — exportación básica",
+        "Fidelización básica",
+        "1 crédito Studio IA al mes",
       ],
     },
     {
-      name: "Profesional",
+      name: "Growth",
       price: "79",
-      highlight: "El más elegido",
-      desc: "Control total y crecimiento real.",
+      oferta: "59",
+      highlight: "Más recomendado",
+      desc: "Control total, fidelización y Studio IA.",
       featured: true,
+      studioCredits: "5 créditos/mes",
       features: [
-        "Todo lo de Inicio, más:",
-        "Inventario y ventas de productos",
-        "Finanzas — ingresos y gastos",
+        "Todo lo de Essential, más:",
+        "Inventario y venta de productos",
+        "Caja avanzada + cierre de sesión",
         "Estadísticas por barbero",
-        "Marketing Studio",
+        "Fidelización avanzada con puntos",
         "Reseñas automáticas Google",
-        "Fidelización — tarjeta de sellos",
-        "Automatizaciones avanzadas",
+        "Sala de espera básica",
+        "5 créditos Studio IA al mes",
       ],
     },
     {
-      name: "Elite",
+      name: "Elite Studio",
       price: "149",
-      highlight: "Para barberías en expansión",
-      desc: "Infraestructura completa para escalar.",
+      oferta: "99",
+      highlight: "Plan estrella",
+      desc: "El ecosistema completo para barberías premium.",
       featured: false,
+      studioCredits: "50 créditos/mes",
       features: [
-        "Todo lo de Profesional, más:",
-        "Web premium con SEO local",
-        "Marketing digital gestionado",
-        "IA del dueño — insights y alertas",
-        "Automatizaciones personalizadas",
+        "Todo lo de Growth, más:",
+        "Web premium con SEO local incluida",
+        "Campañas Instagram, TikTok y WhatsApp",
+        "Sala de espera premium",
+        "Inventario conectado a caja",
+        "Reportes de ventas y productos",
+        "50 créditos Studio IA al mes",
         "Soporte prioritario",
-        "Onboarding personalizado",
       ],
     },
   ];
@@ -880,7 +1005,7 @@ function PricingSection() {
   return (
     <section id="precios" className="bg-white px-5 py-24 lg:px-8 lg:py-32">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
+        <div className="mx-auto mb-6 max-w-2xl text-center">
           <FadeUp><Eyebrow>Precios</Eyebrow></FadeUp>
           <FadeUp delay={0.1}>
             <h2 className="mt-5 text-[34px] font-black leading-tight text-[#111111] sm:text-[46px]">
@@ -894,33 +1019,78 @@ function PricingSection() {
           </FadeUp>
         </div>
 
+        {/* Launch offer banner */}
+        <FadeUp delay={0.2}>
+          <div className="mb-10 rounded-2xl border border-[#D4AF37]/30 bg-[#FFFBEB] px-6 py-4 text-center">
+            <p className="text-sm font-black text-[#92650A]">
+              🎉 Oferta de lanzamiento — Los 3 primeros meses al precio especial. Luego precio normal. Sin permanencia.
+            </p>
+          </div>
+        </FadeUp>
+
         <div className="grid gap-6 lg:grid-cols-3">
           {plans.map((plan, i) => (
             <FadeUp key={plan.name} delay={i * 0.1}>
               <div className={`relative flex h-full flex-col rounded-3xl border p-8 transition hover:-translate-y-1 ${
                 plan.featured
                   ? "border-[#111111] bg-[#111111] shadow-[0_20px_60px_rgba(17,17,17,0.22)]"
-                  : "border-[#EAEAEA] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)]"
+                  : plan.name === "Elite Studio"
+                    ? "border-[#A78BFA]/40 bg-white shadow-[0_4px_20px_rgba(109,40,217,0.08)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.15)]"
+                    : "border-[#EAEAEA] bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.10)]"
               }`}>
                 {plan.featured && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#D4AF37] px-4 py-1.5 text-[11px] font-black text-[#111111]">
-                      <Star size={11} className="fill-current" /> Más popular
+                      <Star size={11} className="fill-current" /> {plan.highlight}
+                    </span>
+                  </div>
+                )}
+                {plan.name === "Elite Studio" && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#6D28D9] px-4 py-1.5 text-[11px] font-black text-white">
+                      <Sparkles size={11} /> {plan.highlight}
                     </span>
                   </div>
                 )}
 
                 <div>
-                  <p className={`text-[11px] font-black uppercase tracking-widest ${plan.featured ? "text-[#D4AF37]" : "text-slate-400"}`}>
-                    {plan.highlight}
+                  <p className={`text-[11px] font-black uppercase tracking-widest ${
+                    plan.featured ? "text-[#D4AF37]"
+                    : plan.name === "Elite Studio" ? "text-[#7C3AED]"
+                    : "text-slate-400"
+                  }`}>
+                    {!plan.featured && plan.name !== "Elite Studio" ? plan.highlight : plan.name}
                   </p>
-                  <p className={`mt-1 text-xl font-black ${plan.featured ? "text-white" : "text-[#111111]"}`}>{plan.name}</p>
+                  <p className={`mt-1 text-xl font-black ${plan.featured ? "text-white" : "text-[#111111]"}`}>
+                    {plan.featured || plan.name === "Elite Studio" ? plan.name : plan.name}
+                  </p>
 
-                  <div className="mt-4 flex items-end gap-1">
-                    <span className={`text-5xl font-black tabular-nums ${plan.featured ? "text-white" : "text-[#111111]"}`}>{plan.price}€</span>
+                  {/* Launch price */}
+                  <div className="mt-4 flex items-end gap-2">
+                    <span className={`text-4xl font-black tabular-nums ${plan.featured ? "text-white" : "text-[#111111]"}`}>
+                      {(plan as typeof plan & { oferta?: string }).oferta ?? plan.price}€
+                    </span>
                     <span className={`mb-1.5 text-sm ${plan.featured ? "text-white/40" : "text-slate-400"}`}>/mes</span>
+                    <span className={`mb-1.5 text-sm line-through ${plan.featured ? "text-white/25" : "text-slate-300"}`}>
+                      {plan.price}€
+                    </span>
                   </div>
+                  <p className={`mt-0.5 text-[11px] font-semibold ${plan.featured ? "text-[#D4AF37]/70" : "text-emerald-600"}`}>
+                    3 meses · luego {plan.price}€/mes
+                  </p>
                   <p className={`mt-2 text-[13px] ${plan.featured ? "text-white/50" : "text-slate-500"}`}>{plan.desc}</p>
+
+                  {/* Studio IA credits badge */}
+                  {"studioCredits" in plan && (
+                    <div className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black ${
+                      plan.name === "Elite Studio" ? "bg-[#6D28D9]/10 text-[#6D28D9]"
+                      : plan.featured ? "bg-[#A78BFA]/20 text-[#C4B5FD]"
+                      : "bg-violet-50 text-violet-700"
+                    }`}>
+                      <Sparkles size={10} />
+                      {(plan as typeof plan & { studioCredits?: string }).studioCredits}
+                    </div>
+                  )}
                 </div>
 
                 <Link
@@ -1218,6 +1388,7 @@ export function SquirePremiumLanding() {
         <ProblemSection />
         <FeaturesSection />
         <HowItWorksSection />
+        <StudioIASection />
         <ModulesSection />
         <PricingSection />
         <TestimonialsSection />

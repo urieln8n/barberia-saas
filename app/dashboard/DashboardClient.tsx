@@ -3,6 +3,9 @@
 import Link from "next/link";
 import {
   CalendarCheck,
+  Clapperboard,
+  Gift,
+  Monitor,
   Users,
   Clock,
   Wallet,
@@ -511,6 +514,78 @@ export function DashboardClient({
 
       {/* ── ACCIONES RÁPIDAS ──────────────────────────────────────────────── */}
       <QuickActionsRow services={quickServices} barbers={quickBarbers} />
+
+      {/* ── STUDIO IA + SALA DE ESPERA + FIDELIZACIÓN ────────────────────── */}
+      <div className="grid gap-4 sm:grid-cols-3">
+
+        {/* Studio IA card */}
+        <Link
+          href="/dashboard/studio"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#6D28D9] to-[#5B21B6] p-5 text-white shadow-lg shadow-violet-200/50 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-violet-200/70 sm:col-span-1"
+        >
+          <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#A78BFA]/20" />
+          <div className="relative">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20">
+                <Clapperboard size={14} />
+              </div>
+              <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide">
+                Nuevo
+              </span>
+            </div>
+            <p className="text-xs font-black text-white/70">Studio IA</p>
+            <p className="mt-1 text-sm font-black leading-snug">
+              Crea un reel para llenar huecos esta semana
+            </p>
+            <p className="mt-1.5 text-[11px] text-white/60">
+              Genera una promo lista para Instagram, TikTok o WhatsApp en minutos.
+            </p>
+            <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-white/80 group-hover:text-white">
+              Crear video ahora <ArrowRight size={11} />
+            </div>
+          </div>
+        </Link>
+
+        {/* Sala de espera card */}
+        <Link
+          href="/dashboard/lounge"
+          className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+        >
+          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100">
+            <Monitor size={14} className="text-slate-600" />
+          </div>
+          <p className="text-xs font-black text-slate-500">Sala de espera</p>
+          <p className="mt-1 text-sm font-black text-slate-900 leading-snug">
+            Activa ventas mientras tus clientes esperan
+          </p>
+          <p className="mt-1.5 text-[11px] text-slate-500">
+            Muestra productos, promos y QR de reserva en pantalla.
+          </p>
+          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-slate-600 group-hover:text-slate-900">
+            Configurar <ArrowRight size={11} />
+          </div>
+        </Link>
+
+        {/* Fidelización card */}
+        <Link
+          href="/dashboard/fidelizacion"
+          className="group relative overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-[#FFFBEB] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/50 hover:shadow-md"
+        >
+          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-[#D4AF37]/15">
+            <Gift size={14} className="text-[#C9922A]" />
+          </div>
+          <p className="text-xs font-black text-[#C9922A]">Fidelización</p>
+          <p className="mt-1 text-sm font-black text-slate-900 leading-snug">
+            Premia a tus clientes y haz que vuelvan
+          </p>
+          <p className="mt-1.5 text-[11px] text-slate-600">
+            Tarjetas de sellos, puntos y recompensas activadas.
+          </p>
+          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-[#C9922A] group-hover:text-[#92650A]">
+            Ver fidelización <ArrowRight size={11} />
+          </div>
+        </Link>
+      </div>
 
       {/* ── D. AGENDA DEL DÍA + PANEL LATERAL ──────────────────────────── */}
       <section className="grid gap-5 xl:grid-cols-[1.5fr_0.75fr]">
