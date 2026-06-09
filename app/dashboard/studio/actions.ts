@@ -35,9 +35,9 @@ export async function generateStudio(
 
   const result = generateStudioContent(input);
 
-  // Persist the generation — fire and forget; don't block the response
+  // Persist the generation — awaited to keep credits and content counts consistent
   // biome-ignore lint: studio_contents not yet in generated types
-  ;(supabase as any)
+  await (supabase as any)
     .from("studio_contents")
     .insert({
       barbershop_id: barbershopId,
@@ -52,8 +52,7 @@ export async function generateStudio(
       hashtags: result.hashtags,
       visual_idea: result.visualIdea,
       credits_used: 1,
-    })
-    .then(() => {});
+    });
 
   return { data: result, error: null };
 }
