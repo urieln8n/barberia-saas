@@ -76,9 +76,11 @@ function CreditsPill({ credits }: { credits: StudioCredits }) {
 function VideoGenerateButton({ templateType, style }: { templateType: string; style: string }) {
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function handleClick() {
     setState("loading");
+    setErrorMsg(null);
     try {
       const res = await fetch("/api/studio/video/generate", {
         method: "POST",
@@ -86,7 +88,13 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
         body: JSON.stringify({ templateType, style, inputData: {} }),
       });
       const job = await res.json();
-      if (!res.ok) { setState("error"); return; }
+      if (!res.ok) {
+        const msg = job?.error ?? `Error HTTP ${res.status}`;
+        console.error("[VideoGenerateButton] generate failed:", res.status, job);
+        setErrorMsg(msg);
+        setState("error");
+        return;
+      }
 
       // Poll status up to ~15 s (mock completes after 5 s)
       for (let i = 0; i < 12; i++) {
@@ -94,10 +102,17 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
         const statusRes = await fetch(`/api/studio/video/status/${job.jobId}`);
         const status = await statusRes.json();
         if (status.status === "completed") { setVideoUrl(status.videoUrl); setState("done"); return; }
-        if (status.status === "failed") { setState("error"); return; }
+        if (status.status === "failed") {
+          setErrorMsg(status.errorMsg ?? "El proveedor de vídeo reportó un error");
+          setState("error");
+          return;
+        }
       }
+      setErrorMsg("Tiempo de espera agotado (>18 s)");
       setState("error");
-    } catch {
+    } catch (err) {
+      console.error("[VideoGenerateButton] unexpected error:", err);
+      setErrorMsg("Error de red o de conexión");
       setState("error");
     }
   }
@@ -121,9 +136,17 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
 
   if (state === "error") {
     return (
-      <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
-        Error al generar el vídeo. Aplica la migración studio_video_jobs en Supabase.
-      </p>
+      <div className="space-y-2">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
+          {errorMsg ?? "Error al generar el vídeo"}
+        </p>
+        <button
+          onClick={() => { setState("idle"); setErrorMsg(null); }}
+          className="text-xs font-semibold text-slate-500 hover:text-slate-700 underline"
+        >
+          Reintentar
+        </button>
+      </div>
     );
   }
 

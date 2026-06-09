@@ -24,11 +24,15 @@ export async function POST(request: Request) {
   }
 
   // biome-ignore lint: deduct_studio_credit not yet in generated types
-  const { data: ok } = await (supabase as any).rpc("deduct_studio_credit", {
+  const { data: ok, error: rpcError } = await (supabase as any).rpc("deduct_studio_credit", {
     p_barbershop_id: barbershopId,
     p_description: `Vídeo: ${templateType}`,
   });
-  if (!ok) return NextResponse.json({ error: "Sin créditos disponibles" }, { status: 402 });
+  if (rpcError) {
+    console.error("[video/generate] deduct_studio_credit RPC error:", rpcError);
+    return NextResponse.json({ error: `Error en RPC: ${rpcError.message}` }, { status: 500 });
+  }
+  if (!ok) return NextResponse.json({ error: "Sin créditos disponibles. El vídeo consume 1 crédito adicional." }, { status: 402 });
 
   const providerName = "mock";
   const provider = getVideoProvider(providerName);
@@ -55,7 +59,8 @@ export async function POST(request: Request) {
     .single();
 
   if (insertError || !job) {
-    return NextResponse.json({ error: "Error al crear el job" }, { status: 500 });
+    console.error("[video/generate] insert studio_video_jobs error:", insertError);
+    return NextResponse.json({ error: insertError?.message ?? "Error al crear el job" }, { status: 500 });
   }
 
   return NextResponse.json({
