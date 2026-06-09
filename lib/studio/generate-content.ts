@@ -1,229 +1,205 @@
-// Studio IA — mock content generator
-// TODO: Replace with real API calls to Runway / Kling / Luma / Replicate
+// Studio IA — Campaign types, UI constants, and fallback templates.
+// OpenAI generation logic lives in app/dashboard/studio/actions.ts (server-only).
 
-export type ContentType =
-  | "oferta_semanal"
-  | "antes_despues"
-  | "corte_premium"
-  | "barbero_destacado"
-  | "resena_cliente"
-  | "promo_urgente"
-  | "producto_destacado"
-  | "recuperar_clientes"
-  | "llenar_huecos";
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+export type CampaignType =
+  | "llenar_agenda"
+  | "oferta_flash"
+  | "transformacion"
+  | "recuperar_cliente"
+  | "barbero_pro"
+  | "nuevo_servicio"
+  | "prueba_social"
+  | "urgencia_reserva";
+
+export type ContentPlatform = "instagram_reel" | "tiktok" | "whatsapp" | "facebook";
 
 export type ContentStyle =
   | "premium_morado"
+  | "lujo_dorado"
   | "urbano_moderno"
   | "minimalista_limpio"
-  | "barberia_clasica"
-  | "viral_tiktok"
-  | "lujo_dorado";
+  | "barberia_clasica";
 
-export type StudioContentInput = {
-  type: ContentType;
-  barbershopName: string;
-  message?: string;
+export type AdCampaignInput = {
+  campaign: CampaignType;
+  platform: ContentPlatform;
   style: ContentStyle;
-  serviceName?: string;
+  barbershopName: string;
   barberName?: string;
-  productName?: string;
-  reviewText?: string;
+  offerDetail?: string;
+  urgencyMessage?: string;
 };
 
-export type StudioContentOutput = {
-  title: string;
-  script: string;
-  onScreenText: string;
-  subtitles: string[];
-  cta: string;
-  instagramCaption: string;
+export type AdCampaignOutput = {
+  campaign: CampaignType;
+  platform: ContentPlatform;
+  hook: string;
+  caption: string;
   hashtags: string[];
+  cta: string;
+  onScreenText: string;
   visualIdea: string;
-  contentType: ContentType;
-  creditsEstimated: number;
+  bestPostingTime: string;
+  creditsUsed: number;
 };
 
-const SCRIPTS: Record<ContentType, (input: StudioContentInput) => StudioContentOutput> = {
-  oferta_semanal: (i) => ({
-    title: `Oferta semanal — ${i.barbershopName}`,
-    script: `Esta semana en ${i.barbershopName} tenemos una oferta especial que no te puedes perder. ${i.message ?? "Corte + barba a precio especial."} Reserva ahora, los huecos se llenan rápido.`,
-    onScreenText: `⚡ OFERTA DE LA SEMANA\n${i.message ?? "Corte + barba — precio especial"}\n📲 Reserva ya`,
-    subtitles: [
-      "Esta semana en " + i.barbershopName + "...",
-      i.message ?? "Oferta especial en corte y barba.",
-      "Plazas limitadas. ¡Reserva ya!",
-    ],
-    cta: "Reserva tu hueco ahora — link en bio",
-    instagramCaption: `🔥 OFERTA DE LA SEMANA en ${i.barbershopName}\n\n${i.message ?? "Corte + barba a precio especial"}\n\n⏰ Solo esta semana. Plazas limitadas.\n📲 Reserva en el link de la bio o por WhatsApp.\n\n`,
-    hashtags: ["#barberia", "#barbershop", "#oferta", "#corte", "#barba", `#${i.barbershopName.toLowerCase().replace(/\s/g, "")}`, "#barberiamadrid", "#hairstyle"],
-    visualIdea: "Texto dinámico sobre fondo oscuro con acento dorado. Primer plano de unas tijeras o navaja. Transición rápida con el logo.",
-    contentType: "oferta_semanal",
-    creditsEstimated: 1,
-  }),
+// ─── Campaign definitions ─────────────────────────────────────────────────────
 
-  antes_despues: (i) => ({
-    title: `Antes y después — ${i.serviceName ?? "Corte"}`,
-    script: `Mira esta transformación en ${i.barbershopName}. ${i.serviceName ?? "Un corte increíble"} que habla por sí solo. ¿Quieres el tuyo?`,
-    onScreenText: `ANTES → DESPUÉS\n${i.serviceName ?? "Transformación total"}\n📲 Reserva en bio`,
-    subtitles: [
-      "Así llegó...",
-      "Así salió de " + i.barbershopName,
-      "¿Quieres el tuyo? Reserva ahora.",
-    ],
-    cta: "¿El tuyo cuándo? Reserva en el link",
-    instagramCaption: `✂️ TRANSFORMACIÓN REAL en ${i.barbershopName}\n\n${i.serviceName ?? "Corte premium"} — el resultado habla solo.\n\n¿Quieres el tuyo? 📲 Link en bio para reservar.\n\n`,
-    hashtags: ["#antesdespues", "#beforeafter", "#barbershop", "#barberia", "#transformacion", "#corte", "#hairstyle", "#barber"],
-    visualIdea: "Split screen: mitad izquierda antes, mitad derecha después. Transición reveladora de izquierda a derecha. Música energética.",
-    contentType: "antes_despues",
-    creditsEstimated: 1,
-  }),
-
-  corte_premium: (i) => ({
-    title: `${i.serviceName ?? "Corte premium"} — ${i.barbershopName}`,
-    script: `Esto es lo que hacemos en ${i.barbershopName}. ${i.serviceName ?? "Corte premium"} con precisión y estilo. Cada detalle importa.`,
-    onScreenText: `${i.serviceName?.toUpperCase() ?? "CORTE PREMIUM"}\n${i.barbershopName}\n📲 Reserva ya`,
-    subtitles: [
-      i.serviceName ?? "Corte premium",
-      "Precisión y estilo en " + i.barbershopName,
-      "Reserva tu próxima cita.",
-    ],
-    cta: "Reserva ahora — link en bio",
-    instagramCaption: `✂️ ${i.serviceName ?? "CORTE PREMIUM"} en ${i.barbershopName}\n\nCada detalle, cada línea, cada acabado — hecho con precisión.\n\n📲 Reserva tu cita en el link de la bio.\n\n`,
-    hashtags: ["#barbershop", "#barberia", "#hairstyle", "#fade", "#corte", "#barberlife", `#${i.serviceName?.toLowerCase().replace(/\s/g, "") ?? "cortepremium"}`],
-    visualIdea: "Slow motion del proceso de corte. Primer plano de la navaja con luz lateral. Música chill pero moderna.",
-    contentType: "corte_premium",
-    creditsEstimated: 1,
-  }),
-
-  barbero_destacado: (i) => ({
-    title: `Conoce a ${i.barberName ?? "nuestro barbero"} — ${i.barbershopName}`,
-    script: `${i.barberName ?? "Nuestro equipo"} en ${i.barbershopName}. Pasión por el oficio, precisión en cada corte. Reserva con él directamente.`,
-    onScreenText: `CONOCE A ${(i.barberName ?? "NUESTRO EQUIPO").toUpperCase()}\n${i.barbershopName}\n📲 Reserva con él`,
-    subtitles: [
-      "Conoce a " + (i.barberName ?? "nuestro barbero") + "...",
-      "Precisión y pasión en cada corte.",
-      "Reserva con él — link en bio.",
-    ],
-    cta: "Reserva con " + (i.barberName ?? "él") + " — link en bio",
-    instagramCaption: `💈 EQUIPO ${i.barbershopName.toUpperCase()}\n\n${i.barberName ?? "Nuestro equipo"} — pasión por el oficio y precisión en cada detalle.\n\n📲 Reserva tu cita con él en el link de la bio.\n\n`,
-    hashtags: ["#barber", "#barbershop", "#barberia", "#team", "#barbero", "#barberlife", "#hairstyle"],
-    visualIdea: "Perfil del barbero trabajando, con sus herramientas en el mostrador. Tono cálido y profesional. Texto en overlay limpio.",
-    contentType: "barbero_destacado",
-    creditsEstimated: 1,
-  }),
-
-  resena_cliente: (i) => ({
-    title: `Reseña real — ${i.barbershopName}`,
-    script: `Esto lo dijo un cliente real de ${i.barbershopName}: "${i.reviewText ?? "Increíble servicio, volveré sin duda."}". Estas son las razones por las que seguimos creciendo.`,
-    onScreenText: `⭐⭐⭐⭐⭐\n"${i.reviewText ?? "Increíble servicio, volveré sin duda."}" \n— Cliente de ${i.barbershopName}`,
-    subtitles: [
-      "Esto lo dijo un cliente real...",
-      `"${i.reviewText ?? "Increíble servicio, volveré sin duda."}"`,
-      "¿Cuándo es tu próxima cita?",
-    ],
-    cta: "Lee más reseñas — reserva en el link",
-    instagramCaption: `⭐ OPINIÓN REAL de ${i.barbershopName}\n\n"${i.reviewText ?? "Increíble servicio, volveré sin duda."}" — Cliente verificado.\n\n¿Cuándo es tu próxima cita? 📲 Link en bio.\n\n`,
-    hashtags: ["#resenas", "#opinion", "#barbershop", "#barberia", "#5estrellas", "#clientefeliz", "#recomendado"],
-    visualIdea: "Fondo limpio claro con texto de la reseña animado. Estrellas doradas. Logo de la barbería al final. Música suave.",
-    contentType: "resena_cliente",
-    creditsEstimated: 1,
-  }),
-
-  promo_urgente: (i) => ({
-    title: `Últimos huecos hoy — ${i.barbershopName}`,
-    script: `¡Atención! En ${i.barbershopName} quedan solo los últimos huecos para hoy. ${i.message ?? "Si necesitas corte, este es el momento."} Reserva ahora antes de que se agoten.`,
-    onScreenText: `⏰ ÚLTIMOS HUECOS HOY\n${i.barbershopName}\n📲 RESERVA AHORA`,
-    subtitles: [
-      "Quedan los últimos huecos para hoy...",
-      i.message ?? "¿Necesitas corte esta semana?",
-      "Reserva ahora — se agotan.",
-    ],
-    cta: "Último hueco disponible — reserva ya",
-    instagramCaption: `⚡ ÚLTIMOS HUECOS HOY en ${i.barbershopName}\n\n${i.message ?? "Quedan pocas plazas. Si necesitas corte, este es el momento."}\n\n⏰ Reserva AHORA en el link de la bio antes de que se agoten.\n\n`,
-    hashtags: ["#urgente", "#huecos", "#reserva", "#barbershop", "#barberia", "#hoy", "#disponible"],
-    visualIdea: "Reloj o temporizador animado. Fondo oscuro con texto en rojo/naranja urgente. Alto contraste y movimiento rápido.",
-    contentType: "promo_urgente",
-    creditsEstimated: 1,
-  }),
-
-  producto_destacado: (i) => ({
-    title: `${i.productName ?? "Producto premium"} — ${i.barbershopName}`,
-    script: `En ${i.barbershopName} usamos y vendemos los mejores productos. ${i.productName ?? "Producto premium"} para que tu estilo dure toda la semana.`,
-    onScreenText: `${(i.productName ?? "PRODUCTO PREMIUM").toUpperCase()}\nDisponible en ${i.barbershopName}\n💈 Pregunta en tu próxima visita`,
-    subtitles: [
-      "El secreto está en el producto...",
-      i.productName ?? "Producto premium de barbería.",
-      "Disponible en " + i.barbershopName + ".",
-    ],
-    cta: "Pregunta por él en tu próxima visita",
-    instagramCaption: `💈 ${i.productName?.toUpperCase() ?? "PRODUCTO PREMIUM"} en ${i.barbershopName}\n\nUsamos y vendemos los mejores productos para que tu estilo dure toda la semana.\n\n📲 Reserva cita y llévate el tuyo — link en bio.\n\n`,
-    hashtags: ["#barbershop", "#barberia", "#producto", "#styling", "#cabello", "#barbero", "#pomade", "#grooming"],
-    visualIdea: "Primer plano del producto con iluminación de estudio. Manos del barbero aplicándolo. Texto limpio minimalista.",
-    contentType: "producto_destacado",
-    creditsEstimated: 1,
-  }),
-
-  recuperar_clientes: (i) => ({
-    title: `Te echamos de menos — ${i.barbershopName}`,
-    script: `En ${i.barbershopName} te echamos de menos. Hace tiempo que no te vemos. Vuelve esta semana y recupera tu estilo.`,
-    onScreenText: `💈 TE ECHAMOS DE MENOS\n${i.message ?? "¿Cuándo fue tu último corte?"}\n📲 Reserva y vuelve`,
-    subtitles: [
-      "Hace tiempo que no te vemos...",
-      i.message ?? "¿Cuándo fue tu último corte?",
-      "Vuelve a " + i.barbershopName + " esta semana.",
-    ],
-    cta: "Vuelve esta semana — link en bio",
-    instagramCaption: `💈 ¿CUÁNDO FUE TU ÚLTIMO CORTE?\n\nEn ${i.barbershopName} te echamos de menos. Esta semana tenemos huecos disponibles.\n\n📲 Reserva en el link de la bio y recupera tu estilo.\n\n`,
-    hashtags: ["#barbershop", "#barberia", "#vuelve", "#corte", "#reactivacion", "#teechamosdemenos"],
-    visualIdea: "Silla de barbería vacía. Mensaje emotivo en overlay. Transición a silla ocupada. Música nostálgica y motivadora.",
-    contentType: "recuperar_clientes",
-    creditsEstimated: 1,
-  }),
-
-  llenar_huecos: (i) => ({
-    title: `Huecos disponibles — ${i.barbershopName}`,
-    script: `¿Buscas hueco esta semana? En ${i.barbershopName} tenemos disponibilidad ahora mismo. ${i.message ?? "No esperes, los huecos se llenan rápido."} Reserva en dos clics.`,
-    onScreenText: `📅 HUECOS DISPONIBLES\n${i.barbershopName}\n📲 Reserva en 2 clics`,
-    subtitles: [
-      "¿Buscas hueco esta semana?",
-      "Disponibilidad ahora en " + i.barbershopName + ".",
-      "Reserva en 2 clics — link en bio.",
-    ],
-    cta: "Reserva en 2 clics — link en bio",
-    instagramCaption: `📅 HUECOS DISPONIBLES ESTA SEMANA\n\n${i.barbershopName} tiene disponibilidad ahora mismo.\n\n${i.message ?? "No esperes — los huecos se llenan rápido."}\n\n📲 Reserva en el link de la bio.\n\n`,
-    hashtags: ["#disponible", "#reserva", "#barbershop", "#barberia", "#huecos", "#cita", "#corte"],
-    visualIdea: "Calendario animado con huecos libres marcados. Verde brillante sobre fondo oscuro. Urgencia visual clara.",
-    contentType: "llenar_huecos",
-    creditsEstimated: 1,
-  }),
+export type CampaignDef = {
+  type: CampaignType;
+  label: string;
+  goalLine: string;
+  icon: string;
+  badge?: string;
 };
 
-export function generateStudioContent(input: StudioContentInput): StudioContentOutput {
-  const generator = SCRIPTS[input.type];
-  return generator(input);
+export const CAMPAIGNS: CampaignDef[] = [
+  { type: "llenar_agenda",     label: "Llenar agenda",      goalLine: "Convierte huecos vacíos en reservas reales",      icon: "📅", badge: "Más usado"   },
+  { type: "oferta_flash",      label: "Oferta flash",       goalLine: "Precio especial que urgencia a reservar",         icon: "⚡"                       },
+  { type: "transformacion",    label: "Antes / Después",    goalLine: "Resultado real que demuestra tu nivel",           icon: "✨", badge: "Alto impacto" },
+  { type: "recuperar_cliente", label: "Recuperar clientes", goalLine: "Reactiva clientes que llevan semanas sin venir",  icon: "💌"                       },
+  { type: "barbero_pro",       label: "Mi barbero",         goalLine: "Humaniza la marca y genera confianza",            icon: "💈"                       },
+  { type: "nuevo_servicio",    label: "Nuevo servicio",     goalLine: "Lanza algo nuevo y crea expectativa",             icon: "🚀"                       },
+  { type: "prueba_social",     label: "Reseña real",        goalLine: "Convierte una opinión positiva en reservas",      icon: "⭐"                       },
+  { type: "urgencia_reserva",  label: "Últimas plazas",     goalLine: "FOMO real cuando quedan pocos huecos",            icon: "⏰", badge: "Urgente"     },
+];
+
+// ─── Platform definitions ─────────────────────────────────────────────────────
+
+export type PlatformDef = {
+  id: ContentPlatform;
+  label: string;
+  subline: string;
+};
+
+export const PLATFORMS: PlatformDef[] = [
+  { id: "instagram_reel", label: "Instagram", subline: "Reels · 9:16"  },
+  { id: "tiktok",         label: "TikTok",    subline: "Vídeo · 9:16"  },
+  { id: "whatsapp",       label: "WhatsApp",  subline: "Status · 15s"  },
+  { id: "facebook",       label: "Facebook",  subline: "Feed y Stories" },
+];
+
+// ─── Style definitions ────────────────────────────────────────────────────────
+
+export type StyleDef = {
+  id: ContentStyle;
+  label: string;
+  description: string;
+  color: string;
+};
+
+export const STYLES: StyleDef[] = [
+  { id: "premium_morado",     label: "Premium",     description: "Elegante y diferenciado", color: "#6D28D9" },
+  { id: "lujo_dorado",        label: "Lujo dorado", description: "Ultra premium",           color: "#C9A227" },
+  { id: "urbano_moderno",     label: "Urbano",      description: "Dinámico y joven",        color: "#1F2937" },
+  { id: "minimalista_limpio", label: "Minimalista", description: "Limpio y legible",        color: "#94A3B8" },
+  { id: "barberia_clasica",   label: "Clásico",     description: "Tradición y calidez",     color: "#92400E" },
+];
+
+// ─── Offer placeholder per campaign ──────────────────────────────────────────
+
+export const OFFER_PLACEHOLDER: Record<CampaignType, string> = {
+  llenar_agenda:     'Servicio disponible (ej: "Corte + barba")',
+  oferta_flash:      'Precio (ej: "Corte + barba 25€")',
+  transformacion:    'Tipo de servicio (ej: "Fade con diseño")',
+  recuperar_cliente: 'Incentivo (ej: "10% dto en primera cita")',
+  barbero_pro:       'Especialidad (ej: "Expert en fades")',
+  nuevo_servicio:    'Nombre del servicio (ej: "Arreglo de cejas")',
+  prueba_social:     'Pega aquí la reseña positiva del cliente...',
+  urgencia_reserva:  'Plazas restantes (ej: "Solo 2 plazas esta semana")',
+};
+
+// ─── Fallback templates (used when OpenAI is unavailable) ────────────────────
+
+export function getFallbackCampaign(input: AdCampaignInput): AdCampaignOutput {
+  const n  = input.barbershopName;
+  const u  = input.urgencyMessage ?? "Los huecos vuelan.";
+  const o  = input.offerDetail   ?? "";
+  const b  = input.barberName    ?? "nuestro equipo";
+
+  type Tpl = Omit<AdCampaignOutput, "campaign" | "platform" | "creditsUsed">;
+
+  const T: Record<CampaignType, Tpl> = {
+    llenar_agenda: {
+      hook:            `¿Libre esta semana? ${n} tiene huecos ahora mismo.`,
+      caption:         `📅 HUECOS DISPONIBLES — ${n}\n\n${u}\n\nReserva en segundos desde el link de la bio. Sin esperas, sin llamadas.\n\n📲 ¿A qué esperas?`,
+      hashtags:        ["barberia", "reserva", "barbershop", "disponible", "cortedecabello", "cita", "hairstyle"],
+      cta:             "Reserva en el link de la bio",
+      onScreenText:    `📅 HUECOS LIBRES\n${n}\n📲 Reserva en 2 clics`,
+      visualIdea:      "Silla vacía → barbero preparando herramientas → móvil con pantalla de reserva. Corte rápido y música energética.",
+      bestPostingTime: "Lunes y martes 11:00–13:00 o miércoles 20:00–22:00",
+    },
+    oferta_flash: {
+      hook:            `Solo hoy en ${n}${o ? ` — ${o}` : " — oferta que no se repite"}.`,
+      caption:         `⚡ OFERTA FLASH — ${n}\n\n${o || "Precio especial por tiempo limitado."}\n\n⏰ ${u}\n\n📲 Reserva ya en el link de la bio.`,
+      hashtags:        ["oferta", "barbershop", "barberia", "descuento", "flash", "reserva", "corte"],
+      cta:             "Reserva antes de que expire — link en bio",
+      onScreenText:    `⚡ OFERTA HOY\n${o || "Precio especial"}\n⏰ Solo hoy`,
+      visualIdea:      "Precio tachado → precio nuevo con destellos → temporizador. Fondo oscuro con acento dorado.",
+      bestPostingTime: "Jueves–viernes 18:00–21:00",
+    },
+    transformacion: {
+      hook:            `Esto es lo que hacemos en ${n}. El resultado habla solo.`,
+      caption:         `✨ TRANSFORMACIÓN REAL — ${n}\n\n${o || "Antes y después sin filtros."}\n\n¿Quieres el tuyo?\n📲 Reserva en el link de la bio.`,
+      hashtags:        ["antesdespues", "beforeafter", "barbershop", "barberia", "transformacion", "haircut", "fade"],
+      cta:             "¿El tuyo cuándo? Reserva en el link",
+      onScreenText:    `ANTES → DESPUÉS\n${n}\n📲 Tu transformación`,
+      visualIdea:      "Split screen izquierda/derecha con transición swipe reveal. Música épica de impacto.",
+      bestPostingTime: "Sábado 10:00–12:00 o domingo tarde para inspirar la semana",
+    },
+    recuperar_cliente: {
+      hook:            `Cuánto tiempo sin verte… ${n} te echa de menos.`,
+      caption:         `💌 OYE, ¿TODO BIEN?\n\nEn ${n} llevamos tiempo sin verte. La silla te espera.\n\n${u}\n\n📲 Vuelve — link en bio.`,
+      hashtags:        ["barbershop", "barberia", "vuelve", "teechamosdemenos", "corte", "fidelizacion"],
+      cta:             "Vuelve esta semana — link en bio",
+      onScreenText:    `💈 TE ECHAMOS DE MENOS\n${n}\n📲 Tu silla espera`,
+      visualIdea:      "Silla vacía con luz cálida → barbero con gesto de bienvenida. Música nostálgica pero hopeful.",
+      bestPostingTime: "Domingo 19:00–21:00 cuando la gente planifica la semana",
+    },
+    barbero_pro: {
+      hook:            `Conoce a ${b}. Precisión, estilo y pasión por el oficio.`,
+      caption:         `💈 EQUIPO ${n.toUpperCase()}\n\n${b} — no solo corta pelo, crea estilos.\n\n${o ? `Especialista en ${o}.\n\n` : ""}📲 Reserva con él — link en bio.`,
+      hashtags:        ["barber", "barbershop", "barberia", "barbero", "team", "barberlife", "hairstyle"],
+      cta:             `Reserva con ${b} — link en bio`,
+      onScreenText:    `CONOCE A ${b.toUpperCase()}\n${n}\n📲 Reserva con él`,
+      visualIdea:      "Perfil del barbero trabajando → primer plano de manos con herramientas → cliente satisfecho. Tono cálido y profesional.",
+      bestPostingTime: "Miércoles–jueves 19:00–21:00 para reservas del fin de semana",
+    },
+    nuevo_servicio: {
+      hook:            `Nuevo en ${n}${o ? `: ${o}` : " — algo que llevabas esperando"}.`,
+      caption:         `🚀 NOVEDAD EN ${n.toUpperCase()}\n\n${o || "Nuevo servicio disponible."}\n\nSé de los primeros. Plazas limitadas.\n\n📲 Reserva en el link de la bio.`,
+      hashtags:        ["nuevo", "novedad", "barbershop", "barberia", "launch", "hairstyle", "grooming"],
+      cta:             "Sé de los primeros — reserva en el link",
+      onScreenText:    `🚀 NUEVO\n${o || "Nuevo servicio"}\n${n}`,
+      visualIdea:      "Reveal con destello → servicio en close-up → reacción del cliente. Música energética de lanzamiento.",
+      bestPostingTime: "Lunes 08:00–10:00 para captar planificadores de semana",
+    },
+    prueba_social: {
+      hook:            `Lo que dicen los clientes de ${n}. Sin filtros.`,
+      caption:         `⭐⭐⭐⭐⭐ OPINIÓN REAL — ${n}\n\n"${o || "Increíble. No voy a ningún otro sitio."}" — Cliente verificado.\n\n📲 Reserva — link en bio.`,
+      hashtags:        ["resena", "opinion", "5estrellas", "barbershop", "barberia", "recomendado", "clientefeliz"],
+      cta:             "Lee más reseñas y reserva — link en bio",
+      onScreenText:    `⭐ OPINIÓN REAL\n"${o || "El mejor de la zona"}"\n${n}`,
+      visualIdea:      "Texto de reseña animado sobre fondo limpio → estrellas doradas → logo y CTA. Música suave y confiable.",
+      bestPostingTime: "Viernes 17:00–19:00 cuando la gente decide planes para el fin de semana",
+    },
+    urgencia_reserva: {
+      hook:            `${u || `Quedan pocas plazas en ${n} esta semana`}.`,
+      caption:         `⏰ ÚLTIMAS PLAZAS — ${n}\n\n${u || "Se acaba la disponibilidad."}\n\nSi no reservas ahora, tendrás que esperar.\n\n📲 Reserva ya — link en bio.`,
+      hashtags:        ["urgente", "ultimasplazas", "reserva", "barbershop", "barberia", "disponible"],
+      cta:             "Reserva AHORA — antes de que no quede nada",
+      onScreenText:    `⏰ ÚLTIMAS PLAZAS\n${n}\n📲 RESERVA YA`,
+      visualIdea:      "Contador regresivo → calendario llenándose → últimos huecos en rojo. Música intensa y rápida.",
+      bestPostingTime: "Jueves 12:00–14:00 o viernes 08:00–10:00 para urgencia real",
+    },
+  };
+
+  return { ...T[input.campaign], campaign: input.campaign, platform: input.platform, creditsUsed: 1 };
 }
 
-export const CONTENT_TYPES: { type: ContentType; label: string; description: string; icon: string; credits: number }[] = [
-  { type: "oferta_semanal",      label: "Oferta semanal",          description: "Promo con precio especial esta semana",         icon: "⚡", credits: 1 },
-  { type: "antes_despues",       label: "Antes y después",         description: "Transforma con un split visual impactante",     icon: "↔️", credits: 1 },
-  { type: "corte_premium",       label: "Corte premium",           description: "Muestra un servicio con detalle y estilo",      icon: "✂️", credits: 1 },
-  { type: "barbero_destacado",   label: "Barbero destacado",       description: "Presenta a un miembro de tu equipo",            icon: "💈", credits: 1 },
-  { type: "resena_cliente",      label: "Reseña de cliente",       description: "Convierte una reseña positiva en contenido",    icon: "⭐", credits: 1 },
-  { type: "promo_urgente",       label: "Promo de última hora",    description: "Últimos huecos del día — urgencia real",        icon: "⏰", credits: 1 },
-  { type: "producto_destacado",  label: "Producto destacado",      description: "Muestra y vende un producto de tu barbería",    icon: "🧴", credits: 1 },
-  { type: "recuperar_clientes",  label: "Recuperar clientes",      description: "Reactiva clientes que llevan tiempo sin venir", icon: "💔", credits: 1 },
-  { type: "llenar_huecos",       label: "Llenar huecos",           description: "Convierte huecos libres en reservas",           icon: "📅", credits: 1 },
-];
-
-export const CONTENT_STYLES: { style: ContentStyle; label: string; description: string; color: string }[] = [
-  { style: "premium_morado",   label: "Premium morado",    description: "Elegante, moderno y diferenciado",    color: "#6D28D9" },
-  { style: "urbano_moderno",   label: "Urbano moderno",    description: "Dinámico, joven y con energía",       color: "#1F2937" },
-  { style: "minimalista_limpio", label: "Minimalista",     description: "Limpio, simple y muy legible",        color: "#F9FAFB" },
-  { style: "barberia_clasica", label: "Barbería clásica",  description: "Tradición, rayas y calidez vintage",  color: "#92400E" },
-  { style: "viral_tiktok",     label: "Viral TikTok",      description: "Rápido, llamativo y vertical",        color: "#FF0050" },
-  { style: "lujo_dorado",      label: "Lujo dorado",       description: "Exclusivo, premium y aspiracional",   color: "#C9A227" },
-];
+// ─── Credit packs (used by /dashboard/studio/credits) ────────────────────────
 
 export type CreditPack = {
   id: string;

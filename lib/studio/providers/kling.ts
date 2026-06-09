@@ -34,28 +34,38 @@ async function signKlingJWT(): Promise<string> {
 // ─── Prompt building ─────────────────────────────────────────────────────────
 
 const STYLE_DESC: Record<string, string> = {
-  premium_morado: "luxury barber shop, dramatic violet and gold lighting, premium cinematic aesthetic",
-  premium_dorado: "luxury barber shop, rich gold and black tones, elegant high-end look",
-  moderno:        "modern barber shop, clean minimal lines, contemporary fresh style",
-  clasico:        "classic vintage barber shop, warm tones, traditional artisan craftsmanship",
+  premium_morado:     "luxury barber shop, dramatic violet and gold lighting, premium cinematic aesthetic",
+  lujo_dorado:        "luxury barber shop, rich gold and black tones, ultra high-end exclusive feel",
+  urbano_moderno:     "modern urban barber shop, clean minimal lines, dynamic street-style energy",
+  minimalista_limpio: "minimalist barber shop, pure white and light tones, clean sophisticated look",
+  barberia_clasica:   "classic vintage barber shop, warm tones, traditional artisan craftsmanship",
 };
 
-const TYPE_PROMPTS: Record<string, string> = {
-  corte_premium:       "professional barber performing a perfect fade haircut, close-up razor blade, slow-motion hair falling",
-  antes_despues:       "dramatic before-and-after haircut transformation, split reveal, same person stunning makeover",
-  oferta_semanal:      "dynamic barber shop weekly deal promotion, bold visual energy, strong call to action",
-  promo_urgente:       "urgent flash sale barbershop, high-contrast bold energy, limited time offer",
-  llenar_huecos:       "empty barber chair softly lit, available appointment slots, warm welcoming atmosphere",
-  recuperar_clientes:  "warm barber greeting a returning loyal customer, nostalgia, trust and comfort",
-  barbero_destacado:   "skilled barber confident portrait at work, professional grooming artistry, close-up hands",
-  producto_destacado:  "luxury hair product close-up on marble counter, beauty showcase, premium brand feel",
-  resena_cliente:      "happy satisfied customer admiring fresh haircut in mirror, genuine smile, social proof moment",
+// Ad-focused campaign prompts — each shot is designed to stop the scroll
+const CAMPAIGN_PROMPTS: Record<string, string> = {
+  llenar_agenda:     "empty premium barber chair with soft inviting light, close-up scissors and comb ready, atmosphere of calm availability — booking now vibe",
+  oferta_flash:      "bold dynamic barber shop promotion scene, high contrast lighting, urgency and energy, clock ticking, deal visual impact",
+  transformacion:    "dramatic side-by-side before-and-after haircut transformation reveal, same person, stunning makeover, jaw-drop moment",
+  recuperar_cliente: "warm barber welcoming back a loyal customer with a handshake and smile, nostalgia and comfort, trust and familiarity",
+  barbero_pro:       "skilled confident barber in action at work, close-up of precise razor technique, professional artistry and mastery",
+  nuevo_servicio:    "exciting service launch reveal in barber shop, spotlight on new tool or product, curiosity and premiere energy",
+  prueba_social:     "happy satisfied customer admiring fresh haircut in mirror, genuine authentic smile, social proof and delight",
+  urgencia_reserva:  "barber shop calendar filling up fast, last slots visual, FOMO energy, urgency without being desperate",
+};
+
+const PLATFORM_DESC: Record<string, string> = {
+  instagram_reel: "vertical 9:16 format, aspirational aesthetic quality",
+  tiktok:         "vertical 9:16 format, raw authentic energy, fast cuts",
+  whatsapp:       "vertical 9:16 format, personal close-up feel, warm and direct",
+  facebook:       "square 1:1 format, clear and readable composition",
 };
 
 function buildPrompt(input: VideoGenerationInput): string {
-  const styleDesc = STYLE_DESC[input.style] ?? "professional barber shop";
-  const typeDesc  = TYPE_PROMPTS[input.templateType] ?? "professional barber shop scene";
-  return `${typeDesc}, ${styleDesc}, 4K cinematic quality, vertical 9:16 aspect ratio, smooth camera motion, no text overlays`;
+  const styleDesc    = STYLE_DESC[input.style]          ?? "professional barber shop";
+  const campaignDesc = CAMPAIGN_PROMPTS[input.templateType] ?? "professional barber shop scene";
+  const platform     = (input.inputData as Record<string, string> | undefined)?.platform ?? "instagram_reel";
+  const platformDesc = PLATFORM_DESC[platform] ?? PLATFORM_DESC.instagram_reel;
+  return `${campaignDesc}, ${styleDesc}, ${platformDesc}, 4K cinematic quality, smooth camera motion, no text overlays, photorealistic`;
 }
 
 // ─── Kling API types ─────────────────────────────────────────────────────────
@@ -93,7 +103,7 @@ export class KlingProvider implements VideoProvider {
         model:        process.env.KLING_MODEL ?? "kling-v1",
         prompt:       buildPrompt(input),
         mode:         "std",
-        aspect_ratio: "9:16",
+        aspect_ratio: (input.inputData as Record<string, string> | undefined)?.platform === "facebook" ? "1:1" : "9:16",
         duration:     "5",
       }),
     });
