@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowLeft, ArrowRight, Check, Clapperboard, Copy,
-  CreditCard, Download, RefreshCw, Sparkles, Zap,
+  CreditCard, Download, Film, RefreshCw, Sparkles, Zap,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
@@ -71,9 +71,90 @@ function CreditsPill({ credits }: { credits: StudioCredits }) {
   );
 }
 
+// ─── Video generate button (self-contained) ───────────────────────────────────
+
+function VideoGenerateButton({ templateType, style }: { templateType: string; style: string }) {
+  const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+
+  async function handleClick() {
+    setState("loading");
+    try {
+      const res = await fetch("/api/studio/video/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateType, style, inputData: {} }),
+      });
+      const job = await res.json();
+      if (!res.ok) { setState("error"); return; }
+
+      // Poll status up to ~15 s (mock completes after 5 s)
+      for (let i = 0; i < 12; i++) {
+        await new Promise((r) => setTimeout(r, 1500));
+        const statusRes = await fetch(`/api/studio/video/status/${job.jobId}`);
+        const status = await statusRes.json();
+        if (status.status === "completed") { setVideoUrl(status.videoUrl); setState("done"); return; }
+        if (status.status === "failed") { setState("error"); return; }
+      }
+      setState("error");
+    } catch {
+      setState("error");
+    }
+  }
+
+  if (state === "done" && videoUrl) {
+    return (
+      <div className="flex w-full items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+        <Film size={14} className="shrink-0 text-emerald-700" />
+        <p className="flex-1 truncate text-xs font-black text-emerald-800">Vídeo generado (mock)</p>
+        <a
+          href={videoUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 text-xs font-black text-emerald-700 underline hover:text-emerald-900"
+        >
+          Ver →
+        </a>
+      </div>
+    );
+  }
+
+  if (state === "error") {
+    return (
+      <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
+        Error al generar el vídeo. Aplica la migración studio_video_jobs en Supabase.
+      </p>
+    );
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={state === "loading"}
+      className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-violet-300 bg-violet-50 px-4 py-3 text-sm font-black text-violet-700 transition hover:bg-violet-100 disabled:opacity-60"
+    >
+      {state === "loading" ? (
+        <><RefreshCw size={14} className="animate-spin" /> Generando vídeo...</>
+      ) : (
+        <><Film size={14} /> Generar vídeo IA</>
+      )}
+    </button>
+  );
+}
+
 // ─── Result card ──────────────────────────────────────────────────────────────
 
-function ResultCard({ result, onReset }: { result: StudioContentOutput; onReset: () => void }) {
+function ResultCard({
+  result,
+  onReset,
+  templateType,
+  style,
+}: {
+  result: StudioContentOutput;
+  onReset: () => void;
+  templateType: string;
+  style: string;
+}) {
   const [copied, setCopied] = useState<string | null>(null);
 
   function copy(text: string, key: string) {
@@ -178,6 +259,9 @@ function ResultCard({ result, onReset }: { result: StudioContentOutput; onReset:
           Crear otro
         </button>
       </div>
+
+      {/* Video generation (Phase A — MockProvider) */}
+      <VideoGenerateButton templateType={templateType} style={style} />
     </div>
   );
 }
@@ -294,7 +378,12 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
 
         {/* ── Result ── */}
         {step === 5 && result && (
-          <ResultCard result={result} onReset={handleReset} />
+          <ResultCard
+            result={result}
+            onReset={handleReset}
+            templateType={selectedType ?? ""}
+            style={selectedStyle}
+          />
         )}
 
         {/* ── Step 1: Content type ── */}
