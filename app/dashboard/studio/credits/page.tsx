@@ -18,13 +18,37 @@ export default async function CreditsPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  // TODO: Replace with real wallet query once studio_credit_wallets table exists
-  const wallet = { current: 5, monthly: 5, extra: 0, plan: "Growth" };
+  // biome-ignore lint: studio tables not yet in generated types
+  const [walletResult, historyResult] = await Promise.all([
+    (supabase as any)
+      .from("studio_credit_wallets")
+      .select("current_credits, monthly_credits, extra_credits")
+      .eq("barbershop_id", barbershopId)
+      .maybeSingle(),
+    (supabase as any)
+      .from("studio_credit_transactions")
+      .select("id, type, credits, description, created_at")
+      .eq("barbershop_id", barbershopId)
+      .order("created_at", { ascending: false })
+      .limit(30),
+  ]);
 
-  // TODO: Replace with real transaction query once studio_credit_transactions table exists
-  const history: { id: string; type: string; credits: number; description: string; created_at: string }[] = [
-    { id: "1", type: "monthly_grant", credits: 5, description: "Créditos mensuales — Plan Growth", created_at: new Date().toISOString() },
-  ];
+  const wallet = walletResult.data
+    ? {
+        current: walletResult.data.current_credits,
+        monthly: walletResult.data.monthly_credits,
+        extra: walletResult.data.extra_credits,
+        plan: "Growth",
+      }
+    : { current: 0, monthly: 1, extra: 0, plan: "Starter" };
+
+  const history = ((historyResult.data ?? []) as any[]).map((tx) => ({
+    id: tx.id,
+    type: tx.type,
+    credits: tx.credits,
+    description: tx.description,
+    created_at: tx.created_at,
+  }));
 
   return <CreditsClient wallet={wallet} history={history} />;
 }

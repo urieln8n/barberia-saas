@@ -66,8 +66,9 @@ export default async function EstadisticasPage() {
   if (!barbershopId) redirect("/onboarding");
 
   const today = getMadridDateISO();
+  const startOfMonth = today.slice(0, 7) + "-01";
 
-  const [barbersResult, appointmentsResult] = await Promise.all([
+  const [barbersResult, appointmentsResult, studioContentsResult] = await Promise.all([
     supabase
       .from("barbers")
       .select("id, name")
@@ -88,7 +89,24 @@ export default async function EstadisticasPage() {
       )
       .eq("barbershop_id", barbershopId)
       .eq("appointment_date", today),
+    // biome-ignore lint: studio_contents not yet in generated types
+    (supabase as any)
+      .from("studio_contents")
+      .select("type, credits_used")
+      .eq("barbershop_id", barbershopId)
+      .gte("created_at", startOfMonth),
   ]);
+
+  const studioItems = (studioContentsResult.data ?? []) as { type: string; credits_used: number }[];
+  const studioTotal = studioItems.length;
+  const studioCreditsUsed = studioItems.reduce((sum, c) => sum + (c.credits_used ?? 1), 0);
+  const studioPromos = studioItems.filter((c) =>
+    ["oferta_semanal", "promo_urgente", "llenar_huecos", "recuperar_clientes"].includes(c.type)
+  ).length;
+  const studioReels = studioItems.filter((c) =>
+    ["corte_premium", "antes_despues", "barbero_destacado", "producto_destacado"].includes(c.type)
+  ).length;
+  const studioResenas = studioItems.filter((c) => c.type === "resena_cliente").length;
 
   const barbers = ((barbersResult.data as BarberRow[] | null) ?? []).map((barber) => ({
     id: barber.id,
@@ -303,15 +321,14 @@ export default async function EstadisticasPage() {
           </Link>
         </div>
 
-        {/* Métricas mock — TODO: conectar con studio_credit_transactions */}
         <div className="grid grid-cols-2 gap-3 border-t border-[#A78BFA]/20 bg-white/60 p-5 sm:grid-cols-3 md:grid-cols-6">
           {[
-            { label: "Contenido generado", value: "0", sub: "este mes" },
-            { label: "Créditos usados",    value: "0", sub: "de 5 disponibles" },
-            { label: "Promos creadas",     value: "0", sub: "activas" },
-            { label: "Reels de servicio",  value: "0", sub: "publicados" },
-            { label: "Videos de reseña",   value: "0", sub: "convertidos" },
-            { label: "Campañas activas",   value: "0", sub: "en circulación" },
+            { label: "Contenido generado", value: String(studioTotal),        sub: "este mes" },
+            { label: "Créditos usados",    value: String(studioCreditsUsed),  sub: "este mes" },
+            { label: "Promos creadas",     value: String(studioPromos),       sub: "este mes" },
+            { label: "Reels de servicio",  value: String(studioReels),        sub: "este mes" },
+            { label: "Videos de reseña",   value: String(studioResenas),      sub: "este mes" },
+            { label: "Campañas activas",   value: String(studioTotal),        sub: "generadas" },
           ].map(({ label, value, sub }) => (
             <div key={label} className="text-center">
               <p className="text-2xl font-black text-[#5B21B6]">{value}</p>
