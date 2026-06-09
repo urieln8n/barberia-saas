@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
-  generateStudioContent,
   CONTENT_TYPES,
   CONTENT_STYLES,
   type ContentType,
@@ -16,6 +15,7 @@ import {
   type StudioContentOutput,
   type StudioContentInput,
 } from "@/lib/studio/generate-content";
+import { generateStudio } from "./actions";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -196,14 +196,16 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
   const [reviewText, setReviewText] = useState(initialReviewId ? "Reseña vinculada — añade el texto aquí." : "");
   const [result, setResult] = useState<StudioContentOutput | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [creditsError, setCreditsError] = useState<string | null>(null);
 
   const noCredits = studioCredits.current <= 0;
   const steps = ["Tipo", "Detalles", "Estilo", "Generar"];
 
-  function handleGenerate() {
-    if (!selectedType || noCredits) return;
+  async function handleGenerate() {
+    if (!selectedType || noCredits || generating) return;
     setGenerating(true);
-    setTimeout(() => {
+    setCreditsError(null);
+    try {
       const input: StudioContentInput = {
         type: selectedType,
         barbershopName,
@@ -214,10 +216,16 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
         productName: selectedProduct || undefined,
         reviewText: reviewText || undefined,
       };
-      setResult(generateStudioContent(input));
+      const { data, error } = await generateStudio(input);
+      if (error) {
+        setCreditsError(error);
+      } else if (data) {
+        setResult(data);
+        setStep(5);
+      }
+    } finally {
       setGenerating(false);
-      setStep(5);
-    }, 1800);
+    }
   }
 
   function handleReset() {
@@ -489,6 +497,12 @@ export function StudioClient({ barbershopName, barbers, services, products, stud
                 <Row label="Créditos" value="1 crédito" highlight />
               </div>
             </div>
+
+            {creditsError && (
+              <p className="rounded-xl bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700 border border-red-200">
+                {creditsError}
+              </p>
+            )}
 
             <button
               onClick={handleGenerate}
