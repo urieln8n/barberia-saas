@@ -96,9 +96,10 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
         return;
       }
 
-      // Poll status up to ~15 s (mock completes after 5 s)
-      for (let i = 0; i < 12; i++) {
-        await new Promise((r) => setTimeout(r, 1500));
+      // Poll up to ~3 min: real providers (Kling) take 60-180 s; mock takes ~5 s.
+      // 5 s interval × 40 polls = 200 s max before timeout.
+      for (let i = 0; i < 40; i++) {
+        await new Promise((r) => setTimeout(r, 5000));
         const statusRes = await fetch(`/api/studio/video/status/${job.jobId}`);
         const status = await statusRes.json();
         if (status.status === "completed") { setVideoUrl(status.videoUrl); setState("done"); return; }
@@ -108,7 +109,7 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
           return;
         }
       }
-      setErrorMsg("Tiempo de espera agotado (>18 s)");
+      setErrorMsg("Tiempo de espera agotado (>3 min). Revisa studio_video_jobs en Supabase.");
       setState("error");
     } catch (err) {
       console.error("[VideoGenerateButton] unexpected error:", err);
@@ -121,7 +122,7 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
     return (
       <div className="flex w-full items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
         <Film size={14} className="shrink-0 text-emerald-700" />
-        <p className="flex-1 truncate text-xs font-black text-emerald-800">Vídeo generado (mock)</p>
+        <p className="flex-1 truncate text-xs font-black text-emerald-800">Vídeo generado</p>
         <a
           href={videoUrl}
           target="_blank"
@@ -157,7 +158,7 @@ function VideoGenerateButton({ templateType, style }: { templateType: string; st
       className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-violet-300 bg-violet-50 px-4 py-3 text-sm font-black text-violet-700 transition hover:bg-violet-100 disabled:opacity-60"
     >
       {state === "loading" ? (
-        <><RefreshCw size={14} className="animate-spin" /> Generando vídeo...</>
+        <><RefreshCw size={14} className="animate-spin" /> Generando vídeo (1-3 min)...</>
       ) : (
         <><Film size={14} /> Generar vídeo IA</>
       )}

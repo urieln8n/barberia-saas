@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "templateType y style son requeridos" }, { status: 400 });
   }
 
-  const providerName = "mock";
+  const providerName = (process.env.VIDEO_PROVIDER ?? "mock") as import("@/lib/studio/video-provider").VideoProviderName;
 
   // MockProvider skips credit deduction — only real providers consume credits.
   // Reason: Phase A uses mock exclusively; billing real credits against test jobs
