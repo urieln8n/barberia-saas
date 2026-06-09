@@ -23,18 +23,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "templateType y style son requeridos" }, { status: 400 });
   }
 
-  // biome-ignore lint: deduct_studio_credit not yet in generated types
-  const { data: ok, error: rpcError } = await (supabase as any).rpc("deduct_studio_credit", {
-    p_barbershop_id: barbershopId,
-    p_description: `Vídeo: ${templateType}`,
-  });
-  if (rpcError) {
-    console.error("[video/generate] deduct_studio_credit RPC error:", rpcError);
-    return NextResponse.json({ error: `Error en RPC: ${rpcError.message}` }, { status: 500 });
-  }
-  if (!ok) return NextResponse.json({ error: "Sin créditos disponibles. El vídeo consume 1 crédito adicional." }, { status: 402 });
-
   const providerName = "mock";
+
+  // MockProvider skips credit deduction — only real providers consume credits.
+  // Reason: Phase A uses mock exclusively; billing real credits against test jobs
+  // would exhaust dev wallets and break manual testing loops.
+  if (providerName !== "mock") {
+    // biome-ignore lint: deduct_studio_credit not yet in generated types
+    const { data: ok, error: rpcError } = await (supabase as any).rpc("deduct_studio_credit", {
+      p_barbershop_id: barbershopId,
+      p_description: `Vídeo: ${templateType}`,
+    });
+    if (rpcError) {
+      console.error("[video/generate] deduct_studio_credit RPC error:", rpcError);
+      return NextResponse.json({ error: `Error en RPC: ${rpcError.message}` }, { status: 500 });
+    }
+    if (!ok) return NextResponse.json({ error: "Sin créditos disponibles." }, { status: 402 });
+  }
   const provider = getVideoProvider(providerName);
   const providerJobId = await provider.generateVideo({
     templateType,
