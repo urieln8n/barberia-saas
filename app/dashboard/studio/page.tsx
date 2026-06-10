@@ -73,36 +73,55 @@ export default async function StudioPage({
   const initialCampaign: CampaignType | undefined = rawType ? QUERY_CAMPAIGN_MAP[rawType] : undefined;
 
   const isEnhance = activeTab === "enhance";
+  const isReel    = activeTab === "reel";
 
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Tab bar */}
       <div className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-2xl gap-1 px-4 py-2">
-          <Link
-            href="/dashboard/studio?tab=generate"
-            className={`rounded-xl px-4 py-2 text-sm font-black transition-colors ${
-              !isEnhance
-                ? "bg-violet-600 text-white"
-                : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-            }`}
-          >
-            🎬 Generar anuncio
-          </Link>
-          <Link
-            href="/dashboard/studio?tab=enhance"
-            className={`rounded-xl px-4 py-2 text-sm font-black transition-colors ${
-              isEnhance
-                ? "bg-violet-600 text-white"
-                : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-            }`}
-          >
-            ✨ Mejorar contenido
-          </Link>
+        <div className="mx-auto flex max-w-2xl gap-1 overflow-x-auto px-4 py-2">
+          {[
+            { tab: "generate", label: "🎬 Generar anuncio" },
+            { tab: "enhance",  label: "✨ Mejorar contenido" },
+            { tab: "reel",     label: "🎞️ Crear Reel" },
+          ].map(({ tab, label }) => (
+            <Link
+              key={tab}
+              href={`/dashboard/studio?tab=${tab}`}
+              className={`shrink-0 rounded-xl px-4 py-2 text-sm font-black transition-colors ${
+                activeTab === tab
+                  ? "bg-violet-600 text-white"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
 
-      {isEnhance ? (
+      {isReel ? (
+        <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
+          <div className="mb-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-500">Studio IA</p>
+            <h1 className="mt-1 text-2xl font-black text-slate-900">Crear Reel</h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Convierte clips IA en un Reel completo con música, texto y CTA.
+            </p>
+          </div>
+          {/* Reels Engine wizard — Fase 2 */}
+          <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-8 text-center">
+            <p className="text-2xl">🎞️</p>
+            <p className="mt-2 text-sm font-black text-violet-800">Reels Engine — Próximamente</p>
+            <p className="mt-1 text-xs text-violet-600">
+              La arquitectura está lista. El wizard de Reels se implementa en la Fase 2.
+            </p>
+            <p className="mt-3 text-[10px] text-slate-400">
+              Ya puedes usar la API directamente: <code className="rounded bg-slate-100 px-1">POST /api/studio/reel/create</code>
+            </p>
+          </div>
+        </div>
+      ) : isEnhance ? (
         <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
           <div className="mb-6">
             <p className="text-xs font-semibold uppercase tracking-wide text-violet-500">Studio IA</p>
