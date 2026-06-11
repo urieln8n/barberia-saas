@@ -9,6 +9,7 @@ import { getConfiguredSiteUrl } from "@/src/lib/site-url";
 import { BillingActions } from "@/components/dashboard/BillingActions";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { CancellationPolicyForm } from "./CancellationPolicyForm";
 
 export default async function AjustesPage() {
   const supabase = await createClient();
@@ -18,11 +19,12 @@ export default async function AjustesPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  const { data: barbershop } = await supabase
+  // biome-ignore lint: cancel_before_hours/cancellation_policy_text not yet in generated types
+  const { data: barbershop } = await (supabase as any)
     .from("barbershops")
-    .select("name, slug, city")
+    .select("name, slug, city, cancel_before_hours, cancellation_policy_text")
     .eq("id", barbershopId)
-    .single();
+    .single() as { data: { name: string; slug: string; city: string; cancel_before_hours: number | null; cancellation_policy_text: string | null } | null };
 
   const [{ data: subscription }, planUsage] = await Promise.all([
     supabase
@@ -191,6 +193,18 @@ export default async function AjustesPage() {
           ))}
         </div>
       </div>
+
+      {/* ── Política de cancelación ── */}
+      <SectionCard
+        title="Política de cancelación"
+        description="Define cuánto tiempo antes puede cancelar un cliente y qué texto verá al confirmar su reserva."
+      >
+        <CancellationPolicyForm
+          barbershopId={barbershopId}
+          initialCancelBeforeHours={barbershop?.cancel_before_hours ?? null}
+          initialPolicyText={barbershop?.cancellation_policy_text ?? null}
+        />
+      </SectionCard>
 
       {/* Enlace a onboarding */}
       <div className="surface-frame p-5">

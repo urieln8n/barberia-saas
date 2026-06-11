@@ -40,6 +40,8 @@ type Barbershop = {
   instagram_url: string | null;
   google_business_url: string | null;
   public_booking_enabled: boolean | null;
+  cancel_before_hours: number | null;
+  cancellation_policy_text: string | null;
 };
 
 type PublicProfile = {
@@ -92,14 +94,15 @@ function formatWhatsAppHref(phone: string | null, barbershopName: string) {
 async function getPublicBarbershop(slug: string) {
   const supabase = await createClient();
 
-  return supabase
+  // biome-ignore lint: cancel_before_hours/cancellation_policy_text not yet in generated types
+  return (supabase as any)
     .from("barbershops")
     .select(
-      "id, name, slug, phone, address, city, instagram_url, google_business_url, public_booking_enabled"
+      "id, name, slug, phone, address, city, instagram_url, google_business_url, public_booking_enabled, cancel_before_hours, cancellation_policy_text"
     )
     .eq("slug", slug)
     .eq("public_booking_enabled", true)
-    .maybeSingle();
+    .maybeSingle() as Promise<{ data: Barbershop | null; error: unknown }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -483,6 +486,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             barbers={activeBarbers}
             initialServiceId={initialServiceId}
             initialBarberId={initialBarberId}
+            cancelBeforeHours={barbershop.cancel_before_hours ?? null}
+            cancellationPolicyText={barbershop.cancellation_policy_text ?? null}
           />
         </section>
 

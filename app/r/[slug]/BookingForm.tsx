@@ -54,6 +54,8 @@ type Props = {
   barbers: Barber[];
   initialServiceId?: string | null;
   initialBarberId?: string | null;
+  cancelBeforeHours?: number | null;
+  cancellationPolicyText?: string | null;
 };
 
 const STEP_LABELS = ["Servicio", "Barbero", "Fecha y hora", "Datos", "Confirmar"];
@@ -351,6 +353,8 @@ export function BookingForm({
   barbers,
   initialServiceId = null,
   initialBarberId = null,
+  cancelBeforeHours = null,
+  cancellationPolicyText = null,
 }: Props) {
   const [step, setStep] = useState(1);
   const [service, setService] = useState<Service | null>(null);
@@ -363,6 +367,7 @@ export function BookingForm({
   const [website, setWebsite] = useState("");
   const [privacyRead, setPrivacyRead] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
+  const [policyAccepted, setPolicyAccepted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
@@ -1082,13 +1087,39 @@ export function BookingForm({
               </div>
             </div>
 
-            <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
-              <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
-              <p className="text-xs text-amber-800">
-                <span className="font-semibold">Cancelación:</span>{" "}
-                Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
-              </p>
-            </div>
+            {(cancelBeforeHours || cancellationPolicyText) ? (
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <div className="flex items-start gap-2">
+                  <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-amber-800">Política de cancelación</p>
+                    <p className="mt-0.5 text-xs leading-5 text-amber-700">
+                      {cancellationPolicyText ||
+                        `Puedes cancelar hasta ${cancelBeforeHours}h antes de tu cita. Pasado ese plazo, la cita no puede modificarse.`}
+                    </p>
+                  </div>
+                </div>
+                <label className="mt-3 flex cursor-pointer items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={policyAccepted}
+                    onChange={(e) => setPolicyAccepted(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded accent-amber-600"
+                  />
+                  <span className="text-xs font-semibold text-amber-800">
+                    He leído y acepto la política de cancelación
+                  </span>
+                </label>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
+                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
+                <p className="text-xs text-amber-800">
+                  <span className="font-semibold">Cancelación:</span>{" "}
+                  Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
+                </p>
+              </div>
+            )}
 
             {formError && (
               <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
@@ -1099,7 +1130,7 @@ export function BookingForm({
             <div className="mt-5">
               <ConfirmButton
                 saving={saving}
-                disabled={saving}
+                disabled={saving || Boolean((cancelBeforeHours || cancellationPolicyText) && !policyAccepted)}
                 onClick={handleConfirmBooking}
                 label="Reservar ahora"
               />
