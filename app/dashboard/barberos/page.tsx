@@ -27,10 +27,10 @@ export default async function BarberosPage() {
     { data: apptToday },
     { data: apptWeek },
   ] = await Promise.all([
-    // photo_url disponible tras migración 035
+    // photo_url/specialty/bio/instagram_url disponibles tras migraciones 035+040
     (supabase as any)
       .from("barbers")
-      .select("id, name, phone, active, photo_url")
+      .select("id, name, phone, active, photo_url, specialty, bio, instagram_url")
       .eq("barbershop_id", barbershopId)
       .order("created_at", { ascending: true }),
 

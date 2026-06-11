@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   BadgeCheck,
   CalendarCheck,
@@ -59,6 +60,10 @@ type Service = {
 type Barber = {
   id: string;
   name: string;
+  photo_url?: string | null;
+  specialty?: string | null;
+  bio?: string | null;
+  instagram_url?: string | null;
 };
 
 function getInitials(name: string) {
@@ -181,7 +186,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
       (supabase as any)
       .from("barbers")
-      .select("id, name, photo_url")
+      .select("id, name, photo_url, specialty, bio, instagram_url")
       .eq("barbershop_id", barbershop.id)
       .eq("active", true)
       .order("created_at", { ascending: true }),
@@ -204,7 +209,30 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
   }
 
   const activeServices = (services ?? []) as Service[];
-  const activeBarbers = (barbers ?? []) as Barber[];
+  const activeBarbers  = (barbers ?? []) as Barber[];
+
+  // Ratings por barbero — join reviews → appointments → barber_id
+  const { data: reviewsRaw } = await (supabase as any)
+    .from("reviews")
+    .select("rating, appointments(barber_id)")
+    .eq("business_id", barbershop.id)
+    .eq("is_public", true)
+    .not("rating", "is", null)
+    .not("booking_id", "is", null);
+
+  const barberRatings: Record<string, { sum: number; count: number }> = {};
+  for (const r of reviewsRaw ?? []) {
+    const barberId = (r.appointments as { barber_id?: string } | null)?.barber_id;
+    if (barberId && typeof r.rating === "number") {
+      if (!barberRatings[barberId]) barberRatings[barberId] = { sum: 0, count: 0 };
+      barberRatings[barberId].sum   += r.rating;
+      barberRatings[barberId].count += 1;
+    }
+  }
+
+  const hasTeamProfiles = activeBarbers.some(
+    (b) => b.photo_url || b.specialty || b.bio
+  );
   const initialServiceId = activeServices.some(
     (service) => service.id === searchParams?.service
   )
@@ -387,6 +415,60 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           ))}
         </div>
       </section>
+
+      {/* Sección "Nuestro equipo" — solo visible cuando hay perfiles configurados */}
+      {hasTeamProfiles && (
+        <section className="mx-auto w-full max-w-6xl px-4 pb-6 sm:px-6 lg:px-8">
+          <p className="mb-4 text-[9px] font-black uppercase tracking-[0.15em] text-white/30">Nuestro equipo</p>
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
+            {activeBarbers.map((barber) => {
+              const rating   = barberRatings[barber.id];
+              const avgRating = rating ? (rating.sum / rating.count).toFixed(1) : null;
+              return (
+                <article
+                  key={barber.id}
+                  className="shrink-0 w-64 md:w-auto rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 backdrop-blur-sm transition hover:border-[#D4AF37]/20 hover:bg-white/[0.06]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 flex items-center justify-center">
+                      {barber.photo_url
+                        ? <Image src={barber.photo_url} alt={barber.name} fill sizes="56px" className="object-cover" />
+                        : <span className="text-xl font-black text-[#D4AF37]">{barber.name.charAt(0).toUpperCase()}</span>
+                      }
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-black text-white truncate">{barber.name}</p>
+                      {barber.specialty && (
+                        <p className="text-xs font-semibold text-[#D4AF37]/80 truncate">{barber.specialty}</p>
+                      )}
+                      {avgRating && (
+                        <div className="mt-0.5 flex items-center gap-1">
+                          <span className="text-[#D4AF37] text-xs">★</span>
+                          <span className="text-xs font-black text-white/70">{avgRating}</span>
+                          <span className="text-xs text-white/30">({rating!.count})</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {barber.bio && (
+                    <p className="mt-3 text-xs leading-5 text-white/50 line-clamp-2">{barber.bio}</p>
+                  )}
+                  {barber.instagram_url && (
+                    <a
+                      href={barber.instagram_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-white/35 transition hover:text-[#D4AF37]"
+                    >
+                      <Instagram size={11} /> Instagram
+                    </a>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
         <section id="reservar" className="scroll-mt-4">

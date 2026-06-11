@@ -23,10 +23,14 @@ export async function createBarber(formData: FormData) {
   const limitError = assertCanCreateBarber(usage);
   if (limitError) return { error: limitError };
 
-  const { error } = await supabase.from("barbers").insert({
-    barbershop_id: barbershopId,
-    name:  (formData.get("name") as string).trim(),
-    phone: (formData.get("phone") as string)?.trim() || null,
+  // biome-ignore lint: specialty/bio/instagram_url not yet in generated Supabase types
+  const { error } = await (supabase as any).from("barbers").insert({
+    barbershop_id:  barbershopId,
+    name:           (formData.get("name") as string).trim(),
+    phone:          (formData.get("phone") as string)?.trim() || null,
+    specialty:      (formData.get("specialty") as string)?.trim() || null,
+    bio:            (formData.get("bio") as string)?.trim() || null,
+    instagram_url:  (formData.get("instagram_url") as string)?.trim() || null,
   });
 
   if (error) return { error: error.message };
@@ -40,9 +44,13 @@ export async function updateBarber(formData: FormData) {
   if (!barbershopId) return { error: "No se encontró la barbería actual." };
   const id = formData.get("id") as string;
 
-  const { error } = await supabase.from("barbers").update({
-    name:  (formData.get("name") as string).trim(),
-    phone: (formData.get("phone") as string)?.trim() || null,
+  // biome-ignore lint: specialty/bio/instagram_url not yet in generated Supabase types
+  const { error } = await (supabase as any).from("barbers").update({
+    name:           (formData.get("name") as string).trim(),
+    phone:          (formData.get("phone") as string)?.trim() || null,
+    specialty:      (formData.get("specialty") as string)?.trim() || null,
+    bio:            (formData.get("bio") as string)?.trim() || null,
+    instagram_url:  (formData.get("instagram_url") as string)?.trim() || null,
   }).eq("id", id).eq("barbershop_id", barbershopId);
 
   if (error) return { error: error.message };

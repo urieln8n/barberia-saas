@@ -8,7 +8,7 @@ import {
   Camera, CalendarDays, ChevronDown, ChevronUp,
   Loader2, Plus, Pencil, Trash2, X, Phone,
   ToggleLeft, ToggleRight, Users, Wallet,
-  CalendarX, Save, TrendingUp,
+  CalendarX, Save, TrendingUp, Instagram, Sparkles,
 } from "lucide-react";
 import {
   createBarber, updateBarber, deleteBarber, toggleBarber,
@@ -27,6 +27,9 @@ type Barber = {
   phone: string | null;
   active: boolean;
   photo_url?: string | null;
+  specialty?: string | null;
+  bio?: string | null;
+  instagram_url?: string | null;
 };
 
 type BarberSchedule = {
@@ -356,10 +359,20 @@ export function BarberosClient({
                         {b.active ? "Activo" : "Inactivo"}
                       </span>
                     </div>
+                    {b.specialty && (
+                      <p className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-[#C9922A]">
+                        <Sparkles size={10} /> {b.specialty}
+                      </p>
+                    )}
                     {b.phone && (
                       <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
                         <Phone size={11} /> {b.phone}
                       </p>
+                    )}
+                    {b.instagram_url && (
+                      <a href={b.instagram_url} target="_blank" rel="noopener noreferrer" className="mt-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-violet-600 transition">
+                        <Instagram size={11} /> Instagram
+                      </a>
                     )}
                     {activeDays.length > 0 && (
                       <p className="mt-1 text-[11px] text-slate-400">
@@ -561,6 +574,18 @@ export function BarberosClient({
               <div>
                 <label htmlFor="barber-phone" className="mb-1 block text-sm font-semibold text-slate-700">Teléfono (opcional)</label>
                 <input id="barber-phone" name="phone" type="tel" defaultValue={editing?.phone ?? ""} placeholder="+34 600 000 000" className="input-field py-3" />
+              </div>
+              <div>
+                <label htmlFor="barber-specialty" className="mb-1 block text-sm font-semibold text-slate-700">Especialidad (visible en página pública)</label>
+                <input id="barber-specialty" name="specialty" defaultValue={editing?.specialty ?? ""} placeholder="Ej: Fades, Diseños y Barba" className="input-field py-3" maxLength={60} />
+              </div>
+              <div>
+                <label htmlFor="barber-bio" className="mb-1 block text-sm font-semibold text-slate-700">Bio corta (visible en página pública)</label>
+                <textarea id="barber-bio" name="bio" rows={2} defaultValue={editing?.bio ?? ""} placeholder="Ej: 8 años cortando en Madrid. Especialista en skin fades y diseños geométricos." className="input-field py-3 resize-none" maxLength={160} />
+              </div>
+              <div>
+                <label htmlFor="barber-instagram" className="mb-1 block text-sm font-semibold text-slate-700">Instagram (opcional)</label>
+                <input id="barber-instagram" name="instagram_url" type="url" defaultValue={editing?.instagram_url ?? ""} placeholder="https://instagram.com/tu_usuario" className="input-field py-3" />
               </div>
               {formError && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{formError}</p>}
               <div className="flex gap-3 pt-1">
