@@ -14,24 +14,51 @@ export default async function SalaEsperaPage() {
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
-  // Citas de hoy con status activo (scheduled, confirmed, pending)
   const today = new Date().toISOString().split("T")[0];
-  const { data: appointments } = await supabase
-    .from("appointments")
-    .select(`
-      id,
-      start_time,
-      end_time,
-      status,
-      notes,
-      clients ( id, name, phone ),
-      services ( id, name, duration_minutes, price ),
-      barbers ( id, name )
-    `)
-    .eq("barbershop_id", barbershopId)
-    .eq("appointment_date", today)
-    .in("status", ["scheduled", "confirmed", "completed"])
-    .order("start_time", { ascending: true });
 
-  return <SalaEsperaClient appointments={appointments ?? []} />;
+  const [
+    { data: appointments },
+    { data: waitlistEntries },
+    { data: services },
+  ] = await Promise.all([
+    supabase
+      .from("appointments")
+      .select(`
+        id,
+        start_time,
+        end_time,
+        status,
+        notes,
+        clients  ( id, name, phone ),
+        services ( id, name, duration_minutes, price ),
+        barbers  ( id, name )
+      `)
+      .eq("barbershop_id", barbershopId)
+      .eq("appointment_date", today)
+      .in("status", ["scheduled", "confirmed", "completed"])
+      .order("start_time", { ascending: true }),
+
+    (supabase as any)
+      .from("waitlist_entries")
+      .select(
+        "id, client_name, client_email, client_phone, preferred_date, service_id, notified_at, expires_at, created_at"
+      )
+      .eq("barbershop_id", barbershopId)
+      .gte("expires_at", new Date().toISOString())
+      .order("preferred_date", { ascending: true }),
+
+    supabase
+      .from("services")
+      .select("id, name")
+      .eq("barbershop_id", barbershopId)
+      .order("name"),
+  ]);
+
+  return (
+    <SalaEsperaClient
+      appointments={appointments ?? []}
+      waitlistEntries={waitlistEntries ?? []}
+      services={services ?? []}
+    />
+  );
 }
