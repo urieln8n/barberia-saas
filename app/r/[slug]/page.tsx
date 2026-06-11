@@ -40,8 +40,6 @@ type Barbershop = {
   instagram_url: string | null;
   google_business_url: string | null;
   public_booking_enabled: boolean | null;
-  cancel_before_hours: number | null;
-  cancellation_policy_text: string | null;
 };
 
 type PublicProfile = {
@@ -94,15 +92,37 @@ function formatWhatsAppHref(phone: string | null, barbershopName: string) {
 async function getPublicBarbershop(slug: string) {
   const supabase = await createClient();
 
-  // biome-ignore lint: cancel_before_hours/cancellation_policy_text not yet in generated types
-  return (supabase as any)
+  return supabase
     .from("barbershops")
     .select(
-      "id, name, slug, phone, address, city, instagram_url, google_business_url, public_booking_enabled, cancel_before_hours, cancellation_policy_text"
+      "id, name, slug, phone, address, city, instagram_url, google_business_url, public_booking_enabled"
     )
     .eq("slug", slug)
     .eq("public_booking_enabled", true)
-    .maybeSingle() as Promise<{ data: Barbershop | null; error: unknown }>;
+    .maybeSingle();
+}
+
+// Fetch cancelation policy separately — columns added in migration 041.
+// Returns nulls gracefully if migration hasn't been applied yet.
+async function getCancellationPolicy(barbershopId: string): Promise<{
+  cancel_before_hours: number | null;
+  cancellation_policy_text: string | null;
+}> {
+  try {
+    const supabase = await createClient();
+    // biome-ignore lint: cancel_before_hours/cancellation_policy_text not yet in generated types
+    const { data } = await (supabase as any)
+      .from("barbershops")
+      .select("cancel_before_hours, cancellation_policy_text")
+      .eq("id", barbershopId)
+      .maybeSingle();
+    return {
+      cancel_before_hours:      data?.cancel_before_hours      ?? null,
+      cancellation_policy_text: data?.cancellation_policy_text ?? null,
+    };
+  } catch {
+    return { cancel_before_hours: null, cancellation_policy_text: null };
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -178,6 +198,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
     { data: services, error: servicesError },
     { data: barbers, error: barbersError },
     { data: rawProfile },
+    cancelPolicy,
   ] = await Promise.all([
     // image_url/photo_url disponibles tras migración 035
       (supabase as any)
@@ -200,6 +221,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       .eq("barbershop_id", barbershop.id)
       .eq("is_published", true)
       .maybeSingle(),
+
+    getCancellationPolicy(barbershop.id),
   ]);
 
   const publicProfile = rawProfile as PublicProfile | null;
@@ -486,8 +509,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             barbers={activeBarbers}
             initialServiceId={initialServiceId}
             initialBarberId={initialBarberId}
-            cancelBeforeHours={barbershop.cancel_before_hours ?? null}
-            cancellationPolicyText={barbershop.cancellation_policy_text ?? null}
+            cancelBeforeHours={cancelPolicy.cancel_before_hours}
+            cancellationPolicyText={cancelPolicy.cancellation_policy_text}
           />
         </section>
 
