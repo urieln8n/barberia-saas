@@ -14,6 +14,7 @@ export type ReminderEmailData = {
   appointmentDate: string; // YYYY-MM-DD
   appointmentTime: string; // HH:MM
   appUrl: string;
+  reminderType?: "24h" | "2h"; // defaults to "24h"
 };
 
 function formatDateEs(iso: string): string {
@@ -66,12 +67,12 @@ function buildHtml(d: ReminderEmailData): string {
           <table cellpadding="0" cellspacing="0">
             <tr>
               <td style="background:#FEF9EE;border:1px solid #D4AF37;border-radius:100px;padding:6px 14px;">
-                <p style="margin:0;font-size:13px;font-weight:900;color:#92650A;">🕐 Tu cita es mañana</p>
+                <p style="margin:0;font-size:13px;font-weight:900;color:#92650A;">${d.reminderType === "2h" ? "⏰ Tu cita es en 2 horas" : "🕐 Tu cita es mañana"}</p>
               </td>
             </tr>
           </table>
           <p style="margin:12px 0 0;font-size:14px;color:#374151;line-height:1.6;">
-            Hola <strong>${d.clientName}</strong>, te recordamos que tienes una cita mañana en <strong>${d.barbershopName}</strong>:
+            Hola <strong>${d.clientName}</strong>, te recordamos que tienes una cita ${d.reminderType === "2h" ? "en 2 horas" : "mañana"} en <strong>${d.barbershopName}</strong>:
           </p>
         </td>
       </tr>
@@ -205,15 +206,20 @@ export async function sendReminderEmail(data: ReminderEmailData): Promise<void> 
   const from = process.env.RESEND_FROM_EMAIL?.trim() || "BarberíaOS <reservas@barberiaos.com>";
   const timeLabel = formatTime(data.appointmentTime);
 
+  const is2h = data.reminderType === "2h";
+  const subject = is2h
+    ? `⏰ Tu cita empieza en 2 horas — ${data.barbershopName} a las ${timeLabel}`
+    : `Recordatorio: tu cita mañana a las ${timeLabel} en ${data.barbershopName}`;
+
   try {
     await resend.emails.send({
       from,
       to: data.clientEmail,
-      subject: `Recordatorio: tu cita mañana a las ${timeLabel} en ${data.barbershopName}`,
+      subject,
       html: buildHtml(data),
       text: buildText(data),
     });
   } catch (err) {
-    console.error("[Resend] Error al enviar recordatorio 24h:", err);
+    console.error(`[Resend] Error al enviar recordatorio ${data.reminderType ?? "24h"}:`, err);
   }
 }
