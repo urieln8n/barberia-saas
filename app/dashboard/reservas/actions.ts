@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
+import { sendWaitlistNotification } from "@/src/lib/email/send-waitlist-notification";
 
 const ALLOWED_STATUS = [
   "scheduled",
@@ -61,7 +62,69 @@ export async function updateReservationStatus(
   revalidatePath("/dashboard/reservas");
   revalidatePath("/dashboard/reservas/pipeline");
 
+  if (status === "cancelled") {
+    notifyWaitlist(id, barbershopId).catch((err) => {
+      console.error("[waitlist] Error notificando lista de espera:", err);
+    });
+  }
+
   return { success: true };
+}
+
+async function notifyWaitlist(
+  appointmentId: string,
+  barbershopId: string
+): Promise<void> {
+  const supabase = createServiceRoleClient();
+
+  const [{ data: appt }, { data: barbershop }] = await Promise.all([
+    supabase
+      .from("appointments")
+      .select("appointment_date")
+      .eq("id", appointmentId)
+      .maybeSingle(),
+    supabase
+      .from("barbershops")
+      .select("name, slug")
+      .eq("id", barbershopId)
+      .maybeSingle(),
+  ]);
+
+  if (!appt?.appointment_date || !barbershop) return;
+
+  // biome-ignore lint: waitlist_entries not yet in generated types
+  const { data: entries } = await (supabase as any)
+    .from("waitlist_entries")
+    .select("id, client_name, client_email")
+    .eq("barbershop_id", barbershopId)
+    .eq("preferred_date", appt.appointment_date)
+    .is("notified_at", null)
+    .gt("expires_at", new Date().toISOString())
+    .order("created_at", { ascending: true })
+    .limit(3);
+
+  if (!entries?.length) return;
+
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://barberiaos.com";
+
+  const ids: string[] = [];
+  for (const entry of entries as { id: string; client_name: string; client_email: string }[]) {
+    await sendWaitlistNotification({
+      clientName:     entry.client_name,
+      clientEmail:    entry.client_email,
+      barbershopName: barbershop.name,
+      barbershopSlug: barbershop.slug,
+      availableDate:  appt.appointment_date,
+      appUrl,
+    });
+    ids.push(entry.id);
+  }
+
+  // biome-ignore lint: waitlist_entries not yet in generated types
+  await (supabase as any)
+    .from("waitlist_entries")
+    .update({ notified_at: new Date().toISOString() })
+    .in("id", ids);
 }
 
 export type ReservationDetail = {

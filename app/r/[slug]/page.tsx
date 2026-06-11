@@ -15,6 +15,7 @@ import {
 import { createClient } from "@/src/lib/supabase/server";
 import { SITE_URL } from "@/src/lib/site-url";
 import { BookingForm } from "./BookingForm";
+import { WaitlistForm } from "./WaitlistForm";
 import { TrackPageView } from "./TrackPageView";
 import { TrackedLink } from "./TrackedLink";
 
@@ -578,6 +579,12 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               barbería por teléfono o WhatsApp.
             </p>
           </section>
+
+          <WaitlistForm
+            barbershopId={barbershop.id}
+            barbershopName={displayName}
+            services={activeServices.map((s) => ({ id: s.id, name: s.name }))}
+          />
 
           <p className="text-center text-xs font-semibold text-white/20">
             Powered by <span className="text-[#D4AF37]/60">BarberíaOS</span>
