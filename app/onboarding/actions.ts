@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
+import { sendWelcomeEmail } from "@/src/lib/email/send-welcome-email";
 
 export async function createBarbershop(formData: FormData) {
   const supabase = await createClient();
@@ -41,6 +42,15 @@ export async function createBarbershop(formData: FormData) {
     user_id: user.id,
     role: "owner"
   });
+
+  // Email de bienvenida (fire-and-forget — no bloquea el redirect)
+  sendWelcomeEmail({
+    ownerName: user.user_metadata?.full_name ?? "Propietario",
+    ownerEmail: user.email!,
+    barbershopName: name.trim(),
+    barbershopSlug: slug.trim(),
+    appUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://barberiaos.com",
+  }).catch((err) => console.error("[welcome-email] Error:", err));
 
   redirect("/dashboard");
 }
