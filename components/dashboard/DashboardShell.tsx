@@ -11,7 +11,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         collapsed ? "md:ml-16" : "md:ml-[248px]"
       }`}
       style={{
-        background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,175,55,0.04), transparent), #F5F6F8",
+        background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,175,55,0.06), transparent), #0A0D16",
       }}
     >
       <div className="page-shell">{children}</div>

@@ -55,27 +55,27 @@ const STATUS_CONFIG: Record<
 > = {
   scheduled: {
     label: "Pendiente",
-    cls: "bg-amber-50 text-amber-700 border-amber-200",
+    cls: "bg-amber-500/10 text-amber-300 border-amber-500/20",
   },
   pending: {
     label: "Recibida",
-    cls: "bg-violet-50 text-violet-700 border-violet-200",
+    cls: "bg-violet-500/10 text-violet-300 border-violet-500/20",
   },
   confirmed: {
     label: "Confirmada",
-    cls: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    cls: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
   },
   completed: {
     label: "Completada",
-    cls: "bg-blue-50 text-blue-700 border-blue-200",
+    cls: "bg-blue-500/10 text-blue-300 border-blue-500/20",
   },
   cancelled: {
     label: "Cancelada",
-    cls: "bg-red-50 text-red-600 border-red-200",
+    cls: "bg-red-500/10 text-red-300 border-red-500/20",
   },
   no_show: {
     label: "No asistió",
-    cls: "bg-slate-100 text-slate-500 border-slate-200",
+    cls: "bg-white/[0.05] text-white/35 border-white/10",
   },
 };
 
@@ -151,49 +151,49 @@ const COLOR_MAP: Record<
   { bg: string; icon: string; ring: string }
 > = {
   blue: {
-    bg: "bg-blue-50",
-    icon: "text-blue-600",
-    ring: "ring-blue-100",
+    bg: "bg-blue-500/15",
+    icon: "text-blue-300",
+    ring: "ring-blue-500/10",
   },
   emerald: {
-    bg: "bg-emerald-50",
-    icon: "text-emerald-600",
-    ring: "ring-emerald-100",
+    bg: "bg-emerald-500/15",
+    icon: "text-emerald-300",
+    ring: "ring-emerald-500/10",
   },
   amber: {
-    bg: "bg-amber-50",
-    icon: "text-amber-600",
-    ring: "ring-amber-100",
+    bg: "bg-amber-500/15",
+    icon: "text-amber-300",
+    ring: "ring-amber-500/10",
   },
   green: {
-    bg: "bg-green-50",
-    icon: "text-green-600",
-    ring: "ring-green-100",
+    bg: "bg-green-500/15",
+    icon: "text-green-300",
+    ring: "ring-green-500/10",
   },
-  red: { bg: "bg-red-50", icon: "text-red-500", ring: "ring-red-100" },
+  red: { bg: "bg-red-500/15", icon: "text-red-300", ring: "ring-red-500/10" },
   violet: {
-    bg: "bg-violet-50",
-    icon: "text-violet-600",
-    ring: "ring-violet-100",
+    bg: "bg-violet-500/15",
+    icon: "text-violet-300",
+    ring: "ring-violet-500/10",
   },
 };
 
 function KpiCard({ label, value, sub, icon: Icon, color }: KpiCardProps) {
   const c = COLOR_MAP[color];
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.04] p-5">
       <div
         className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl ring-4 ${c.bg} ${c.ring}`}
       >
         <Icon size={18} className={c.icon} />
       </div>
       <p
-        className="tabular-nums text-2xl font-black tracking-tight text-slate-900"
+        className="tabular-nums text-2xl font-black tracking-tight text-white/90"
       >
         {value}
       </p>
-      <p className="mt-0.5 text-xs font-semibold text-slate-500">{label}</p>
-      {sub && <p className="mt-1 text-xs text-slate-400">{sub}</p>}
+      <p className="mt-0.5 text-xs font-semibold text-white/45">{label}</p>
+      {sub && <p className="mt-1 text-xs text-white/30">{sub}</p>}
     </div>
   );
 }
@@ -215,21 +215,21 @@ function AlertBanner({
     alerts.push({
       icon: Clock,
       msg: `Tienes ${pendingCount} reserva${pendingCount > 1 ? "s" : ""} pendiente${pendingCount > 1 ? "s" : ""} de confirmar.`,
-      cls: "border-amber-200 bg-amber-50 text-amber-800",
+      cls: "border-amber-500/20 bg-amber-500/[0.07] text-amber-300",
     });
   }
   if (upcomingNext3h.length > 0) {
     alerts.push({
       icon: AlertCircle,
       msg: `${upcomingNext3h.length} cita${upcomingNext3h.length > 1 ? "s" : ""} en las próximas 3 horas.`,
-      cls: "border-blue-200 bg-blue-50 text-blue-800",
+      cls: "border-blue-500/20 bg-blue-500/[0.07] text-blue-300",
     });
   }
   if (todayRevenue > 0) {
     alerts.push({
       icon: Banknote,
       msg: `Llevas ${formatCurrency(todayRevenue)} estimados hoy.`,
-      cls: "border-emerald-200 bg-emerald-50 text-emerald-800",
+      cls: "border-emerald-500/20 bg-emerald-500/[0.07] text-emerald-300",
     });
   }
 
@@ -267,15 +267,15 @@ function ActionButton({
     "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition disabled:opacity-50";
   const variants: Record<typeof variant, string> = {
     primary:
-      "bg-[#D4AF37] text-white hover:bg-[#C9922A] border border-[#C9922A]/30",
+      "bg-[#D4AF37] text-[#09090B] hover:bg-[#C9A130] border border-[#C9A130]/30",
     outline:
-      "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+      "border border-white/[0.10] bg-white/[0.05] text-white/65 hover:bg-white/[0.09] hover:text-white/85",
     danger:
-      "border border-red-100 bg-red-50 text-red-600 hover:bg-red-100",
+      "border border-red-500/20 bg-red-500/[0.08] text-red-300 hover:bg-red-500/[0.14]",
     success:
-      "border border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100",
+      "border border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300 hover:bg-emerald-500/[0.14]",
     whatsapp:
-      "border border-green-200 bg-green-50 text-green-700 hover:bg-green-100",
+      "border border-green-500/20 bg-green-500/[0.08] text-green-300 hover:bg-green-500/[0.14]",
   };
 
   return (
@@ -313,23 +313,23 @@ function ReservationCard({
 
   return (
     <article
-      className="cursor-pointer rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-[#D4AF37]/40 hover:shadow-md"
+      className="cursor-pointer rounded-2xl border border-white/[0.07] bg-white/[0.04] transition hover:border-[#D4AF37]/40 hover:bg-white/[0.06]"
       onClick={() => onSelect(appt)}
     >
       {/* Header row */}
-      <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-black tabular-nums text-slate-900">
+          <span className="text-sm font-black tabular-nums text-white/85">
             {formatTime(appt.start_time)}
           </span>
-          <span className="text-xs text-slate-400">·</span>
-          <span className="truncate text-xs text-slate-500">
+          <span className="text-xs text-white/25">·</span>
+          <span className="truncate text-xs text-white/45">
             {formatDate(appt.appointment_date)}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           {sourceLbl && (
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold text-white/45">
               {sourceLbl}
             </span>
           )}
@@ -345,16 +345,16 @@ function ReservationCard({
       <div className="space-y-1.5 px-4 py-3">
         {/* Client row */}
         <div className="flex items-center gap-2 min-w-0">
-          <User size={13} className="shrink-0 text-slate-400" />
-          <span className="truncate text-sm font-bold text-slate-900">
+          <User size={13} className="shrink-0 text-white/35" />
+          <span className="truncate text-sm font-bold text-white/85">
             {appt.client_name}
           </span>
           {appt.client_phone && (
             <>
-              <span className="text-xs text-slate-300">·</span>
+              <span className="text-xs text-white/20">·</span>
               <a
                 href={`tel:${appt.client_phone}`}
-                className="flex items-center gap-1 text-xs text-slate-500 hover:text-[#C9922A]"
+                className="flex items-center gap-1 text-xs text-white/45 hover:text-[#D4AF37]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Phone size={11} />
@@ -362,36 +362,36 @@ function ReservationCard({
               </a>
             </>
           )}
-          <span className="ml-auto shrink-0 text-xs text-slate-400">
+          <span className="ml-auto shrink-0 text-xs text-white/30">
             {appt.client_visit_count} {appt.client_visit_count === 1 ? "visita" : "visitas"}
           </span>
           {isNew && (
-            <span className="rounded-full bg-violet-50 px-1.5 py-0.5 text-[10px] font-bold text-violet-700">
+            <span className="rounded-full bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-bold text-violet-300">
               Nuevo
             </span>
           )}
           {isVip && (
-            <span className="flex items-center gap-0.5 rounded-full bg-[#D4AF37]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#8A641F]">
+            <span className="flex items-center gap-0.5 rounded-full bg-[#D4AF37]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#D4AF37]/80">
               <Star size={9} /> VIP
             </span>
           )}
         </div>
 
         {/* Service row */}
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-white/45">
           <Scissors size={13} className="shrink-0" />
           <span className="truncate">{appt.service_name}</span>
-          <span className="text-slate-300">·</span>
-          <span className="font-bold text-slate-700">
+          <span className="text-white/20">·</span>
+          <span className="font-bold text-white/65">
             {formatCurrency(appt.service_price)}
           </span>
-          <span className="text-slate-300">·</span>
+          <span className="text-white/20">·</span>
           <span>{appt.service_duration} min</span>
         </div>
 
         {/* Barber row */}
         {appt.barber_name && (
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-white/40">
             <User size={13} className="shrink-0" />
             <span>{appt.barber_name}</span>
           </div>
@@ -400,7 +400,7 @@ function ReservationCard({
 
       {/* Actions */}
       <div
-        className="flex flex-wrap items-center gap-1.5 border-t border-slate-100 px-4 py-3"
+        className="flex flex-wrap items-center gap-1.5 border-t border-white/[0.06] px-4 py-3"
         onClick={(e) => e.stopPropagation()}
       >
         {(appt.status === "scheduled" || appt.status === "pending") && (
@@ -432,7 +432,7 @@ function ReservationCard({
                 href={wa}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/[0.08] px-3 py-1.5 text-xs font-bold text-green-300 hover:bg-green-500/[0.14]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <MessageCircle size={12} /> WhatsApp
@@ -449,7 +449,7 @@ function ReservationCard({
         {appt.status === "completed" && (
           <Link
             href="/dashboard/caja"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.05] px-3 py-1.5 text-xs font-bold text-white/65 hover:bg-white/[0.09]"
             onClick={(e) => e.stopPropagation()}
           >
             <Banknote size={12} /> Cobrar
@@ -457,7 +457,7 @@ function ReservationCard({
         )}
         <button
           type="button"
-          className="ml-auto flex items-center gap-1 text-xs text-slate-400 hover:text-[#C9922A]"
+          className="ml-auto flex items-center gap-1 text-xs text-white/35 hover:text-[#D4AF37]"
           onClick={() => onSelect(appt)}
         >
           Ver detalle <ChevronRight size={12} />
@@ -494,14 +494,14 @@ function SidePanel({
         onClick={onClose}
       />
       {/* Panel */}
-      <aside className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl">
+      <aside className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-[#0F1219] shadow-2xl shadow-black/60">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-5 py-4">
+        <div className="flex items-start justify-between gap-3 border-b border-white/[0.07] px-5 py-4">
           <div className="min-w-0">
-            <p className="truncate font-black text-slate-900">
+            <p className="truncate font-black text-white/90">
               {appt.client_name}
             </p>
-            <p className="mt-0.5 text-sm text-slate-500">
+            <p className="mt-0.5 text-sm text-white/45">
               {formatTime(appt.start_time)} · {formatDate(appt.appointment_date)}
             </p>
           </div>
@@ -514,7 +514,7 @@ function SidePanel({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-white/35 hover:bg-white/[0.07] hover:text-white/80"
             >
               <X size={16} />
             </button>
@@ -525,10 +525,10 @@ function SidePanel({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
           {/* Details */}
           <div className="space-y-3">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+            <h3 className="text-xs font-black uppercase tracking-wider text-white/35">
               Detalle de la cita
             </h3>
-            <div className="rounded-xl border border-slate-100 bg-slate-50 divide-y divide-slate-100">
+            <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] divide-y divide-white/[0.06]">
               <DetailRow label="Servicio" value={appt.service_name} />
               <DetailRow
                 label="Precio"
@@ -552,10 +552,10 @@ function SidePanel({
 
           {/* Client */}
           <div className="space-y-3">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+            <h3 className="text-xs font-black uppercase tracking-wider text-white/35">
               Cliente
             </h3>
-            <div className="rounded-xl border border-slate-100 bg-slate-50 divide-y divide-slate-100">
+            <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] divide-y divide-white/[0.06]">
               <DetailRow label="Nombre" value={appt.client_name} />
               {appt.client_phone && (
                 <DetailRow label="Teléfono" value={appt.client_phone} />
@@ -566,7 +566,7 @@ function SidePanel({
               />
               {appt.client_visit_count === 1 && (
                 <div className="flex items-center gap-2 px-4 py-2.5">
-                  <span className="text-xs text-violet-600 font-semibold">
+                  <span className="text-xs text-violet-300 font-semibold">
                     Primera visita — dale una buena impresión
                   </span>
                 </div>
@@ -576,7 +576,7 @@ function SidePanel({
 
           {/* Actions */}
           <div className="space-y-2">
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+            <h3 className="text-xs font-black uppercase tracking-wider text-white/35">
               Acciones
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -629,7 +629,7 @@ function SidePanel({
                   href={wa}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/[0.08] px-3 py-1.5 text-xs font-bold text-green-300 hover:bg-green-500/[0.14]"
                 >
                   <MessageCircle size={12} /> WhatsApp
                 </a>
@@ -641,17 +641,17 @@ function SidePanel({
           <div className="space-y-1.5">
             <Link
               href="/dashboard/agenda"
-              className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50"
+              className="flex items-center gap-2 rounded-xl border border-white/[0.08] px-4 py-3 text-sm font-medium text-white/55 hover:bg-white/[0.05] hover:text-white/80"
             >
-              <ExternalLink size={14} className="text-slate-400" />
+              <ExternalLink size={14} className="text-white/30" />
               Ver en agenda
             </Link>
             {appt.client_id && (
               <Link
                 href={`/dashboard/clientes/${appt.client_id}`}
-                className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                className="flex items-center gap-2 rounded-xl border border-white/[0.08] px-4 py-3 text-sm font-medium text-white/55 hover:bg-white/[0.05] hover:text-white/80"
               >
-                <User size={14} className="text-slate-400" />
+                <User size={14} className="text-white/30" />
                 Ver ficha del cliente
               </Link>
             )}
@@ -665,10 +665,10 @@ function SidePanel({
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start gap-3 px-4 py-2.5">
-      <span className="w-20 shrink-0 text-xs font-semibold text-slate-400">
+      <span className="w-20 shrink-0 text-xs font-semibold text-white/35">
         {label}
       </span>
-      <span className="text-xs text-slate-700 leading-5">{value}</span>
+      <span className="text-xs text-white/70 leading-5">{value}</span>
     </div>
   );
 }
@@ -687,12 +687,12 @@ function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center">
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
-        <Icon size={22} className="text-slate-400" />
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.10] bg-white/[0.02] px-6 py-16 text-center">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.06]">
+        <Icon size={22} className="text-white/30" />
       </div>
-      <p className="font-bold text-slate-700">{title}</p>
-      <p className="mt-1 max-w-xs text-sm text-slate-400">{description}</p>
+      <p className="font-bold text-white/60">{title}</p>
+      <p className="mt-1 max-w-xs text-sm text-white/35">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
@@ -702,16 +702,16 @@ function EmptyState({
 
 function SkeletonCard() {
   return (
-    <div className="animate-pulse rounded-2xl border border-slate-200 bg-white p-4 space-y-3">
+    <div className="animate-pulse rounded-2xl border border-white/[0.07] bg-white/[0.04] p-4 space-y-3">
       <div className="flex justify-between">
-        <div className="h-4 w-24 rounded bg-slate-200" />
-        <div className="h-4 w-16 rounded bg-slate-200" />
+        <div className="h-4 w-24 rounded bg-white/[0.08]" />
+        <div className="h-4 w-16 rounded bg-white/[0.08]" />
       </div>
-      <div className="h-3 w-3/4 rounded bg-slate-100" />
-      <div className="h-3 w-1/2 rounded bg-slate-100" />
+      <div className="h-3 w-3/4 rounded bg-white/[0.06]" />
+      <div className="h-3 w-1/2 rounded bg-white/[0.06]" />
       <div className="flex gap-2 pt-1">
-        <div className="h-7 w-20 rounded-lg bg-slate-100" />
-        <div className="h-7 w-16 rounded-lg bg-slate-100" />
+        <div className="h-7 w-20 rounded-lg bg-white/[0.06]" />
+        <div className="h-7 w-16 rounded-lg bg-white/[0.06]" />
       </div>
     </div>
   );
@@ -887,8 +887,8 @@ export function ReservasClient({
         <div
           className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition ${
             feedback.ok
-              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-              : "border-red-200 bg-red-50 text-red-700"
+              ? "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300"
+              : "border-red-500/20 bg-red-500/[0.08] text-red-300"
           }`}
         >
           {feedback.ok ? (
@@ -901,9 +901,9 @@ export function ReservasClient({
       )}
 
       {/* ── Filters ───────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.04]">
         {/* Tab strip */}
-        <div className="flex gap-0.5 overflow-x-auto border-b border-slate-100 px-3 pt-3 pb-0 scrollbar-none">
+        <div className="flex gap-0.5 overflow-x-auto border-b border-white/[0.06] px-3 pt-3 pb-0 scrollbar-none">
           {tabs.map((t) => (
             <button
               key={t.id}
@@ -911,8 +911,8 @@ export function ReservasClient({
               onClick={() => setTab(t.id)}
               className={`flex shrink-0 items-center gap-1.5 rounded-t-lg px-3 py-2 text-xs font-bold transition ${
                 tab === t.id
-                  ? "border-b-2 border-[#D4AF37] text-[#8A641F]"
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "border-b-2 border-[#D4AF37] text-[#D4AF37]"
+                  : "text-white/45 hover:text-white/70"
               }`}
             >
               {t.label}
@@ -920,8 +920,8 @@ export function ReservasClient({
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-[10px] font-black ${
                     tab === t.id
-                      ? "bg-[#D4AF37]/20 text-[#8A641F]"
-                      : "bg-slate-100 text-slate-500"
+                      ? "bg-[#D4AF37]/15 text-[#D4AF37]/80"
+                      : "bg-white/[0.07] text-white/40"
                   }`}
                 >
                   {t.count}
@@ -936,23 +936,23 @@ export function ReservasClient({
           <div className="relative flex-1">
             <Search
               size={14}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30"
             />
             <input
               type="text"
               placeholder="Buscar cliente o servicio..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-8 pr-3 text-sm text-slate-700 placeholder-slate-400 focus:border-[#D4AF37]/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+              className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] py-2 pl-8 pr-3 text-sm text-white/75 placeholder:text-white/25 focus:border-[#D4AF37]/40 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
             />
           </div>
           {barbers.length > 0 && (
             <div className="flex items-center gap-2">
-              <Filter size={14} className="shrink-0 text-slate-400" />
+              <Filter size={14} className="shrink-0 text-white/30" />
               <select
                 value={selectedBarber}
                 onChange={(e) => setSelectedBarber(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-slate-50 py-2 pl-3 pr-8 text-sm text-slate-700 focus:border-[#D4AF37]/50 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
+                className="rounded-xl border border-white/[0.07] bg-[#0F1219] py-2 pl-3 pr-8 text-sm text-white/70 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               >
                 <option value="">Todos los barberos</option>
                 {barbers.map((b) => (

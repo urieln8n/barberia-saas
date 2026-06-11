@@ -194,7 +194,7 @@ export default async function EstadisticasPage() {
       />
 
       {(barbersResult.error || appointmentsResult.error) && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.07] px-5 py-4 text-sm font-semibold text-amber-300">
           No se pudieron cargar todas las estadisticas. Revisa la conexion o permisos de lectura.
         </div>
       )}
@@ -246,17 +246,17 @@ export default async function EstadisticasPage() {
           ) : (
             <div className="grid gap-3">
               {barberStats.map((item) => (
-                <article key={item.barber.id} className="panel-compact">
+                <article key={item.barber.id} className="rounded-xl border border-white/[0.07] bg-white/[0.04] p-4">
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <h2 className="font-black text-[#080A0F]">{item.barber.name}</h2>
-                      <p className="mt-1 text-sm text-slate-500">
+                      <h2 className="font-black text-white/88">{item.barber.name}</h2>
+                      <p className="mt-1 text-sm text-white/45">
                         {item.total} reservas · {item.completedCount} completadas · {item.activeCount} activas
                       </p>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right">
-                      <p className="text-[10px] font-black uppercase text-slate-500">Ingresos estimados</p>
-                      <p className="mt-1 text-lg font-black text-[#080A0F]">{formatMoney(item.revenue)}</p>
+                    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 text-right">
+                      <p className="text-[10px] font-black uppercase text-white/35">Ingresos estimados</p>
+                      <p className="mt-1 text-lg font-black text-white/90">{formatMoney(item.revenue)}</p>
                     </div>
                   </div>
                 </article>
@@ -280,14 +280,14 @@ export default async function EstadisticasPage() {
               {topServices.map((service, index) => (
                 <div
                   key={service.name}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3"
                 >
                   <div>
-                    <p className="text-xs font-black uppercase text-[#C9922A]">#{index + 1}</p>
-                    <p className="font-black text-slate-950">{service.name}</p>
-                    <p className="text-sm text-slate-500">{service.count} reservas</p>
+                    <p className="text-xs font-black uppercase text-[#D4AF37]/70">#{index + 1}</p>
+                    <p className="font-black text-white/85">{service.name}</p>
+                    <p className="text-sm text-white/45">{service.count} reservas</p>
                   </div>
-                  <p className="font-black text-slate-950">{formatMoney(service.revenue)}</p>
+                  <p className="font-black text-white/85">{formatMoney(service.revenue)}</p>
                 </div>
               ))}
             </div>
@@ -296,7 +296,7 @@ export default async function EstadisticasPage() {
       </div>
 
       {/* Studio IA Report Card */}
-      <div className="overflow-hidden rounded-2xl border border-[#A78BFA]/30 bg-[#F6F3FF]">
+      <div className="overflow-hidden rounded-2xl border border-[#A78BFA]/25 bg-[#110822]/70">
         <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:justify-between md:p-6">
           <div className="min-w-0">
             <div className="mb-2 flex items-center gap-2">
@@ -307,8 +307,8 @@ export default async function EstadisticasPage() {
                 Studio IA · Impacto de contenido
               </span>
             </div>
-            <h2 className="text-lg font-black text-slate-900">Contenido creado con Studio IA</h2>
-            <p className="mt-1 text-sm text-slate-600">
+            <h2 className="text-lg font-black text-white/90">Contenido creado con Studio IA</h2>
+            <p className="mt-1 text-sm text-white/50">
               Reels, promos y campañas generadas para tu barbería este mes.
             </p>
           </div>
@@ -321,7 +321,7 @@ export default async function EstadisticasPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 border-t border-[#A78BFA]/20 bg-white/60 p-5 sm:grid-cols-3 md:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 border-t border-[#A78BFA]/15 bg-white/[0.03] p-5 sm:grid-cols-3 md:grid-cols-6">
           {[
             { label: "Contenido generado", value: String(studioTotal),        sub: "este mes" },
             { label: "Créditos usados",    value: String(studioCreditsUsed),  sub: "este mes" },
@@ -332,14 +332,14 @@ export default async function EstadisticasPage() {
           ].map(({ label, value, sub }) => (
             <div key={label} className="text-center">
               <p className="text-2xl font-black text-[#5B21B6]">{value}</p>
-              <p className="mt-0.5 text-[11px] font-black text-slate-700">{label}</p>
-              <p className="text-[10px] text-slate-500">{sub}</p>
+              <p className="mt-0.5 text-[11px] font-black text-white/65">{label}</p>
+              <p className="text-[10px] text-white/35">{sub}</p>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-[#A78BFA]/20 px-5 py-3">
-          <p className="text-[11px] text-slate-500">
+        <div className="border-t border-[#A78BFA]/15 px-5 py-3">
+          <p className="text-[11px] text-white/40">
             Las métricas se activarán automáticamente cuando se aplique la migración de base de datos de Studio IA.{" "}
             <Link href="/dashboard/studio/credits" className="font-black text-[#6D28D9] hover:underline">
               Ver créditos →
@@ -353,21 +353,21 @@ export default async function EstadisticasPage() {
         description="Estadisticas analiza el negocio. Huecos libres sirve para actuar en segundos."
       >
         <div className="grid gap-3 md:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p className="font-black text-slate-950">Analisis</p>
-            <p className="mt-1 text-sm leading-6 text-slate-500">
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+            <p className="font-black text-white/85">Analisis</p>
+            <p className="mt-1 text-sm leading-6 text-white/45">
               Usa esta pagina para revisar rendimiento, ingresos y patrones.
             </p>
           </div>
-          <div className="rounded-2xl border border-[#D5A84C]/25 bg-[#D5A84C]/10 p-4">
-            <p className="font-black text-slate-950">Accion inmediata</p>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+          <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.06] p-4">
+            <p className="font-black text-white/85">Accion inmediata</p>
+            <p className="mt-1 text-sm leading-6 text-white/50">
               Usa Huecos libres para crear reservas, copiar mensajes y llenar agenda hoy.
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p className="font-black text-slate-950">Agenda</p>
-            <p className="mt-1 text-sm leading-6 text-slate-500">
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+            <p className="font-black text-white/85">Agenda</p>
+            <p className="mt-1 text-sm leading-6 text-white/45">
               Usa Agenda para gestionar citas, estados y calendario operativo.
             </p>
           </div>

@@ -39,10 +39,10 @@ export function PageHeader({
 
   // Contenedor
   const containerCls = isCompact
-    ? `relative overflow-hidden rounded-[18px] border border-slate-200/80 bg-white px-5 py-4 shadow-card md:px-6 md:py-5 ${className}`
+    ? `relative overflow-hidden rounded-[18px] border border-white/[0.07] bg-white/[0.04] px-5 py-4 shadow-none md:px-6 md:py-5 ${className}`
     : isStudio
-      ? `relative overflow-hidden rounded-[20px] border border-[#A78BFA]/30 bg-[#F9F8FF] px-6 py-6 shadow-card md:px-8 md:py-7 ${className}`
-      : `relative overflow-hidden rounded-[20px] border border-slate-200/80 bg-white px-6 py-6 shadow-card md:px-8 md:py-7 ${className}`;
+      ? `relative overflow-hidden rounded-[20px] border border-[#A78BFA]/25 bg-[#110822]/80 px-6 py-6 shadow-none md:px-8 md:py-7 ${className}`
+      : `relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-white/[0.04] px-6 py-6 shadow-none md:px-8 md:py-7 ${className}`;
 
   // Línea de acento superior
   const accentCls = isStudio
@@ -81,7 +81,7 @@ export function PageHeader({
             <p className={labelCls}>{label}</p>
           )}
           <h1
-            className="text-slate-900 font-black tracking-tight leading-tight"
+            className="text-white/90 font-black tracking-tight leading-tight"
             style={{
               fontSize: titleSize,
               letterSpacing: "-0.03em",
@@ -91,12 +91,12 @@ export function PageHeader({
             {title}
           </h1>
           {description && !isCompact && (
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">
               {description}
             </p>
           )}
           {description && isCompact && (
-            <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-400">
+            <p className="mt-1 max-w-2xl text-xs leading-5 text-white/40">
               {description}
             </p>
           )}
@@ -110,7 +110,7 @@ export function PageHeader({
 
       {/* Metrics strip */}
       {metrics && (
-        <div className="mt-5 border-t border-slate-100 pt-4">
+        <div className="mt-5 border-t border-white/[0.07] pt-4">
           {metrics}
         </div>
       )}

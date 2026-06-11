@@ -39,14 +39,14 @@ export function StatCard({
 
   const containerClass =
     effectiveTone === "success"
-      ? "border-emerald-200/70 bg-white hover:border-emerald-300/50"
+      ? "border-emerald-500/20 bg-emerald-500/[0.06] hover:border-emerald-500/35"
       : effectiveTone === "warning"
-        ? "border-amber-200/70 bg-white hover:border-amber-300/50"
+        ? "border-amber-500/20 bg-amber-500/[0.06] hover:border-amber-500/35"
         : effectiveTone === "gold"
-          ? "border-[#D4AF37]/25 bg-white hover:border-[#D4AF37]/40"
+          ? "border-[#D4AF37]/25 bg-[#D4AF37]/[0.07] hover:border-[#D4AF37]/40"
           : effectiveTone === "highlight"
-            ? "border-[#2563EB]/20 bg-white ring-1 ring-[#2563EB]/10 hover:border-[#2563EB]/35"
-            : "border-slate-200/80 bg-white hover:border-slate-300/60";
+            ? "border-[#2563EB]/25 bg-[#2563EB]/[0.07] ring-1 ring-[#2563EB]/10 hover:border-[#2563EB]/40"
+            : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.14]";
 
   const topLabel = label ?? title;
   const supportingText = hint ?? description;
@@ -70,7 +70,7 @@ export function StatCard({
             </p>
           )}
           {topLabel && (
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/40">
               {topLabel}
             </p>
           )}
@@ -86,7 +86,7 @@ export function StatCard({
 
       {/* El número — el protagonista visual */}
       <p
-        className="mt-4 font-display leading-none text-slate-900"
+        className="mt-4 font-display leading-none text-white/90"
         style={{
           fontSize: "clamp(2.25rem,5vw,3rem)",
           fontWeight: 900,
@@ -99,10 +99,10 @@ export function StatCard({
       </p>
 
       {(supportingText || trend) && (
-        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs leading-5 text-slate-500">
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs leading-5 text-white/50">
           {supportingText && <span>{supportingText}</span>}
           {trend && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-2 py-0.5 text-[10px] font-black text-emerald-300">
               {trend}
             </span>
           )}
@@ -110,7 +110,7 @@ export function StatCard({
       )}
 
       {footer && (
-        <div className="mt-4 border-t border-slate-100 pt-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:rounded-lg [&_a]:px-2.5 [&_a]:py-1.5 [&_a]:text-xs [&_a]:font-black [&_a]:text-slate-600 [&_a]:transition [&_a:hover]:bg-slate-100 [&_a:hover]:text-slate-900">
+        <div className="mt-4 border-t border-white/[0.07] pt-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:rounded-lg [&_a]:px-2.5 [&_a]:py-1.5 [&_a]:text-xs [&_a]:font-black [&_a]:text-white/50 [&_a]:transition [&_a:hover]:bg-white/[0.06] [&_a:hover]:text-white/85">
           {footer}
         </div>
       )}
