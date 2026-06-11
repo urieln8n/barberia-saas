@@ -6,6 +6,7 @@ import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { sendWaitlistNotification } from "@/src/lib/email/send-waitlist-notification";
+import { sendReviewRequest } from "@/src/lib/email/send-review-request";
 
 const ALLOWED_STATUS = [
   "scheduled",
@@ -68,7 +69,72 @@ export async function updateReservationStatus(
     });
   }
 
+  if (status === "completed") {
+    requestReview(id, barbershopId).catch((err) => {
+      console.error("[review-request] Error enviando solicitud de reseña:", err);
+    });
+  }
+
   return { success: true };
+}
+
+async function requestReview(
+  appointmentId: string,
+  barbershopId: string
+): Promise<void> {
+  const supabase = createServiceRoleClient();
+
+  // biome-ignore lint: review_request_sent_at not yet in generated types
+  const { data: appt } = await (supabase as any)
+    .from("appointments")
+    .select(
+      "appointment_date, review_request_sent_at, clients(name, email), services(name), barbers(name)"
+    )
+    .eq("id", appointmentId)
+    .eq("barbershop_id", barbershopId)
+    .maybeSingle();
+
+  if (!appt || appt.review_request_sent_at) return;
+
+  // biome-ignore lint: google_business_url present but not in generated types for all setups
+  const { data: barbershop } = await (supabase as any)
+    .from("barbershops")
+    .select("name, slug, google_business_url")
+    .eq("id", barbershopId)
+    .maybeSingle();
+
+  if (!barbershop) return;
+
+  function firstOf<T>(val: T | T[] | null | undefined): T | null {
+    if (!val) return null;
+    return Array.isArray(val) ? (val[0] ?? null) : val;
+  }
+
+  const client  = firstOf(appt.clients)  as { name: string; email: string } | null;
+  const service = firstOf(appt.services) as { name: string } | null;
+  const barber  = firstOf(appt.barbers)  as { name: string } | null;
+
+  if (!client?.email) return;
+
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://barberiaos.com";
+
+  await sendReviewRequest({
+    clientName:        client.name,
+    clientEmail:       client.email,
+    barbershopName:    barbershop.name,
+    barbershopSlug:    barbershop.slug,
+    googleBusinessUrl: barbershop.google_business_url ?? null,
+    serviceName:       service?.name ?? "",
+    barberName:        barber?.name ?? null,
+    appointmentDate:   appt.appointment_date,
+    appUrl,
+  });
+
+  // biome-ignore lint: review_request_sent_at not yet in generated types
+  await (supabase as any)
+    .from("appointments")
+    .update({ review_request_sent_at: new Date().toISOString() })
+    .eq("id", appointmentId);
 }
 
 async function notifyWaitlist(
