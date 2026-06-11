@@ -892,3 +892,29 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ── Gold shimmer — dark-premium loading skeletons ── */
+@keyframes gold-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.02) 0%,
+    rgba(212, 175, 55, 0.10)  40%,
+    rgba(212, 175, 55, 0.17)  50%,
+    rgba(212, 175, 55, 0.10)  60%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  background-size: 200% 100%;
+  animation: gold-shimmer 1.7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-gold {
+    animation: none;
+    background: rgba(212, 175, 55, 0.06);
+  }
+}

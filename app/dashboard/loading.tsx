@@ -2,45 +2,88 @@ import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 
 export default function DashboardLoading() {
   return (
-    <div className="flex min-h-[72vh] flex-col items-center justify-center gap-10 px-4">
-      {/* Brand mark */}
-      <div className="flex flex-col items-center gap-5">
-        <div className="relative">
-          <BarberiaOSLogo variant="icon" size={56} />
-          <span className="absolute inset-0 animate-ping rounded-[22px] border border-[#C9922A]/30 motion-reduce:animate-none" />
+    <div className="space-y-5">
+      {/* Brand pulse — center stage while server fetches */}
+      <div className="flex flex-col items-center justify-center gap-6 py-6">
+        <div className="relative flex items-center justify-center">
+          {/* Outer glow ring */}
+          <span className="absolute h-24 w-24 animate-ping rounded-[32px] border border-[#D4AF37]/20 motion-reduce:animate-none" />
+          <span
+            className="absolute h-16 w-16 animate-ping rounded-[24px] border border-[#D4AF37]/30 motion-reduce:animate-none"
+            style={{ animationDelay: "0.15s" }}
+          />
+          <BarberiaOSLogo variant="icon" size={52} />
         </div>
-        <div className="text-center">
-          <p className="text-base font-black tracking-tight text-slate-900">BarberíaOS</p>
-          <p className="mt-1 text-sm text-slate-500">Preparando tu centro de control...</p>
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-[#D4AF37]/60">
+          Cargando...
+        </p>
+      </div>
+
+      {/* Page header skeleton */}
+      <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-white/[0.04] px-6 py-6 md:px-8 md:py-7">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/35 to-transparent" />
+        <div className="shimmer-gold mb-3 h-2.5 w-20 rounded-full" />
+        <div className="shimmer-gold mb-3 h-8 w-72 max-w-full rounded-xl" />
+        <div className="shimmer-gold h-2.5 w-96 max-w-[65%] rounded-full" />
+      </div>
+
+      {/* KPI grid */}
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.04] p-5"
+          >
+            <div className="shimmer-gold mb-4 h-11 w-11 rounded-2xl" />
+            <div className="shimmer-gold mb-2 h-9 w-24 rounded-xl" />
+            <div className="shimmer-gold h-2.5 w-32 rounded-full" />
+          </div>
+        ))}
+      </div>
+
+      {/* Main section */}
+      <div className="overflow-hidden rounded-[20px] border border-white/[0.07] bg-white/[0.04]">
+        <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.03] px-5 py-4 md:px-6">
+          <div className="shimmer-gold h-5 w-52 rounded-lg" />
+          <div className="shimmer-gold h-8 w-28 rounded-xl" />
+        </div>
+        <div className="space-y-4 p-5 md:p-6">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-4">
+              <div className="shimmer-gold h-11 w-11 shrink-0 rounded-2xl" />
+              <div className="min-w-0 flex-1 space-y-2">
+                <div
+                  className="shimmer-gold h-3.5 rounded-lg"
+                  style={{ width: `${48 + ((i * 13) % 38)}%` }}
+                />
+                <div
+                  className="shimmer-gold h-2.5 rounded-full"
+                  style={{ width: `${28 + ((i * 9) % 28)}%` }}
+                />
+              </div>
+              <div className="shimmer-gold h-6 w-16 shrink-0 rounded-full" />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Skeleton */}
-      <div className="w-full max-w-4xl space-y-4">
-        {/* Header skeleton */}
-        <div className="flex items-center gap-3">
-          <div className="premium-skeleton h-8 w-8 rounded-xl" />
-          <div className="premium-skeleton h-6 w-52 rounded-xl" />
-        </div>
-
-        {/* Stat cards skeleton */}
-        <div className="grid gap-3 sm:grid-cols-3">
-          {[0.95, 0.8, 0.65].map((opacity, i) => (
-            <div
-              key={i}
-              className="premium-skeleton h-24 rounded-[20px]"
-              style={{ opacity }}
-            />
-          ))}
-        </div>
-
-        {/* Gold progress bar */}
-        <div className="h-1 w-full overflow-hidden rounded-full bg-slate-200">
-          <div className="h-full w-1/3 animate-[shimmer_1.8s_ease-in-out_infinite] rounded-full bg-[#C9922A]/40 motion-reduce:animate-none" />
-        </div>
-
-        {/* Main content skeleton */}
-        <div className="premium-skeleton h-44 rounded-[20px]" style={{ opacity: 0.7 }} />
+      {/* Secondary pair */}
+      <div className="grid gap-5 xl:grid-cols-2">
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            className="overflow-hidden rounded-[20px] border border-white/[0.07] bg-white/[0.04]"
+          >
+            <div className="border-b border-white/[0.06] bg-white/[0.03] px-5 py-4 md:px-6">
+              <div className="shimmer-gold h-5 w-40 rounded-lg" />
+            </div>
+            <div className="space-y-3 p-5">
+              {[0, 1, 2].map((j) => (
+                <div key={j} className="shimmer-gold h-12 rounded-xl" />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
