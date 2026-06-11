@@ -5,7 +5,7 @@ import { buildBarberPerformance } from "@/src/lib/cash/barber-performance";
 import { buildTodayBarberAvailability } from "@/src/lib/booking/barber-availability";
 import { DashboardClient } from "./DashboardClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Relation<T> = T | T[] | null | undefined;
 

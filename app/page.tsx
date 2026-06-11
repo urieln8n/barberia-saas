@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SquirePremiumLanding } from "@/components/landing/SquirePremiumLanding";
+import { BarberíaOSHomeLanding } from "@/components/landing/BarberíaOSHomeLanding";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 
 const faqs = [
@@ -134,7 +134,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
-      <SquirePremiumLanding />
+      <BarberíaOSHomeLanding />
     </>
   );
 }

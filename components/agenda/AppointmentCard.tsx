@@ -55,6 +55,9 @@ export function AppointmentCard({ appointment, compact = false, onClick }: Props
           <p className="min-w-0 flex-1 truncate text-[11px] font-black text-slate-900">
             {appointment.client?.name ?? "Cliente"}
           </p>
+          {price ? (
+            <span className="shrink-0 text-[9px] font-black text-[#D4AF37]">{price}€</span>
+          ) : null}
           <span className={`shrink-0 rounded-full border px-1 py-px text-[8px] font-black ${color.badge}`}>
             {getStatusLabel(appointment.status)}
           </span>
@@ -111,7 +114,7 @@ export function AppointmentCard({ appointment, compact = false, onClick }: Props
             {price ? (
               <>
                 <span>·</span>
-                <span className="font-black text-[#C9922A]">{price}€</span>
+                <span className="font-black text-[#D4AF37]">{price}€</span>
               </>
             ) : null}
           </div>

@@ -6,22 +6,25 @@ import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
 // @ts-ignore
 import "./globals.css";
-import { Inter } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  preload: true,
 });
 
 export const viewport: Viewport = {
-  themeColor: "#FAF7EF",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAF7EF" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0D0D0F" },
+  ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
 };
 
 export const metadata: Metadata = {
@@ -86,7 +89,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={cn("font-sans", inter.variable, GeistSans.variable, GeistMono.variable)}>
+    <html lang="es" className={cn("font-sans", jakarta.variable)}>
       <body className="font-sans antialiased">
         {children}
         <FloatingWhatsAppButton />

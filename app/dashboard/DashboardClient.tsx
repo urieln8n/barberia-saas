@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 import {
   CalendarCheck,
   CalendarPlus,
@@ -119,7 +119,7 @@ function getGreeting(): string {
 
 // ─── OccupancyBar ─────────────────────────────────────────────────────────────
 
-function OccupancyBar({ pct }: { pct: number }) {
+const OccupancyBar = memo(function OccupancyBar({ pct }: { pct: number }) {
   const color =
     pct >= 80 ? "from-emerald-500 to-emerald-400" :
     pct >= 50 ? "from-[#C9A227] to-[#F5D76E]" :
@@ -132,7 +132,7 @@ function OccupancyBar({ pct }: { pct: number }) {
       />
     </div>
   );
-}
+});
 
 // ─── Sub-componentes internos ─────────────────────────────────────────────────
 
@@ -166,8 +166,7 @@ function KpiCard({
   );
 }
 
-// Card de cita compacto
-function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
+const AppointmentCard = memo(function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
   const precio = appointment.services?.price;
   return (
     <article className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-sm transition-colors hover:border-slate-200 hover:bg-slate-50">
@@ -191,7 +190,7 @@ function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
       </div>
     </article>
   );
-}
+});
 
 // Alerta contextual
 type AlertType = "warning" | "info" | "success" | "error";
@@ -268,66 +267,51 @@ export function DashboardClient({
 }: DashboardClientProps) {
 
   // ── Próxima cita ──────────────────────────────────────────────────────────
-  const nextAppointment = todayAppointments.find((a) => {
-    const mins = getMinutesUntil(a.start_time ?? "00:00");
-    return mins >= -15;
-  });
-  const minsUntilNext = nextAppointment ? getMinutesUntil(nextAppointment.start_time) : null;
+  const nextAppointment = useMemo(
+    () => todayAppointments.find((a) => getMinutesUntil(a.start_time ?? "00:00") >= -15),
+    [todayAppointments]
+  );
+  const minsUntilNext = useMemo(
+    () => nextAppointment ? getMinutesUntil(nextAppointment.start_time) : null,
+    [nextAppointment]
+  );
 
   // ── Quick booking panel ───────────────────────────────────────────────────
   const [quickBookingOpen, setQuickBookingOpen] = useState(false);
 
   // ── Ocupación y revenue estimado ─────────────────────────────────────────
   const totalSlotsToday = todayAppointments.length + totalFreeSlotsToday;
-  const occupancyPct = totalSlotsToday > 0
-    ? Math.round((todayAppointments.length / totalSlotsToday) * 100)
-    : 0;
-  const estimatedRevenue = salesToday > 0
-    ? salesToday
-    : todayAppointments.reduce((s, a) => s + (a.services?.price ?? 0), 0);
-  const greeting = getGreeting();
+  const occupancyPct = useMemo(
+    () => totalSlotsToday > 0 ? Math.round((todayAppointments.length / totalSlotsToday) * 100) : 0,
+    [todayAppointments.length, totalSlotsToday]
+  );
+  const estimatedRevenue = useMemo(
+    () => salesToday > 0 ? salesToday : todayAppointments.reduce((s, a) => s + (a.services?.price ?? 0), 0),
+    [salesToday, todayAppointments]
+  );
+  const greeting = useMemo(() => getGreeting(), []);
 
   // ── Alertas contextuales ─────────────────────────────────────────────────
-  const alerts: Array<{ type: AlertType; text: string; action?: string; href?: string }> = [];
-
-  if (!cashSessionOpen && salesToday === 0) {
-    alerts.push({
-      type: "warning",
-      text: "La caja está cerrada. Ábrela para registrar cobros.",
-      action: "Ir a caja",
-      href: "/dashboard/caja",
-    });
-  }
-  if (dormantClientsCount > 0) {
-    alerts.push({
-      type: "info",
-      text: `${dormantClientsCount} clientes sin volver hace +45 días — reactívalos.`,
-      action: "Ver clientes",
-      href: "/dashboard/recuperacion",
-    });
-  }
-  if (totalFreeSlotsToday > 0) {
-    alerts.push({
-      type: "success",
-      text: `${totalFreeSlotsToday} huecos libres hoy — puedes rellenarlos con WhatsApp o Instagram.`,
-      action: "Ver huecos",
-      href: "/dashboard/huecos",
-    });
-  }
-  if (confirmedUpcomingCount > 0) {
-    alerts.push({
-      type: "info",
-      text: `${confirmedUpcomingCount} reservas confirmadas próximas pendientes de gestión.`,
-      action: "Ver agenda",
-      href: "/dashboard/agenda",
-    });
-  }
-
-  // máx 4 alertas
-  const visibleAlerts = alerts.slice(0, 4);
+  const visibleAlerts = useMemo(() => {
+    const alerts: Array<{ type: AlertType; text: string; action?: string; href?: string }> = [];
+    if (!cashSessionOpen && salesToday === 0) {
+      alerts.push({ type: "warning", text: "La caja está cerrada. Ábrela para registrar cobros.", action: "Ir a caja", href: "/dashboard/caja" });
+    }
+    if (dormantClientsCount > 0) {
+      alerts.push({ type: "info", text: `${dormantClientsCount} clientes sin volver hace +45 días — reactívalos.`, action: "Ver clientes", href: "/dashboard/recuperacion" });
+    }
+    if (totalFreeSlotsToday > 0) {
+      alerts.push({ type: "success", text: `${totalFreeSlotsToday} huecos libres hoy — puedes rellenarlos con WhatsApp o Instagram.`, action: "Ver huecos", href: "/dashboard/huecos" });
+    }
+    if (confirmedUpcomingCount > 0) {
+      alerts.push({ type: "info", text: `${confirmedUpcomingCount} reservas confirmadas próximas pendientes de gestión.`, action: "Ver agenda", href: "/dashboard/agenda" });
+    }
+    return alerts.slice(0, 4);
+  }, [cashSessionOpen, salesToday, dormantClientsCount, totalFreeSlotsToday, confirmedUpcomingCount]);
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
-  const kpis = [
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const kpis = useMemo(() => [
     {
       label: "Caja del día",
       value: formatCurrency(salesToday),
@@ -395,7 +379,8 @@ export function DashboardClient({
           : "Todo al día",
       href: "/dashboard/reservas",
     },
-  ] as const;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [salesToday, cashSessionOpen, clientsAttendedToday, todayAppointments.length, confirmedUpcomingCount, totalFreeSlotsToday, barberWithMostSlots, totalClientsCount, dormantClientsCount, activeBarbersCount, activeServicesCount]) as readonly {label:string;value:string|number;icon:React.ElementType;iconColor:string;sub:string;href:string}[];
 
   return (
     <div className="space-y-4">

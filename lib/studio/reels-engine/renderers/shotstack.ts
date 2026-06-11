@@ -5,12 +5,12 @@ import type {
 } from "../types";
 
 // Shotstack base URL controlled by SHOTSTACK_ENV env var.
-// "staging" = free sandbox (watermarked, no cost)
+// "staging" = free sandbox (watermarked, no cost). Shotstack removed /v1 prefix from sandbox routes in 2025.
 // "production" = paid renders, no watermark
 const BASE_URL =
   process.env.SHOTSTACK_ENV === "production"
     ? "https://api.shotstack.io/edit/v1"
-    : "https://api.shotstack.io/stage/v1";
+    : "https://api.shotstack.io/stage";
 
 function apiKey(): string {
   const key = process.env.SHOTSTACK_API_KEY;
@@ -20,19 +20,28 @@ function apiKey(): string {
 
 // ─── Timeline builder ─────────────────────────────────────────────────────────
 
-function buildVideoTrack(clips: ReelClip[]): object {
+// Supports both image and video assets.
+// Images use Ken Burns effects (zoomIn, zoomOut, slideLeft, slideRight) to animate.
+// Videos are passed directly. mediaType defaults to "video" for backward compat.
+function buildMediaTrack(clips: ReelClip[]): object {
   let currentTime = 0;
   const shotstackClips = clips.map((clip, i) => {
+    const isImage = clip.mediaType === "image";
     const obj: Record<string, unknown> = {
-      asset: { type: "video", src: clip.url, volume: 1 },
-      start: currentTime,
+      asset: isImage
+        ? { type: "image", src: clip.url }
+        : { type: "video", src: clip.url, volume: 1 },
+      start:  currentTime,
       length: clip.duration,
     };
-    // Add transitions on all clips except the last
-    if (clip.transition && i < clips.length - 1) {
-      obj.transition = { in: clip.transition, out: clip.transition };
-    } else if (i < clips.length - 1) {
-      obj.transition = { in: "fade", out: "fade" };
+    // Ken Burns effect for static images (animates the image)
+    if (isImage && clip.effect) {
+      obj.effect = clip.effect;
+    }
+    // Transition between clips (not on last clip)
+    if (i < clips.length - 1) {
+      const t = clip.transition ?? "fade";
+      obj.transition = { in: t, out: t };
     }
     currentTime += clip.duration;
     return obj;
@@ -90,16 +99,17 @@ const TEXT_STYLES: Record<TextOverlay["style"], string> = {
   ].join(";"),
 };
 
+// Shotstack 2025 API accepts: top, topRight, right, bottomRight, bottom, bottomLeft, left, topLeft, center
 const POSITION_MAP: Record<TextOverlay["position"], string> = {
-  top:    "topCenter",
+  top:    "top",
   center: "center",
-  bottom: "bottomCenter",
+  bottom: "bottom",
 };
 
 const OFFSET_Y: Record<TextOverlay["position"], number> = {
-  top:    -0.06,
+  top:    0.1,
   center: 0,
-  bottom: 0.06,
+  bottom: -0.1,
 };
 
 function buildTextTrack(overlays: TextOverlay[]): object {
@@ -133,7 +143,7 @@ function buildLogoTrack(logoUrl: string, totalDuration: number): object {
 }
 
 function buildTimeline(input: ReelAssemblyInput): Record<string, unknown> {
-  const tracks: object[] = [buildVideoTrack(input.clips)];
+  const tracks: object[] = [buildMediaTrack(input.clips)];
 
   if (input.textOverlays && input.textOverlays.length > 0) {
     tracks.push(buildTextTrack(input.textOverlays));

@@ -3,8 +3,6 @@ import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { uploadToCloudinary, buildEnhancedUrl, buildBeforeAfterUrl } from "@/lib/studio/cloudinary";
 
-export const config = { api: { bodyParser: false } };
-
 // Handles: improve_image, social_format, before_after
 // Accepts multipart/form-data with:
 //   - file: File (image)

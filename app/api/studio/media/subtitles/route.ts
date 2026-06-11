@@ -4,8 +4,6 @@ import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { getOpenAIClient } from "@/src/lib/ai/openai-client";
 import { toFile } from "openai";
 
-export const config = { api: { bodyParser: false } };
-
 // Converts Whisper segments to SRT subtitle format
 function toSRT(segments: { start: number; end: number; text: string }[]): string {
   return segments

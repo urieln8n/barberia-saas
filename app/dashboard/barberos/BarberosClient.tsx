@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -297,8 +298,7 @@ export function BarberosClient({
                       title="Cambiar foto"
                     >
                       {b.photo_url
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={b.photo_url} alt={b.name} className="h-full w-full object-cover" />
+                        ? <Image src={b.photo_url} alt={b.name} fill sizes="56px" className="object-cover" />
                         : <span>{b.name.charAt(0).toUpperCase()}</span>
                       }
                       <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover/avatar:opacity-100">

@@ -1,6 +1,7 @@
 "use client";
 
 import { type ElementType, type FormEvent, useMemo, useRef, useState, useTransition } from "react";
+import Image from "next/image";
 import {
   AlertTriangle,
   ArrowRight,
@@ -317,8 +318,7 @@ function PublicProfilePreview({ data, publicUrl, whatsappUrl }: { data: Marketpl
     <section className="dashboard-card overflow-hidden">
       <div className="h-28 bg-[#080A0F]">
         {profile?.cover_image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={profile.cover_image_url} alt="" className="h-full w-full object-cover" />
+          <Image src={profile.cover_image_url} alt="" fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center bg-[linear-gradient(135deg,#080A0F,#1D2433)] text-[#D5A84C]">
             <Scissors size={28} />
@@ -329,8 +329,7 @@ function PublicProfilePreview({ data, publicUrl, whatsappUrl }: { data: Marketpl
         <div className="-mt-12 flex items-end gap-4">
           <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[24px] border-4 border-white bg-[#F8F5EF] text-xl font-black text-[#080A0F] shadow-sm">
             {profile?.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.logo_url} alt="" className="h-full w-full rounded-[20px] object-cover" />
+              <Image src={profile.logo_url} alt="" fill sizes="80px" className="rounded-[20px] object-cover" />
             ) : (
               data.publicName.slice(0, 2).toUpperCase()
             )}

@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { ClientesClient } from "./ClientesClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 type Relation<T> = T | T[] | null | undefined;
 
@@ -32,12 +32,13 @@ type AppointmentRow = {
   service_id: string | null;
   barber_id: string | null;
   clients: ClientRow | ClientRow[] | null;
-  services: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
+  services: { name: string; active?: boolean | null; price?: number | null } | { name: string; active?: boolean | null; price?: number | null }[] | null;
   barbers: { name: string; active?: boolean | null } | { name: string; active?: boolean | null }[] | null;
 };
 
 type ClientWithStats = ClientRow & {
   totalAppointments: number;
+  totalRevenue: number;
   lastAppointmentDate: string | null;
   lastAppointmentTime: string | null;
   lastServiceName: string | null;
@@ -189,7 +190,8 @@ export default async function ClientesPage() {
           ),
           services (
             name,
-            active
+            active,
+            price
           ),
           barbers (
             name,
@@ -231,6 +233,7 @@ export default async function ClientesPage() {
     string,
     {
       totalAppointments: number;
+      totalRevenue: number;
       lastAppointmentDate: string | null;
       lastAppointmentTime: string | null;
       lastServiceName: string | null;
@@ -254,9 +257,12 @@ export default async function ClientesPage() {
 
     const current = statsMap.get(clientId);
 
+    const servicePrice = firstRelation(appointment.services)?.price ?? 0;
+
     if (!current) {
       statsMap.set(clientId, {
         totalAppointments: 1,
+        totalRevenue: ["completed"].includes(appointment.status) ? Number(servicePrice) : 0,
         lastAppointmentDate: appointment.appointment_date,
         lastAppointmentTime: appointment.start_time,
         lastServiceName: service?.name ?? null,
@@ -269,6 +275,9 @@ export default async function ClientesPage() {
       });
     } else {
       current.totalAppointments += 1;
+      if (["completed"].includes(appointment.status)) {
+        current.totalRevenue += Number(servicePrice);
+      }
     }
   }
 
@@ -279,6 +288,7 @@ export default async function ClientesPage() {
       return {
         ...client,
         totalAppointments: stats?.totalAppointments ?? 0,
+        totalRevenue: stats?.totalRevenue ?? 0,
         lastAppointmentDate: stats?.lastAppointmentDate ?? null,
         lastAppointmentTime: stats?.lastAppointmentTime ?? null,
         lastServiceName: stats?.lastServiceName ?? null,

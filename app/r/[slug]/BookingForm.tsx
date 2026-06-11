@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Clock,
@@ -74,7 +75,7 @@ function StepProgress({ step }: { step: number }) {
           <div
             key={s}
             className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-              s <= step ? "bg-[#D4AF66]" : "bg-[#F3EDE1]"
+              s <= step ? "bg-[#D4AF37]" : "bg-[#F3EDE1]"
             }`}
           />
         ))}
@@ -124,7 +125,7 @@ function BookingHeader({
 }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0B1220] text-[#D4AF66] shadow-[0_12px_28px_rgba(15,23,42,0.18)]">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0B1220] text-[#D4AF37] shadow-[0_12px_28px_rgba(15,23,42,0.18)]">
         <Scissors size={22} />
       </div>
 
@@ -171,7 +172,7 @@ function ChoiceButton({
       className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] ${
         selected
           ? "border-[#0B1220] bg-[#0B1220] text-white shadow-lg shadow-slate-900/10"
-          : "border-black/5 bg-[#F8F3EA] hover:border-[#D4AF66] hover:bg-[#F6F1E8]"
+          : "border-black/5 bg-[#F8F3EA] hover:border-[#D4AF37] hover:bg-[#F6F1E8]"
       }`}
     >
       {children}
@@ -268,7 +269,7 @@ function ConfirmButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2563EB] py-4 text-base font-black text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-[#1D4ED8] active:scale-[0.98] disabled:opacity-40"
+      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] py-4 text-base font-black text-[#0A0A0A] shadow-lg shadow-[#D4AF37]/25 transition-all hover:bg-[#E5C04C] active:scale-[0.98] disabled:opacity-40"
     >
       <CalendarDays size={18} />
       {saving ? "Comprobando disponibilidad..." : label}
@@ -610,7 +611,7 @@ export function BookingForm({
               setFormError(null);
               setStep(step - 1);
             }}
-            className="mb-5 flex min-h-10 items-center gap-1 text-sm font-bold text-slate-500 hover:text-[#111827]"
+            className="mb-5 flex min-h-[44px] items-center gap-1 px-1 text-sm font-bold text-slate-500 hover:text-[#111827]"
           >
             <ChevronLeft size={15} /> Volver
           </button>
@@ -686,8 +687,7 @@ export function BookingForm({
                     {/* Miniatura del servicio */}
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/5 bg-[#F3EDE1]">
                       {s.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.image_url} alt={s.name} className="h-full w-full object-cover" />
+                        <Image src={s.image_url} alt={s.name} fill sizes="48px" className="object-cover" />
                       ) : (
                         <Scissors size={18} className="text-[#8A641F]" />
                       )}
@@ -763,8 +763,7 @@ export function BookingForm({
                   <div className="flex items-center gap-3">
                     <div className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl text-sm font-black uppercase ${b.photo_url ? "" : getBarberColor(b.name)}`}>
                       {b.photo_url
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={b.photo_url} alt={b.name} className="h-full w-full object-cover" />
+                        ? <Image src={b.photo_url} alt={b.name} fill sizes="44px" className="object-cover" />
                         : b.name.charAt(0)}
                     </div>
                     <div>
@@ -865,8 +864,8 @@ export function BookingForm({
                           isUnavailable
                             ? "border-red-100 bg-red-50 text-red-300 line-through"
                             : isSelected
-                            ? "border-[#111827] bg-[#111827] text-white"
-                            : "border-neutral-200 hover:border-[#D4AF66] hover:bg-[#FEFCF8]"
+                            ? "border-[#D4AF37] bg-[#D4AF37] text-[#0A0A0A] font-black"
+                            : "border-neutral-200 hover:border-[#D4AF37] hover:bg-[#FEFCF8]"
                         }`}
                       >
                         <span>{slot}</span>
@@ -1049,7 +1048,7 @@ export function BookingForm({
                   setFormError(null);
                   setStep(5);
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-[#0F172A] active:scale-[0.98] disabled:opacity-40"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] py-4 text-base font-black text-[#0A0A0A] shadow-lg shadow-[#D4AF37]/25 transition-all hover:bg-[#E5C04C] active:scale-[0.98] disabled:opacity-40"
               >
                 Continuar
               </button>
@@ -1156,7 +1155,7 @@ export function BookingForm({
                     href={googleCalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
                   >
                     <CalendarPlus size={15} className="text-[#C9922A]" />
                     Google Calendar
@@ -1166,7 +1165,7 @@ export function BookingForm({
                   <button
                     type="button"
                     onClick={() => downloadICS(calTitle, date, time, durationMinutes, calLocation, calDesc)}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
                   >
                     <Download size={15} className="text-slate-500" />
                     iPhone / Outlook (.ics)
@@ -1175,7 +1174,7 @@ export function BookingForm({
                 {barbershopPhone && (
                   <a
                     href={`tel:${barbershopPhone}`}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
                   >
                     <Phone size={15} className="text-slate-500" />
                     Llamar a la barbería
@@ -1186,7 +1185,7 @@ export function BookingForm({
                     href={barbershopMapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF66] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
                   >
                     <Navigation size={15} className="text-slate-500" />
                     Cómo llegar
@@ -1223,7 +1222,7 @@ export function BookingForm({
 
       {/* ── Botón fijo inferior — solo móvil ── */}
       {step === 4 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#D5CEBC] bg-[#F8F3EA] px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.18)] md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.08] bg-[#07101F]/95 px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl md:hidden">
           <button
             type="button"
             disabled={!name.trim() || !phone.trim() || !privacyRead}
@@ -1241,25 +1240,25 @@ export function BookingForm({
               setFormError(null);
               setStep(5);
             }}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111827] py-4 text-base font-black text-white shadow-lg shadow-slate-900/15 transition-all active:scale-[0.98] disabled:opacity-40"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] py-4 text-base font-black text-[#0A0A0A] shadow-lg shadow-[#D4AF37]/25 transition-all active:scale-[0.98] disabled:opacity-40"
           >
             Continuar
           </button>
-          <p className="mt-2 text-center text-xs font-medium text-slate-500">
+          <p className="mt-2 text-center text-xs font-medium text-white/35">
             Revisa tu cita antes de confirmar.
           </p>
         </div>
       )}
 
       {step === 5 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#D5CEBC] bg-[#F8F3EA] px-4 pb-6 pt-4 shadow-[0_-4px_32px_rgba(15,23,42,0.18)] md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.08] bg-[#07101F]/95 px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl md:hidden">
           <ConfirmButton
             saving={saving}
             disabled={saving}
             onClick={handleConfirmBooking}
             label="Reservar ahora"
           />
-          <p className="mt-2 text-center text-xs font-medium text-slate-500">
+          <p className="mt-2 text-center text-xs font-medium text-white/35">
             <ShieldCheck size={11} className="mr-1 inline-block" />
             Directo con {barbershopName}
           </p>

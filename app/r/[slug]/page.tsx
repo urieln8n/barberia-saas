@@ -234,8 +234,48 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       ? "Así reservan tus clientes desde Instagram, Google, WhatsApp o el QR de tu mostrador. Sin app, sin llamadas, sin WhatsApp perdido."
       : (publicProfile?.description ?? "Elige servicio, profesional y hora real disponible en menos de un minuto.");
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HairSalon",
+    name: displayName,
+    url: `${SITE_URL}/r/${barbershop.slug}`,
+    ...(barbershop.address && {
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: barbershop.address,
+        addressLocality: barbershop.city ?? undefined,
+        addressCountry: "ES",
+      },
+    }),
+    ...(whatsappPhone && { telephone: whatsappPhone }),
+    ...(barbershop.instagram_url && { sameAs: [barbershop.instagram_url] }),
+    ...(publicProfile?.description && { description: publicProfile.description }),
+    hasOfferCatalog: activeServices.length > 0
+      ? {
+          "@type": "OfferCatalog",
+          name: `Servicios de ${displayName}`,
+          itemListElement: activeServices.slice(0, 10).map((s, i) => ({
+            "@type": "Offer",
+            position: i + 1,
+            name: s.name,
+            price: s.price,
+            priceCurrency: "EUR",
+          })),
+        }
+      : undefined,
+    makesOffer: {
+      "@type": "Offer",
+      name: "Reserva online sin comisión",
+      url: `${SITE_URL}/r/${barbershop.slug}`,
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_12%_0%,rgba(37,99,235,0.18),transparent_28rem),radial-gradient(circle_at_88%_5%,rgba(212,175,102,0.14),transparent_24rem),linear-gradient(180deg,#050A14_0%,#07101F_48%,#0B1220_100%)] pb-24 text-white md:pb-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <TrackPageView
         barbershopId={barbershop.id}
         source={trackingSource}
@@ -245,7 +285,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       <header className="border-b border-white/10 bg-[#07101F]/88 text-white shadow-sm backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D9B766]/45 bg-[#D9B766]/20 text-sm font-black tracking-wide text-[#D9B766]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/45 bg-[#D4AF37]/20 text-sm font-black tracking-wide text-[#D4AF37]">
               {getInitials(barbershop.name) || <Scissors size={20} />}
             </div>
             <div className="min-w-0">
@@ -273,7 +313,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 text-sm font-bold text-[#111827] shadow-sm transition hover:border-[#D9B766]/60 hover:bg-[#F6F1E8]"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.12] bg-white/[0.07] px-4 text-sm font-bold text-white/80 backdrop-blur-sm transition hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/[0.1] hover:text-white"
               >
                 <MessageCircle size={15} />
                 WhatsApp
@@ -288,7 +328,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 href={mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 text-sm font-bold text-[#111827] shadow-sm transition hover:border-[#D9B766]/60 hover:bg-[#F6F1E8]"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.12] bg-white/[0.07] px-4 text-sm font-bold text-white/80 backdrop-blur-sm transition hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/[0.1] hover:text-white"
               >
                 <Map size={15} />
                 Cómo llegar
@@ -300,10 +340,10 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
 
       <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 text-white sm:px-6 md:grid-cols-[1fr_0.72fr] md:items-end md:py-10 lg:px-8">
         <div>
-          <p className="text-xs font-black uppercase text-[#D9B766]">Reserva pública</p>
+          <p className="text-xs font-black uppercase text-[#D4AF37]">Reserva pública</p>
           {isDemoBarber && (
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D9B766]/40 bg-[#D9B766]/10 px-4 py-1.5 text-xs font-black text-[#F6E2A6]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#D9B766] animate-pulse" />
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-4 py-1.5 text-xs font-black text-[#E5C04C]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
               Demo interactiva de BarberíaOS — powered by BarberíaOS
             </div>
           )}
@@ -315,7 +355,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </p>
           <a
             href="#reservar"
-            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF66] px-6 py-3 text-base font-black text-[#050A14] shadow-lg shadow-[#D4AF66]/20 transition hover:bg-[#E4C87B]"
+            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-6 py-3 text-base font-black text-[#050A14] shadow-lg shadow-[#D4AF37]/25 transition hover:bg-[#E5C04C]"
           >
             Reservar ahora <CalendarCheck size={17} />
           </a>
@@ -339,7 +379,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             },
           ].map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-center gap-3 text-base text-slate-700">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D9B766]/15 text-[#8A641F]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15 text-[#8A641F]">
                 <Icon size={16} />
               </span>
               <span className="font-semibold">{text}</span>
@@ -365,26 +405,26 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
         </section>
 
         <aside className="space-y-4 md:sticky md:top-6 md:self-start">
-          <section className="rounded-[2rem] border border-black/5 bg-[#FAF8F4] p-5 shadow-[var(--shadow-soft)]">
-            <p className="label-section">Información</p>
-            <div className="mt-4 space-y-3 text-base">
+          <section className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-sm">
+            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-white/30">Información</p>
+            <div className="mt-4 space-y-3 text-sm">
               {location && (
-                <p className="flex gap-2 text-neutral-600">
-                  <MapPin size={15} className="mt-0.5 shrink-0 text-neutral-400" />
+                <p className="flex gap-2 text-white/55">
+                  <MapPin size={14} className="mt-0.5 shrink-0 text-white/30" />
                   <span>{location}</span>
                 </p>
               )}
               {barbershop.phone && (
-                <p className="flex gap-2 text-neutral-600">
+                <p className="flex gap-2 text-white/55">
                   <MessageCircle
-                    size={15}
-                    className="mt-0.5 shrink-0 text-neutral-400"
+                    size={14}
+                    className="mt-0.5 shrink-0 text-white/30"
                   />
                   <span>{barbershop.phone}</span>
                 </p>
               )}
-              <p className="flex gap-2 text-neutral-600">
-                <Clock size={15} className="mt-0.5 shrink-0 text-neutral-400" />
+              <p className="flex gap-2 text-white/55">
+                <Clock size={14} className="mt-0.5 shrink-0 text-white/30" />
                 <span>{isDemoBarber ? "Lunes a sábado · 10:00–20:00" : "Horarios disponibles dentro del formulario."}</span>
               </p>
               {barbershop.instagram_url && (
@@ -392,9 +432,9 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   href={barbershop.instagram_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                  className="flex gap-2 font-semibold text-white/70 transition hover:text-[#D4AF37]"
                 >
-                  <Instagram size={15} className="mt-0.5 shrink-0" />
+                  <Instagram size={14} className="mt-0.5 shrink-0" />
                   Instagram
                 </a>
               )}
@@ -403,9 +443,9 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                   href={barbershop.google_business_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-2 font-semibold text-[#111827] transition hover:text-[#8A641F]"
+                  className="flex gap-2 font-semibold text-white/70 transition hover:text-[#D4AF37]"
                 >
-                  <Map size={15} className="mt-0.5 shrink-0" />
+                  <Map size={14} className="mt-0.5 shrink-0" />
                   Perfil en Google
                 </a>
               )}
@@ -413,7 +453,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
                 !barbershop.phone &&
                 !barbershop.instagram_url &&
                 !barbershop.google_business_url && (
-                  <p className="text-neutral-500">
+                  <p className="text-white/35">
                     Esta barbería todavía no ha añadido información pública de
                     contacto.
                   </p>
@@ -421,16 +461,16 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
             </div>
           </section>
 
-          <section className="rounded-[2rem] border border-black/5 bg-[#FAF8F4] p-5 shadow-[var(--shadow-soft)]">
-            <p className="label-section">Cancelación</p>
-            <p className="mt-2 text-base leading-7 text-slate-600">
+          <section className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-sm">
+            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-white/30">Cancelación</p>
+            <p className="mt-2 text-sm leading-6 text-white/45">
               Si necesitas cambiar o cancelar tu cita, contacta directamente con la
               barbería por teléfono o WhatsApp.
             </p>
           </section>
 
-          <p className="text-center text-xs font-semibold text-neutral-400">
-            Powered by BarberíaOS
+          <p className="text-center text-xs font-semibold text-white/20">
+            Powered by <span className="text-[#D4AF37]/60">BarberíaOS</span>
           </p>
         </aside>
       </div>
@@ -438,8 +478,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
       {/* CTA para dueños — solo en demo */}
       {isDemoBarber && (
         <div className="mx-auto mt-8 max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
-          <div className="rounded-[2rem] border border-[#D9B766]/30 bg-gradient-to-br from-[#0B1220] to-[#07101F] p-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#D9B766]/70">
+          <div className="rounded-[2rem] border border-[#D4AF37]/30 bg-gradient-to-br from-[#0B1220] to-[#07101F] p-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#D4AF37]/70">
               ¿Eres dueño de una barbería?
             </p>
             <h2 className="mt-3 text-2xl font-black text-white">

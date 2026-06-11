@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import {
-  CalendarDays, Crown, MessageCircle, Phone, Plus,
-  RotateCcw, Search, Star, TrendingUp, Users, X, Zap,
+  ArrowUpDown, CalendarDays, ChevronUp, ChevronDown, Crown, Euro,
+  MessageCircle, Phone, RotateCcw, Search, TrendingUp, Users, X, Zap,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -17,6 +17,7 @@ export type ClientWithStats = {
   notes?: string | null;
   created_at?: string | null;
   totalAppointments: number;
+  totalRevenue: number;
   lastAppointmentDate: string | null;
   lastAppointmentTime: string | null;
   lastServiceName: string | null;
@@ -54,6 +55,24 @@ function avatarColor(name: string) {
 function daysSince(dateStr: string | null): number | null {
   if (!dateStr) return null;
   return Math.floor((Date.now() - new Date(`${dateStr}T00:00:00`).getTime()) / 86400000);
+}
+
+function suggestedNextVisit(c: ClientWithStats): string | null {
+  if (!c.lastAppointmentDate) return null;
+  const avgInterval =
+    c.totalAppointments >= 3 && c.created_at
+      ? Math.round(daysSince(c.created_at.slice(0, 10))! / c.totalAppointments)
+      : 21;
+  const interval = Math.max(14, Math.min(avgInterval, 45));
+  const next = new Date(`${c.lastAppointmentDate}T00:00:00`);
+  next.setDate(next.getDate() + interval);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (next < today) return "Vencida";
+  const diff = Math.round((next.getTime() - today.getTime()) / 86400000);
+  if (diff === 0) return "Hoy";
+  if (diff <= 3) return `En ${diff} días`;
+  return next.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 }
 
 function relativeDate(dateStr: string | null): string {
@@ -102,9 +121,23 @@ type FilterKey = (typeof FILTERS)[number]["key"];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+type SortKey = "name" | "lastVisit" | "visits" | "revenue";
+
 export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
   const [search,     setSearch]     = useState("");
   const [activeFilter, setFilter]   = useState<FilterKey>("all");
+  const [sortKey,    setSortKey]    = useState<SortKey>("lastVisit");
+  const [sortAsc,    setSortAsc]    = useState(false);
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) setSortAsc((v) => !v);
+    else { setSortKey(key); setSortAsc(key === "name"); }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return <ArrowUpDown size={11} className="text-slate-300" />;
+    return sortAsc ? <ChevronUp size={11} className="text-[#D4AF37]" /> : <ChevronDown size={11} className="text-[#D4AF37]" />;
+  }
 
   // Contadores por segmento para los tabs
   const counts = useMemo(() => {
@@ -127,8 +160,15 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
     if (activeFilter !== "all") {
       list = list.filter((c) => getClientLabel(c)?.key === activeFilter);
     }
-    return list;
-  }, [clients, search, activeFilter]);
+    return [...list].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "name")      cmp = a.name.localeCompare(b.name);
+      if (sortKey === "lastVisit") cmp = (a.lastAppointmentDate ?? "").localeCompare(b.lastAppointmentDate ?? "");
+      if (sortKey === "visits")    cmp = a.totalAppointments - b.totalAppointments;
+      if (sortKey === "revenue")   cmp = a.totalRevenue - b.totalRevenue;
+      return sortAsc ? cmp : -cmp;
+    });
+  }, [clients, search, activeFilter, sortKey, sortAsc]);
 
   return (
     <div className="space-y-4">
@@ -193,11 +233,27 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
             <table className="w-full text-sm">
               <thead className="border-b border-slate-100 bg-slate-50">
                 <tr>
-                  <th className="px-5 py-3.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Cliente</th>
+                  <th className="px-5 py-3.5 text-left">
+                    <button type="button" onClick={() => handleSort("name")} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600">
+                      Cliente <SortIcon col="name" />
+                    </button>
+                  </th>
                   <th className="px-4 py-3.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Contacto</th>
-                  <th className="px-4 py-3.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Última visita</th>
-                  <th className="px-4 py-3.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Visitas</th>
-                  <th className="px-4 py-3.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-400">Servicio</th>
+                  <th className="px-4 py-3.5 text-left">
+                    <button type="button" onClick={() => handleSort("lastVisit")} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600">
+                      Última visita <SortIcon col="lastVisit" />
+                    </button>
+                  </th>
+                  <th className="px-4 py-3.5 text-left">
+                    <button type="button" onClick={() => handleSort("visits")} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600">
+                      Visitas <SortIcon col="visits" />
+                    </button>
+                  </th>
+                  <th className="px-4 py-3.5 text-left">
+                    <button type="button" onClick={() => handleSort("revenue")} className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600">
+                      Gastado <SortIcon col="revenue" />
+                    </button>
+                  </th>
                   <th className="px-4 py-3.5 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Acciones</th>
                 </tr>
               </thead>
@@ -214,7 +270,7 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
                             {c.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0">
-                            <Link href={`/dashboard/clientes/${c.id}`} className="font-black text-slate-900 transition hover:text-[#C9922A]">
+                            <Link href={`/dashboard/clientes/${c.id}`} className="font-black text-slate-900 transition hover:text-[#D4AF37]">
                               {c.name}
                             </Link>
                             {label && (
@@ -251,19 +307,31 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
                             {days === 0 ? "Hoy" : `${days} días`}
                           </p>
                         )}
+                        {(() => { const nv = suggestedNextVisit(c); return nv ? (
+                          <p className={`text-[10px] font-bold ${nv === "Vencida" ? "text-red-500" : nv === "Hoy" ? "text-emerald-600" : "text-slate-400"}`}>
+                            Próx: {nv}
+                          </p>
+                        ) : null; })()}
                       </td>
                       {/* Visitas */}
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-1.5">
-                          <span className={`text-lg font-black tabular-nums ${c.totalAppointments >= 10 ? "text-[#C9922A]" : "text-slate-900"}`}>
+                          <span className={`text-lg font-black tabular-nums ${c.totalAppointments >= 10 ? "text-[#D4AF37]" : "text-slate-900"}`}>
                             {c.totalAppointments}
                           </span>
                           {c.totalAppointments >= 10 && <Crown size={12} className="text-[#D4AF37]" />}
                         </div>
                       </td>
-                      {/* Servicio */}
-                      <td className="px-4 py-4 text-sm text-slate-500">
-                        {c.lastServiceName ?? <span className="text-slate-300">—</span>}
+                      {/* Gastado */}
+                      <td className="px-4 py-4">
+                        {c.totalRevenue > 0 ? (
+                          <div className="flex items-center gap-0.5">
+                            <Euro size={11} className="text-[#D4AF37]" />
+                            <span className="text-sm font-black tabular-nums text-[#D4AF37]">{c.totalRevenue}</span>
+                          </div>
+                        ) : (
+                          <span className="text-slate-300">—</span>
+                        )}
                       </td>
                       {/* Acciones */}
                       <td className="px-4 py-4">
@@ -287,9 +355,9 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
                             </a>
                           )}
                           <Link
-                            href="/dashboard/agents"
+                            href="/dashboard/marketing"
                             className="rounded-xl p-2 text-slate-400 transition hover:bg-amber-50 hover:text-amber-600"
-                            title="Reactivar con IA"
+                            title="Reactivar con marketing"
                           >
                             <RotateCcw size={14} />
                           </Link>
@@ -331,7 +399,7 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
                       )}
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className={`text-xl font-black tabular-nums ${c.totalAppointments >= 10 ? "text-[#C9922A]" : "text-slate-900"}`}>
+                      <p className={`text-xl font-black tabular-nums ${c.totalAppointments >= 10 ? "text-[#D4AF37]" : "text-slate-900"}`}>
                         {c.totalAppointments}
                       </p>
                       <p className="text-[10px] font-bold uppercase text-slate-400">Visitas</p>
@@ -344,10 +412,22 @@ export function ClientesClient({ clients, barbershopId, bookingUrl }: Props) {
                       <p className={`mt-0.5 text-xs font-semibold ${days !== null && days >= 60 ? "text-red-500" : days !== null && days >= 30 ? "text-amber-600" : "text-slate-700"}`}>
                         {relativeDate(c.lastAppointmentDate)}
                       </p>
+                      {(() => { const nv = suggestedNextVisit(c); return nv ? (
+                        <p className={`text-[10px] font-bold ${nv === "Vencida" ? "text-red-500" : nv === "Hoy" ? "text-emerald-600" : "text-slate-400"}`}>
+                          Próx: {nv}
+                        </p>
+                      ) : null; })()}
                     </div>
                     <div className="rounded-xl bg-slate-50 px-3 py-2">
-                      <p className="text-[10px] font-bold uppercase text-slate-400">Servicio</p>
-                      <p className="mt-0.5 text-xs font-semibold text-slate-700 truncate">{c.lastServiceName ?? "—"}</p>
+                      <p className="text-[10px] font-bold uppercase text-slate-400">Gastado</p>
+                      {c.totalRevenue > 0 ? (
+                        <p className="mt-0.5 flex items-center gap-0.5">
+                          <Euro size={10} className="text-[#D4AF37]" />
+                          <span className="text-xs font-black tabular-nums text-[#D4AF37]">{c.totalRevenue}</span>
+                        </p>
+                      ) : (
+                        <p className="mt-0.5 text-xs font-semibold text-slate-300">—</p>
+                      )}
                     </div>
                   </div>
 

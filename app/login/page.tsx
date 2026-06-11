@@ -17,8 +17,14 @@ export default function LoginPage() {
   const [oauthLoading, setOauthLoading] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("error") === "oauth") {
-      setError("No se pudo iniciar con Google. Inténtalo de nuevo.");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("error") === "oauth") {
+        setError("No se pudo iniciar con Google. Inténtalo de nuevo.");
+      }
+      if (params.get("tab") === "register" || params.get("mode") === "register") {
+        setMode("register");
+      }
     }
   }, []);
 

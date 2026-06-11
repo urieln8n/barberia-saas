@@ -7,11 +7,14 @@ import {
   type ReelAssemblyInput, type ReelClip, type TextOverlay, type MusicMood,
 } from "@/lib/studio/reels-engine";
 
-// Credits per duration
+// Credits by render type and duration.
+// Image-based Reels (Cloudinary → Shotstack, no Kling) cost fewer credits.
 const CREDITS_BY_DURATION: Record<number, number> = { 15: 3, 30: 5, 60: 8 };
+const CREDITS_IMAGE_BASED = 3;  // flat rate regardless of duration
 
 type CreateReelBody = {
   clip_urls:     string[];
+  asset_types?:  string[];   // "image" | "video" per clip — from Phase 2 wizard
   hook_text?:    string;
   cta_text?:     string;
   hashtags?:     string[];
@@ -20,6 +23,7 @@ type CreateReelBody = {
   style?:        string;
   logo_url?:     string;
   template_slug?: string;
+  clip_effect?:  string;     // Ken Burns effect for image clips (e.g. "zoomIn")
 };
 
 export async function POST(request: Request) {
@@ -39,6 +43,7 @@ export async function POST(request: Request) {
 
   const {
     clip_urls,
+    asset_types,
     hook_text,
     cta_text,
     hashtags    = [],
@@ -47,7 +52,13 @@ export async function POST(request: Request) {
     style       = "premium_morado",
     logo_url,
     template_slug = "custom",
+    clip_effect,
   } = body;
+
+  // Determine if all clips are images (cheaper render — no Kling needed)
+  const allImages = asset_types?.length
+    ? asset_types.every(t => t === "image")
+    : false;
 
   if (!clip_urls || clip_urls.length === 0) {
     return NextResponse.json({ error: "Se requiere al menos 1 clip_url" }, { status: 400 });
@@ -56,7 +67,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Máximo 12 clips por Reel" }, { status: 400 });
   }
 
-  const creditsNeeded = CREDITS_BY_DURATION[duration] ?? 5;
+  const creditsNeeded = allImages ? CREDITS_IMAGE_BASED : (CREDITS_BY_DURATION[duration] ?? 5);
 
   // Deduct credits (fails gracefully if wallet empty)
   // biome-ignore lint: deduct_studio_credit not yet in generated types
@@ -111,11 +122,17 @@ export async function POST(request: Request) {
 
   // Build ReelAssemblyInput
   const clipDuration = Math.floor(duration / clip_urls.length);
-  const clips: ReelClip[] = clip_urls.map(url => ({
-    url,
-    duration: clipDuration,
-    transition: "fade",
-  }));
+  const clips: ReelClip[] = clip_urls.map((url, i) => {
+    const assetType = asset_types?.[i];
+    const isImage   = assetType === "image";
+    return {
+      url,
+      duration:   clipDuration,
+      transition: "fade",
+      mediaType:  isImage ? "image" : (assetType === "video" ? "video" : undefined),
+      effect:     isImage ? (clip_effect ?? "zoomIn") : undefined,
+    };
+  });
 
   const textOverlays: TextOverlay[] = [];
   if (hook_text) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Camera, Clapperboard, ImageIcon, Loader2, Plus, Pencil, Trash2, X, Clock, Scissors, BadgeEuro, TrendingUp, Users } from "lucide-react";
 import { createService, updateService, deleteService, uploadServiceImage } from "./actions";
 import type { PlanUsage } from "@/src/lib/plans/limits";
@@ -176,8 +177,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                         title="Subir imagen del servicio"
                       >
                         {s.image_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={s.image_url} alt={s.name} className="h-full w-full object-cover" />
+                          <Image src={s.image_url} alt={s.name} fill sizes="40px" className="object-cover" />
                         ) : (
                           <ImageIcon size={14} className="text-neutral-400" />
                         )}

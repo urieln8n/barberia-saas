@@ -5,6 +5,7 @@ import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 import { StudioClient } from "./StudioClient";
 import { MediaEnhanceClient } from "./MediaEnhanceClient";
+import { ReelWizardClient } from "./ReelWizardClient";
 import type { CampaignType } from "@/lib/studio/generate-content";
 
 export const metadata: Metadata = {
@@ -37,12 +38,14 @@ export default async function StudioPage({
   const barbershopId = await getCurrentBarbershopId(supabase, user.id);
   if (!barbershopId) redirect("/onboarding");
 
+  // biome-ignore lint: logo_url may not be in generated Supabase types
   const [barbershopResult, barbersResult] = await Promise.all([
-    supabase.from("barbershops").select("id, name").eq("id", barbershopId).maybeSingle(),
+    (supabase as any).from("barbershops").select("id, name, logo_url").eq("id", barbershopId).maybeSingle(),
     supabase.from("barbers").select("id, name").eq("barbershop_id", barbershopId).eq("active", true),
   ]);
 
-  const barbershop = barbershopResult.data;
+  const barbershop = barbershopResult.data as { id: string; name: string; logo_url?: string } | null;
+  const logoUrl    = barbershop?.logo_url ?? null;
   const barbers = ((barbersResult.data ?? []) as unknown) as { id: string; name: string }[];
 
   // biome-ignore lint: studio_credit_wallets not yet in generated types
@@ -101,26 +104,11 @@ export default async function StudioPage({
       </div>
 
       {isReel ? (
-        <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
-          <div className="mb-6">
-            <p className="text-xs font-semibold uppercase tracking-wide text-violet-500">Studio IA</p>
-            <h1 className="mt-1 text-2xl font-black text-slate-900">Crear Reel</h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Convierte clips IA en un Reel completo con música, texto y CTA.
-            </p>
-          </div>
-          {/* Reels Engine wizard — Fase 2 */}
-          <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-8 text-center">
-            <p className="text-2xl">🎞️</p>
-            <p className="mt-2 text-sm font-black text-violet-800">Reels Engine — Próximamente</p>
-            <p className="mt-1 text-xs text-violet-600">
-              La arquitectura está lista. El wizard de Reels se implementa en la Fase 2.
-            </p>
-            <p className="mt-3 text-[10px] text-slate-400">
-              Ya puedes usar la API directamente: <code className="rounded bg-slate-100 px-1">POST /api/studio/reel/create</code>
-            </p>
-          </div>
-        </div>
+        <ReelWizardClient
+          barbershopName={barbershop?.name ?? "Mi Barbería"}
+          logoUrl={logoUrl}
+          studioCredits={studioCredits}
+        />
       ) : isEnhance ? (
         <div className="mx-auto max-w-2xl px-4 py-8 pb-24">
           <div className="mb-6">

@@ -122,6 +122,11 @@ export function AgendaClient({
   const [selectedService, setSelectedService] = useState(initialSelectedService);
   const [quickBookingDefaults, setQuickBookingDefaults] =
     useState<QuickBookingDefaults | null>(null);
+  const [statusError, setStatusError] = useState("");
+  // Combobox — modal nueva cita
+  const [clientSearch, setClientSearch]   = useState("");
+  const [clientComboOpen, setClientComboOpen] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState("");
 
   useEffect(() => {
     if (autoOpen) {
@@ -337,8 +342,8 @@ export function AgendaClient({
     setUpdating(null);
 
     if (result?.error) {
-      // Surface the error so the barbero knows something went wrong
-      alert(`Error al actualizar: ${result.error}`);
+      setStatusError(result.error);
+      setTimeout(() => setStatusError(""), 5000);
       return;
     }
 
@@ -394,14 +399,14 @@ export function AgendaClient({
 
       <div className="relative z-10 space-y-4">
         {/* ═══ HEADER ═══ */}
-        <div className="border-b border-slate-300 bg-white px-1 pb-4 pt-1 shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_0_rgba(0,0,0,0.06)]">
+        <div className="border-b border-slate-200 bg-white px-1 pb-3 pt-1 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
           {/* Top row: title + actions */}
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.20em] text-[#C9922A]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:block">
                 Agenda · Centro de operaciones
               </p>
-              <h1 className="mt-1 text-xl font-black tracking-tight text-slate-900 md:text-2xl">
+              <h1 className="truncate text-lg font-black tracking-tight text-slate-900 sm:text-xl">
                 {new Date().toLocaleDateString("es-ES", {
                   weekday: "long",
                   day: "numeric",
@@ -409,7 +414,7 @@ export function AgendaClient({
                 }).replace(/^\w/, (c) => c.toUpperCase())}
               </h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <AgendaNotificationsBell notifications={agendaNotifications} />
               <button
                 type="button"
@@ -417,7 +422,7 @@ export function AgendaClient({
                   setFormError("");
                   setShowModal(true);
                 }}
-                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition hover:bg-slate-700 active:scale-95"
+                className="flex items-center gap-1.5 rounded-xl bg-[#D4AF37] px-3 py-2 text-sm font-black text-[#0A0A0A] shadow-[0_2px_8px_rgba(212,175,55,0.30)] transition hover:bg-[#E5C04C] active:scale-95 sm:px-4 sm:py-2.5"
               >
                 <Plus size={14} />
                 <span className="hidden sm:block">Nueva cita</span>
@@ -425,49 +430,36 @@ export function AgendaClient({
             </div>
           </div>
 
-          {/* KPI strip */}
+          {/* KPI strip — scroll horizontal en móvil, 6 chips en una línea */}
           {view !== "opportunities" && (
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
               {[
-                { label: "Citas hoy",      value: visibleMetrics.todayAppointments,                                               color: "text-slate-900", sub: "activas" },
-                { label: "Ingresos sem.",   value: money(visibleMetrics.estimatedRevenue),                                         color: "text-[#C9922A]", sub: "estimados" },
-                { label: "Huecos libres",  value: visibleMetrics.freeSlots,                                                       color: "text-emerald-600", sub: "esta semana" },
-                { label: "Pendientes",     value: visibleMetrics.pendingAppointments, color: visibleMetrics.pendingAppointments > 0 ? "text-amber-500" : "text-slate-900", sub: "por confirmar" },
-                { label: "Clientes nuevos",value: visibleMetrics.newClients,                                                       color: "text-blue-600", sub: "esta semana" },
-                { label: "Próxima cita",   value: nextApptLabel,                                                                   color: "text-slate-900", sub: "hoy" },
-              ].map(({ label, value, color, sub }) => (
-                <div key={label} className="rounded-xl border border-slate-300 bg-[#FEFCF9] px-3 py-2.5 shadow-[0_1px_4px_rgba(0,0,0,0.08)]">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
-                  <p className={`mt-1 text-lg font-black tabular-nums leading-none ${color}`}>{value}</p>
-                  <p className="mt-0.5 text-[9px] text-slate-400">{sub}</p>
+                { label: "Hoy",        value: visibleMetrics.todayAppointments,    color: "text-slate-900" },
+                { label: "Sem. €",     value: money(visibleMetrics.estimatedRevenue), color: "text-[#D4AF37]" },
+                { label: "Libres",     value: visibleMetrics.freeSlots,            color: "text-emerald-600" },
+                { label: "Pend.",      value: visibleMetrics.pendingAppointments,  color: visibleMetrics.pendingAppointments > 0 ? "text-amber-500" : "text-slate-500" },
+                { label: "Nuevos",     value: visibleMetrics.newClients,           color: "text-blue-600" },
+                { label: "Próxima",    value: nextApptLabel,                       color: "text-slate-700" },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-[#FEFCF9] px-2.5 py-1.5">
+                  <span className="text-[10px] font-semibold text-slate-400">{label}</span>
+                  <span className={`text-sm font-black tabular-nums leading-none ${color}`}>{value}</span>
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* Studio IA — banner contextual huecos libres */}
-          {visibleMetrics.freeSlots > 0 && view !== "opportunities" && (
-            <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[#A78BFA]/30 bg-[#F6F3FF] px-4 py-2.5">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#6D28D9]/15">
-                  <Clapperboard size={13} className="text-[#6D28D9]" />
-                </div>
-                <p className="truncate text-xs text-slate-700">
-                  <span className="font-black text-[#5B21B6]">{visibleMetrics.freeSlots} huecos libres</span>
-                  {" — Crea una promo en video para llenarlos."}
-                </p>
-              </div>
-              <a
-                href="/dashboard/studio?type=fill_empty_slots"
-                className="shrink-0 rounded-lg bg-[#6D28D9] px-3 py-1.5 text-[11px] font-black text-white transition hover:bg-[#5B21B6] active:scale-95"
-              >
-                Crear promo con IA
-              </a>
+              {visibleMetrics.freeSlots > 0 && (
+                <a
+                  href="/dashboard/studio?type=fill_empty_slots"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#A78BFA]/30 bg-[#F6F3FF] px-2.5 py-1.5 text-[11px] font-black text-[#5B21B6] transition hover:bg-[#EDE9FE]"
+                >
+                  <Clapperboard size={11} />
+                  Llenar con IA
+                </a>
+              )}
             </div>
           )}
 
           {/* View switcher + date navigator */}
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="flex-1 min-w-0">
               <AgendaViewSwitcher current={view} onChange={handleViewChange} />
             </div>
@@ -624,6 +616,17 @@ export function AgendaClient({
         </AgendaMotionShell>
       </div>
 
+      {/* Error inline — reemplaza alert() */}
+      {statusError && (
+        <div className="fixed bottom-24 left-1/2 z-[60] -translate-x-1/2 flex items-center gap-3 rounded-2xl border border-red-200 bg-white px-5 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.14)] md:bottom-6">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-red-500" />
+          <p className="text-sm font-semibold text-red-700">{statusError}</p>
+          <button type="button" onClick={() => setStatusError("")} className="text-red-400 hover:text-red-600">
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Appointment details panel */}
       <AppointmentDetailsPanel
         appointment={selectedAppointment}
@@ -657,12 +660,12 @@ export function AgendaClient({
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9922A]">Nueva cita</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37]">Nueva cita</p>
                   <h2 className="mt-0.5 text-lg font-black text-slate-900">Crear reserva</h2>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); setClientSearch(""); setSelectedClientId(""); setClientComboOpen(false); }}
                   aria-label="Cerrar"
                   className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:border-slate-300 hover:text-slate-600"
                 >
@@ -673,9 +676,63 @@ export function AgendaClient({
               <form action={handleSubmit} className="mt-5 flex flex-col gap-3.5">
                 <input type="hidden" name="barbershop_id" value={barbershopId} />
 
+                {/* ── Combobox cliente con búsqueda ── */}
+                <div className="relative">
+                  <label className="mb-1.5 block text-xs font-semibold text-slate-500">Cliente *</label>
+                  <input
+                    type="text"
+                    placeholder="Buscar por nombre o teléfono..."
+                    value={clientSearch}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      setClientSearch(e.target.value);
+                      setClientComboOpen(true);
+                      setSelectedClientId("");
+                    }}
+                    onFocus={() => setClientComboOpen(true)}
+                    onBlur={() => setTimeout(() => setClientComboOpen(false), 180)}
+                    className={`w-full rounded-xl border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition ${
+                      selectedClientId
+                        ? "border-[#D4AF37] ring-1 ring-[#D4AF37]/20"
+                        : "border-slate-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
+                    }`}
+                  />
+                  <input type="hidden" name="client_id" value={selectedClientId} />
+                  {clientComboOpen && (
+                    <div className="absolute z-50 mt-1 max-h-52 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+                      {(() => {
+                        const q = clientSearch.toLowerCase().trim();
+                        const matches = q
+                          ? clients.filter(c =>
+                              c.name.toLowerCase().includes(q) ||
+                              (c.phone && c.phone.includes(q))
+                            ).slice(0, 8)
+                          : clients.slice(0, 8);
+                        if (matches.length === 0) return (
+                          <p className="px-3 py-3 text-xs text-slate-400">Sin resultados</p>
+                        );
+                        return matches.map(c => (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onMouseDown={() => {
+                              setSelectedClientId(c.id);
+                              setClientSearch(`${c.name}${c.phone ? ` · ${c.phone}` : ""}`);
+                              setClientComboOpen(false);
+                            }}
+                            className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition hover:bg-[#FEF9EE]"
+                          >
+                            <span className="font-semibold text-sm text-slate-900">{c.name}</span>
+                            {c.phone && <span className="text-xs text-slate-400">{c.phone}</span>}
+                          </button>
+                        ));
+                      })()}
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Servicio + Barbero ── */}
                 {[
-                  { label: "Cliente *", name: "client_id", required: true,
-                    options: [{ value: "", label: "Seleccionar cliente..." }, ...clients.map(c => ({ value: c.id, label: `${c.name}${c.phone ? ` · ${c.phone}` : ""}` }))] },
                   { label: "Servicio *", name: "service_id", required: true,
                     options: [{ value: "", label: "Seleccionar servicio..." }, ...services.map(s => ({ value: s.id, label: `${s.name} · ${s.price}€ · ${s.duration_minutes}min` }))] },
                   { label: "Barbero", name: "barber_id", required: false,
@@ -686,7 +743,7 @@ export function AgendaClient({
                     <select
                       name={name}
                       required={required}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
                     >
                       {options.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -739,7 +796,7 @@ export function AgendaClient({
                 <div className="flex gap-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => { setShowModal(false); setClientSearch(""); setSelectedClientId(""); setClientComboOpen(false); }}
                     className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
                   >
                     Cancelar
@@ -747,7 +804,7 @@ export function AgendaClient({
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-black text-white transition hover:bg-slate-700 disabled:opacity-50"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl bg-[#D4AF37] px-4 text-sm font-black text-[#0A0A0A] shadow-[0_2px_8px_rgba(212,175,55,0.25)] transition hover:bg-[#E5C04C] disabled:opacity-50"
                   >
                     {saving ? "Guardando..." : "Crear cita"}
                   </button>

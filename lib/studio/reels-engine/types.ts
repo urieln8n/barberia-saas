@@ -8,9 +8,11 @@
 export type ReelTransition = "fade" | "cut" | "wipeLeft" | "wipeRight" | "slideLeft" | "slideRight";
 
 export type ReelClip = {
-  url: string;             // must be a permanent URL (Supabase Storage)
+  url: string;             // must be a permanent URL (Supabase Storage or Cloudinary)
   duration: number;        // seconds — typically 5
   transition?: ReelTransition;
+  mediaType?: "image" | "video";  // defaults to "video" if omitted
+  effect?: string;                // Ken Burns effect for images: zoomIn, zoomOut, slideLeft, slideRight
 };
 
 export type ReelMusic = {

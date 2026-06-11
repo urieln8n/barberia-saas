@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPin,
   MessageCircle,
@@ -85,11 +86,12 @@ export function BarberiaCard({
       {/* ── Cover ── */}
       <div className="relative h-40 shrink-0 overflow-hidden bg-gradient-to-br from-[#0b0e17] to-[#1a2033]">
         {profile.cover_image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={profile.cover_image_url}
             alt={`${profile.public_name} portada`}
-            className="h-full w-full object-cover opacity-55 transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover opacity-55 transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0">
@@ -119,11 +121,12 @@ export function BarberiaCard({
         <div className="absolute bottom-0 right-4 translate-y-1/2">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-white bg-[#080A0F] text-sm font-black text-[#D5A84C] shadow-lg">
             {profile.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={profile.logo_url}
                 alt={profile.public_name}
-                className="h-full w-full rounded-2xl object-cover"
+                fill
+                sizes="48px"
+                className="rounded-2xl object-cover"
               />
             ) : (
               getInitials(profile.public_name)

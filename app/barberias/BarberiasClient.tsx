@@ -12,7 +12,20 @@ import {
   MapPin,
 } from "lucide-react";
 import { BarberiaCard, type BarberiaProfile } from "@/components/marketplace/BarberiaCard";
-import { MarketplaceMap, type UserLocation } from "@/components/marketplace/MarketplaceMap";
+import dynamic from "next/dynamic";
+import type { UserLocation } from "@/components/marketplace/MarketplaceMap";
+
+const MarketplaceMap = dynamic(
+  () => import("@/components/marketplace/MarketplaceMap").then((m) => ({ default: m.MarketplaceMap })),
+  {
+    loading: () => (
+      <div className="flex h-[480px] items-center justify-center rounded-2xl bg-[#080A0F] animate-pulse">
+        <span className="text-sm text-white/40">Cargando mapa…</span>
+      </div>
+    ),
+    ssr: false,
+  }
+);
 import {
   sortByDistance,
   filterByRadius,
