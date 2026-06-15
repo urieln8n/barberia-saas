@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect, useRef, type FormEvent } from "react"
-import { X, User, Scissors, Calendar, FileText, CreditCard } from "lucide-react"
+import { X, User, Scissors, Calendar, FileText, CreditCard, Check, CalendarCheck, Clock } from "lucide-react"
 import { LoadingButton } from "@/components/ui/LoadingButton"
 import { createQuickBooking } from "@/app/dashboard/actions/createQuickBooking"
 import { useActionToast } from "@/components/ui/ActionToast"
@@ -59,6 +59,15 @@ const INITIAL_FORM: FormState = {
   paymentStatus: "pending",
 }
 
+type SuccessInfo = {
+  customerName: string
+  serviceName: string
+  barberName: string
+  date: string
+  time: string
+  price: number | null
+}
+
 export function QuickBookingPanel({
   open,
   onOpenChange,
@@ -78,6 +87,7 @@ export function QuickBookingPanel({
     appointmentTime: defaultTime ?? "",
     serviceId: defaultServiceId ?? "",
   })
+  const [successInfo, setSuccessInfo] = useState<SuccessInfo | null>(null)
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -94,6 +104,7 @@ export function QuickBookingPanel({
       })
       setErrors({})
       setIsSubmitting(false)
+      setSuccessInfo(null)
       // Focus first input after transition
       const timer = setTimeout(() => firstInputRef.current?.focus(), 150)
       return () => clearTimeout(timer)
@@ -167,9 +178,27 @@ export function QuickBookingPanel({
       })
 
       if (result.success) {
-        showToast({ type: "success", message: "Listo, la cita quedó en agenda." })
+        const service = services.find((s) => s.id === form.serviceId)
+        const barber  = barbers.find((b) => b.id === form.barberId)
+        const info: SuccessInfo = {
+          customerName: form.customerName.trim(),
+          serviceName:  service?.name ?? "Servicio",
+          barberName:   barber?.name  ?? "Barbero",
+          date:         form.appointmentDate,
+          time:         form.appointmentTime.slice(0, 5),
+          price:        service?.price ?? null,
+        }
+        setSuccessInfo(info)
         onSuccess?.()
-        setTimeout(() => onOpenChange(false), 800)
+        showToast({
+          type: "success",
+          message: `Cita de ${info.customerName} confirmada`,
+          detail:  `${info.serviceName} · ${info.barberName} · ${info.time}`,
+        })
+        setTimeout(() => {
+          onOpenChange(false)
+          setSuccessInfo(null)
+        }, 3200)
       } else {
         showToast({ type: "error", message: result.error })
       }
@@ -185,7 +214,7 @@ export function QuickBookingPanel({
       {/* Overlay */}
       <div
         aria-hidden="true"
-        onClick={() => !isSubmitting && onOpenChange(false)}
+        onClick={() => !isSubmitting && !successInfo && onOpenChange(false)}
         style={{
           opacity: open ? 1 : 0,
           pointerEvents: open ? "auto" : "none",
@@ -205,6 +234,136 @@ export function QuickBookingPanel({
         }}
         className="fixed right-0 top-0 z-[1001] flex h-full w-full max-w-lg flex-col bg-[#F6F1E8] shadow-[0_0_80px_rgba(5,10,20,0.40)]"
       >
+
+        {/* ── PANTALLA DE ÉXITO PREMIUM ──────────────────────────────────── */}
+        {successInfo && (
+          <div
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 px-8 text-center"
+            style={{
+              background: "linear-gradient(160deg, #09090B 0%, #0D0D0F 60%, #111115 100%)",
+              animation: "fadeInScale 0.35s cubic-bezier(0.16,1,0.3,1) both",
+            }}
+          >
+            <style>{`
+              @keyframes fadeInScale {
+                from { opacity: 0; transform: scale(0.96); }
+                to   { opacity: 1; transform: scale(1); }
+              }
+              @keyframes checkPop {
+                0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+                60%  { transform: scale(1.15) rotate(4deg); }
+                100% { transform: scale(1) rotate(0deg); opacity: 1; }
+              }
+              @keyframes ringPulse {
+                0%, 100% { transform: scale(1); opacity: 0.5; }
+                50%       { transform: scale(1.35); opacity: 0; }
+              }
+            `}</style>
+
+            {/* Checkmark animado */}
+            <div className="relative flex h-28 w-28 items-center justify-center">
+              <div
+                className="absolute inset-0 rounded-full bg-emerald-500/20"
+                style={{ animation: "ringPulse 1.8s ease-in-out 0.3s infinite" }}
+              />
+              <div
+                className="absolute inset-2 rounded-full bg-emerald-500/10"
+                style={{ animation: "ringPulse 1.8s ease-in-out 0.6s infinite" }}
+              />
+              <div
+                className="relative flex h-20 w-20 items-center justify-center rounded-full shadow-[0_0_50px_rgba(16,185,129,0.55)]"
+                style={{
+                  background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                  animation: "checkPop 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both",
+                }}
+              >
+                <Check size={36} strokeWidth={3} className="text-white" />
+              </div>
+            </div>
+
+            {/* Headline */}
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-400">
+                Reserva confirmada
+              </p>
+              <h2
+                className="mt-2 text-3xl font-black tracking-tight"
+                style={{
+                  background: "linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {successInfo.customerName}
+              </h2>
+            </div>
+
+            {/* Resumen de la cita */}
+            <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-1 backdrop-blur-sm">
+              <div className="divide-y divide-white/[0.05]">
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="flex items-center gap-2 text-xs text-white/40">
+                    <Scissors size={11} /> Servicio
+                  </span>
+                  <span className="text-sm font-black text-white">{successInfo.serviceName}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="flex items-center gap-2 text-xs text-white/40">
+                    <User size={11} /> Barbero
+                  </span>
+                  <span className="text-sm font-black text-white">{successInfo.barberName}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="flex items-center gap-2 text-xs text-white/40">
+                    <CalendarCheck size={11} /> Fecha
+                  </span>
+                  <span className="text-sm font-black text-white">{successInfo.date}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="flex items-center gap-2 text-xs text-white/40">
+                    <Clock size={11} /> Hora
+                  </span>
+                  <span className="text-sm font-black text-white">{successInfo.time}</span>
+                </div>
+                {successInfo.price != null && (
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="flex items-center gap-2 text-xs text-white/40">
+                      <CreditCard size={11} /> Precio
+                    </span>
+                    <span
+                      className="text-sm font-black"
+                      style={{
+                        background: "linear-gradient(135deg, #F5D060, #D4AF37)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {successInfo.price} €
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Progress bar auto-close */}
+            <div className="w-full">
+              <div className="h-0.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                <div
+                  className="h-full rounded-full bg-emerald-500"
+                  style={{
+                    width: "100%",
+                    transformOrigin: "left",
+                    animation: "scaleX-out 3s linear forwards",
+                  }}
+                />
+              </div>
+              <style>{`@keyframes scaleX-out { from { transform: scaleX(1); } to { transform: scaleX(0); } }`}</style>
+              <p className="mt-2 text-[11px] text-white/25">Cerrando automáticamente…</p>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#D5CEBC] bg-[#F8F3EA] px-5 py-4 shrink-0">
           <div>

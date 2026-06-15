@@ -661,6 +661,92 @@ function HowItWorks() {
   );
 }
 
+// ─── Video Demo ───────────────────────────────────────────────────────────────
+// Reemplaza VIDEO_ID con el ID de tu vídeo de YouTube (ej. "dQw4w9WgXcQ")
+const DEMO_VIDEO_ID = ""; // <-- pega aquí el ID de tu vídeo
+
+function VideoDemo() {
+  if (!DEMO_VIDEO_ID) return null;
+  return (
+    <section className="relative overflow-hidden bg-[#09090B] py-20 md:py-28">
+      {/* Dot grid */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(212,175,55,0.06) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      {/* Gold beam */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[700px] -translate-x-1/2"
+        style={{ background: "radial-gradient(ellipse 60% 80% at 50% 0%, rgba(212,175,55,0.10) 0%, transparent 100%)" }}
+      />
+
+      <div className="relative mx-auto max-w-5xl px-4 md:px-6">
+        {/* Header */}
+        <div className="mb-10 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D4AF37]/60">Demo en vivo</p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
+            Míralo funcionar en{" "}
+            <span
+              style={{
+                background: "linear-gradient(135deg, #F5D060 0%, #D4AF37 60%, #B8860B 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              2 minutos
+            </span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/40">
+            Desde que el cliente reserva desde Instagram hasta que tú lo ves en el panel — sin complicaciones.
+          </p>
+        </div>
+
+        {/* Video wrapper */}
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_40px_100px_rgba(0,0,0,0.6)]">
+          {/* Top shine */}
+          <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
+          {/* Browser chrome bar */}
+          <div className="flex items-center gap-1.5 bg-[#111115] px-4 py-3 border-b border-white/[0.05]">
+            <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
+            <div className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
+            <div className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
+            <div className="mx-3 flex flex-1 items-center rounded-md bg-white/[0.04] px-3 py-1">
+              <span className="text-[11px] text-white/20">barberiaos.com/dashboard</span>
+            </div>
+          </div>
+          {/* YouTube iframe */}
+          <div className="relative aspect-video bg-black">
+            <iframe
+              src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}?rel=0&modestbranding=1&color=white`}
+              title="BarberíaOS — Demo del sistema"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full"
+            />
+          </div>
+        </div>
+
+        {/* Badges debajo del video */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          {["Sin tarjeta de crédito", "Activo en 30 min", "Soporte en español"].map((label) => (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[12px] font-semibold text-white/40"
+            >
+              <span className="h-1 w-1 rounded-full bg-[#D4AF37]/60" />
+              {label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Trust bar ────────────────────────────────────────────────────────────────
 
 function TrustBar() {
@@ -1014,6 +1100,7 @@ export function BarberíaOSHomeLanding() {
       <ComparisonSection />
       <StatsBar />
       <HowItWorks />
+      <VideoDemo />
       <TrustBar />
       <Pricing />
       <FAQSection />

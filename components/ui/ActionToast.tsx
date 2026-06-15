@@ -17,11 +17,12 @@ type Toast = {
   id: string
   type: ToastType
   message: string
+  detail?: string
   duration: number
 }
 
 type ToastContextValue = {
-  showToast: (opts: { type: ToastType; message: string; duration?: number }) => void
+  showToast: (opts: { type: ToastType; message: string; detail?: string; duration?: number }) => void
 }
 
 const ToastContext = createContext<ToastContextValue>({ showToast: () => {} })
@@ -43,16 +44,18 @@ export function ActionToastProvider({ children }: { children: ReactNode }) {
     ({
       type,
       message,
-      duration = 4000,
+      detail,
+      duration = 5000,
     }: {
       type: ToastType
       message: string
+      detail?: string
       duration?: number
     }) => {
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
 
       setToasts((prev) => {
-        const next = [...prev, { id, type, message, duration }]
+        const next = [...prev, { id, type, message, detail, duration }]
         // Keep only last 3
         return next.slice(-3)
       })
@@ -119,54 +122,54 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    // Trigger enter animation
-    const raf = requestAnimationFrame(() => {
-      setVisible(true)
-    })
+    const raf = requestAnimationFrame(() => setVisible(true))
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  const borderColor =
-    toast.type === "success"
-      ? "#D4AF66"
-      : toast.type === "error"
-        ? "#E5484D"
-        : "#2563EB"
+  const isSuccess = toast.type === "success"
+  const isError   = toast.type === "error"
 
-  const Icon =
-    toast.type === "success" ? Check : toast.type === "error" ? X : Info
+  const borderColor = isSuccess ? "#10B981" : isError ? "#E5484D" : "#3B82F6"
+  const iconBg      = isSuccess ? "rgba(16,185,129,0.15)" : isError ? "rgba(229,72,77,0.15)" : "rgba(59,130,246,0.15)"
+  const iconColor   = isSuccess ? "#34D399" : isError ? "#F87171" : "#60A5FA"
+  const shadowColor = isSuccess
+    ? "0_0_0_1px_rgba(16,185,129,0.12),0_20px_60px_rgba(5,10,20,0.50),0_0_30px_rgba(16,185,129,0.08)"
+    : isError
+    ? "0_0_0_1px_rgba(229,72,77,0.12),0_20px_60px_rgba(5,10,20,0.50)"
+    : "0_0_0_1px_rgba(59,130,246,0.12),0_20px_60px_rgba(5,10,20,0.50)"
 
-  const iconColor =
-    toast.type === "success"
-      ? "#D4AF66"
-      : toast.type === "error"
-        ? "#E5484D"
-        : "#60A5FA"
+  const Icon = isSuccess ? Check : isError ? X : Info
 
   return (
     <div
       role="alert"
       style={{
         borderLeft: `3px solid ${borderColor}`,
-        transform: visible ? "translateX(0) scale(1)" : "translateX(24px) scale(0.96)",
+        boxShadow: shadowColor,
+        transform: visible ? "translateX(0) scale(1)" : "translateX(28px) scale(0.94)",
         opacity: visible ? 1 : 0,
-        transition: "transform 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.2s ease",
+        transition: "transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.22s ease",
       }}
-      className="flex w-full items-start gap-3 rounded-2xl bg-[#0B1828] px-4 py-3.5 shadow-[0_18px_54px_rgba(5,10,20,0.40)] border border-white/10"
+      className="flex w-full items-start gap-3 rounded-2xl border border-white/[0.08] bg-[#0C0E14]/95 px-4 py-3.5 backdrop-blur-md"
     >
       <span
-        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-        style={{ color: iconColor }}
+        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+        style={{ backgroundColor: iconBg, color: iconColor }}
       >
-        <Icon size={14} strokeWidth={2.5} />
+        <Icon size={13} strokeWidth={2.5} />
       </span>
-      <p className="flex-1 text-sm font-medium leading-5 text-white">{toast.message}</p>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold leading-5 text-white">{toast.message}</p>
+        {toast.detail && (
+          <p className="mt-0.5 truncate text-xs text-white/45">{toast.detail}</p>
+        )}
+      </div>
       <button
         onClick={() => onDismiss(toast.id)}
         aria-label="Cerrar"
-        className="ml-1 mt-0.5 shrink-0 text-slate-400 hover:text-white transition-colors duration-150"
+        className="ml-1 mt-0.5 shrink-0 rounded-lg p-1 text-white/30 transition hover:bg-white/[0.06] hover:text-white/70"
       >
-        <X size={14} />
+        <X size={13} />
       </button>
     </div>
   )
