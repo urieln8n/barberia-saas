@@ -136,36 +136,6 @@ const OccupancyBar = memo(function OccupancyBar({ pct }: { pct: number }) {
 
 // ─── Sub-componentes internos ─────────────────────────────────────────────────
 
-// Card de KPI compacto
-function KpiCard({
-  label,
-  value,
-  sub,
-  icon: Icon,
-  iconColor,
-  href,
-}: {
-  label: string;
-  value: string | number;
-  sub: string;
-  icon: React.ElementType;
-  iconColor: string;
-  href: string;
-}) {
-  return (
-    <Link href={href} className="block">
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
-        <div className="flex items-center justify-between">
-          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">{label}</p>
-          <Icon size={15} className={iconColor} />
-        </div>
-        <p className="mt-2.5 text-3xl font-black tabular-nums text-slate-900">{value}</p>
-        <p className="mt-0.5 truncate text-xs text-slate-400">{sub}</p>
-      </div>
-    </Link>
-  );
-}
-
 const AppointmentCard = memo(function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
   const precio = appointment.services?.price;
   return (
@@ -308,79 +278,6 @@ export function DashboardClient({
     }
     return alerts.slice(0, 4);
   }, [cashSessionOpen, salesToday, dormantClientsCount, totalFreeSlotsToday, confirmedUpcomingCount]);
-
-  // ── KPIs ──────────────────────────────────────────────────────────────────
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const kpis = useMemo(() => [
-    {
-      label: "Caja del día",
-      value: formatCurrency(salesToday),
-      icon: Wallet,
-      iconColor: cashSessionOpen ? "text-emerald-600" : "text-amber-600",
-      sub: cashSessionOpen
-        ? `${clientsAttendedToday} clientes · sesión abierta`
-        : "Sesión cerrada",
-      href: "/dashboard/caja",
-    },
-    {
-      label: "Reservas hoy",
-      value: todayAppointments.length,
-      icon: CalendarCheck,
-      iconColor: "text-blue-600",
-      sub:
-        todayAppointments.length === 0
-          ? "Sin reservas activas"
-          : `${confirmedUpcomingCount} confirmadas`,
-      href: "/dashboard/agenda",
-    },
-    {
-      label: "Huecos libres",
-      value: totalFreeSlotsToday,
-      icon: Clock,
-      iconColor: totalFreeSlotsToday > 0 ? "text-violet-600" : "text-slate-400",
-      sub:
-        totalFreeSlotsToday > 0
-          ? barberWithMostSlots
-            ? `${barberWithMostSlots.barberName} tiene más disponibilidad`
-            : "Puedes rellenarlos hoy"
-          : "Agenda completa",
-      href: "/dashboard/huecos",
-    },
-    {
-      label: "Clientes",
-      value: totalClientsCount,
-      icon: Users,
-      iconColor: "text-slate-500",
-      sub:
-        dormantClientsCount > 0
-          ? `${dormantClientsCount} sin volver +45 días`
-          : "Base activa",
-      href: "/dashboard/clientes",
-    },
-    {
-      label: "Equipo activo",
-      value: activeBarbersCount,
-      icon: Scissors,
-      iconColor: "text-slate-500",
-      sub:
-        activeServicesCount > 0
-          ? `${activeServicesCount} servicios activos`
-          : "Sin servicios",
-      href: "/dashboard/barberos",
-    },
-    {
-      label: "Pendientes",
-      value: confirmedUpcomingCount,
-      icon: Bell,
-      iconColor: confirmedUpcomingCount > 0 ? "text-amber-600" : "text-slate-400",
-      sub:
-        confirmedUpcomingCount > 0
-          ? "Próximas confirmadas"
-          : "Todo al día",
-      href: "/dashboard/reservas",
-    },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [salesToday, cashSessionOpen, clientsAttendedToday, todayAppointments.length, confirmedUpcomingCount, totalFreeSlotsToday, barberWithMostSlots, totalClientsCount, dormantClientsCount, activeBarbersCount, activeServicesCount]) as readonly {label:string;value:string|number;icon:React.ElementType;iconColor:string;sub:string;href:string}[];
 
   return (
     <div className="space-y-4">
@@ -780,15 +677,22 @@ export function DashboardClient({
           {todayAppointments.length === 0 ? (
             <div className="p-5 md:p-6">
               <EmptyState
+                tone="dark"
                 icon={CalendarCheck}
                 title="Sin reservas activas hoy"
                 description="Usa el Agente Huecos para generar el copy de Instagram y WhatsApp en segundos, o comparte tu QR."
                 action={
                   <div className="flex flex-wrap gap-2">
-                    <Link href="/dashboard/agents" className="btn-primary">
+                    <Link
+                      href="/dashboard/agents"
+                      className="inline-flex h-9 items-center gap-2 rounded-2xl bg-[#D4AF37] px-4 text-sm font-black text-[#09090B] shadow-[0_2px_8px_rgba(212,175,55,0.30)] transition hover:bg-[#F5D060] active:scale-[0.98]"
+                    >
                       <Sparkles size={15} /> Agente Huecos IA
                     </Link>
-                    <Link href="/dashboard/huecos" className="btn-outline">
+                    <Link
+                      href="/dashboard/huecos"
+                      className="inline-flex h-9 items-center gap-2 rounded-2xl border border-[#2A2A38] bg-[#0E0E14] px-4 text-sm font-bold text-white/65 transition hover:border-[#36364A] hover:bg-[#141420] hover:text-white"
+                    >
                       <Clock size={15} /> Ver huecos
                     </Link>
                   </div>
@@ -926,8 +830,8 @@ export function DashboardClient({
                 : "Sin reservas hoy — revisa huecos libres"
             }
             icon={CalendarCheck}
-            iconBg="bg-[#C9922A]/10"
-            iconColor="text-[#C9922A]"
+            iconBg="bg-[#D4AF37]/[0.15]"
+            iconColor="text-[#D4AF37]"
             footer={
               <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Abrir agenda <ArrowRight size={12} />
