@@ -122,10 +122,10 @@ function getGreeting(): string {
 const OccupancyBar = memo(function OccupancyBar({ pct }: { pct: number }) {
   const color =
     pct >= 80 ? "from-emerald-500 to-emerald-400" :
-    pct >= 50 ? "from-[#C9A227] to-[#F5D76E]" :
-                "from-slate-300 to-slate-200";
+    pct >= 50 ? "from-[#D4AF37] to-[#F5D060]" :
+                "from-white/20 to-white/10";
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
       <div
         className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
         style={{ width: `${Math.min(100, pct)}%` }}
@@ -169,22 +169,22 @@ function KpiCard({
 const AppointmentCard = memo(function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
   const precio = appointment.services?.price;
   return (
-    <article className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-sm transition-colors hover:border-slate-200 hover:bg-slate-50">
+    <article className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 transition-colors hover:border-white/[0.10] hover:bg-white/[0.05]">
       <div className="w-12 shrink-0 text-center">
-        <p className="text-sm font-black text-slate-900">{formatTime(appointment.start_time)}</p>
-        <p className="text-[10px] text-slate-400">hoy</p>
+        <p className="text-sm font-black text-white">{formatTime(appointment.start_time)}</p>
+        <p className="text-[10px] text-white/35">hoy</p>
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-black text-slate-900">
+        <p className="truncate text-sm font-black text-white">
           {appointment.clients?.name ?? "Cliente sin nombre"}
         </p>
-        <p className="truncate text-xs text-slate-500">
+        <p className="truncate text-xs text-white/40">
           {appointment.services?.name ?? "Sin servicio"} · {appointment.barbers?.name ?? "Sin barbero"}
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {precio != null && (
-          <span className="text-sm font-bold text-emerald-600">{formatCurrency(precio)}</span>
+          <span className="text-sm font-bold text-emerald-400">{formatCurrency(precio)}</span>
         )}
         <StatusBadge status={appointment.status} />
       </div>
@@ -208,20 +208,20 @@ function AlertBanner({
 }) {
   const styles: Record<AlertType, { wrapper: string; icon: React.ReactNode }> = {
     warning: {
-      wrapper: "border-amber-200 bg-amber-50 text-amber-800",
-      icon: <AlertTriangle size={14} className="shrink-0 text-amber-600" />,
+      wrapper: "border-amber-500/20 bg-amber-500/[0.08] text-amber-300",
+      icon: <AlertTriangle size={14} className="shrink-0 text-amber-400" />,
     },
     info: {
-      wrapper: "border-blue-200 bg-blue-50 text-blue-800",
-      icon: <Info size={14} className="shrink-0 text-blue-600" />,
+      wrapper: "border-blue-500/20 bg-blue-500/[0.08] text-blue-300",
+      icon: <Info size={14} className="shrink-0 text-blue-400" />,
     },
     success: {
-      wrapper: "border-emerald-200 bg-emerald-50 text-emerald-800",
-      icon: <CheckCircle2 size={14} className="shrink-0 text-emerald-600" />,
+      wrapper: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300",
+      icon: <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />,
     },
     error: {
-      wrapper: "border-red-200 bg-red-50 text-red-800",
-      icon: <XCircle size={14} className="shrink-0 text-red-600" />,
+      wrapper: "border-red-500/20 bg-red-500/[0.08] text-red-300",
+      icon: <XCircle size={14} className="shrink-0 text-red-400" />,
     },
   };
 
@@ -389,15 +389,17 @@ export function DashboardClient({
           EXECUTIVE HEADER — Stripe/Linear/Apple Wallet inspired
           Compacto, denso, toda la info del día visible sin scroll.
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.04)]">
+      <section className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-sm">
+        {/* Inner glow top */}
+        <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
 
         {/* ── Fila 1: Saludo + fecha + status pills ── */}
         <div className="flex items-start justify-between gap-3 px-5 pb-3 pt-4 md:px-6">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B8A990]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#D4AF37]/60">
               {greeting} · {formatDateSpanish(today)}
             </p>
-            <h1 className="mt-0.5 truncate text-xl font-black tracking-tight text-[#111111] md:text-2xl">
+            <h1 className="mt-0.5 truncate text-xl font-black tracking-tight text-white md:text-2xl">
               {barbershop?.name ?? "Tu barbería"}
             </h1>
           </div>
@@ -406,21 +408,21 @@ export function DashboardClient({
           <div className="hidden shrink-0 items-center gap-2 sm:flex">
             <span className={`inline-flex h-7 items-center rounded-full border px-2.5 text-[10px] font-black ${
               cashSessionOpen
-                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                : "border-amber-200 bg-amber-50 text-amber-700"
+                ? "border-emerald-500/25 bg-emerald-500/[0.12] text-emerald-400"
+                : "border-amber-500/25 bg-amber-500/[0.12] text-amber-400"
             }`}>
               Caja {cashSessionOpen ? "abierta" : "cerrada"}
             </span>
             <Link
               href="/dashboard/qr"
-              className="flex h-7 items-center gap-1 rounded-full border border-slate-200 px-2.5 text-[10px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-800"
+              className="flex h-7 items-center gap-1 rounded-full border border-white/[0.10] px-2.5 text-[10px] font-bold text-white/50 transition hover:border-white/20 hover:text-white/80"
             >
               <QrCode size={11} /> QR
             </Link>
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="flex h-7 items-center gap-1 rounded-full border border-slate-200 px-2.5 text-[10px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-800"
+              className="flex h-7 items-center gap-1 rounded-full border border-white/[0.10] px-2.5 text-[10px] font-bold text-white/50 transition hover:border-white/20 hover:text-white/80"
             >
               Web <ArrowRight size={9} />
             </Link>
@@ -430,40 +432,39 @@ export function DashboardClient({
         {/* ── Fila 2: 3 métricas inline ── */}
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-5 pb-3 md:px-6">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-black tabular-nums text-[#111111]">
+            <span className="text-2xl font-black tabular-nums text-white">
               {todayAppointments.length}
             </span>
-            <span className="text-xs text-slate-500">reservas hoy</span>
+            <span className="text-xs text-white/40">reservas hoy</span>
           </div>
-          <div className="h-4 w-px bg-slate-200" />
+          <div className="h-4 w-px bg-white/[0.08]" />
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-black tabular-nums text-[#C9922A]">
+            <span className="text-2xl font-black tabular-nums" style={{ background: "linear-gradient(135deg, #F5D060, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               {formatCurrency(estimatedRevenue)}
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-white/40">
               {salesToday > 0 ? "cobrados" : "previstos"}
             </span>
           </div>
-          <div className="h-4 w-px bg-slate-200" />
+          <div className="h-4 w-px bg-white/[0.08]" />
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-black tabular-nums text-slate-700">
+            <span className="text-2xl font-black tabular-nums text-white/80">
               {clientsAttendedToday}
             </span>
-            <span className="text-xs text-slate-500">atendidos</span>
+            <span className="text-xs text-white/40">atendidos</span>
           </div>
         </div>
 
         {/* ── Fila 3: Barra de ocupación ── */}
         <div className="px-5 pb-3 md:px-6">
           <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+            <span className="text-[10px] font-black uppercase tracking-[0.12em] text-white/30">
               Ocupación del día
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-black text-slate-700">{occupancyPct}%</span>
-              {/* TODO: conectar variación real comparando con semana anterior */}
+              <span className="text-[11px] font-black text-white/70">{occupancyPct}%</span>
               {occupancyPct > 0 && (
-                <span className="flex items-center gap-0.5 text-[10px] font-semibold text-emerald-600">
+                <span className="flex items-center gap-0.5 text-[10px] font-semibold text-emerald-400">
                   <TrendingUp size={10} />
                   {occupancyPct >= 80 ? "Alta demanda" : occupancyPct >= 50 ? "Buena ocupación" : "Huecos disponibles"}
                 </span>
@@ -472,28 +473,27 @@ export function DashboardClient({
           </div>
           <OccupancyBar pct={occupancyPct} />
           {totalFreeSlotsToday > 0 && (
-            <p className="mt-1 text-[10px] text-slate-400">
+            <p className="mt-1 text-[10px] text-white/30">
               {totalFreeSlotsToday} huecos libres · {todayAppointments.length} de {totalSlotsToday} ocupados
             </p>
           )}
         </div>
 
         {/* ── Fila 4: CTAs + próxima cita chip ── */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-[#FAFAF8] px-5 py-3 md:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.05] bg-white/[0.02] px-5 py-3 md:px-6">
           {/* CTAs */}
           <div className="flex flex-wrap gap-2">
-            {/* CTA principal dorado — abre QuickBookingPanel */}
             <button
               type="button"
               onClick={() => setQuickBookingOpen(true)}
-              className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#C9A227] px-4 text-[13px] font-black text-[#111111] shadow-[0_2px_8px_rgba(201,162,39,0.30)] transition hover:-translate-y-px hover:bg-[#D4AF37] hover:shadow-[0_4px_12px_rgba(201,162,39,0.40)] active:scale-[0.98]"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#D4AF37] px-4 text-[13px] font-black text-[#09090B] shadow-[0_2px_8px_rgba(212,175,55,0.35)] transition hover:-translate-y-px hover:bg-[#F5D060] hover:shadow-[0_4px_16px_rgba(212,175,55,0.50)] active:scale-[0.98]"
             >
               <CalendarPlus size={13} strokeWidth={2.5} />
               Nueva Reserva
             </button>
             <Link
               href="/dashboard/agenda"
-              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
             >
               Ver agenda hoy
             </Link>
@@ -503,31 +503,31 @@ export function DashboardClient({
           {nextAppointment ? (
             <Link
               href="/dashboard/agenda"
-              className="flex items-center gap-2.5 rounded-xl border border-[#D4AF37]/25 bg-[#FFFBEB] px-3 py-1.5 transition hover:border-[#D4AF37]/50 hover:bg-[#FFF8E1]"
+              className="flex items-center gap-2.5 rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.07] px-3 py-1.5 transition hover:border-[#D4AF37]/35 hover:bg-[#D4AF37]/[0.11]"
             >
               <div className="flex flex-col">
-                <span className="text-[9px] font-black uppercase tracking-widest text-[#C9922A]">
+                <span className="text-[9px] font-black uppercase tracking-widest text-[#F5D060]">
                   {minsUntilNext !== null && minsUntilNext >= 0
                     ? `en ${minsUntilNext} min`
                     : "Ahora"}
                 </span>
-                <span className="text-[12px] font-black text-slate-900 leading-tight">
+                <span className="text-[12px] font-black text-white leading-tight">
                   {formatTime(nextAppointment.start_time)} — {nextAppointment.clients?.name ?? "Cliente"}
                 </span>
-                <span className="text-[10px] text-slate-500">
+                <span className="text-[10px] text-white/40">
                   {nextAppointment.services?.name ?? "Sin servicio"}
                   {nextAppointment.services?.price != null && (
-                    <> · <span className="font-bold text-emerald-600">{formatCurrency(nextAppointment.services.price)}</span></>
+                    <> · <span className="font-bold text-emerald-400">{formatCurrency(nextAppointment.services.price)}</span></>
                   )}
                 </span>
               </div>
-              <ArrowRight size={12} className="shrink-0 text-[#C9922A]" />
+              <ArrowRight size={12} className="shrink-0 text-[#D4AF37]/70" />
             </Link>
           ) : (
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+              className="flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/40 transition hover:border-white/15 hover:text-white/60"
             >
               Sin citas activas · Compartir link <ArrowRight size={10} />
             </Link>
@@ -544,28 +544,28 @@ export function DashboardClient({
         {/* KPI 1 — Caja */}
         <PremiumDashboardItem>
           <Link href="/dashboard/caja" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Caja del día</p>
-                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Caja del día</p>
+                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-white">
                     {formatCurrency(salesToday)}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-400">
+                  <p className="mt-1 text-[11px] text-white/40">
                     {cashSessionOpen
-                      ? <span className="text-emerald-600 font-semibold">Sesión abierta</span>
-                      : <span className="text-amber-600 font-semibold">Sesión cerrada</span>}
+                      ? <span className="text-emerald-400 font-semibold">Sesión abierta</span>
+                      : <span className="text-amber-400 font-semibold">Sesión cerrada</span>}
                     {clientsAttendedToday > 0 && ` · ${clientsAttendedToday} clientes`}
                   </p>
                 </div>
-                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}`}>
-                  <Wallet size={16} className={cashSessionOpen ? "text-emerald-600" : "text-amber-500"} />
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${cashSessionOpen ? "bg-emerald-500/[0.15]" : "bg-amber-500/[0.15]"}`}>
+                  <Wallet size={16} className={cashSessionOpen ? "text-emerald-400" : "text-amber-400"} />
                 </div>
               </div>
-              {/* Mini barra de progreso caja */}
               {salesToday > 0 && (
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-slate-100">
-                  <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300" style={{ width: "100%" }} />
+                <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.08]">
+                  <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400" style={{ width: "100%" }} />
                 </div>
               )}
             </div>
@@ -575,32 +575,32 @@ export function DashboardClient({
         {/* KPI 2 — Reservas + ocupación */}
         <PremiumDashboardItem>
           <Link href="/dashboard/agenda" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Reservas hoy</p>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Reservas hoy</p>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <p className="text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                    <p className="text-[1.65rem] font-black tabular-nums leading-none text-white">
                       {todayAppointments.length}
                     </p>
-                    <span className="text-xs font-bold text-slate-400">
+                    <span className="text-xs font-bold text-white/30">
                       / {totalSlotsToday > 0 ? totalSlotsToday : "—"}
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] text-slate-400">
+                  <p className="mt-1 text-[11px] text-white/40">
                     {confirmedUpcomingCount > 0
                       ? `${confirmedUpcomingCount} confirmadas`
                       : "Sin pendientes"}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                  <CalendarCheck size={16} className="text-blue-600" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/[0.15]">
+                  <CalendarCheck size={16} className="text-blue-400" />
                 </div>
               </div>
-              {/* Barra ocupación inline */}
               <div className="mt-3">
                 <OccupancyBar pct={occupancyPct} />
-                <p className="mt-1 text-[10px] text-slate-400">{occupancyPct}% ocupado</p>
+                <p className="mt-1 text-[10px] text-white/30">{occupancyPct}% ocupado</p>
               </div>
             </div>
           </Link>
@@ -609,14 +609,15 @@ export function DashboardClient({
         {/* KPI 3 — Huecos libres */}
         <PremiumDashboardItem>
           <Link href="/dashboard/huecos" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Huecos libres</p>
-                  <p className={`mt-2 text-[1.65rem] font-black tabular-nums leading-none ${totalFreeSlotsToday > 0 ? "text-violet-600" : "text-slate-400"}`}>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Huecos libres</p>
+                  <p className={`mt-2 text-[1.65rem] font-black tabular-nums leading-none ${totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/30"}`}>
                     {totalFreeSlotsToday}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-400">
+                  <p className="mt-1 text-[11px] text-white/40">
                     {totalFreeSlotsToday > 0
                       ? barberWithMostSlots
                         ? `Más: ${barberWithMostSlots.barberName}`
@@ -624,12 +625,12 @@ export function DashboardClient({
                       : "Agenda completa"}
                   </p>
                 </div>
-                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${totalFreeSlotsToday > 0 ? "bg-violet-50" : "bg-slate-100"}`}>
-                  <Clock size={16} className={totalFreeSlotsToday > 0 ? "text-violet-600" : "text-slate-400"} />
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${totalFreeSlotsToday > 0 ? "bg-violet-500/[0.15]" : "bg-white/[0.06]"}`}>
+                  <Clock size={16} className={totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/30"} />
                 </div>
               </div>
               {totalFreeSlotsToday > 0 && (
-                <div className="mt-3 flex items-center gap-1 text-[10px] font-semibold text-violet-600">
+                <div className="mt-3 flex items-center gap-1 text-[10px] font-semibold text-violet-400">
                   <Clapperboard size={10} />
                   <span>Crea una promo para llenarlos</span>
                 </div>
@@ -641,24 +642,25 @@ export function DashboardClient({
         {/* KPI 4 — Clientes + equipo */}
         <PremiumDashboardItem>
           <Link href="/dashboard/clientes" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Clientes</p>
-                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-[#111111]">
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Clientes</p>
+                  <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-white">
                     {totalClientsCount}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-400">
+                  <p className="mt-1 text-[11px] text-white/40">
                     {dormantClientsCount > 0
-                      ? <span className="text-amber-600 font-semibold">{dormantClientsCount} sin volver +45d</span>
+                      ? <span className="text-amber-400 font-semibold">{dormantClientsCount} sin volver +45d</span>
                       : "Base activa"}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                  <Users size={16} className="text-slate-600" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.07]">
+                  <Users size={16} className="text-white/50" />
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between text-[10px] text-slate-400">
+              <div className="mt-3 flex items-center justify-between text-[10px] text-white/30">
                 <span className="flex items-center gap-1">
                   <Scissors size={10} />
                   {activeBarbersCount} barberos · {activeServicesCount} servicios
@@ -712,19 +714,19 @@ export function DashboardClient({
         {/* Sala de espera card */}
         <Link
           href="/dashboard/lounge"
-          className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+          className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-5 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
         >
-          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100">
-            <Monitor size={14} className="text-slate-600" />
+          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-white/[0.08]">
+            <Monitor size={14} className="text-white/60" />
           </div>
-          <p className="text-xs font-black text-slate-500">Sala de espera</p>
-          <p className="mt-1 text-sm font-black text-slate-900 leading-snug">
+          <p className="text-xs font-black text-white/40">Sala de espera</p>
+          <p className="mt-1 text-sm font-black text-white leading-snug">
             Activa ventas mientras tus clientes esperan
           </p>
-          <p className="mt-1.5 text-[11px] text-slate-500">
+          <p className="mt-1.5 text-[11px] text-white/35">
             Muestra productos, promos y QR de reserva en pantalla.
           </p>
-          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-slate-600 group-hover:text-slate-900">
+          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-white/50 group-hover:text-white/80">
             Configurar <ArrowRight size={11} />
           </div>
         </Link>
@@ -732,19 +734,19 @@ export function DashboardClient({
         {/* Fidelización card */}
         <Link
           href="/dashboard/fidelizacion"
-          className="group relative overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-[#FFFBEB] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/50 hover:shadow-md"
+          className="group relative overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/[0.07] to-[#D4AF37]/[0.02] p-5 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-[#D4AF37]/35 hover:shadow-[0_12px_40px_rgba(212,175,55,0.15)]"
         >
-          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-[#D4AF37]/15">
-            <Gift size={14} className="text-[#C9922A]" />
+          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-[#D4AF37]/[0.15]">
+            <Gift size={14} className="text-[#D4AF37]" />
           </div>
-          <p className="text-xs font-black text-[#C9922A]">Fidelización</p>
-          <p className="mt-1 text-sm font-black text-slate-900 leading-snug">
+          <p className="text-xs font-black text-[#D4AF37]/70">Fidelización</p>
+          <p className="mt-1 text-sm font-black text-white leading-snug">
             Premia a tus clientes y haz que vuelvan
           </p>
-          <p className="mt-1.5 text-[11px] text-slate-600">
+          <p className="mt-1.5 text-[11px] text-white/40">
             Tarjetas de sellos, puntos y recompensas activadas.
           </p>
-          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-[#C9922A] group-hover:text-[#92650A]">
+          <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-[#D4AF37]/70 group-hover:text-[#D4AF37]">
             Ver fidelización <ArrowRight size={11} />
           </div>
         </Link>
@@ -754,18 +756,22 @@ export function DashboardClient({
       <section className="grid gap-5 xl:grid-cols-[1.5fr_0.75fr]">
 
         {/* Agenda del día compacta */}
-        <div className="surface-frame overflow-hidden p-0">
-          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
+        <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm">
+          <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+          <div className="border-b border-white/[0.05] bg-white/[0.02] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
-                <h2 className="section-heading mt-1">
+                <h2 className="mt-1 text-lg font-black tracking-tight text-white md:text-xl">
                   {todayAppointments.length > 0
                     ? `${todayAppointments.length} citas en agenda`
                     : "Lo próximo en agenda"}
                 </h2>
               </div>
-              <Link href="/dashboard/agenda" className="btn-outline px-4 py-2.5">
+              <Link
+                href="/dashboard/agenda"
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
+              >
                 Ver agenda completa <ArrowRight size={14} />
               </Link>
             </div>
@@ -790,7 +796,7 @@ export function DashboardClient({
               />
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-white/[0.04]">
               <div className="grid gap-2 p-4 md:p-5">
                 {todayAppointments.slice(0, 8).map((appointment) => (
                   <AppointmentCard key={appointment.id} appointment={appointment} />
@@ -800,7 +806,7 @@ export function DashboardClient({
                 <div className="px-5 py-3">
                   <Link
                     href="/dashboard/agenda"
-                    className="inline-flex items-center gap-1 text-xs font-black text-[#C9922A] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-black text-[#D4AF37] hover:underline"
                   >
                     Ver todas {todayAppointments.length} reservas <ArrowRight size={12} />
                   </Link>
@@ -835,41 +841,45 @@ export function DashboardClient({
           />
 
           {/* Resumen de caja */}
-          <div className="surface-frame p-5 md:p-6">
+          <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-5 backdrop-blur-sm md:p-6">
+            <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent" />
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="label-section">Caja del día</p>
-                <p className="mt-2 font-display text-4xl font-black leading-none text-slate-900">
+                <p className="mt-2 text-4xl font-black leading-none text-white">
                   {formatCurrency(salesToday)}
                 </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 text-sm leading-6 text-white/40">
                   {cashSessionOpen
                     ? "Sesión abierta. Mantén cobros sincronizados."
                     : "La caja está cerrada. Ábrela antes de cobrar."}
                 </p>
               </div>
-              <div className={cashSessionOpen ? "badge-success" : "badge-warning"}>
+              <div className={cashSessionOpen
+                ? "inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/[0.12] px-2.5 py-0.5 text-xs font-semibold text-emerald-400"
+                : "inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/[0.12] px-2.5 py-0.5 text-xs font-semibold text-amber-400"
+              }>
                 {cashSessionOpen ? "Abierta" : "Cerrada"}
               </div>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs font-bold uppercase text-slate-600">Clientes</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{clientsAttendedToday}</p>
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3">
+                <p className="text-xs font-bold uppercase text-white/35">Clientes</p>
+                <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
               </div>
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                <p className="text-xs font-bold uppercase text-slate-600">Efectivo</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{cashPaymentsCount}</p>
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3">
+                <p className="text-xs font-bold uppercase text-white/35">Efectivo</p>
+                <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
               </div>
             </div>
-            <Link href="/dashboard/caja" className="btn-dark mt-4 w-full">
+            <Link href="/dashboard/caja" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.10] bg-white/[0.06] px-4 py-2.5 text-base font-bold text-white/80 transition hover:border-white/20 hover:bg-white/[0.09] hover:text-white">
               Ir a Caja <ArrowRight size={14} />
             </Link>
           </div>
 
           {/* Alertas inteligentes */}
           {visibleAlerts.length > 0 && (
-            <div className="surface-frame p-4 md:p-5">
+            <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-4 backdrop-blur-sm md:p-5">
               <p className="label-section mb-3">Alertas del día</p>
               <div className="flex flex-col gap-2">
                 {visibleAlerts.map((alert, i) => (
@@ -898,7 +908,7 @@ export function DashboardClient({
             iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
             tone={cashSessionOpen ? "success" : "warning"}
             footer={
-              <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+              <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Ver caja <ArrowRight size={12} />
               </Link>
             }
@@ -919,7 +929,7 @@ export function DashboardClient({
             iconBg="bg-[#C9922A]/10"
             iconColor="text-[#C9922A]"
             footer={
-              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+              <Link href="/dashboard/agenda" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Abrir agenda <ArrowRight size={12} />
               </Link>
             }
@@ -937,10 +947,10 @@ export function DashboardClient({
                 : "Agenda completa hoy"
             }
             icon={Clock}
-            iconBg="bg-slate-100"
-            iconColor="text-slate-600"
+            iconBg="bg-white/[0.08]"
+            iconColor="text-white/50"
             footer={
-              <Link href="/dashboard/agents" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+              <Link href="/dashboard/agents" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Llenar huecos <ArrowRight size={12} />
               </Link>
             }
@@ -961,7 +971,7 @@ export function DashboardClient({
             iconBg="bg-[#C89B3C]/10"
             iconColor="text-[#8A641F]"
             footer={
-              <Link href="/dashboard/recuperacion" className="inline-flex items-center gap-1 text-xs font-black text-slate-700">
+              <Link href="/dashboard/recuperacion" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Ver clientes <ArrowRight size={12} />
               </Link>
             }
@@ -979,14 +989,18 @@ export function DashboardClient({
 
       {/* ── H. UPCOMING — próximas reservas (si hay más allá de hoy) ─────── */}
       {upcomingAppointments.length > 0 && (
-        <section className="surface-frame overflow-hidden p-0">
-          <div className="border-b border-slate-100 bg-slate-50 px-5 py-4 md:px-6">
+        <section className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm">
+          <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+          <div className="border-b border-white/[0.05] bg-white/[0.02] px-5 py-4 md:px-6">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="label-section">Próximas reservas</p>
-                <h2 className="section-heading mt-1">Confirmadas próximamente</h2>
+                <h2 className="mt-1 text-lg font-black tracking-tight text-white">Confirmadas próximamente</h2>
               </div>
-              <Link href="/dashboard/reservas" className="btn-outline px-4 py-2.5">
+              <Link
+                href="/dashboard/reservas"
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
+              >
                 Ver todas <ArrowRight size={14} />
               </Link>
             </div>
@@ -995,17 +1009,17 @@ export function DashboardClient({
             {upcomingAppointments.slice(0, 5).map((appointment) => (
               <article
                 key={appointment.id}
-                className="grid gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-sm sm:grid-cols-[100px_1fr_auto] sm:items-center"
+                className="grid gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 transition hover:border-white/[0.10] sm:grid-cols-[100px_1fr_auto] sm:items-center"
               >
                 <div>
-                  <p className="text-xs font-black text-slate-900">{appointment.appointment_date}</p>
-                  <p className="text-xs text-slate-500">{formatTime(appointment.start_time)}</p>
+                  <p className="text-xs font-black text-white">{appointment.appointment_date}</p>
+                  <p className="text-xs text-white/40">{formatTime(appointment.start_time)}</p>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-black text-slate-900">
+                  <p className="truncate text-sm font-black text-white">
                     {appointment.clients?.name ?? "Cliente sin nombre"}
                   </p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-xs text-white/40">
                     {appointment.services?.name ?? "Sin servicio"} · {appointment.barbers?.name ?? "Sin barbero"}
                   </p>
                 </div>

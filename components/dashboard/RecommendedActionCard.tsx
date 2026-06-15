@@ -18,32 +18,40 @@ const VARIANT_STYLES: Record<
     wrapper: string;
     iconWrapper: string;
     iconColor: string;
+    titleColor: string;
+    descColor: string;
     ctaClass: string;
   }
 > = {
   gold: {
     wrapper:
-      "border-[#D5A84C]/20 bg-gradient-to-br from-[#FDF8EE] to-white",
-    iconWrapper: "border-[#D5A84C]/25 bg-[#D5A84C]/10",
-    iconColor: "text-[#8A641F]",
+      "border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/[0.07] to-[#D4AF37]/[0.02] backdrop-blur-sm",
+    iconWrapper: "border-[#D4AF37]/25 bg-[#D4AF37]/[0.12]",
+    iconColor: "text-[#D4AF37]",
+    titleColor: "text-white",
+    descColor: "text-white/50",
     ctaClass:
-      "bg-[#D5A84C] text-[#080A0F] hover:bg-[#c49a3d]",
+      "bg-[#D4AF37] text-[#09090B] hover:bg-[#F5D060] shadow-[0_4px_14px_rgba(212,175,55,0.30)]",
   },
   blue: {
     wrapper:
-      "border-blue-100 bg-gradient-to-br from-blue-50 to-white",
-    iconWrapper: "border-blue-100 bg-blue-50",
-    iconColor: "text-blue-700",
+      "border-blue-500/20 bg-gradient-to-br from-blue-500/[0.07] to-blue-500/[0.02] backdrop-blur-sm",
+    iconWrapper: "border-blue-500/25 bg-blue-500/[0.12]",
+    iconColor: "text-blue-400",
+    titleColor: "text-white",
+    descColor: "text-white/50",
     ctaClass:
-      "bg-blue-600 text-white hover:bg-blue-700",
+      "bg-blue-600 text-white hover:bg-blue-500",
   },
   green: {
     wrapper:
-      "border-emerald-100 bg-gradient-to-br from-emerald-50 to-white",
-    iconWrapper: "border-emerald-100 bg-emerald-50",
-    iconColor: "text-emerald-700",
+      "border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.07] to-emerald-500/[0.02] backdrop-blur-sm",
+    iconWrapper: "border-emerald-500/25 bg-emerald-500/[0.12]",
+    iconColor: "text-emerald-400",
+    titleColor: "text-white",
+    descColor: "text-white/50",
     ctaClass:
-      "bg-emerald-600 text-white hover:bg-emerald-700",
+      "bg-emerald-600 text-white hover:bg-emerald-500",
   },
 };
 
@@ -68,8 +76,8 @@ export function RecommendedActionCard({
           <Icon size={18} className={styles.iconColor} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-black text-[#080A0F] leading-snug">{title}</p>
-          <p className="mt-1.5 text-sm leading-6 text-[#080A0F]/60">
+          <p className={`font-black leading-snug ${styles.titleColor}`}>{title}</p>
+          <p className={`mt-1.5 text-sm leading-6 ${styles.descColor}`}>
             {description}
           </p>
         </div>

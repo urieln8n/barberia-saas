@@ -1,0 +1,75 @@
+{
+  "name": "🔔 WF7 — Alerta Nuevo Lead BarberíaOS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nuevo-lead-barberiaos",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-lead-001",
+      "name": "🔔 Nuevo Lead Recibido",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-800, 0],
+      "webhookId": "nuevo-lead-barberiaos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $input.first().json.body || $input.first().json;\nconst lineas = [\n  '🔔 *NUEVO LEAD — BarberíaOS*',\n  '',\n  `👤 *Nombre:* ${lead.name || '—'}`,\n  `🏪 *Barbería:* ${lead.barbershopName || '—'}`,\n  `📍 *Ciudad:* ${lead.city || '—'}`,\n  `📱 *WhatsApp:* ${lead.whatsapp || '—'}`,\n  lead.email ? `✉️ *Email:* ${lead.email}` : null,\n  `👥 *Barberos:* ${lead.barbersCount || '—'}`,\n  `📊 *Sistema actual:* ${lead.currentSystem || '—'}`,\n  `🎯 *Problema:* ${lead.mainProblem || '—'}`,\n  `💡 *Interés:* ${lead.interest || '—'}`,\n  lead.message ? `\\n💬 *Mensaje:* ${lead.message}` : null,\n  '',\n  `🌐 Origen: ${lead.utmSource || lead.source || 'barberiaos.com'}`,\n  `🔗 Ver CRM: https://barberiaos.com/admin/leads`\n].filter(Boolean).join('\\n');\nreturn [{ json: { mensaje: lineas } }];"
+      },
+      "id": "format-lead-001",
+      "name": "📋 Formatear mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-560, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "PON_AQUI_TU_CHAT_ID",
+        "text": "={{ $json.mensaje }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-lead-001",
+      "name": "📱 Telegram — Enviar alerta",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-320, 0],
+      "credentials": {
+        "telegramApi": { "id": "Aur4ISsOwrYumRji", "name": "Telegram account - curso Auto. Adri" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"ok\":true}",
+        "options": {}
+      },
+      "id": "respond-lead-001",
+      "name": "✅ Responder webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [-80, 0]
+    },
+    {
+      "parameters": {
+        "content": "## 🔔 WF7 — Alerta Nuevo Lead\n\n### 1 cosa que configurar\n**Chat ID de Telegram:**\n1. Abre Telegram → tu bot del curso → mándale cualquier mensaje\n2. En n8n: ejecuta el Telegram Trigger de otro workflow → mira el log → copia `message.chat.id`\n3. Pégalo en el nodo **Telegram — Enviar alerta** → campo Chat ID\n\n### URL del webhook\n`https://barberiaos-n8n.yaoyaf.easypanel.host/webhook/nuevo-lead-barberiaos`\n(Ya configurada en barberiaos.com /api/leads)",
+        "height": 300,
+        "width": 500,
+        "color": 5
+      },
+      "id": "note-wf7",
+      "name": "📌 Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-800, 240]
+    }
+  ],
+  "connections": {
+    "🔔 Nuevo Lead Recibido": { "main": [[{ "node": "📋 Formatear mensaje", "type": "main", "index": 0 }]] },
+    "📋 Formatear mensaje": { "main": [[{ "node": "📱 Telegram — Enviar alerta", "type": "main", "index": 0 }]] },
+    "📱 Telegram — Enviar alerta": { "main": [[{ "node": "✅ Responder webhook", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

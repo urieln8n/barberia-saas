@@ -1,0 +1,116 @@
+{
+  "name": "📊 WF8 — Reporte Semanal BarberíaOS",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "weeks", "triggerAtDay": [1], "triggerAtHour": 9, "triggerAtMinute": 0 }]
+        }
+      },
+      "id": "trigger-weekly",
+      "name": "⏰ Lunes 9:00 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [-1000, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);\nconst monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);\nconst weekStart = weekAgo.toISOString();\nconst monthStart = monthAgo.toISOString();\nconst today = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });\nreturn [{ json: { weekStart, monthStart, today } }];"
+      },
+      "id": "calc-dates",
+      "name": "📅 Calcular fechas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-760, 0]
+    },
+    {
+      "parameters": {
+        "url": "=https://eslygfjpxwrjnoimsrly.supabase.co/rest/v1/crm_leads?created_at=gte.{{ $json.weekStart }}&select=id,contact_name,business_name,city,phone,status,interest,created_at&order=created_at.desc",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "PON_AQUI_SUPABASE_SERVICE_ROLE_KEY" },
+            { "name": "Authorization", "value": "Bearer PON_AQUI_SUPABASE_SERVICE_ROLE_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "leads-semana",
+      "name": "📋 Leads esta semana",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-520, -80]
+    },
+    {
+      "parameters": {
+        "url": "https://eslygfjpxwrjnoimsrly.supabase.co/rest/v1/crm_leads?select=id&status=eq.new",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "PON_AQUI_SUPABASE_SERVICE_ROLE_KEY" },
+            { "name": "Authorization", "value": "Bearer PON_AQUI_SUPABASE_SERVICE_ROLE_KEY" },
+            { "name": "Prefer", "value": "count=exact" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "leads-total",
+      "name": "🔢 Total leads pendientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-520, 80]
+    },
+    {
+      "parameters": {
+        "jsCode": "const leadsData = $('📋 Leads esta semana').all();\nconst leads = Array.isArray(leadsData[0]?.json) ? leadsData[0].json : leadsData.map(i => i.json);\nconst totalPendientes = $('🔢 Total leads pendientes').first()?.json?.length ?? 0;\nconst today = $('📅 Calcular fechas').first().json.today;\n\nconst nuevos = leads.length;\nconst ciudades = [...new Set(leads.map(l => l.city).filter(Boolean))].slice(0, 5).join(', ') || '—';\nconst intereses = leads.map(l => l.interest).filter(Boolean);\nconst interesTop = intereses.length > 0\n  ? [...intereses.reduce((acc, i) => { acc.set(i, (acc.get(i) || 0) + 1); return acc; }, new Map())].sort((a,b) => b[1]-a[1])[0][0]\n  : '—';\n\nconst resumen = leads.slice(0, 5).map(l =>\n  `  • ${l.business_name || l.contact_name || '?'} (${l.city || '—'})`\n).join('\\n');\n\nconst mensaje = [\n  `📊 *REPORTE SEMANAL — BarberíaOS*`,\n  `📅 ${today}`,\n  '',\n  `🔔 *Leads nuevos esta semana:* ${nuevos}`,\n  `📍 *Ciudades:* ${ciudades}`,\n  `💡 *Interés más frecuente:* ${interesTop}`,\n  '',\n  nuevos > 0 ? `*Últimos leads:*\\n${resumen}` : '_Sin leads nuevos esta semana._',\n  '',\n  `📋 *En CRM sin contactar:* ${totalPendientes}`,\n  '',\n  nuevos > 0 ? '⚡ Contacta hoy para no perder el interés.' : '🎯 Semana tranquila — buen momento para crear contenido.',\n  '',\n  `🔗 https://barberiaos.com/admin/leads`\n].join('\\n');\n\nreturn [{ json: { mensaje } }];"
+      },
+      "id": "format-report",
+      "name": "📝 Generar reporte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-260, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "PON_AQUI_TU_CHAT_ID",
+        "text": "={{ $json.mensaje }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "telegram-report",
+      "name": "📱 Telegram — Enviar reporte",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-20, 0],
+      "credentials": {
+        "telegramApi": { "id": "Aur4ISsOwrYumRji", "name": "Telegram account - curso Auto. Adri" }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📊 WF8 — Reporte Semanal\n\nCada lunes a las 9:00 recibes en Telegram:\n- Leads nuevos esta semana\n- Ciudades de origen\n- Interés más frecuente\n- Lista de últimos leads\n- Total sin contactar en CRM\n\n### ⚙️ 2 cosas que configurar\n1. **Chat ID** → igual que WF7\n2. **Supabase Service Role Key** → la misma que usas en WF1-WF4. Reemplaza `PON_AQUI_SUPABASE_SERVICE_ROLE_KEY` en los dos nodos HTTP Request",
+        "height": 300,
+        "width": 480,
+        "color": 7
+      },
+      "id": "note-wf8",
+      "name": "📌 Setup WF8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-1000, 240]
+    }
+  ],
+  "connections": {
+    "⏰ Lunes 9:00 AM": { "main": [[{ "node": "📅 Calcular fechas", "type": "main", "index": 0 }]] },
+    "📅 Calcular fechas": {
+      "main": [[
+        { "node": "📋 Leads esta semana", "type": "main", "index": 0 },
+        { "node": "🔢 Total leads pendientes", "type": "main", "index": 0 }
+      ]]
+    },
+    "📋 Leads esta semana": { "main": [[{ "node": "📝 Generar reporte", "type": "main", "index": 0 }]] },
+    "🔢 Total leads pendientes": { "main": [[{ "node": "📝 Generar reporte", "type": "main", "index": 0 }]] },
+    "📝 Generar reporte": { "main": [[{ "node": "📱 Telegram — Enviar reporte", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

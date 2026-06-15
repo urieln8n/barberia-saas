@@ -1,0 +1,494 @@
+{
+  "name": "Gestor de Redes Sociales — BarberíaOS",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1552,
+        0
+      ],
+      "id": "ffec3527-67fc-473d-a49e-7ab93e6f27e7",
+      "name": "Telegram Trigger",
+      "webhookId": "156532e8-3edd-40fe-a14d-3d51a291ac03",
+      "credentials": {
+        "telegramApi": {
+          "id": "Aur4ISsOwrYumRji",
+          "name": "Telegram account - curso Auto. Adri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[3].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1216,
+        0
+      ],
+      "id": "fdf6d6d0-14db-4534-aaff-52dcada3a0ba",
+      "name": "Get a file",
+      "webhookId": "6c11f02b-cced-42d2-9954-302f980711de",
+      "credentials": {
+        "telegramApi": {
+          "id": "Aur4ISsOwrYumRji",
+          "name": "Telegram account - curso Auto. Adri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PON_AQUI_TU_API_KEY_DE_KIE.AI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"bytedance/seedream-v4-edit\",\n  \"input\": {\n    \"prompt\": \"Transform this barbershop photo into a premium professional marketing visual for BarberíaOS, a modern barbershop management software brand. Style: editorial, dark and polished — deep charcoal or black backgrounds with warm gold and amber accent lighting. {{ $('Analizar imagen').item.json.content }} as the main subject. Enhance atmosphere: sharp professional lighting, cinematic depth, premium feel that communicates technology meets craftsmanship. If it shows a barbershop space: make it look like a high-end barbershop editorial. If it shows a screen or device: present it in a sleek dark device mockup with gold accents. Composition: clean, centered, minimal. Perfect for Instagram marketing. 4K quality, brand-ready, photorealistic.\",\n    \"image_urls\": [\n      \"{{ $('Upload media').item.json.url }}\"\n    ],\n    \"image_size\": \"square_hd\",\n    \"image_resolution\": \"1K\",\n    \"max_images\": 1\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1488,
+        320
+      ],
+      "id": "a3ef09fe-7192-47ba-bf64-65c30a8aad0e",
+      "name": "Crear imagen"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PON_AQUI_TU_API_KEY_DE_KIE.AI"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1152,
+        320
+      ],
+      "id": "5ddad36b-b9fe-45f4-978b-247ff4a19bc1",
+      "name": "Traer imagen"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a76212cc-5ee8-402f-8de6-65b8103b132e",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -912,
+        320
+      ],
+      "id": "a30de8c8-8217-40e3-9364-8946c374966c",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -592,
+        512
+      ],
+      "id": "9a505da1-5c5c-4c43-8cb2-88b4cee92c37",
+      "name": "Wait",
+      "webhookId": "6fe2cfa4-8a44-4139-8a97-5dc160323322"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "mediaUrl": "={{ $json.imageUrl }}"
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        304
+      ],
+      "id": "61983cdc-98d3-49a2-87f8-3ab00a9584d5",
+      "name": "Upload media1",
+      "credentials": {
+        "blotatoApi": {
+          "id": "P5WEmUhTXvql0AA7",
+          "name": "Blotato account - curso auto. adr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "accountId": {
+          "__rl": true,
+          "value": "PON_AQUI_EL_ID_DE_CUENTA_BLOTATO_BARBERIAOS",
+          "mode": "list",
+          "cachedResultName": "barberiaos",
+          "cachedResultUrl": "https://backend.blotato.com/v2/accounts/PON_AQUI_EL_ID"
+        },
+        "postContentText": "={{ $('copywritter').item.json.message.content.copy_instagram }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        304
+      ],
+      "id": "eeb06cf1-f422-466e-8dc1-c8f5a7bb2071",
+      "name": "Create post",
+      "credentials": {
+        "blotatoApi": {
+          "id": "P5WEmUhTXvql0AA7",
+          "name": "Blotato account - curso auto. adr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "text": "Identify only the main subject in this image. Provide a brief description in 2-5 words maximum. No additional context or details.",
+        "imageUrls": "={{ $json.url }}",
+        "options": {
+          "maxTokens": 30
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -592,
+        0
+      ],
+      "id": "d2ef1069-d2c1-4d45-9260-6f43954c023e",
+      "name": "Analizar imagen",
+      "credentials": {
+        "openAiApi": {
+          "id": "kORUBkYfjkvBOnwb",
+          "name": "OpenAi account Agente La Tribu"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.content }}"
+            },
+            {
+              "content": "Eres un experto copywriter especializado en marketing digital para el sector de barberías. Tu misión es crear copies auténticos y directos para BarberíaOS, un software SaaS que ayuda a dueños de barberías a gestionar reservas online, caja, clientes, barberos y QR — sin comisiones y con precio fijo mensual.\n\nCONTEXTO DE MARCA:\nProducto: BarberíaOS — Software de gestión para barberías modernas\nWeb: barberiaos.com\nValores: Control total, sin comisiones, tus clientes son tuyos, modernidad, independencia digital\nPropuesta única: Precio fijo mensual. Sin comisión por reserva. El dueño controla todo desde un panel.\nCompetidor principal: Booksy (cobra comisión por cada reserva)\nCliente objetivo: Dueños de barberías y barberos con negocio propio, 25-50 años, España y Latinoamérica, que quieren digitalizar su negocio sin depender de intermediarios\nTono de voz: Directo, empoderador, de igual a igual. Habla de tú. Sin corporativismos. Sin frases vacías como \"descubre\" o \"revolucionario\".\n\nINSTRUCCIONES:\nBasándote en la descripción de la foto proporcionada ({{ $json.content }}), crea tres copies perfectamente adaptados para cada red social:\n\nPara LinkedIn (máximo 1300 caracteres):\n- Tono: Profesional pero directo, de emprendedor a emprendedor\n- Enfoque: Datos de negocio, control, rentabilidad, ahorro en comisiones vs Booksy\n- 3-5 hashtags: #BarberíaOS #GestiónBarbería #SoftwareBarbería #ReservasOnline #Barbería\n- Estructura: Dato impactante o pregunta → problema real del dueño → solución BarberíaOS → CTA\n\nPara Instagram (máximo 2200 caracteres, primeras 125 visibles sin expandir):\n- Primera línea: gancho que para el scroll (ej: \"¿Cuánto pagas de comisiones este mes? 💈\" o \"Tu barbería merece un panel propio.\")\n- Tono: Cercano, aspiracional, empoderante para el dueño de barbería\n- Beneficios concretos: QR de reservas, sin comisiones, panel propio, control de caja, clientes tuyos\n- 20-30 hashtags al final: mezcla de populares (#barberia #barbershop #barbero #corte) y de nicho (#gestionbarberia #softwarebarberia #barberiaos #reservasonline #agendabarberia #cajadiaria)\n- CTA claro: \"Link en bio 👆\" o \"Prueba gratis: barberiaos.com\"\n\nPara Facebook (optimizar para 40-80 caracteres):\n- Tono: Conversacional, pregunta directa que invite a comentar\n- Máximo 3-5 hashtags\n- Un emoji al inicio\n- Problema cotidiano del dueño de barbería\n\nFÓRMULA DE ÉXITO:\n- PROBLEMA real: pagar comisiones, gestionar por WhatsApp, perder reservas, usar papel\n- SOLUCIÓN: BarberíaOS controla reservas, caja, clientes y barberos desde un panel\n- CREDIBILIDAD: precio fijo, sin permanencia, tus datos son siempre tuyos\n- CTA: barberiaos.com\n\nPALABRAS CLAVE A USAR:\nSin comisiones, precio fijo, tus clientes son tuyos, control total, reservas 24h, QR propio, panel de barbería, cero papel, alternativa a Booksy, agenda digital, gestión de barberos, caja diaria\n\nFORMATO OBLIGATORIO — responde ÚNICAMENTE con JSON válido:\n{\n  \"copy_linkedin\": \"texto completo con hashtags incluidos\",\n  \"copy_instagram\": \"texto completo con todos los hashtags al final\",\n  \"copy_facebook\": \"texto conciso con hashtags\"\n}\n\nIMPORTANTE: JSON directo sin texto adicional. Cada copy único, adaptado a su plataforma. No repitas frases entre plataformas.",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "18e1e7a2-45f2-44f5-83c7-4899d04e6442",
+      "name": "copywritter",
+      "credentials": {
+        "openAiApi": {
+          "id": "kORUBkYfjkvBOnwb",
+          "name": "OpenAi account Agente La Tribu"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json.data.resultJson;\nconst parsedData = typeof data === 'string' ? JSON.parse(data) : data;\nreturn {\n  imageUrl: parsedData.resultUrls[0]\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        304
+      ],
+      "id": "3620fa8c-d8b8-4fcc-8f45-ea990f65a58e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "useBinaryData": true
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        -864,
+        0
+      ],
+      "id": "9c0f6d3c-8e99-4815-9b8d-00f2fb97c7e5",
+      "name": "Upload media",
+      "credentials": {
+        "blotatoApi": {
+          "id": "P5WEmUhTXvql0AA7",
+          "name": "Blotato account - curso auto. adr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "BarberíaOS — Subir foto para publicar",
+        "formDescription": "Sube la foto que quieres convertir en post para Instagram de BarberíaOS",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Foto para publicar",
+              "fieldType": "file",
+              "multipleFiles": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1584,
+        -336
+      ],
+      "id": "c2503756-96f9-403f-ba46-bf4881f1fd82",
+      "name": "On form submission",
+      "webhookId": "982f85ff-ca75-4fa4-9618-79f7f0aa22e9"
+    },
+    {
+      "parameters": {
+        "content": "## ✅ CHECKLIST DE ACTIVACIÓN — BarberíaOS\n\n### 1. KIE.AI API Key\nReemplaza `PON_AQUI_TU_API_KEY_DE_KIE.AI` en:\n- Nodo **Crear imagen**\n- Nodo **Traer imagen**\nObtén tu key en: kie.ai → API Keys\n\n### 2. Blotato — Conectar Instagram BarberíaOS\n- Ve a Blotato → Accounts → Add account → Instagram\n- Conecta la cuenta @barberiaos\n- Copia el ID de cuenta que aparece en la URL\n- Reemplaza `PON_AQUI_EL_ID_DE_CUENTA_BLOTATO_BARBERIAOS` en el nodo **Create post**\n\n### 3. Credenciales ya configuradas ✅\n- Telegram Bot: curso Auto. Adri\n- OpenAI: Agente La Tribu\n- Blotato: curso auto. adr\n\n### 4. Cómo usar\nEnvía una foto al bot de Telegram → el workflow:\n- Analiza la imagen con GPT-4o\n- Genera copy para LinkedIn, Instagram y Facebook\n- Transforma la foto con KIE.AI (estética premium dark + gold)\n- Publica automáticamente en Instagram @barberiaos",
+        "height": 540,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -200
+      ],
+      "id": "aaa00001-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "name": "SETUP GUIDE"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear imagen": {
+      "main": [
+        [
+          {
+            "node": "Traer imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traer imagen": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Traer imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media1": {
+      "main": [
+        [
+          {
+            "node": "Create post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar imagen": {
+      "main": [
+        [
+          {
+            "node": "copywritter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "copywritter": {
+      "main": [
+        [
+          {
+            "node": "Crear imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Upload media1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Analizar imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "2723e5c0cdf73e609a9d6131a4145b2656ca7463c71fa761a441dc255964ffd8"
+  },
+  "tags": [
+    {
+      "name": "BarberíaOS"
+    }
+  ]
+}
