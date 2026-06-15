@@ -46,7 +46,7 @@ export function StatCard({
           ? "border-[#D4AF37]/25 bg-[#D4AF37]/[0.07] hover:border-[#D4AF37]/40"
           : effectiveTone === "highlight"
             ? "border-[#2563EB]/25 bg-[#2563EB]/[0.07] ring-1 ring-[#2563EB]/10 hover:border-[#2563EB]/40"
-            : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.14]";
+            : "border-[#2A2A38] bg-[#131318] hover:border-[#36364A] hover:bg-[#171720]";
 
   const topLabel = label ?? title;
   const supportingText = hint ?? description;

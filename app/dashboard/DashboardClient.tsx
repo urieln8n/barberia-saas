@@ -544,7 +544,7 @@ export function DashboardClient({
         {/* KPI 1 — Caja */}
         <PremiumDashboardItem>
           <Link href="/dashboard/caja" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -575,7 +575,7 @@ export function DashboardClient({
         {/* KPI 2 — Reservas + ocupación */}
         <PremiumDashboardItem>
           <Link href="/dashboard/agenda" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1">
@@ -609,7 +609,7 @@ export function DashboardClient({
         {/* KPI 3 — Huecos libres */}
         <PremiumDashboardItem>
           <Link href="/dashboard/huecos" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -642,7 +642,7 @@ export function DashboardClient({
         {/* KPI 4 — Clientes + equipo */}
         <PremiumDashboardItem>
           <Link href="/dashboard/clientes" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -904,8 +904,8 @@ export function DashboardClient({
                 : "Sesión cerrada — abre antes de cobrar"
             }
             icon={Wallet}
-            iconBg={cashSessionOpen ? "bg-emerald-50" : "bg-amber-50"}
-            iconColor={cashSessionOpen ? "text-emerald-600" : "text-amber-700"}
+            iconBg={cashSessionOpen ? "bg-emerald-500/[0.15]" : "bg-amber-500/[0.15]"}
+            iconColor={cashSessionOpen ? "text-emerald-400" : "text-amber-400"}
             tone={cashSessionOpen ? "success" : "warning"}
             footer={
               <Link href="/dashboard/caja" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
@@ -968,8 +968,8 @@ export function DashboardClient({
                 : "Sin clientes dormidos detectados"
             }
             icon={Users}
-            iconBg="bg-[#C89B3C]/10"
-            iconColor="text-[#8A641F]"
+            iconBg="bg-[#D4AF37]/[0.15]"
+            iconColor="text-[#D4AF37]"
             footer={
               <Link href="/dashboard/recuperacion" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
                 Ver clientes <ArrowRight size={12} />
