@@ -25,31 +25,31 @@ const VARIANT_STYLES: Record<
 > = {
   gold: {
     wrapper:
-      "border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/[0.07] to-[#D4AF37]/[0.02] backdrop-blur-sm",
-    iconWrapper: "border-[#D4AF37]/25 bg-[#D4AF37]/[0.12]",
+      "border-[#D4AF37]/25 bg-[#14120A]",
+    iconWrapper: "border-[#D4AF37]/30 bg-[#D4AF37]/[0.15]",
     iconColor: "text-[#D4AF37]",
     titleColor: "text-white",
-    descColor: "text-white/50",
+    descColor: "text-white/55",
     ctaClass:
       "bg-[#D4AF37] text-[#09090B] hover:bg-[#F5D060] shadow-[0_4px_14px_rgba(212,175,55,0.30)]",
   },
   blue: {
     wrapper:
-      "border-blue-500/20 bg-gradient-to-br from-blue-500/[0.07] to-blue-500/[0.02] backdrop-blur-sm",
-    iconWrapper: "border-blue-500/25 bg-blue-500/[0.12]",
+      "border-blue-500/25 bg-[#0A0C14]",
+    iconWrapper: "border-blue-500/30 bg-blue-500/[0.15]",
     iconColor: "text-blue-400",
     titleColor: "text-white",
-    descColor: "text-white/50",
+    descColor: "text-white/55",
     ctaClass:
       "bg-blue-600 text-white hover:bg-blue-500",
   },
   green: {
     wrapper:
-      "border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.07] to-emerald-500/[0.02] backdrop-blur-sm",
-    iconWrapper: "border-emerald-500/25 bg-emerald-500/[0.12]",
+      "border-emerald-500/25 bg-[#0A140E]",
+    iconWrapper: "border-emerald-500/30 bg-emerald-500/[0.15]",
     iconColor: "text-emerald-400",
     titleColor: "text-white",
-    descColor: "text-white/50",
+    descColor: "text-white/55",
     ctaClass:
       "bg-emerald-600 text-white hover:bg-emerald-500",
   },

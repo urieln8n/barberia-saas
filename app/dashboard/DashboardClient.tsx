@@ -125,7 +125,7 @@ const OccupancyBar = memo(function OccupancyBar({ pct }: { pct: number }) {
     pct >= 50 ? "from-[#D4AF37] to-[#F5D060]" :
                 "from-white/20 to-white/10";
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#1E1E24]">
       <div
         className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
         style={{ width: `${Math.min(100, pct)}%` }}
@@ -169,16 +169,16 @@ function KpiCard({
 const AppointmentCard = memo(function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
   const precio = appointment.services?.price;
   return (
-    <article className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 transition-colors hover:border-white/[0.10] hover:bg-white/[0.05]">
+    <article className="flex items-center gap-3 rounded-xl border border-[#1E1E24] bg-[#0E0E12] p-3 transition-colors hover:border-[#2E2E36] hover:bg-[#131318]">
       <div className="w-12 shrink-0 text-center">
         <p className="text-sm font-black text-white">{formatTime(appointment.start_time)}</p>
-        <p className="text-[10px] text-white/35">hoy</p>
+        <p className="text-[10px] text-white/50">hoy</p>
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-black text-white">
           {appointment.clients?.name ?? "Cliente sin nombre"}
         </p>
-        <p className="truncate text-xs text-white/40">
+        <p className="truncate text-xs text-white/55">
           {appointment.services?.name ?? "Sin servicio"} · {appointment.barbers?.name ?? "Sin barbero"}
         </p>
       </div>
@@ -389,7 +389,7 @@ export function DashboardClient({
           EXECUTIVE HEADER — Stripe/Linear/Apple Wallet inspired
           Compacto, denso, toda la info del día visible sin scroll.
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-sm">
+      <section className="relative overflow-hidden rounded-2xl border border-[#252529] bg-[#111115] shadow-[0_2px_20px_rgba(0,0,0,0.35)]">
         {/* Inner glow top */}
         <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
 
@@ -435,30 +435,30 @@ export function DashboardClient({
             <span className="text-2xl font-black tabular-nums text-white">
               {todayAppointments.length}
             </span>
-            <span className="text-xs text-white/40">reservas hoy</span>
+            <span className="text-xs text-white/55">reservas hoy</span>
           </div>
-          <div className="h-4 w-px bg-white/[0.08]" />
+          <div className="h-4 w-px bg-[#1E1E24]" />
           <div className="flex items-baseline gap-1.5">
             <span className="text-2xl font-black tabular-nums" style={{ background: "linear-gradient(135deg, #F5D060, #D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               {formatCurrency(estimatedRevenue)}
             </span>
-            <span className="text-xs text-white/40">
+            <span className="text-xs text-white/55">
               {salesToday > 0 ? "cobrados" : "previstos"}
             </span>
           </div>
-          <div className="h-4 w-px bg-white/[0.08]" />
+          <div className="h-4 w-px bg-[#1E1E24]" />
           <div className="flex items-baseline gap-1.5">
             <span className="text-2xl font-black tabular-nums text-white/80">
               {clientsAttendedToday}
             </span>
-            <span className="text-xs text-white/40">atendidos</span>
+            <span className="text-xs text-white/55">atendidos</span>
           </div>
         </div>
 
         {/* ── Fila 3: Barra de ocupación ── */}
         <div className="px-5 pb-3 md:px-6">
           <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-[0.12em] text-white/30">
+            <span className="text-[10px] font-black uppercase tracking-[0.12em] text-white/45">
               Ocupación del día
             </span>
             <div className="flex items-center gap-2">
@@ -473,14 +473,14 @@ export function DashboardClient({
           </div>
           <OccupancyBar pct={occupancyPct} />
           {totalFreeSlotsToday > 0 && (
-            <p className="mt-1 text-[10px] text-white/30">
+            <p className="mt-1 text-[10px] text-white/45">
               {totalFreeSlotsToday} huecos libres · {todayAppointments.length} de {totalSlotsToday} ocupados
             </p>
           )}
         </div>
 
         {/* ── Fila 4: CTAs + próxima cita chip ── */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.05] bg-white/[0.02] px-5 py-3 md:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#1E1E24] bg-[#0E0E12] px-5 py-3 md:px-6">
           {/* CTAs */}
           <div className="flex flex-wrap gap-2">
             <button
@@ -493,7 +493,7 @@ export function DashboardClient({
             </button>
             <Link
               href="/dashboard/agenda"
-              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
+              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#2A2A32] bg-[#161619] px-4 text-[13px] font-bold text-white/65 transition hover:border-[#3A3A45] hover:bg-[#1C1C22] hover:text-white"
             >
               Ver agenda hoy
             </Link>
@@ -514,7 +514,7 @@ export function DashboardClient({
                 <span className="text-[12px] font-black text-white leading-tight">
                   {formatTime(nextAppointment.start_time)} — {nextAppointment.clients?.name ?? "Cliente"}
                 </span>
-                <span className="text-[10px] text-white/40">
+                <span className="text-[10px] text-white/55">
                   {nextAppointment.services?.name ?? "Sin servicio"}
                   {nextAppointment.services?.price != null && (
                     <> · <span className="font-bold text-emerald-400">{formatCurrency(nextAppointment.services.price)}</span></>
@@ -527,7 +527,7 @@ export function DashboardClient({
             <Link
               href={publicBookingUrl}
               target="_blank"
-              className="flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/40 transition hover:border-white/15 hover:text-white/60"
+              className="flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/55 transition hover:border-white/15 hover:text-white/60"
             >
               Sin citas activas · Compartir link <ArrowRight size={10} />
             </Link>
@@ -544,15 +544,15 @@ export function DashboardClient({
         {/* KPI 1 — Caja */}
         <PremiumDashboardItem>
           <Link href="/dashboard/caja" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Caja del día</p>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/45">Caja del día</p>
                   <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-white">
                     {formatCurrency(salesToday)}
                   </p>
-                  <p className="mt-1 text-[11px] text-white/40">
+                  <p className="mt-1 text-[11px] text-white/55">
                     {cashSessionOpen
                       ? <span className="text-emerald-400 font-semibold">Sesión abierta</span>
                       : <span className="text-amber-400 font-semibold">Sesión cerrada</span>}
@@ -564,7 +564,7 @@ export function DashboardClient({
                 </div>
               </div>
               {salesToday > 0 && (
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.08]">
+                <div className="mt-3 h-1 overflow-hidden rounded-full bg-[#1E1E24]">
                   <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400" style={{ width: "100%" }} />
                 </div>
               )}
@@ -575,20 +575,20 @@ export function DashboardClient({
         {/* KPI 2 — Reservas + ocupación */}
         <PremiumDashboardItem>
           <Link href="/dashboard/agenda" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Reservas hoy</p>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/45">Reservas hoy</p>
                   <div className="mt-2 flex items-baseline gap-2">
                     <p className="text-[1.65rem] font-black tabular-nums leading-none text-white">
                       {todayAppointments.length}
                     </p>
-                    <span className="text-xs font-bold text-white/30">
+                    <span className="text-xs font-bold text-white/45">
                       / {totalSlotsToday > 0 ? totalSlotsToday : "—"}
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] text-white/40">
+                  <p className="mt-1 text-[11px] text-white/55">
                     {confirmedUpcomingCount > 0
                       ? `${confirmedUpcomingCount} confirmadas`
                       : "Sin pendientes"}
@@ -600,7 +600,7 @@ export function DashboardClient({
               </div>
               <div className="mt-3">
                 <OccupancyBar pct={occupancyPct} />
-                <p className="mt-1 text-[10px] text-white/30">{occupancyPct}% ocupado</p>
+                <p className="mt-1 text-[10px] text-white/45">{occupancyPct}% ocupado</p>
               </div>
             </div>
           </Link>
@@ -609,15 +609,15 @@ export function DashboardClient({
         {/* KPI 3 — Huecos libres */}
         <PremiumDashboardItem>
           <Link href="/dashboard/huecos" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Huecos libres</p>
-                  <p className={`mt-2 text-[1.65rem] font-black tabular-nums leading-none ${totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/30"}`}>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/45">Huecos libres</p>
+                  <p className={`mt-2 text-[1.65rem] font-black tabular-nums leading-none ${totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/45"}`}>
                     {totalFreeSlotsToday}
                   </p>
-                  <p className="mt-1 text-[11px] text-white/40">
+                  <p className="mt-1 text-[11px] text-white/55">
                     {totalFreeSlotsToday > 0
                       ? barberWithMostSlots
                         ? `Más: ${barberWithMostSlots.barberName}`
@@ -626,7 +626,7 @@ export function DashboardClient({
                   </p>
                 </div>
                 <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${totalFreeSlotsToday > 0 ? "bg-violet-500/[0.15]" : "bg-white/[0.06]"}`}>
-                  <Clock size={16} className={totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/30"} />
+                  <Clock size={16} className={totalFreeSlotsToday > 0 ? "text-violet-400" : "text-white/45"} />
                 </div>
               </div>
               {totalFreeSlotsToday > 0 && (
@@ -642,25 +642,25 @@ export function DashboardClient({
         {/* KPI 4 — Clientes + equipo */}
         <PremiumDashboardItem>
           <Link href="/dashboard/clientes" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#111115] p-4 transition-all hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-wide text-white/30">Clientes</p>
+                  <p className="text-[10px] font-black uppercase tracking-wide text-white/45">Clientes</p>
                   <p className="mt-2 text-[1.65rem] font-black tabular-nums leading-none text-white">
                     {totalClientsCount}
                   </p>
-                  <p className="mt-1 text-[11px] text-white/40">
+                  <p className="mt-1 text-[11px] text-white/55">
                     {dormantClientsCount > 0
                       ? <span className="text-amber-400 font-semibold">{dormantClientsCount} sin volver +45d</span>
                       : "Base activa"}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.07]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#1C1C22]">
                   <Users size={16} className="text-white/50" />
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between text-[10px] text-white/30">
+              <div className="mt-3 flex items-center justify-between text-[10px] text-white/45">
                 <span className="flex items-center gap-1">
                   <Scissors size={10} />
                   {activeBarbersCount} barberos · {activeServicesCount} servicios
@@ -714,16 +714,16 @@ export function DashboardClient({
         {/* Sala de espera card */}
         <Link
           href="/dashboard/lounge"
-          className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-5 backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]"
+          className="group relative overflow-hidden rounded-2xl border border-[#252529] bg-[#111115] p-5 transition hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
         >
-          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-white/[0.08]">
+          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-[#1E1E24]">
             <Monitor size={14} className="text-white/60" />
           </div>
-          <p className="text-xs font-black text-white/40">Sala de espera</p>
+          <p className="text-xs font-black text-white/55">Sala de espera</p>
           <p className="mt-1 text-sm font-black text-white leading-snug">
             Activa ventas mientras tus clientes esperan
           </p>
-          <p className="mt-1.5 text-[11px] text-white/35">
+          <p className="mt-1.5 text-[11px] text-white/50">
             Muestra productos, promos y QR de reserva en pantalla.
           </p>
           <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-white/50 group-hover:text-white/80">
@@ -743,7 +743,7 @@ export function DashboardClient({
           <p className="mt-1 text-sm font-black text-white leading-snug">
             Premia a tus clientes y haz que vuelvan
           </p>
-          <p className="mt-1.5 text-[11px] text-white/40">
+          <p className="mt-1.5 text-[11px] text-white/55">
             Tarjetas de sellos, puntos y recompensas activadas.
           </p>
           <div className="mt-3 flex items-center gap-1 text-[11px] font-black text-[#D4AF37]/70 group-hover:text-[#D4AF37]">
@@ -756,9 +756,9 @@ export function DashboardClient({
       <section className="grid gap-5 xl:grid-cols-[1.5fr_0.75fr]">
 
         {/* Agenda del día compacta */}
-        <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm">
+        <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115]">
           <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-          <div className="border-b border-white/[0.05] bg-white/[0.02] px-5 py-4 md:px-6">
+          <div className="border-b border-[#1E1E24] bg-[#0E0E12] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-section">Reservas de hoy</p>
@@ -770,7 +770,7 @@ export function DashboardClient({
               </div>
               <Link
                 href="/dashboard/agenda"
-                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#2A2A32] bg-[#161619] px-4 text-[13px] font-bold text-white/65 transition hover:border-[#3A3A45] hover:bg-[#1C1C22] hover:text-white"
               >
                 Ver agenda completa <ArrowRight size={14} />
               </Link>
@@ -841,7 +841,7 @@ export function DashboardClient({
           />
 
           {/* Resumen de caja */}
-          <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-5 backdrop-blur-sm md:p-6">
+          <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115] p-5 md:p-6">
             <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent" />
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -849,7 +849,7 @@ export function DashboardClient({
                 <p className="mt-2 text-4xl font-black leading-none text-white">
                   {formatCurrency(salesToday)}
                 </p>
-                <p className="mt-2 text-sm leading-6 text-white/40">
+                <p className="mt-2 text-sm leading-6 text-white/55">
                   {cashSessionOpen
                     ? "Sesión abierta. Mantén cobros sincronizados."
                     : "La caja está cerrada. Ábrela antes de cobrar."}
@@ -863,23 +863,23 @@ export function DashboardClient({
               </div>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3">
-                <p className="text-xs font-bold uppercase text-white/35">Clientes</p>
+              <div className="rounded-2xl border border-[#1E1E24] bg-[#0E0E12] p-3">
+                <p className="text-xs font-bold uppercase text-white/50">Clientes</p>
                 <p className="mt-1 text-2xl font-black text-white">{clientsAttendedToday}</p>
               </div>
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3">
-                <p className="text-xs font-bold uppercase text-white/35">Efectivo</p>
+              <div className="rounded-2xl border border-[#1E1E24] bg-[#0E0E12] p-3">
+                <p className="text-xs font-bold uppercase text-white/50">Efectivo</p>
                 <p className="mt-1 text-2xl font-black text-white">{cashPaymentsCount}</p>
               </div>
             </div>
-            <Link href="/dashboard/caja" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.10] bg-white/[0.06] px-4 py-2.5 text-base font-bold text-white/80 transition hover:border-white/20 hover:bg-white/[0.09] hover:text-white">
+            <Link href="/dashboard/caja" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[#2A2A32] bg-[#161619] px-4 py-2.5 text-base font-bold text-white/80 transition hover:border-[#3A3A45] hover:bg-[#1C1C22] hover:text-white">
               Ir a Caja <ArrowRight size={14} />
             </Link>
           </div>
 
           {/* Alertas inteligentes */}
           {visibleAlerts.length > 0 && (
-            <div className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-4 backdrop-blur-sm md:p-5">
+            <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115] p-4 md:p-5">
               <p className="label-section mb-3">Alertas del día</p>
               <div className="flex flex-col gap-2">
                 {visibleAlerts.map((alert, i) => (
@@ -947,7 +947,7 @@ export function DashboardClient({
                 : "Agenda completa hoy"
             }
             icon={Clock}
-            iconBg="bg-white/[0.08]"
+            iconBg="bg-[#1E1E24]"
             iconColor="text-white/50"
             footer={
               <Link href="/dashboard/agents" className="inline-flex items-center gap-1 text-xs font-black text-white/60 hover:text-white/90">
@@ -989,9 +989,9 @@ export function DashboardClient({
 
       {/* ── H. UPCOMING — próximas reservas (si hay más allá de hoy) ─────── */}
       {upcomingAppointments.length > 0 && (
-        <section className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm">
+        <section className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115]">
           <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-          <div className="border-b border-white/[0.05] bg-white/[0.02] px-5 py-4 md:px-6">
+          <div className="border-b border-[#1E1E24] bg-[#0E0E12] px-5 py-4 md:px-6">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="label-section">Próximas reservas</p>
@@ -999,7 +999,7 @@ export function DashboardClient({
               </div>
               <Link
                 href="/dashboard/reservas"
-                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 text-[13px] font-bold text-white/60 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white/90"
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#2A2A32] bg-[#161619] px-4 text-[13px] font-bold text-white/65 transition hover:border-[#3A3A45] hover:bg-[#1C1C22] hover:text-white"
               >
                 Ver todas <ArrowRight size={14} />
               </Link>
@@ -1009,17 +1009,17 @@ export function DashboardClient({
             {upcomingAppointments.slice(0, 5).map((appointment) => (
               <article
                 key={appointment.id}
-                className="grid gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 transition hover:border-white/[0.10] sm:grid-cols-[100px_1fr_auto] sm:items-center"
+                className="grid gap-3 rounded-xl border border-[#1E1E24] bg-[#0E0E12] p-3 transition hover:border-[#2E2E36] sm:grid-cols-[100px_1fr_auto] sm:items-center"
               >
                 <div>
                   <p className="text-xs font-black text-white">{appointment.appointment_date}</p>
-                  <p className="text-xs text-white/40">{formatTime(appointment.start_time)}</p>
+                  <p className="text-xs text-white/55">{formatTime(appointment.start_time)}</p>
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-black text-white">
                     {appointment.clients?.name ?? "Cliente sin nombre"}
                   </p>
-                  <p className="truncate text-xs text-white/40">
+                  <p className="truncate text-xs text-white/55">
                     {appointment.services?.name ?? "Sin servicio"} · {appointment.barbers?.name ?? "Sin barbero"}
                   </p>
                 </div>
