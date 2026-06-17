@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { AlertTriangle, ChevronDown, Crown, Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
+import { AlertTriangle, Crown, Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
+import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import { ClientesClient } from "./ClientesClient";
 
 export const revalidate = 60;
@@ -324,6 +325,24 @@ export default async function ClientesPage() {
     return days >= 45;
   }).length;
   const vipClients = clients.filter((client) => client.totalAppointments >= 8).length;
+
+  const totalCrmRevenue = clients.reduce((sum, c) => sum + c.totalRevenue, 0);
+  const clientsWithRevenue = clients.filter((c) => c.totalRevenue > 0);
+  const avgTicket = clientsWithRevenue.length > 0
+    ? Math.round(totalCrmRevenue / clientsWithRevenue.length)
+    : 0;
+  const retentionRate = clients.length > 0
+    ? Math.round((recurringClients / clients.length) * 100)
+    : 0;
+  const activeClientsCount = clients.filter((c) => {
+    if (!c.lastAppointmentDate) return true;
+    const d = Math.floor((Date.now() - new Date(`${c.lastAppointmentDate}T00:00:00`).getTime()) / 86400000);
+    return d <= 45;
+  }).length;
+  const activeRate = clients.length > 0
+    ? Math.round((activeClientsCount / clients.length) * 100)
+    : 0;
+
   const errorMessage =
     clientsResult.error?.message ??
     appointmentsResult.error?.message ??
@@ -356,6 +375,31 @@ export default async function ClientesPage() {
         <StatCard label="Clientes VIP" value={vipClients} description="Top 20% por visitas" icon={Crown} iconBg="bg-[#D4AF37]/10" iconColor="text-[#D4AF37]" />
       </section>
 
+      <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0E0E1C]">
+        <div className="grid grid-cols-2 divide-white/[0.06] lg:grid-cols-4 [&>*]:border-b [&>*]:border-white/[0.06] lg:[&>*]:border-b-0 [&>*:not(:last-child)]:border-r [&>*]:border-white/[0.06]">
+          <div className="px-5 py-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Retención</p>
+            <p className="mt-2 text-3xl font-black tabular-nums text-white">{retentionRate}<span className="text-lg text-white/40">%</span></p>
+            <p className="mt-1 text-xs text-white/40">clientes que repiten</p>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Revenue CRM</p>
+            <p className="mt-2 text-3xl font-black tabular-nums text-[#D4AF37]">€{totalCrmRevenue}</p>
+            <p className="mt-1 text-xs text-white/40">generado en total</p>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Ticket medio</p>
+            <p className="mt-2 text-3xl font-black tabular-nums text-white">€{avgTicket}</p>
+            <p className="mt-1 text-xs text-white/40">por cliente con visitas</p>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Base activa</p>
+            <p className="mt-2 text-3xl font-black tabular-nums text-emerald-400">{activeRate}<span className="text-lg text-emerald-400/50">%</span></p>
+            <p className="mt-1 text-xs text-white/40">sin riesgo ni pérdida</p>
+          </div>
+        </div>
+      </section>
+
       {lostClients > 0 && (
         <section className="flex flex-col gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] px-5 py-4 sm:flex-row sm:items-center">
           <AlertTriangle size={16} className="shrink-0 text-amber-400" />
@@ -373,43 +417,35 @@ export default async function ClientesPage() {
 
       <section className="space-y-4">
         {/* Formulario colapsable */}
-        <details className="group overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-          <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 select-none">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#D4AF37]/10">
-                <UserPlus size={16} className="text-[#D4AF37]" />
-              </div>
-              <div>
-                <p className="font-black text-white/85">Añadir cliente manual</p>
-                <p className="text-xs text-white/40">Clientes que no reservan online</p>
-              </div>
+        <CollapsibleSection
+          title="Añadir cliente manual"
+          icon={UserPlus}
+          badge="Manual"
+          badgeCls="border-white/[0.10] bg-white/[0.06] text-white/40"
+          defaultOpen={false}
+        >
+          <form action={createClientAction} className="grid gap-4 sm:grid-cols-2 px-5 pb-5">
+            <div className="sm:col-span-2">
+              <label className="form-label">Nombre *</label>
+              <input name="name" required placeholder="Ej: Carlos Pérez" className="input py-3" />
             </div>
-            <ChevronDown size={16} className="text-white/30 transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="border-t border-white/[0.06] px-5 pb-5 pt-4">
-            <form action={createClientAction} className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label className="form-label">Nombre *</label>
-                <input name="name" required placeholder="Ej: Carlos Pérez" className="input py-3" />
-              </div>
-              <div>
-                <label className="form-label flex items-center gap-1.5"><Phone size={13} /> Teléfono</label>
-                <input name="phone" placeholder="600123123" className="input py-3" />
-              </div>
-              <div>
-                <label className="form-label flex items-center gap-1.5"><Mail size={13} /> Email</label>
-                <input name="email" type="email" placeholder="cliente@email.com" className="input py-3" />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="form-label flex items-center gap-1.5"><StickyNote size={13} /> Notas</label>
-                <textarea name="notes" rows={2} placeholder="Ej: Le gusta degradado bajo." className="input resize-none py-3" />
-              </div>
-              <div className="sm:col-span-2">
-                <button type="submit" className="btn-primary w-full sm:w-auto">Guardar cliente</button>
-              </div>
-            </form>
-          </div>
-        </details>
+            <div>
+              <label className="form-label flex items-center gap-1.5"><Phone size={13} /> Teléfono</label>
+              <input name="phone" placeholder="600123123" className="input py-3" />
+            </div>
+            <div>
+              <label className="form-label flex items-center gap-1.5"><Mail size={13} /> Email</label>
+              <input name="email" type="email" placeholder="cliente@email.com" className="input py-3" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="form-label flex items-center gap-1.5"><StickyNote size={13} /> Notas</label>
+              <textarea name="notes" rows={2} placeholder="Ej: Le gusta degradado bajo." className="input resize-none py-3" />
+            </div>
+            <div className="sm:col-span-2">
+              <button type="submit" className="btn-primary w-full sm:w-auto">Guardar cliente</button>
+            </div>
+          </form>
+        </CollapsibleSection>
 
         {/* Lista de clientes */}
         <ClientesClient clients={clients} barbershopId={barbershopId} />

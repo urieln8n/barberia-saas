@@ -336,7 +336,12 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                   const days  = daysSince(c.lastAppointmentDate);
                   const nv    = suggestedNextVisit(c);
                   return (
-                    <tr key={c.id} className="group transition-colors hover:bg-white/[0.03]">
+                    <tr key={c.id} className={`group transition-colors ${
+                      seg === "vip"     ? "bg-[#D4AF37]/[0.025] hover:bg-[#D4AF37]/[0.045]" :
+                      seg === "perdido" ? "bg-red-500/[0.025]   hover:bg-red-500/[0.045]"   :
+                      seg === "riesgo"  ? "bg-amber-500/[0.02]  hover:bg-amber-500/[0.04]"  :
+                      "hover:bg-white/[0.03]"
+                    }`}>
 
                       {/* Cliente */}
                       <td className="px-5 py-4">
@@ -390,11 +395,17 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                           </p>
                         )}
                         {nv && (
-                          <p className={`text-[10px] font-bold ${
-                            nv === "Vencida" ? "text-red-400" : nv === "Hoy" ? "text-emerald-400" : "text-white/25"
+                          <span className={`mt-1.5 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black ${
+                            nv === "Vencida"
+                              ? "border-red-500/25 bg-red-500/[0.10] text-red-400"
+                              : nv === "Hoy"
+                                ? "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-400"
+                                : nv.startsWith("En ")
+                                  ? "border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] text-[#D4AF37]"
+                                  : "border-white/[0.08] bg-white/[0.04] text-white/30"
                           }`}>
-                            Próx: {nv}
-                          </p>
+                            {nv === "Vencida" ? "⚠ Vencida" : `Próx: ${nv}`}
+                          </span>
                         )}
                       </td>
 
@@ -425,7 +436,7 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                         <div className="flex items-center justify-end gap-1">
                           <Link
                             href={`/dashboard/clientes/${c.id}`}
-                            className="rounded-xl p-2 text-white/30 transition hover:bg-white/[0.08] hover:text-white/70"
+                            className="rounded-xl p-2 text-white/45 transition hover:bg-white/[0.08] hover:text-white/70"
                             title="Ver ficha"
                           >
                             <CalendarDays size={14} />
@@ -435,7 +446,7 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                               href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="rounded-xl p-2 text-white/30 transition hover:bg-emerald-500/[0.10] hover:text-emerald-400"
+                              className="rounded-xl p-2 text-white/45 transition hover:bg-emerald-500/[0.10] hover:text-emerald-400"
                               title="WhatsApp"
                             >
                               <MessageCircle size={14} />
@@ -443,7 +454,7 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                           )}
                           <Link
                             href="/dashboard/marketing"
-                            className="rounded-xl p-2 text-white/30 transition hover:bg-amber-500/[0.10] hover:text-amber-400"
+                            className="rounded-xl p-2 text-white/45 transition hover:bg-amber-500/[0.10] hover:text-amber-400"
                             title="Reactivar con marketing"
                           >
                             <RotateCcw size={14} />
@@ -477,93 +488,110 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
               const days = daysSince(c.lastAppointmentDate);
               const nv   = suggestedNextVisit(c);
               return (
-                <article key={c.id} className="overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.04] p-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-base font-black ${avatarColor(c.name)}`}>
-                      {c.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-black text-white/85">{c.name}</p>
-                        <span className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-px text-[9px] font-black ${scfg.badgeCls}`}>
-                          <scfg.icon size={9} />
-                          {scfg.label}
-                        </span>
+                <article key={c.id} className={`overflow-hidden rounded-2xl border bg-white/[0.04] p-4 pl-0 ${
+                  seg === "vip"     ? "border-[#D4AF37]/20" :
+                  seg === "perdido" ? "border-red-500/20"   :
+                  seg === "riesgo"  ? "border-amber-500/20" :
+                  "border-white/[0.07]"
+                }`}>
+                  <div className="flex gap-0">
+                    {/* Color strip */}
+                    <div className={`w-[3px] shrink-0 self-stretch rounded-r-full mr-4 ${
+                      seg === "vip"     ? "bg-[#D4AF37]/60" :
+                      seg === "perdido" ? "bg-red-500/50"   :
+                      seg === "riesgo"  ? "bg-amber-500/50" :
+                      seg === "nuevo"   ? "bg-violet-500/40" :
+                      "bg-emerald-500/40"
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3">
+                        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-base font-black ${avatarColor(c.name)}`}>
+                          {c.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="font-black text-white/85">{c.name}</p>
+                            <span className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-px text-[9px] font-black ${scfg.badgeCls}`}>
+                              <scfg.icon size={9} />
+                              {scfg.label}
+                            </span>
+                          </div>
+                          {c.phone && (
+                            <p className="mt-0.5 text-xs text-white/40">{c.phone}</p>
+                          )}
+                          {c.lastServiceName && (
+                            <p className="mt-0.5 text-xs text-white/30">{c.lastServiceName}</p>
+                          )}
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <p className={`text-xl font-black tabular-nums ${seg === "vip" ? "text-[#D4AF37]" : "text-white/85"}`}>
+                            {c.totalAppointments}
+                          </p>
+                          <p className="text-[10px] font-bold uppercase text-white/25">Visitas</p>
+                        </div>
                       </div>
-                      {c.phone && (
-                        <p className="mt-0.5 text-xs text-white/40">{c.phone}</p>
-                      )}
-                      {c.lastServiceName && (
-                        <p className="mt-0.5 text-xs text-white/30">{c.lastServiceName}</p>
-                      )}
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className={`text-xl font-black tabular-nums ${seg === "vip" ? "text-[#D4AF37]" : "text-white/85"}`}>
-                        {c.totalAppointments}
-                      </p>
-                      <p className="text-[10px] font-bold uppercase text-white/25">Visitas</p>
-                    </div>
-                  </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <div className="rounded-xl bg-white/[0.05] px-3 py-2">
-                      <p className="text-[10px] font-bold uppercase text-white/30">Última visita</p>
-                      <p className={`mt-0.5 text-xs font-semibold ${
-                        days !== null && days > 75 ? "text-red-400" :
-                        days !== null && days > 45 ? "text-amber-400" : "text-white/70"
-                      }`}>
-                        {relativeDate(c.lastAppointmentDate)}
-                      </p>
-                      {nv && (
-                        <p className={`text-[10px] font-bold ${
-                          nv === "Vencida" ? "text-red-400" : nv === "Hoy" ? "text-emerald-400" : "text-white/25"
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div className="rounded-xl bg-white/[0.05] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase text-white/30">Última visita</p>
+                          <p className={`mt-0.5 text-xs font-semibold ${
+                            days !== null && days > 75 ? "text-red-400" :
+                            days !== null && days > 45 ? "text-amber-400" : "text-white/70"
+                          }`}>
+                            {relativeDate(c.lastAppointmentDate)}
+                          </p>
+                          {nv && (
+                            <p className={`text-[10px] font-bold ${
+                              nv === "Vencida" ? "text-red-400" : nv === "Hoy" ? "text-emerald-400" : "text-white/25"
+                            }`}>
+                              Próx: {nv}
+                            </p>
+                          )}
+                        </div>
+                        <div className="rounded-xl bg-white/[0.05] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase text-white/30">Gastado</p>
+                          {c.totalRevenue > 0 ? (
+                            <p className="mt-0.5 flex items-center gap-0.5">
+                              <Euro size={10} className="text-[#D4AF37]" />
+                              <span className="text-xs font-black tabular-nums text-[#D4AF37]">{c.totalRevenue}</span>
+                            </p>
+                          ) : (
+                            <p className="mt-0.5 text-xs font-semibold text-white/20">—</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {nv && (nv === 'Vencida' || nv.startsWith('En ')) && (
+                        <div className={`mt-2 col-span-2 rounded-xl px-3 py-2 ${
+                          nv === 'Vencida'
+                            ? 'bg-red-500/[0.08] border border-red-500/15'
+                            : 'bg-[#D4AF37]/[0.06] border border-[#D4AF37]/15'
                         }`}>
-                          Próx: {nv}
-                        </p>
+                          <p className={`text-xs font-black ${nv === 'Vencida' ? 'text-red-400' : 'text-[#D4AF37]'}`}>
+                            {nv === 'Vencida' ? '⚠ Próxima visita vencida' : `Próxima visita: ${nv}`}
+                          </p>
+                        </div>
                       )}
-                    </div>
-                    <div className="rounded-xl bg-white/[0.05] px-3 py-2">
-                      <p className="text-[10px] font-bold uppercase text-white/30">Gastado</p>
-                      {c.totalRevenue > 0 ? (
-                        <p className="mt-0.5 flex items-center gap-0.5">
-                          <Euro size={10} className="text-[#D4AF37]" />
-                          <span className="text-xs font-black tabular-nums text-[#D4AF37]">{c.totalRevenue}</span>
-                        </p>
-                      ) : (
-                        <p className="mt-0.5 text-xs font-semibold text-white/20">—</p>
-                      )}
-                    </div>
-                  </div>
 
-                  {nv && (nv === 'Vencida' || nv.startsWith('En ')) && (
-                    <div className={`mt-2 col-span-2 rounded-xl px-3 py-2 ${
-                      nv === 'Vencida'
-                        ? 'bg-red-500/[0.08] border border-red-500/15'
-                        : 'bg-[#D4AF37]/[0.06] border border-[#D4AF37]/15'
-                    }`}>
-                      <p className={`text-xs font-black ${nv === 'Vencida' ? 'text-red-400' : 'text-[#D4AF37]'}`}>
-                        {nv === 'Vencida' ? '⚠ Próxima visita vencida' : `Próxima visita: ${nv}`}
-                      </p>
+                      <div className="mt-3 flex gap-2">
+                        <Link
+                          href={`/dashboard/clientes/${c.id}`}
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.10] py-2 text-xs font-black text-white/50 transition hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/[0.08] hover:text-[#D4AF37]"
+                        >
+                          <CalendarDays size={12} /> Ver ficha
+                        </Link>
+                        {c.phone && (
+                          <a
+                            href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.10] py-2 text-xs font-black text-white/50 transition hover:border-emerald-500/25 hover:bg-emerald-500/[0.10] hover:text-emerald-400"
+                          >
+                            <MessageCircle size={12} /> WhatsApp
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  )}
-
-                  <div className="mt-3 flex gap-2">
-                    <Link
-                      href={`/dashboard/clientes/${c.id}`}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.10] py-2 text-xs font-black text-white/50 transition hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/[0.08] hover:text-[#D4AF37]"
-                    >
-                      <CalendarDays size={12} /> Ver ficha
-                    </Link>
-                    {c.phone && (
-                      <a
-                        href={`https://wa.me/${c.phone.replace(/\D/g, "")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.10] py-2 text-xs font-black text-white/50 transition hover:border-emerald-500/25 hover:bg-emerald-500/[0.10] hover:text-emerald-400"
-                      >
-                        <MessageCircle size={12} /> WhatsApp
-                      </a>
-                    )}
                   </div>
                 </article>
               );
