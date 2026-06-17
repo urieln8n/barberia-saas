@@ -163,7 +163,7 @@
   }
 
   ::selection {
-    background: rgba(37, 99, 235, 0.16);
+    background: rgba(212, 175, 55, 0.20);
     color: var(--ink);
   }
 
@@ -179,7 +179,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--premium-blue);
+    outline: 2px solid #D4AF37;
     outline-offset: 2px;
     border-radius: 10px;
   }

@@ -26,7 +26,7 @@ const AVATAR_BG: Record<string, string> = {
   cancelled: "bg-red-100 text-red-400",
   no_show:   "bg-red-100 text-red-500",
   rescheduled:"bg-violet-100 text-violet-600",
-  new_client: "bg-blue-100 text-blue-600",
+  new_client: "bg-[#D4AF37]/[0.12] text-[#D4AF37]",
 };
 
 export function AppointmentCard({ appointment, compact = false, onClick }: Props) {

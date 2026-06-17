@@ -90,13 +90,13 @@ export default function RecuperacionPage() {
 
       <div className="grid gap-4 md:grid-cols-4">
         <StatCard label="Clientes inactivos" value="27" description="más de 45 días" icon={Users} />
-        <StatCard label="Mensajes enviados" value="63" description="campañas manuales" icon={MessageCircle} iconBg="bg-[#2563EB]/10" iconColor="text-[#2563EB]" />
-        <StatCard label="Reservas recuperadas" value="11" description="últimos 30 días" icon={CalendarClock} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
+        <StatCard label="Mensajes enviados" value="63" description="campañas manuales" icon={MessageCircle} iconBg="bg-violet-500/[0.10]" iconColor="text-violet-400" />
+        <StatCard label="Reservas recuperadas" value="11" description="últimos 30 días" icon={CalendarClock} iconBg="bg-emerald-500/[0.10]" iconColor="text-emerald-400" />
         <StatCard label="Ingresos recuperados" value="418 EUR" description="estimación mensual" icon={PiggyBank} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
       </div>
 
       <section className="section-band overflow-hidden">
-        <div className="h-px w-full bg-gradient-to-r from-[#2563EB]/40 via-[#C89B3C] to-[#111111]/70" />
+        <div className="h-px w-full bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37] to-[#D4AF37]/10" />
         <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="p-5 md:p-7">
             <div className="flex items-center gap-3">

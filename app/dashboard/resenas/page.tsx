@@ -354,7 +354,7 @@ export default async function ReviewsDashboardPage() {
                       )}
 
                       {review.respuesta_sugerida && (
-                        <p className="mt-3 max-w-3xl rounded-2xl border border-blue-500/20 bg-blue-500/[0.08] p-3 text-xs leading-5 text-blue-400">
+                        <p className="mt-3 max-w-3xl rounded-2xl border border-white/[0.10] bg-white/[0.04] p-3 text-xs leading-5 text-white/50">
                           <span className="font-bold">Respuesta sugerida futura:</span>{" "}
                           {review.respuesta_sugerida}
                         </p>

@@ -203,14 +203,14 @@ export function BarberiaOSKitClient({
             </div>
           </div>
 
-          <div className="rounded-[26px] border border-white/12 bg-white p-4 shadow-2xl">
-            <div className="rounded-[22px] border border-[#DCEBFF] bg-[#F8FBFF] p-4">
+          <div className="rounded-[26px] border border-white/12 bg-white/[0.06] p-4">
+            <div className="rounded-[22px] border border-[#D4AF37]/20 bg-[#D4AF37]/[0.04] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase text-[#2563EB]">Reservas online</p>
-                  <p className="mt-1 font-black text-[#080A0F]">{name}</p>
+                  <p className="text-xs font-black uppercase text-[#D4AF37]">Reservas online</p>
+                  <p className="mt-1 font-black text-white">{name}</p>
                 </div>
-                <QrCode size={23} className="text-[#2563EB]" />
+                <QrCode size={23} className="text-[#D4AF37]" />
               </div>
               <Image
                 src={qrUrl}
@@ -220,7 +220,7 @@ export function BarberiaOSKitClient({
                 unoptimized
                 className="mx-auto mt-4 w-full max-w-[250px] rounded-2xl"
               />
-              <p className="mt-4 break-all rounded-2xl border border-[#DCEBFF] bg-white px-4 py-3 font-mono text-xs text-slate-600">
+              <p className="mt-4 break-all rounded-2xl border border-white/[0.12] bg-white/[0.06] px-4 py-3 font-mono text-xs text-white/50">
                 {publicUrl}
               </p>
             </div>
@@ -240,23 +240,23 @@ export function BarberiaOSKitClient({
                 key={item.label}
                 className={`flex items-center gap-3 rounded-2xl border p-3 ${
                   item.done
-                    ? "border-[#2F6FEB]/18 bg-[#2F6FEB]/5"
-                    : "border-slate-200 bg-white"
+                    ? "border-[#D4AF37]/20 bg-[#D4AF37]/[0.06]"
+                    : "border-white/[0.08] bg-white/[0.03]"
                 }`}
               >
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                    item.done ? "bg-[#2563EB] text-white" : "bg-slate-100 text-slate-500"
+                    item.done ? "bg-[#D4AF37] text-[#0D0D0F]" : "bg-white/[0.08] text-white/40"
                   }`}
                 >
                   <Check size={15} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-black text-[#111827]">{item.label}</p>
-                  <p className="text-xs font-semibold text-slate-500">{item.detail}</p>
+                  <p className="font-black text-white">{item.label}</p>
+                  <p className="text-xs font-semibold text-white/40">{item.detail}</p>
                 </div>
                 {!item.done && (
-                  <span className="rounded-full border border-slate-200 px-2 py-1 text-[10px] font-black uppercase text-slate-500">
+                  <span className="rounded-full border border-white/[0.10] px-2 py-1 text-[10px] font-black uppercase text-white/30">
                     Pendiente
                   </span>
                 )}
@@ -288,7 +288,7 @@ export function BarberiaOSKitClient({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.08] px-4 py-3 text-sm font-black text-emerald-400 transition hover:bg-emerald-500/[0.14]"
             >
               <MessageCircle size={16} /> Compartir por WhatsApp
             </a>
@@ -299,9 +299,9 @@ export function BarberiaOSKitClient({
             />
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#DCEBFF] bg-[#F8FBFF] p-4">
-            <p className="text-xs font-black uppercase text-[#2563EB]">Texto sugerido</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{instagramText}</p>
+          <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+            <p className="text-xs font-black uppercase text-white/40">Texto sugerido</p>
+            <p className="mt-2 text-sm leading-6 text-white/50">{instagramText}</p>
           </div>
         </SectionCard>
       </div>
@@ -313,13 +313,13 @@ export function BarberiaOSKitClient({
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {materialCards.map((material) => (
-            <article key={material.title} className="rounded-2xl border border-[#DCEBFF] bg-white p-4 shadow-sm">
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB]/10 text-[#2563EB]">
+            <article key={material.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37]">
                 <ReceiptText size={19} />
               </div>
-              <p className="text-[10px] font-black uppercase text-[#2563EB]">{material.format}</p>
-              <h3 className="mt-2 font-black leading-snug text-[#111827]">{material.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{material.description}</p>
+              <p className="text-[10px] font-black uppercase text-white/40">{material.format}</p>
+              <h3 className="mt-2 font-black leading-snug text-white">{material.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/40">{material.description}</p>
             </article>
           ))}
         </div>
@@ -332,21 +332,21 @@ export function BarberiaOSKitClient({
       >
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {hardwareCards.map(({ title, description, icon: Icon }) => (
-            <article key={title} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <article key={title} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#07111f] text-[#38BDF8]">
                 <Icon size={19} />
               </div>
-              <h3 className="font-black text-[#111827]">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
+              <h3 className="font-black text-white">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/40">{description}</p>
             </article>
           ))}
         </div>
       </SectionCard>
 
-      <div className="rounded-2xl border border-[#DCEBFF] bg-[#F8FBFF] p-5">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
         <div className="flex gap-3">
-          <ShieldCheck size={18} className="mt-0.5 shrink-0 text-[#2563EB]" />
-          <p className="text-sm leading-6 text-slate-600">
+          <ShieldCheck size={18} className="mt-0.5 shrink-0 text-white/40" />
+          <p className="text-sm leading-6 text-white/50">
             El kit usa tus datos actuales de BarberíaOS y el enlace público existente. No cambia base de datos,
             pagos, auth, Stripe, Supabase ni migraciones.
           </p>
@@ -369,9 +369,9 @@ function ActionButton({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[#DCEBFF] bg-white px-4 py-3 text-sm font-black text-[#111827] transition hover:border-[#2563EB]/35 hover:bg-[#F8FBFF]"
+      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/[0.12] bg-white/[0.04] px-4 py-3 text-sm font-black text-white transition hover:border-white/20 hover:bg-white/[0.08]"
     >
-      <Icon size={16} className="text-[#2563EB]" /> {label}
+      <Icon size={16} className="text-white/50" /> {label}
     </button>
   );
 }

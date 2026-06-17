@@ -58,9 +58,9 @@ export const APPOINTMENT_COLORS: Record<string, AppointmentColor> = {
   },
   new_client: {
     label: "Nuevo cliente",
-    card: "border-blue-200 bg-blue-50 text-slate-900 hover:bg-blue-100",
-    badge: "border-blue-200 bg-blue-100 text-blue-700",
-    dot: "bg-blue-500",
+    card: "border-[#D4AF37]/20 bg-[#D4AF37]/[0.06] text-white hover:bg-[#D4AF37]/[0.10]",
+    badge: "border-[#D4AF37]/30 bg-[#D4AF37]/[0.10] text-[#D4AF37]",
+    dot: "bg-[#D4AF37]",
   },
 };
 

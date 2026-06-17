@@ -115,7 +115,7 @@ export function AppointmentDetailsPanel({
                   {formatTime(appointment.start_time)} · {duration} min
                 </p>
                 {isNewClient && (
-                  <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-700">
+                  <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] px-2 py-0.5 text-[10px] font-black text-[#D4AF37]">
                     Nuevo cliente
                   </span>
                 )}

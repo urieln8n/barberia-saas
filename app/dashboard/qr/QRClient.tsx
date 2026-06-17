@@ -205,7 +205,7 @@ export function QRClient({ name, slug }: Props) {
 
             <ChannelCard
               icon={Globe}
-              iconClassName="bg-blue-500/[0.10] text-blue-400"
+              iconClassName="bg-white/[0.06] text-white/50"
               title="Añade tu botón de citas en Google"
               description="Añade este enlace como URL de citas en tu perfil de Google Business."
               body={publicUrl}

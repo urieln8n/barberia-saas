@@ -70,7 +70,7 @@ const WEEKDAYS = [
 ];
 
 const AVATAR_COLORS = [
-  "bg-violet-900/60 text-violet-300", "bg-blue-900/60 text-blue-300",
+  "bg-violet-900/60 text-violet-300", "bg-teal-900/60 text-teal-300",
   "bg-emerald-900/60 text-emerald-300", "bg-amber-900/60 text-amber-300",
   "bg-rose-900/60 text-rose-300", "bg-cyan-900/60 text-cyan-300",
 ];

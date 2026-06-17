@@ -12,19 +12,19 @@ type InsightCardProps = {
 };
 
 const toneClasses = {
-  blue: "border-blue-100 bg-blue-50 text-blue-900",
-  gold: "border-[#D5A84C]/25 bg-[#D5A84C]/10 text-[#5B4212]",
-  success: "border-emerald-100 bg-emerald-50 text-emerald-900",
-  danger: "border-red-100 bg-red-50 text-red-900",
-  dark: "border-white/10 bg-white/[0.06] text-white",
+  blue: "border-violet-500/25 bg-violet-500/[0.08] text-violet-300",
+  gold: "border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] text-[#D4AF37]",
+  success: "border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-300",
+  danger: "border-red-500/25 bg-red-500/[0.08] text-red-300",
+  dark: "border-white/[0.10] bg-white/[0.06] text-white",
 };
 
 const iconClasses = {
-  blue: "bg-blue-500/10 text-blue-700",
-  gold: "bg-[#D5A84C]/15 text-[#8A641F]",
-  success: "bg-emerald-500/10 text-emerald-700",
-  danger: "bg-red-500/10 text-red-700",
-  dark: "bg-white/10 text-white",
+  blue: "bg-violet-500/[0.12] text-violet-400",
+  gold: "bg-[#D4AF37]/[0.12] text-[#D4AF37]",
+  success: "bg-emerald-500/[0.12] text-emerald-400",
+  danger: "bg-red-500/[0.12] text-red-400",
+  dark: "bg-white/[0.10] text-white",
 };
 
 export function InsightCard({

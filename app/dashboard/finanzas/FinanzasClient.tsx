@@ -39,7 +39,7 @@ type Expense = {
 };
 
 const CATEGORIES = [
-  { value: "alquiler",     label: "Alquiler",         icon: Building2,      color: "text-blue-400 bg-blue-500/[0.10]"     },
+  { value: "alquiler",     label: "Alquiler",         icon: Building2,      color: "text-slate-400 bg-white/[0.06]"       },
   { value: "productos",    label: "Productos",         icon: ShoppingBag,    color: "text-purple-400 bg-purple-500/[0.10]" },
   { value: "herramientas", label: "Herramientas",      icon: Wrench,         color: "text-orange-400 bg-orange-500/[0.10]" },
   { value: "marketing",    label: "Marketing",         icon: Megaphone,      color: "text-pink-400 bg-pink-500/[0.10]"     },

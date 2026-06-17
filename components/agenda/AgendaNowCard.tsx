@@ -122,8 +122,8 @@ export function AgendaNowCard({ appointments, freeSlots, dateISO }: Props) {
 
           {upcomingCount > 0 && (
             <div className="hidden items-center gap-1.5 text-[11px] lg:flex">
-              <TrendingUp size={11} className="text-blue-500" />
-              <span className="font-semibold text-blue-600">
+              <TrendingUp size={11} className="text-[#D4AF37]" />
+              <span className="font-semibold text-[#D4AF37]">
                 {upcomingCount} cita{upcomingCount !== 1 ? "s" : ""} próximas 2h
               </span>
             </div>

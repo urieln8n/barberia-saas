@@ -34,14 +34,14 @@ const labels: Record<Status, string> = {
 const classes: Record<Status, string> = {
   pending: "border-amber-100 bg-amber-50 text-amber-700",
   scheduled: "border-amber-100 bg-amber-50 text-amber-700",
-  confirmed: "border-blue-100 bg-blue-50 text-blue-700",
+  confirmed: "border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-400",
   completed: "border-emerald-100 bg-emerald-50 text-emerald-700",
   cancelled: "border-red-100 bg-red-50 text-red-700",
   no_show: "border-red-100 bg-red-50 text-red-700",
   active: "border-emerald-100 bg-emerald-50 text-emerald-700",
   inactive: "border-neutral-200 bg-neutral-100 text-neutral-600",
   paid: "border-emerald-100 bg-emerald-50 text-emerald-700",
-  trial: "border-blue-100 bg-blue-50 text-blue-700",
+  trial: "border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] text-[#D4AF37]",
   overdue: "border-red-100 bg-red-50 text-red-700",
 };
 

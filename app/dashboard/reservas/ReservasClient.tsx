@@ -151,9 +151,9 @@ const COLOR_MAP: Record<
   { bg: string; icon: string; ring: string }
 > = {
   blue: {
-    bg: "bg-blue-500/15",
-    icon: "text-blue-300",
-    ring: "ring-blue-500/10",
+    bg: "bg-violet-500/15",
+    icon: "text-violet-300",
+    ring: "ring-violet-500/10",
   },
   emerald: {
     bg: "bg-emerald-500/15",
@@ -222,7 +222,7 @@ function AlertBanner({
     alerts.push({
       icon: AlertCircle,
       msg: `${upcomingNext3h.length} cita${upcomingNext3h.length > 1 ? "s" : ""} en las próximas 3 horas.`,
-      cls: "border-blue-500/20 bg-blue-500/[0.07] text-blue-300",
+      cls: "border-violet-500/20 bg-violet-500/[0.07] text-violet-300",
     });
   }
   if (todayRevenue > 0) {
