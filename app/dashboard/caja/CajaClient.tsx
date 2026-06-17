@@ -74,11 +74,11 @@ const METHOD_LABEL: Record<string, string> = {
 };
 
 const METHOD_TONE: Record<string, string> = {
-  cash: "border-emerald-100 bg-emerald-50 text-emerald-700",
-  card: "border-blue-100 bg-blue-50 text-blue-700",
-  bizum: "border-amber-100 bg-amber-50 text-amber-700",
-  transfer: "border-orange-100 bg-orange-50 text-orange-700",
-  other: "border-neutral-200 bg-neutral-100 text-neutral-600",
+  cash: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+  card: "border-blue-500/30 bg-blue-500/10 text-blue-400",
+  bizum: "border-amber-500/30 bg-amber-500/10 text-amber-400",
+  transfer: "border-orange-500/30 bg-orange-500/10 text-orange-400",
+  other: "border-white/[0.10] bg-white/[0.06] text-white/50",
 };
 
 function formatCurrency(value: number) {
@@ -114,7 +114,7 @@ function isProductSale(movement: CashMovement) {
 
 function SubmitError({ message }: { message: string }) {
   return (
-    <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+    <p className="rounded-2xl border border-red-500/30 bg-red-950/40 px-4 py-3 text-sm font-medium text-red-400">
       {message}
     </p>
   );
@@ -324,16 +324,16 @@ export function CajaClient({
         description="Cobra rápido, controla efectivo y cierra el día con menos dudas."
       >
         {session && (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold leading-6 text-slate-600">
-            Inicio <span className="font-black text-slate-900">{formatCurrency(Number(session.opening_amount))}</span> ·
-            cobrado <span className="font-black text-slate-900">{formatCurrency(totals.totalSold)}</span> ·
-            cierre estimado <span className="font-black text-[#C9922A]">{formatCurrency(totals.expectedCash)}</span>.
+          <div className="rounded-2xl border border-white/[0.10] bg-white/[0.05] px-4 py-3 text-sm font-semibold leading-6 text-white/50">
+            Inicio <span className="font-black text-white/80">{formatCurrency(Number(session.opening_amount))}</span> ·
+            cobrado <span className="font-black text-white/80">{formatCurrency(totals.totalSold)}</span> ·
+            cierre estimado <span className="font-black text-[#D4AF37]">{formatCurrency(totals.expectedCash)}</span>.
           </div>
         )}
       </PageHeader>
 
       {errorMessage && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-950/40 px-5 py-4 text-sm text-amber-400">
           {errorMessage}
         </div>
       )}
@@ -375,43 +375,44 @@ export function CajaClient({
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[22px] border border-[#D4AF37]/20 bg-gradient-to-br from-[#FDFAF3] to-white p-5 shadow-sm"
+            className="rounded-[22px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.04] p-5"
+            style={{ boxShadow: "0 0 0 1px rgba(212,175,55,0.06), 0 4px 20px rgba(0,0,0,0.4)" }}
           >
-            <p className="text-xs font-black uppercase text-[#C9922A]">Balance operativo</p>
-            <p className="mt-3 text-4xl font-black leading-none text-slate-900">{formatCurrency(totals.balanceFinal)}</p>
+            <p className="text-xs font-black uppercase text-[#D4AF37]">Balance operativo</p>
+            <p className="mt-3 text-4xl font-black leading-none text-white/90">{formatCurrency(totals.balanceFinal)}</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
-                <p className="text-xs font-black uppercase text-slate-500">Servicios</p>
-                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.serviceRevenue)}</p>
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] px-3 py-3">
+                <p className="text-xs font-black uppercase text-white/40">Servicios</p>
+                <p className="mt-1 text-lg font-black text-white/80">{formatCurrency(totals.serviceRevenue)}</p>
               </div>
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
-                <p className="text-xs font-black uppercase text-slate-500">Productos</p>
-                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.productRevenue)}</p>
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] px-3 py-3">
+                <p className="text-xs font-black uppercase text-white/40">Productos</p>
+                <p className="mt-1 text-lg font-black text-white/80">{formatCurrency(totals.productRevenue)}</p>
               </div>
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-3">
-                <p className="text-xs font-black uppercase text-slate-500">Gastos</p>
-                <p className="mt-1 text-lg font-black text-slate-900">{formatCurrency(totals.expenses)}</p>
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] px-3 py-3">
+                <p className="text-xs font-black uppercase text-white/40">Gastos</p>
+                <p className="mt-1 text-lg font-black text-white/80">{formatCurrency(totals.expenses)}</p>
               </div>
             </div>
           </motion.div>
           <div className="grid gap-3">
-            <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-[22px] border border-white/[0.10] bg-[#0E0E1C] p-4" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.4)" }}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase text-slate-500">Efectivo esperado</p>
-                  <p className="mt-1 text-2xl font-black text-slate-900">{formatCurrency(totals.expectedCash)}</p>
+                  <p className="text-xs font-black uppercase text-white/40">Efectivo esperado</p>
+                  <p className="mt-1 text-2xl font-black text-white/90">{formatCurrency(totals.expectedCash)}</p>
                 </div>
-                <Banknote size={20} className="text-[#C9922A]" />
+                <Banknote size={20} className="text-[#D4AF37]" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-[18px] border border-emerald-100 bg-emerald-50 px-4 py-3">
-                <p className="text-xs font-bold uppercase text-emerald-700">Cobros</p>
-                <p className="mt-1 text-xl font-black text-emerald-900">{totals.count}</p>
+              <div className="rounded-[18px] border border-emerald-500/25 bg-emerald-500/[0.08] px-4 py-3">
+                <p className="text-xs font-bold uppercase text-emerald-400">Cobros</p>
+                <p className="mt-1 text-xl font-black text-emerald-300">{totals.count}</p>
               </div>
-              <div className="rounded-[18px] border border-amber-100 bg-amber-50 px-4 py-3">
-                <p className="text-xs font-bold uppercase text-amber-700">Productos</p>
-                <p className="mt-1 text-xl font-black text-amber-900">{totals.productCount}</p>
+              <div className="rounded-[18px] border border-amber-500/25 bg-amber-500/[0.08] px-4 py-3">
+                <p className="text-xs font-bold uppercase text-amber-400">Productos</p>
+                <p className="mt-1 text-xl font-black text-amber-300">{totals.productCount}</p>
               </div>
             </div>
           </div>
@@ -506,7 +507,7 @@ export function CajaClient({
 
                 <div>
                   <label className="form-label">Precio unitario *</label>
-                  <div className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3 text-lg font-black text-[#080A0F]">
+                  <div className="rounded-2xl border border-white/[0.10] bg-white/[0.05] px-4 py-3 text-lg font-black text-white/80">
                     {hasValidUnitPrice ? formatCurrency(unitSalePriceNumber) : "Sin precio"}
                   </div>
                   <p className={`form-help ${!hasValidUnitPrice ? "text-red-600" : ""}`}>
@@ -554,13 +555,13 @@ export function CajaClient({
             </div>
 
             <div className="grid gap-4">
-              <div className="rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] p-4">
+              <div className="rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-4" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.4)" }}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">
                       Total
                     </p>
-                    <p className="mt-1 text-3xl font-black text-[#080A0F]">
+                    <p className="mt-1 text-3xl font-black text-white/90">
                       {formatCurrency(saleTotal)}
                     </p>
                   </div>
@@ -568,10 +569,10 @@ export function CajaClient({
                     <span
                       className={`rounded-full border px-3 py-1 text-xs font-bold ${
                         quantityExceedsStock
-                          ? "border-red-200 bg-red-50 text-red-700"
+                          ? "border-red-500/30 bg-red-500/10 text-red-400"
                           : selectedProduct.current_stock <= selectedProduct.min_stock
-                          ? "border-amber-200 bg-amber-50 text-amber-700"
-                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                          : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
                       }`}
                     >
                       {quantityExceedsStock
@@ -583,27 +584,27 @@ export function CajaClient({
                   )}
                 </div>
                 {selectedProduct && (
-                <div className="mt-4 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3">
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+                <div className="mt-4 rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.05] px-4 py-3">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">
                       Margen estimado
                     </p>
                     <p
                       className={`mt-1 text-lg font-black ${
-                        productMargin !== null && productMargin < 0 ? "text-red-600" : "text-[#080A0F]"
+                        productMargin !== null && productMargin < 0 ? "text-red-400" : "text-white/80"
                       }`}
                     >
                       {productMargin === null ? "No disponible" : formatCurrency(productMargin)}
                     </p>
                   </div>
                 )}
-                <div className="mt-4 text-sm text-slate-500">
+                <div className="mt-4 text-sm text-white/40">
                   Se registrará en caja y se descontará del inventario automáticamente.
                 </div>
               </div>
 
               {saleError && <SubmitError message={saleError} />}
               {saleSuccess && (
-                <p className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                <p className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-400">
                   {saleSuccess}
                 </p>
               )}
@@ -632,7 +633,7 @@ export function CajaClient({
             <div>
               <label className="form-label">Importe inicial</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-white/40">
                   €
                 </span>
                 <input
@@ -861,11 +862,11 @@ export function CajaClient({
                 <form action={handleClose} className="grid gap-4">
                   <input type="hidden" name="cash_session_id" value={session.id} />
 
-                  <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+                  <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.05] p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">
                       Efectivo esperado
                     </p>
-                    <p className="mt-2 text-3xl font-black text-[#111827]">
+                    <p className="mt-2 text-3xl font-black text-white/90">
                       {formatCurrency(totals.expectedCash)}
                     </p>
                   </div>
@@ -887,10 +888,10 @@ export function CajaClient({
 
                   <div className={`rounded-2xl border px-4 py-3 ${
                     closingDifference === 0
-                      ? "border-neutral-200 bg-neutral-50 text-neutral-600"
+                      ? "border-white/[0.10] bg-white/[0.05] text-white/50"
                       : closingDifference > 0
-                        ? "border-emerald-100 bg-emerald-50 text-emerald-700"
-                        : "border-red-100 bg-red-50 text-red-700"
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                        : "border-red-500/30 bg-red-500/10 text-red-400"
                   }`}>
                     <p className="text-xs font-bold uppercase tracking-[0.16em]">Diferencia estimada</p>
                     <p className="mt-1 text-2xl font-black">
@@ -933,7 +934,7 @@ export function CajaClient({
             description="Cobros registrados en la caja abierta."
             bodyClassName="p-0"
             action={
-              <span className="rounded-full border border-[#D5CEBC] bg-[#F0EAE0] px-3 py-1 text-xs font-semibold text-slate-600">
+              <span className="rounded-full border border-white/[0.10] bg-white/[0.06] px-3 py-1 text-xs font-semibold text-white/50">
                 {movements.length} movimientos
               </span>
             }
@@ -949,7 +950,7 @@ export function CajaClient({
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-[#E7E2D8] bg-[#F3EDE1]">
+                  <thead className="border-b border-white/[0.07] bg-white/[0.04]">
                     <tr>
                       <th className="table-header-cell">Hora</th>
                       <th className="table-header-cell">Cliente</th>
@@ -961,16 +962,16 @@ export function CajaClient({
                       <th className="table-header-cell text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-white/[0.05]">
                     {movements.map((movement) => (
-                      <tr key={movement.id} className="bg-white transition-colors hover:bg-slate-50">
-                        <td className="table-cell text-slate-500">
+                      <tr key={movement.id} className="transition-colors hover:bg-white/[0.03]">
+                        <td className="table-cell text-white/40">
                           {new Date(movement.created_at).toLocaleTimeString("es-ES", {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </td>
-                        <td className="table-cell font-semibold text-slate-900">
+                        <td className="table-cell font-semibold text-white/80">
                           {movement.clients?.name ?? "—"}
                         </td>
                         <td className="table-cell">{movement.barbers?.name ?? "—"}</td>
@@ -982,7 +983,7 @@ export function CajaClient({
                         </td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.amount))}</td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.tip_amount))}</td>
-                        <td className="table-cell text-right font-black text-slate-900">
+                        <td className="table-cell text-right font-black text-white/90">
                           {formatCurrency(movementTotal(movement))}
                         </td>
                       </tr>

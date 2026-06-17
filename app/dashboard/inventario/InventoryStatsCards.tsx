@@ -56,40 +56,40 @@ export function InventoryStatsCards({ products }: Props) {
         value={lowStockProducts.length}
         description="Revisar pronto"
         icon={AlertTriangle}
-        iconBg="bg-amber-50"
-        iconColor="text-amber-700"
+        iconBg="bg-amber-500/[0.08]"
+        iconColor="text-amber-400"
       />
       <StatCard
         label="Sin stock"
         value={emptyStockProducts.length}
         description="Necesitan reposición"
         icon={PackageX}
-        iconBg="bg-red-50"
-        iconColor="text-red-700"
+        iconBg="bg-red-500/[0.08]"
+        iconColor="text-red-400"
       />
       <StatCard
         label="Valor coste"
         value={formatCurrency(estimatedValue)}
         description="A precio de compra"
         icon={CircleDollarSign}
-        iconBg="bg-emerald-50"
-        iconColor="text-emerald-700"
+        iconBg="bg-emerald-500/[0.08]"
+        iconColor="text-emerald-400"
       />
       <StatCard
         label="Valor venta"
         value={formatCurrency(estimatedRetailValue)}
         description="Stock retail disponible"
         icon={Boxes}
-        iconBg="bg-[#D5A84C]/10"
-        iconColor="text-[#8A641F]"
+        iconBg="bg-[#D4AF37]/10"
+        iconColor="text-[#D4AF37]"
       />
       <StatCard
         label="Margen estimado"
         value={formatCurrency(estimatedMargin)}
         description={`${retailProducts.length} venta · ${internalProducts.length} interno`}
         icon={TrendingUp}
-        iconBg="bg-slate-100"
-        iconColor="text-slate-700"
+        iconBg="bg-white/[0.06]"
+        iconColor="text-white/70"
       />
     </div>
   );

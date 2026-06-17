@@ -20,9 +20,10 @@ type SeoLandingPageProps = {
   }>;
   canonicalUrl?: string;
   city?: string;
+  relatedLinks?: Array<{ label: string; href: string }>;
 };
 
-export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq, canonicalUrl, city }: SeoLandingPageProps) {
+export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq, canonicalUrl, city, relatedLinks }: SeoLandingPageProps) {
   const jsonLdSchemas = canonicalUrl
     ? [
         {
@@ -186,6 +187,26 @@ export function SeoLandingPage({ eyebrow, h1, intro, benefits, sections, faq, ca
           </div>
         </div>
       </section>
+
+      {relatedLinks && relatedLinks.length > 0 && (
+        <section className="border-t border-slate-100 bg-[#F6F8FB] px-5 py-12 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-xl font-black text-[#080A0F]">También te puede interesar</h2>
+            <ul className="mt-5 flex flex-wrap justify-center gap-3">
+              {relatedLinks.map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#C9922A]/40 hover:text-[#080A0F]"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <footer className="border-t border-slate-200 bg-white px-5 py-8 text-center text-xs text-slate-400 lg:px-8">
         <nav aria-label="Enlaces internos SEO">

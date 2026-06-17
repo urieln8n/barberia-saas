@@ -40,7 +40,14 @@ export async function deleteExpense(id: string) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "No autenticado" };
 
-  const { error } = await supabase.from("expenses").delete().eq("id", id);
+  const barbershopId = await getCurrentBarbershopId(supabase, user.id);
+  if (!barbershopId) return { error: "Barbería no encontrada" };
+
+  const { error } = await supabase
+    .from("expenses")
+    .delete()
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
   if (error) return { error: error.message };
 
   revalidatePath("/dashboard/finanzas");

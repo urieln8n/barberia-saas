@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
+import { checkRateLimit, getClientIp } from "@/src/lib/rate-limit/in-memory";
+
+const LEADS_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hora
+const LEADS_RATE_LIMIT_MAX_BY_IP = 5;
 
 const LeadSchema = z.object({
   name: z.string().trim().min(2, "El nombre es obligatorio"),
@@ -48,6 +52,20 @@ export async function POST(request: Request) {
           "La captación está configurada, pero falta la conexión segura con Supabase.",
       },
       { status: 503 }
+    );
+  }
+
+  const clientIp = getClientIp(request);
+  const ipAllowed = checkRateLimit(
+    `leads:ip:${clientIp}`,
+    LEADS_RATE_LIMIT_MAX_BY_IP,
+    LEADS_RATE_LIMIT_WINDOW_MS
+  );
+
+  if (!ipAllowed) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes. Inténtalo más tarde." },
+      { status: 429 }
     );
   }
 
@@ -133,6 +151,30 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+
+  // Notificar a n8n en background (fire & forget, no bloquea la respuesta)
+  const n8nWebhookUrl = process.env.N8N_LEADS_WEBHOOK_URL;
+  if (n8nWebhookUrl) fetch(n8nWebhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(process.env.N8N_WEBHOOK_SECRET ? { "x-webhook-secret": process.env.N8N_WEBHOOK_SECRET } : {}),
+    },
+    body: JSON.stringify({
+      name: lead.name,
+      barbershopName: lead.barbershopName,
+      city: lead.city,
+      whatsapp: lead.whatsapp,
+      email: lead.email,
+      barbersCount: lead.barbersCount,
+      currentSystem: currentSystem,
+      mainProblem: mainProblem,
+      interest: interest,
+      message: lead.message,
+      source,
+      utmSource: lead.utmSource,
+    }),
+  }).catch(() => { /* silencioso si n8n no está disponible */ });
 
   return NextResponse.json({ ok: true, duplicated: false });
 }

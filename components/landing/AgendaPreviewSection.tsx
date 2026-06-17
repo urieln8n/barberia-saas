@@ -79,7 +79,7 @@ function BookingCard({
 
   const card = (
     <div
-      className={`rounded-[10px] border px-2 py-1.5 ${c.bg} ${c.border}`}
+      className={`rounded-[10px] border px-2 py-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] ${c.bg} ${c.border}`}
       style={{ minWidth: 0 }}
     >
       <div className="flex items-center gap-1">
@@ -123,8 +123,19 @@ function AgendaGrid() {
   return (
     <div
       ref={ref}
-      className="overflow-x-auto rounded-[24px] border border-[#080A0F]/8 bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
+      className="relative overflow-hidden rounded-[28px] border border-[#080A0F]/8 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04),0_24px_64px_-12px_rgba(0,0,0,0.10)]"
     >
+      {/* Browser-style chrome bar */}
+      <div className="flex items-center gap-1.5 border-b border-[#080A0F]/6 bg-[#FBFBFA] px-4 py-3">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#080A0F]/15" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#080A0F]/15" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#080A0F]/15" />
+        <span className="ml-3 truncate text-[10px] font-bold text-[#080A0F]/30">
+          app.barberiaos.com/agenda
+        </span>
+      </div>
+
+      <div className="overflow-x-auto">
       <div className="min-w-[640px]">
         {/* Header row: days */}
         <div className="grid border-b border-[#080A0F]/8 bg-[#F8F8F6]" style={{ gridTemplateColumns: "68px repeat(6, 1fr)" }}>
@@ -178,6 +189,7 @@ function AgendaGrid() {
           </div>
         ))}
       </div>
+      </div>
     </div>
   );
 }
@@ -207,7 +219,7 @@ function AgendaStats() {
             delay: 0.1 * i,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="rounded-2xl border border-[#080A0F]/8 bg-white p-4 text-center shadow-sm"
+          className="rounded-2xl border border-[#080A0F]/8 bg-white p-4 text-center shadow-[0_2px_6px_rgba(0,0,0,0.03)] transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
         >
           <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
           <p className="mt-0.5 text-xs text-[#080A0F]/60">{stat.label}</p>

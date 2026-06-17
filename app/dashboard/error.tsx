@@ -15,21 +15,21 @@ export default function DashboardError({
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 p-8 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-[#B88917]/20 bg-[#B88917]/10">
-        <AlertTriangle size={28} className="text-[#D4AF37]" />
+    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-8 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10">
+        <AlertTriangle size={22} className="text-red-400" />
       </div>
-      <div className="space-y-2">
-        <h2 className="text-xl font-black text-[#09090B]">Algo salió mal</h2>
-        <p className="max-w-sm text-sm text-[#52525B]">
+      <div className="space-y-1">
+        <h2 className="text-lg font-black text-white">Algo salió mal</h2>
+        <p className="max-w-sm text-sm text-white/40">
           No pudimos cargar el panel. Puede ser un problema temporal de conexión.
         </p>
       </div>
       <button
         onClick={reset}
-        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#09090B] px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+        className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.06] px-4 text-sm font-bold text-white/70 transition hover:bg-white/[0.10]"
       >
-        <RefreshCw size={16} />
+        <RefreshCw size={15} />
         Reintentar
       </button>
     </div>

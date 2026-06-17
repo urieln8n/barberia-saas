@@ -2,6 +2,9 @@ import Link from "next/link";
 import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
 import { AdminDataError } from "./_components/AdminDataError";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import {
   AlertTriangle, TrendingUp, Store, Users, Target,
   CheckSquare, Clock, DollarSign, Calendar, ChevronRight, Zap,

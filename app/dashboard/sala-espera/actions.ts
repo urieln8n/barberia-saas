@@ -111,7 +111,8 @@ export async function notifyWaitlistEntry(
   await (supabase as any)
     .from("waitlist_entries")
     .update({ notified_at: new Date().toISOString() })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("barbershop_id", barbershopId);
 
   revalidatePath("/dashboard/sala-espera");
   return { success: true };

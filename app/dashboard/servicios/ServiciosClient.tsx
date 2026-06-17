@@ -110,11 +110,11 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
         }
       />
 
-      <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] px-4 py-3 text-sm text-neutral-600">
-        Plan <span className="font-black text-[#111827]">{planUsage.label}</span> · Servicios usados{" "}
-        <span className="font-black text-[#111827]">{services.length}</span> / {formatLimit(serviceLimit)}
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] px-4 py-3 text-sm text-white/50">
+        Plan <span className="font-black text-white">{planUsage.label}</span> · Servicios usados{" "}
+        <span className="font-black text-white">{services.length}</span> / {formatLimit(serviceLimit)}
         {isAtServiceLimit && (
-          <span className="ml-2 font-semibold text-amber-700">
+          <span className="ml-2 font-semibold text-amber-400">
             Límite alcanzado. Sube de plan para añadir más servicios.
           </span>
         )}
@@ -150,12 +150,12 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
           bodyClassName="p-0"
         >
           {imageError && (
-            <p className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{imageError}</p>
+            <p className="mb-3 rounded-xl bg-red-500/[0.08] px-4 py-2.5 text-sm text-red-400">{imageError}</p>
           )}
-          <p className="mb-2 text-xs text-neutral-400">Haz clic en el icono de imagen para añadir foto · JPG, PNG o WebP · máx. 2 MB</p>
+          <p className="mb-2 text-xs text-white/35">Haz clic en el icono de imagen para añadir foto · JPG, PNG o WebP · máx. 2 MB</p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#E7E2D8] bg-[#F8F5EF]">
+              <thead className="border-b border-white/[0.08] bg-[#0D0D11]">
                 <tr>
                   <th className="table-header-cell w-12">Img</th>
                   <th className="table-header-cell">Servicio</th>
@@ -166,20 +166,20 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                   <th className="table-header-cell text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E7E2D8]">
+              <tbody className="divide-y divide-white/[0.06]">
                 {services.map((s) => (
-                  <tr key={s.id} className="transition-colors hover:bg-[#FAF8F4]">
+                  <tr key={s.id} className="transition-colors hover:bg-white/[0.04]">
                     {/* Columna imagen con upload */}
                     <td className="px-3 py-3">
                       <label
                         htmlFor={`img-service-${s.id}`}
-                        className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-[#E7E2D8] bg-[#F8F5EF]"
+                        className="group relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-[#0D0D11]"
                         title="Subir imagen del servicio"
                       >
                         {s.image_url ? (
                           <Image src={s.image_url} alt={s.name} fill sizes="40px" className="object-cover" />
                         ) : (
-                          <ImageIcon size={14} className="text-neutral-400" />
+                          <ImageIcon size={14} className="text-white/35" />
                         )}
                         <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
                           {uploadingImage === s.id
@@ -196,16 +196,16 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                       </label>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-[#111827]">{s.name}</p>
-                      {s.description && <p className="mt-0.5 text-xs text-neutral-400">{s.description}</p>}
+                      <p className="font-semibold text-white">{s.name}</p>
+                      {s.description && <p className="mt-0.5 text-xs text-white/35">{s.description}</p>}
                     </td>
-                    <td className="px-6 py-4 text-neutral-600">
+                    <td className="px-6 py-4 text-white/50">
                       <span className="flex items-center gap-1.5 text-sm">
-                        <Clock size={13} className="text-neutral-400" /> {s.duration_minutes} min
+                        <Clock size={13} className="text-white/35" /> {s.duration_minutes} min
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-black text-[#111827]">{s.price} €</td>
-                    <td className="px-6 py-4 text-neutral-600">Todos los activos</td>
+                    <td className="px-6 py-4 font-black text-white">{s.price} €</td>
+                    <td className="px-6 py-4 text-white/50">Todos los activos</td>
                     <td className="px-6 py-4">
                       <StatusBadge status={s.active ? "active" : "inactive"} />
                     </td>
@@ -215,7 +215,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                           href={`/dashboard/studio?type=service_promo&serviceName=${encodeURIComponent(s.name)}`}
                           aria-label={`Crear video para ${s.name}`}
                           title="Crear video con Studio IA"
-                          className="rounded-xl p-2 text-violet-400 transition-colors hover:bg-violet-50 hover:text-violet-700"
+                          className="rounded-xl p-2 text-violet-400 transition-colors hover:bg-violet-500/[0.08] hover:text-violet-300"
                         >
                           <Clapperboard size={15} aria-hidden="true" />
                         </a>
@@ -223,7 +223,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                           type="button"
                           onClick={() => openEdit(s)}
                           aria-label={`Editar ${s.name}`}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#111827]"
+                          className="rounded-xl p-2 text-white/35 transition-colors hover:bg-white/[0.06] hover:text-white"
                         >
                           <Pencil size={15} aria-hidden="true" />
                         </button>
@@ -232,7 +232,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                           onClick={() => handleDelete(s.id)}
                           disabled={deleting === s.id}
                           aria-label={`Eliminar ${s.name}`}
-                          className="rounded-xl p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
+                          className="rounded-xl p-2 text-white/35 transition-colors hover:bg-red-500/[0.08] hover:text-red-400 disabled:opacity-40"
                         >
                           <Trash2 size={15} aria-hidden="true" />
                         </button>
@@ -249,7 +249,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#E7E2D8] bg-[#FAF8F4] shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0E0E1C] shadow-2xl" style={{boxShadow:"0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)"}}>
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
@@ -262,7 +262,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                   type="button"
                   onClick={closeModal}
                   aria-label="Cerrar"
-                  className="rounded-xl p-2 transition-colors hover:bg-[#FAF8F4]"
+                  className="rounded-xl p-2 transition-colors hover:bg-white/[0.06] text-white/50"
                 >
                   <X size={18} />
                 </button>
@@ -342,7 +342,7 @@ export function ServiciosClient({ services, barbershopId, planUsage }: Props) {
                   </PrimaryButton>
                 </div>
                 {formError && (
-                  <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                  <p className="rounded-2xl bg-red-500/[0.08] px-4 py-3 text-sm text-red-400">
                     {formError}
                   </p>
                 )}

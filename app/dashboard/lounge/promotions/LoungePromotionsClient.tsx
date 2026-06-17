@@ -184,7 +184,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
             <button
               type="button"
               onClick={closeForm}
-              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              className="rounded-lg p-1.5 text-white/35 hover:bg-white/[0.07] hover:text-white/70"
             >
               <X size={16} />
             </button>
@@ -201,7 +201,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 placeholder="Ej: Corte + barba por 18€"
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-[#D5A84C] focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/20"
+                className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-2.5 text-sm text-white/80 placeholder-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               />
             </div>
 
@@ -213,7 +213,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 placeholder="Ej: Promoción válida de lunes a jueves durante todo el mes."
                 rows={3}
-                className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-[#D5A84C] focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/20"
+                className="w-full resize-none rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-2.5 text-sm text-white/80 placeholder-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               />
             </div>
 
@@ -225,7 +225,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
                 value={form.price_label}
                 onChange={(e) => setForm((f) => ({ ...f, price_label: e.target.value }))}
                 placeholder="Ej: 18€, Gratis, Desde 10€"
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-[#D5A84C] focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/20"
+                className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-2.5 text-sm text-white/80 placeholder-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               />
             </div>
 
@@ -237,7 +237,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
                 value={form.cta_label}
                 onChange={(e) => setForm((f) => ({ ...f, cta_label: e.target.value }))}
                 placeholder="Ej: Me interesa, Reservar, Más info"
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-[#D5A84C] focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/20"
+                className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-2.5 text-sm text-white/80 placeholder-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               />
             </div>
 
@@ -251,7 +251,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))
                 }
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-[#D5A84C] focus:outline-none focus:ring-2 focus:ring-[#D5A84C]/20"
+                className="w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-2.5 text-sm text-white/80 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
               />
             </div>
 
@@ -260,12 +260,12 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, active: !f.active }))}
-                className="flex items-center gap-2 text-sm font-semibold text-slate-700"
+                className="flex items-center gap-2 text-sm font-semibold text-white/70"
               >
                 {form.active ? (
                   <ToggleRight size={24} className="text-emerald-500" />
                 ) : (
-                  <ToggleLeft size={24} className="text-slate-300" />
+                  <ToggleLeft size={24} className="text-white/20" />
                 )}
                 {form.active ? "Activa" : "Inactiva"}
               </button>
@@ -273,7 +273,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
           </div>
 
           {formError && (
-            <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">
+            <p className="mt-3 rounded-lg border border-red-500/20 bg-red-500/[0.08] px-4 py-2 text-sm text-red-400">
               {formError}
             </p>
           )}
@@ -298,12 +298,12 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
       {/* ── Lista de promociones ── */}
       {promotions.length === 0 ? (
         <div className="surface-frame flex flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-dashed border-slate-300 bg-slate-50">
-            <Tag size={22} className="text-slate-400" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-dashed border-white/[0.10] bg-white/[0.04]">
+            <Tag size={22} className="text-white/30" />
           </div>
           <div>
-            <p className="font-black text-slate-700">Todavía no tienes promociones</p>
-            <p className="mt-1 max-w-sm text-sm leading-6 text-slate-500">
+            <p className="font-black text-white/70">Todavía no tienes promociones</p>
+            <p className="mt-1 max-w-sm text-sm leading-6 text-white/40">
               Crea tu primera oferta para convertir la sala de espera en un canal de ventas.
             </p>
           </div>
@@ -316,7 +316,7 @@ export function LoungePromotionsClient({ initialPromotions }: Props) {
           {promotions.map((promo) => (
             <div
               key={promo.id}
-              className="flex flex-col gap-3 rounded-[20px] border border-slate-100 bg-white p-5 shadow-sm"
+              className="flex flex-col gap-3 rounded-[20px] border border-white/[0.07] bg-[#0E0E1C] p-5"
             >
               {/* Header row */}
               <div className="flex items-start justify-between gap-2">

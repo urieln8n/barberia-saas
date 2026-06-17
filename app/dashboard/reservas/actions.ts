@@ -134,7 +134,8 @@ async function requestReview(
   await (supabase as any)
     .from("appointments")
     .update({ review_request_sent_at: new Date().toISOString() })
-    .eq("id", appointmentId);
+    .eq("id", appointmentId)
+    .eq("barbershop_id", barbershopId);
 }
 
 async function notifyWaitlist(
@@ -148,6 +149,7 @@ async function notifyWaitlist(
       .from("appointments")
       .select("appointment_date")
       .eq("id", appointmentId)
+      .eq("barbershop_id", barbershopId)
       .maybeSingle(),
     supabase
       .from("barbershops")

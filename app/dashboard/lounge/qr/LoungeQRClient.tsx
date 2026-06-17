@@ -69,15 +69,15 @@ export function LoungeQRClient({ barbershopName, barbershopSlug, loungeUrl }: Pr
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         {/* ── QR grande ── */}
-        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm lg:w-96 lg:shrink-0">
+        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-white/[0.07] bg-[#0E0E1C] p-6 lg:w-96 lg:shrink-0">
           <div className="flex w-full items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#C9922A]">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#D4AF37]">
                 Lounge QR
               </p>
-              <h2 className="mt-0.5 font-black text-[#111827]">QR del Lounge</h2>
+              <h2 className="mt-0.5 font-black text-white/90">QR del Lounge</h2>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-[#D4AF37]">
               <QrCode size={18} />
             </div>
           </div>
@@ -89,11 +89,11 @@ export function LoungeQRClient({ barbershopName, barbershopSlug, loungeUrl }: Pr
               width={300}
               height={300}
               unoptimized
-              className="w-full max-w-[260px] rounded-2xl border border-slate-100"
+              className="w-full max-w-[260px] rounded-2xl border border-white/[0.08]"
             />
             <div className="text-center">
-              <p className="font-black text-[#111827]">{barbershopName}</p>
-              <p className="mt-0.5 text-xs text-neutral-500">Escanear para ver el Lounge</p>
+              <p className="font-black text-white/90">{barbershopName}</p>
+              <p className="mt-0.5 text-xs text-white/45">Escanear para ver el Lounge</p>
             </div>
           </div>
 
@@ -116,35 +116,35 @@ export function LoungeQRClient({ barbershopName, barbershopSlug, loungeUrl }: Pr
 
           {/* Enlace copiable */}
           <div className="w-full">
-            <p className="mb-2 text-xs font-bold text-slate-500">URL del Lounge</p>
-            <div className="flex min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-              <span className="min-w-0 flex-1 break-all font-mono text-[11px] text-slate-600">
+            <p className="mb-2 text-xs font-bold text-white/45">URL del Lounge</p>
+            <div className="flex min-w-0 items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2.5">
+              <span className="min-w-0 flex-1 break-all font-mono text-[11px] text-white/55">
                 {loungeUrl}
               </span>
               <button
                 type="button"
                 onClick={handleCopy}
                 title="Copiar enlace"
-                className="shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 transition-colors hover:bg-slate-50"
+                className="shrink-0 rounded-lg border border-white/[0.08] bg-white/[0.05] p-1.5 transition-colors hover:bg-white/[0.09]"
               >
                 {copied ? (
-                  <Check size={14} className="text-emerald-600" />
+                  <Check size={14} className="text-emerald-400" />
                 ) : (
-                  <Copy size={14} className="text-slate-500" />
+                  <Copy size={14} className="text-white/45" />
                 )}
               </button>
               <a
                 href={loungeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 transition-colors hover:bg-slate-50"
+                className="shrink-0 rounded-lg border border-white/[0.08] bg-white/[0.05] p-1.5 transition-colors hover:bg-white/[0.09]"
                 title="Abrir Lounge"
               >
-                <ExternalLink size={14} className="text-slate-500" />
+                <ExternalLink size={14} className="text-white/45" />
               </a>
             </div>
             {copied && (
-              <p className="mt-1.5 text-xs font-semibold text-emerald-600">
+              <p className="mt-1.5 text-xs font-semibold text-emerald-400">
                 Enlace copiado al portapapeles
               </p>
             )}

@@ -46,6 +46,12 @@ export default function Page() {
           a: "Sí. El enlace está pensado para bio de Instagram, mensajes de WhatsApp, Google Business Profile y QR físico.",
         },
       ]}
+      relatedLinks={[
+        { label: "Agenda online para barberías", href: "/agenda-online-barberia" },
+        { label: "QR de reservas", href: "/qr-reservas-barberias" },
+        { label: "Programa de reservas", href: "/programa-reservas-barberia" },
+        { label: "Alternativa a Booksy", href: "/alternativa-a-booksy" },
+      ]}
     />
   );
 }

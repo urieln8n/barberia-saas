@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/src/lib/supabase/client";
 import { useSidebarCollapse } from "./sidebar-context";
 import { CommandPalette } from "./CommandPalette";
 import {
@@ -23,6 +23,7 @@ import {
   MoreHorizontal,
   Plus,
   QrCode,
+  RotateCcw,
   Scissors,
   Settings,
   Sparkles,
@@ -106,9 +107,9 @@ function SidebarNavItem({
   const active = isActive(pathname, item);
 
   const accentColor   = item.isAI ? "#8B5CF6" : "#D4AF37";
-  const activeIconBg  = item.isAI ? "bg-[#7C3AED]/[0.15]" : "bg-[#D4AF37]/[0.12]";
-  const activeIconCls = item.isAI ? "text-[#A78BFA]"      : "text-[#E5C04C]";
-  const activeLabelCls= item.isAI ? "text-[#C4B5FD]"      : "text-white/85";
+  const activeIconBg  = item.isAI ? "bg-[#7C3AED]/[0.20]" : "bg-[#D4AF37]/[0.18]";
+  const activeIconCls = item.isAI ? "text-[#A78BFA]"      : "text-[#F0C92A]";
+  const activeLabelCls= item.isAI ? "text-[#C4B5FD]"      : "text-white/90";
 
   return (
     <Link
@@ -118,12 +119,12 @@ function SidebarNavItem({
       aria-current={active ? "page" : undefined}
       className={`group relative flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-[12.5px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset ${
         item.isAI ? "focus-visible:ring-[#7C3AED]" : "focus-visible:ring-[#D4AF37]/50"
-      } ${active ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"}`}
+      } ${active ? "bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" : "hover:bg-white/[0.05]"}`}
     >
       {active && (
         <span
-          className="absolute left-0 top-2 h-5 w-[2px] rounded-r-full"
-          style={{ background: accentColor }}
+          className="absolute left-0 top-2 h-5 w-[2.5px] rounded-r-full"
+          style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}88` }}
           aria-hidden="true"
         />
       )}
@@ -190,7 +191,7 @@ function SidebarSection({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <p className="mb-0.5 px-2 text-[9px] font-bold uppercase tracking-[0.1em] text-white/20">
+      <p className="mb-0.5 px-2 text-[9px] font-black uppercase tracking-[0.14em] text-white/30">
         {section}
       </p>
       {items.map((item) => (
@@ -234,7 +235,7 @@ function HoyStrip({ stats }: { stats: TodayStats | null }) {
   const shimmer = "h-4 w-8 animate-pulse rounded bg-white/[0.08]";
 
   return (
-    <div className="mb-2 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.04]">
+    <div className="mb-2 overflow-hidden rounded-xl border border-[#2A2A3A] bg-[#1A1A2A]">
       <div className="flex items-center justify-between px-3 py-2">
         <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-white/20">
           Hoy
@@ -280,7 +281,7 @@ function ProximaCitaCard({ appt, loaded }: { appt: NextAppt | null; loaded: bool
     ? "border-red-500/20 bg-red-500/[0.05]"
     : soon
     ? "border-[#D4AF37]/20 bg-[#D4AF37]/[0.04]"
-    : "border-white/[0.06] bg-white/[0.03]";
+    : "border-[#222232] bg-[#14141E]";
 
   const dotCls    = imminent ? "bg-red-500 animate-pulse"   : soon ? "bg-[#D4AF37] animate-pulse" : "bg-white/20";
   const timeColor = imminent ? "text-red-400"               : soon ? "text-[#E5C04C]"              : "text-white/30";
@@ -386,7 +387,7 @@ function BarbershopIdentityRow({ name, planLabel }: { name: string; planLabel: s
         {loading ? (
           <span className="block h-3 w-24 animate-pulse rounded bg-white/[0.08]" />
         ) : (
-          <p className="truncate text-[11px] font-semibold leading-tight text-white/65">
+          <p className="truncate text-[11px] font-bold leading-tight text-white/80">
             {name}
           </p>
         )}
@@ -486,11 +487,6 @@ export default function Sidebar() {
   }, [barbershopId]);
 
   useEffect(() => {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-    );
-
     async function fetchData() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -522,7 +518,7 @@ export default function Sidebar() {
           supabase.from("subscriptions").select("plan_name").eq("barbershop_id", bsId).in("status", ["trial", "active"]).order("created_at", { ascending: false }).limit(1).maybeSingle(),
           supabase.from("appointments").select("status, start_time, clients(name), services(name, price)").eq("barbershop_id", bsId).eq("appointment_date", today).in("status", ["scheduled", "confirmed", "completed"]).order("start_time", { ascending: true }),
           supabase.from("appointments").select("id", { count: "exact", head: true }).eq("barbershop_id", bsId).eq("appointment_date", today).eq("status", "scheduled"),
-          supabase.from("reviews").select("id", { count: "exact", head: true }).eq("barbershop_id", bsId).eq("status", "pending"),
+          supabase.from("reviews").select("id", { count: "exact", head: true }).eq("business_id", bsId).eq("status", "pending"),
         ]);
 
         if (shopRes.status === "fulfilled" && shopRes.value.data?.name) {
@@ -581,10 +577,6 @@ export default function Sidebar() {
   }, []);
 
   async function handleLogout() {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-    );
     await supabase.auth.signOut();
     window.location.href = "/login";
   }
@@ -620,7 +612,8 @@ export default function Sidebar() {
         section: "Crecimiento",
         items: [
           { icon: Wand2,     title: "Studio IA",    description: "Contenido y videos automáticos",  href: "/dashboard/studio",       badge: "NUEVO", badgeVariant: "purple", isAI: true },
-          { icon: Gift,      title: "Fidelización", description: "Programas y recompensas",         href: "/dashboard/fidelizacion"                                                       },
+          { icon: Gift,      title: "Fidelización",  description: "Programas y recompensas",          href: "/dashboard/fidelizacion"                                                       },
+          { icon: RotateCcw, title: "Recuperación", description: "Reactiva clientes inactivos",     href: "/dashboard/recuperacion"                                                       },
           { icon: Star,      title: "Reseñas",      description: "Opiniones y reputación",          href: "/dashboard/resenas",      notification: pendingReviews                        },
           { icon: Megaphone, title: "Marketing",    description: "Ofertas, campañas y promociones", href: "/dashboard/marketing"                                                          },
           { icon: Store,     title: "Marketplace",  description: "Escaparate público de servicios", href: "/dashboard/marketplace"                                                        },
@@ -779,16 +772,20 @@ export default function Sidebar() {
       {/* ── Desktop sidebar ────────────────────────────────────────────────── */}
       <aside
         aria-label="Navegación del panel"
-        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-white/[0.06] bg-[#0D0D0F] transition-all duration-300 ease-in-out md:flex ${
+        className={`fixed left-0 top-0 z-30 hidden h-screen flex-col border-r border-white/[0.07] transition-all duration-300 ease-in-out md:flex ${
           collapsed ? "w-16 px-2 py-4" : "w-[248px] px-3 py-4"
         }`}
+        style={{
+          background:
+            "radial-gradient(ellipse 160% 28% at 50% 0%, rgba(212,175,55,0.11) 0%, transparent 55%), #0A0A0D",
+        }}
       >
         {/* Collapse toggle */}
         <button
           type="button"
           onClick={toggle}
           aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-white/[0.1] bg-[#1A1A1E] shadow-md transition hover:border-white/[0.18] hover:bg-[#222226] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D4AF37]/50"
+          className="absolute -right-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-white/[0.12] bg-[#141418] shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition hover:border-[#D4AF37]/30 hover:bg-[#1C1C22] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D4AF37]/50"
         >
           {collapsed
             ? <ChevronRight size={11} className="text-white/35" aria-hidden="true" />
@@ -825,9 +822,10 @@ export default function Sidebar() {
                 </div>
               </div>
             </Link>
-            <div className="mt-1 overflow-hidden rounded-xl border border-white/[0.05] bg-white/[0.03]">
+            <div className="mt-1.5 overflow-hidden rounded-xl border border-white/[0.10] bg-white/[0.05] shadow-[0_0_0_1px_rgba(212,175,55,0.04)]">
               <BarbershopIdentityRow name={barbershopName} planLabel={planLabel} />
             </div>
+            <div className="mt-3 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/18 to-transparent" />
           </div>
         )}
 
@@ -837,14 +835,14 @@ export default function Sidebar() {
             <Link
               href="/dashboard/agenda?new=1"
               aria-label="Crear nueva reserva"
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.07] py-2 text-[11px] font-bold text-[#E5C04C] transition hover:bg-[#D4AF37]/[0.13] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D4AF37]/50"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.10] py-2 text-[11px] font-bold text-[#F0C92A] shadow-[0_1px_8px_rgba(212,175,55,0.12)] transition hover:bg-[#D4AF37]/[0.16] hover:shadow-[0_2px_12px_rgba(212,175,55,0.20)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D4AF37]/50"
             >
               <Plus size={12} aria-hidden="true" /> Nueva cita
             </Link>
             <Link
               href="/dashboard/studio?type=fill_empty_slots"
               aria-label="Crear video con Studio IA"
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#7C3AED]/25 bg-[#5B21B6]/30 py-2 text-[11px] font-bold text-[#C4B5FD] transition hover:bg-[#5B21B6]/50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7C3AED]/50"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-[#7C3AED]/30 bg-[#5B21B6]/35 py-2 text-[11px] font-bold text-[#C4B5FD] shadow-[0_1px_8px_rgba(109,40,217,0.15)] transition hover:bg-[#5B21B6]/55 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7C3AED]/50"
             >
               <Clapperboard size={12} aria-hidden="true" /> Studio IA
             </Link>

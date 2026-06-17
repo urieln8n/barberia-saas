@@ -65,10 +65,10 @@ function ProgressBar({ step }: { step: WizardStep }) {
             <div key={n} className="flex flex-1 flex-col items-center gap-1">
               <div
                 className={`h-1.5 w-full rounded-full transition-colors ${
-                  done ? "bg-violet-600" : active ? "bg-violet-400" : "bg-slate-200"
+                  done ? "bg-[#7C3AED]" : active ? "bg-[#A78BFA]" : "bg-white/[0.10]"
                 }`}
               />
-              <span className={`text-[10px] font-semibold ${active ? "text-violet-700" : done ? "text-violet-500" : "text-slate-400"}`}>
+              <span className={`text-[10px] font-semibold ${active ? "text-[#A78BFA]" : done ? "text-[#A78BFA]/70" : "text-white/40"}`}>
                 {label}
               </span>
             </div>
@@ -83,7 +83,7 @@ function ProgressBar({ step }: { step: WizardStep }) {
 
 function CreditsBadge({ credits }: { credits: number }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
+    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/[0.08] px-2.5 py-1 text-xs font-black text-amber-400">
       ⚡ {credits} crédito{credits !== 1 ? "s" : ""}
     </span>
   );
@@ -300,11 +300,11 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-500">Studio IA</p>
-          <h1 className="mt-0.5 text-xl font-black text-slate-900">Crear Reel</h1>
+          <p className="text-xs font-semibold uppercase tracking-wide text-[#A78BFA]">Studio IA</p>
+          <h1 className="mt-0.5 text-xl font-black text-white">Crear Reel</h1>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-slate-600">
+          <span className="text-sm font-bold text-white/60">
             ⚡ {studioCredits.current} créditos
           </span>
         </div>
@@ -315,24 +315,24 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* ── Step 1: Template selection ─────────────────────────────────────── */}
       {step === 1 && (
         <div>
-          <h2 className="mb-1 text-base font-black text-slate-800">¿Qué tipo de Reel?</h2>
-          <p className="mb-4 text-sm text-slate-500">Elige la plantilla y la IA pre-rellena el resto</p>
+          <h2 className="mb-1 text-base font-black text-white">¿Qué tipo de Reel?</h2>
+          <p className="mb-4 text-sm text-white/50">Elige la plantilla y la IA pre-rellena el resto</p>
           <div className="grid grid-cols-2 gap-3">
             {REEL_TEMPLATES.map(t => (
               <button
                 key={t.slug}
                 onClick={() => selectTemplate(t)}
-                className="group relative flex flex-col items-start rounded-2xl border-2 border-slate-200 bg-white p-4 text-left transition-all hover:border-violet-400 hover:shadow-md active:scale-95"
+                className="group relative flex flex-col items-start rounded-2xl border-2 border-white/[0.08] bg-white/[0.04] p-4 text-left transition-all hover:border-[#A78BFA]/40 hover:shadow-md active:scale-95"
               >
                 {t.badge && (
-                  <span className="mb-2 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-black uppercase text-violet-700">
+                  <span className="mb-2 rounded-full bg-[#7C3AED]/20 px-2 py-0.5 text-[10px] font-black uppercase text-[#A78BFA]">
                     {t.badge}
                   </span>
                 )}
                 <span className="text-2xl">{t.icon}</span>
-                <p className="mt-1 text-sm font-black text-slate-900 leading-tight">{t.name}</p>
-                <p className="mt-0.5 text-[11px] text-slate-500 leading-snug">{t.description}</p>
-                <p className="mt-2 text-[10px] font-semibold text-violet-500">
+                <p className="mt-1 text-sm font-black text-white leading-tight">{t.name}</p>
+                <p className="mt-0.5 text-[11px] text-white/50 leading-snug">{t.description}</p>
+                <p className="mt-2 text-[10px] font-semibold text-[#A78BFA]">
                   {t.recommendedDuration}s · {t.minAssets}–{t.maxAssets} fotos
                 </p>
               </button>
@@ -344,14 +344,14 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* ── Step 2: Content upload + text ─────────────────────────────────── */}
       {step === 2 && template && (
         <div>
-          <button onClick={() => setStep(1)} className="mb-4 flex items-center gap-1 text-sm text-slate-500 hover:text-violet-600">
+          <button onClick={() => setStep(1)} className="mb-4 flex items-center gap-1 text-sm text-white/50 hover:text-[#A78BFA]">
             ← Cambiar plantilla
           </button>
           <div className="mb-1 flex items-center gap-2">
             <span className="text-xl">{template.icon}</span>
-            <h2 className="text-base font-black text-slate-800">{template.name}</h2>
+            <h2 className="text-base font-black text-white">{template.name}</h2>
           </div>
-          <p className="mb-4 text-sm text-slate-500">
+          <p className="mb-4 text-sm text-white/50">
             Sube al menos {template.minAssets} {template.minAssets === 1 ? "foto/vídeo" : "fotos/vídeos"}
           </p>
 
@@ -366,13 +366,13 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                 <div
                   key={i}
                   className={`flex items-center gap-3 rounded-xl border-2 p-3 transition-colors ${
-                    asset ? "border-violet-200 bg-violet-50/50" : "border-dashed border-slate-200 bg-white"
+                    asset ? "border-[#A78BFA]/30 bg-[#7C3AED]/[0.08]" : "border-dashed border-white/[0.12] bg-white/[0.04]"
                   }`}
                 >
                   {isUploading ? (
                     <div className="flex flex-1 items-center gap-2">
-                      <div className="h-12 w-12 animate-pulse rounded-lg bg-slate-200" />
-                      <p className="text-sm text-slate-500">Subiendo...</p>
+                      <div className="h-12 w-12 animate-pulse rounded-lg bg-white/[0.10]" />
+                      <p className="text-sm text-white/50">Subiendo...</p>
                     </div>
                   ) : asset ? (
                     <>
@@ -380,34 +380,34 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={asset.url} alt="" className="h-12 w-12 rounded-lg object-cover" />
                       ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-200 text-xl">🎥</div>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/[0.10] text-xl">🎥</div>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs font-semibold text-slate-700">{label}</p>
-                        <p className="truncate text-[11px] text-slate-400">{asset.filename}</p>
+                        <p className="truncate text-xs font-semibold text-white/70">{label}</p>
+                        <p className="truncate text-[11px] text-white/40">{asset.filename}</p>
                       </div>
                       <button
                         onClick={() => removeAsset(i)}
-                        className="rounded-full p-1 text-slate-400 hover:bg-red-50 hover:text-red-500"
+                        className="rounded-full p-1 text-white/40 hover:bg-red-500/[0.08] hover:text-red-400"
                       >
                         ✕
                       </button>
                     </>
                   ) : (
                     <label className="flex flex-1 cursor-pointer items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-white/[0.15] text-white/40">
                         📸
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-slate-700">
+                        <p className="text-sm font-semibold text-white/70">
                           {label}
-                          {isOptional && <span className="ml-1 text-xs font-normal text-slate-400">(opcional)</span>}
+                          {isOptional && <span className="ml-1 text-xs font-normal text-white/40">(opcional)</span>}
                         </p>
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-white/40">
                           {template.assetType === "both" ? "Foto o vídeo" : template.assetType === "video" ? "Vídeo" : "Foto"}
                         </p>
                       </div>
-                      <span className="rounded-lg bg-violet-100 px-3 py-1.5 text-xs font-black text-violet-700">
+                      <span className="rounded-lg bg-[#7C3AED]/20 px-3 py-1.5 text-xs font-black text-[#A78BFA]">
                         Subir
                       </span>
                       <input
@@ -428,7 +428,7 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
           {/* Text fields */}
           <div className="space-y-3">
             <div>
-              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-slate-600">
+              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-white/60">
                 Hook (primera frase)
               </label>
               <input
@@ -436,12 +436,12 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                 onChange={e => setHookText(e.target.value)}
                 placeholder={interpolate(template.hookSuggestions[0], { barbershopName })}
                 maxLength={80}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none focus:border-[#A78BFA]/50 focus:ring-2 focus:ring-[#A78BFA]/20"
               />
-              <p className="mt-0.5 text-right text-[10px] text-slate-400">{hookText.length}/80</p>
+              <p className="mt-0.5 text-right text-[10px] text-white/40">{hookText.length}/80</p>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-slate-600">
+              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-white/60">
                 CTA (llamada a la acción)
               </label>
               <input
@@ -449,18 +449,18 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                 onChange={e => setCtaText(e.target.value)}
                 placeholder={template.ctaSuggestions[0]}
                 maxLength={60}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none focus:border-[#A78BFA]/50 focus:ring-2 focus:ring-[#A78BFA]/20"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-slate-600">
+              <label className="mb-1 block text-xs font-black uppercase tracking-wide text-white/60">
                 Hashtags
               </label>
               <input
                 value={hashtagsInput}
                 onChange={e => setHashtagsInput(e.target.value)}
                 placeholder="#barberia #fade #reserva"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none focus:border-[#A78BFA]/50 focus:ring-2 focus:ring-[#A78BFA]/20"
               />
             </div>
           </div>
@@ -468,7 +468,7 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
           <button
             onClick={() => setStep(3)}
             disabled={!canProceedToStep3()}
-            className="mt-6 w-full rounded-2xl bg-violet-600 py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-6 w-full rounded-2xl bg-[#7C3AED] py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-[#6D28D9] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Siguiente → Elegir estilo
           </button>
@@ -478,11 +478,11 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* ── Step 3: Style ─────────────────────────────────────────────────── */}
       {step === 3 && (
         <div>
-          <button onClick={() => setStep(2)} className="mb-4 flex items-center gap-1 text-sm text-slate-500 hover:text-violet-600">
+          <button onClick={() => setStep(2)} className="mb-4 flex items-center gap-1 text-sm text-white/50 hover:text-[#A78BFA]">
             ← Volver
           </button>
-          <h2 className="mb-1 text-base font-black text-slate-800">¿Qué estilo visual?</h2>
-          <p className="mb-4 text-sm text-slate-500">Define la paleta de colores y la tipografía del Reel</p>
+          <h2 className="mb-1 text-base font-black text-white">¿Qué estilo visual?</h2>
+          <p className="mb-4 text-sm text-white/50">Define la paleta de colores y la tipografía del Reel</p>
           <div className="space-y-2">
             {STYLES.map(s => (
               <button
@@ -490,8 +490,8 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                 onClick={() => setStyle(s.id)}
                 className={`flex w-full items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all ${
                   style === s.id
-                    ? "border-violet-500 bg-violet-50 shadow-sm"
-                    : "border-slate-200 bg-white hover:border-slate-300"
+                    ? "border-[#A78BFA]/60 bg-[#7C3AED]/10 shadow-sm"
+                    : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.16]"
                 }`}
               >
                 <div
@@ -499,18 +499,18 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                   style={{ backgroundColor: STYLE_COLOR[s.id] }}
                 />
                 <div className="flex-1">
-                  <p className="font-black text-slate-900">{s.label}</p>
-                  <p className="text-xs text-slate-500">{s.description}</p>
+                  <p className="font-black text-white">{s.label}</p>
+                  <p className="text-xs text-white/50">{s.description}</p>
                 </div>
                 {style === s.id && (
-                  <span className="text-violet-600 font-black">✓</span>
+                  <span className="text-[#A78BFA] font-black">✓</span>
                 )}
               </button>
             ))}
           </div>
           <button
             onClick={() => setStep(4)}
-            className="mt-6 w-full rounded-2xl bg-violet-600 py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-violet-700"
+            className="mt-6 w-full rounded-2xl bg-[#7C3AED] py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-[#6D28D9]"
           >
             Siguiente → Duración y música
           </button>
@@ -520,15 +520,15 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* ── Step 4: Config ────────────────────────────────────────────────── */}
       {step === 4 && (
         <div>
-          <button onClick={() => setStep(3)} className="mb-4 flex items-center gap-1 text-sm text-slate-500 hover:text-violet-600">
+          <button onClick={() => setStep(3)} className="mb-4 flex items-center gap-1 text-sm text-white/50 hover:text-[#A78BFA]">
             ← Volver
           </button>
-          <h2 className="mb-1 text-base font-black text-slate-800">Duración y música</h2>
-          <p className="mb-4 text-sm text-slate-500">Configura el ritmo y el ambiente del Reel</p>
+          <h2 className="mb-1 text-base font-black text-white">Duración y música</h2>
+          <p className="mb-4 text-sm text-white/50">Configura el ritmo y el ambiente del Reel</p>
 
           {/* Duration */}
           <div className="mb-5">
-            <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-600">Duración</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-wide text-white/60">Duración</p>
             <div className="grid grid-cols-3 gap-2">
               {DURATION_OPTIONS.map(opt => (
                 <button
@@ -536,14 +536,14 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                   onClick={() => setDuration(opt.value)}
                   className={`flex flex-col items-center rounded-xl border-2 p-3 transition-all ${
                     duration === opt.value
-                      ? "border-violet-500 bg-violet-50 shadow-sm"
-                      : "border-slate-200 bg-white hover:border-slate-300"
+                      ? "border-[#A78BFA]/60 bg-[#7C3AED]/10 shadow-sm"
+                      : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.16]"
                   }`}
                 >
-                  <span className={`text-base font-black ${duration === opt.value ? "text-violet-700" : "text-slate-800"}`}>
+                  <span className={`text-base font-black ${duration === opt.value ? "text-[#A78BFA]" : "text-white"}`}>
                     {opt.label}
                   </span>
-                  <span className="text-[10px] text-slate-500">{opt.note}</span>
+                  <span className="text-[10px] text-white/50">{opt.note}</span>
                 </button>
               ))}
             </div>
@@ -551,7 +551,7 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
 
           {/* Music */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-600">Música</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-wide text-white/60">Música</p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {MUSIC_OPTIONS.map(opt => (
                 <button
@@ -559,15 +559,15 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
                   onClick={() => setMusicMood(opt.value)}
                   className={`flex items-center gap-2 rounded-xl border-2 p-3 transition-all ${
                     musicMood === opt.value
-                      ? "border-violet-500 bg-violet-50 shadow-sm"
-                      : "border-slate-200 bg-white hover:border-slate-300"
+                      ? "border-[#A78BFA]/60 bg-[#7C3AED]/10 shadow-sm"
+                      : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.16]"
                   }`}
                 >
                   <span>{opt.icon}</span>
-                  <span className={`text-sm font-semibold ${musicMood === opt.value ? "text-violet-700" : "text-slate-700"}`}>
+                  <span className={`text-sm font-semibold ${musicMood === opt.value ? "text-[#A78BFA]" : "text-white/70"}`}>
                     {opt.label}
                   </span>
-                  {musicMood === opt.value && <span className="ml-auto text-violet-600 text-xs font-black">✓</span>}
+                  {musicMood === opt.value && <span className="ml-auto text-[#A78BFA] text-xs font-black">✓</span>}
                 </button>
               ))}
             </div>
@@ -575,7 +575,7 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
 
           <button
             onClick={() => setStep(5)}
-            className="mt-6 w-full rounded-2xl bg-violet-600 py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-violet-700"
+            className="mt-6 w-full rounded-2xl bg-[#7C3AED] py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-[#6D28D9]"
           >
             Ver resumen y generar →
           </button>
@@ -585,13 +585,13 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {/* ── Step 5: Summary + Generate ────────────────────────────────────── */}
       {step === 5 && template && !generating && !finalUrl && (
         <div>
-          <button onClick={() => setStep(4)} className="mb-4 flex items-center gap-1 text-sm text-slate-500 hover:text-violet-600">
+          <button onClick={() => setStep(4)} className="mb-4 flex items-center gap-1 text-sm text-white/50 hover:text-[#A78BFA]">
             ← Volver
           </button>
-          <h2 className="mb-4 text-base font-black text-slate-800">Resumen del Reel</h2>
+          <h2 className="mb-4 text-base font-black text-white">Resumen del Reel</h2>
 
           {/* Summary card */}
-          <div className="mb-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="mb-4 space-y-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}>
             <Row label="Plantilla" value={`${template.icon} ${template.name}`} />
             <Row label="Archivos"  value={`${uploadedAssets().length} subidos`} />
             <Row label="Estilo"    value={STYLES.find(s => s.id === style)?.label ?? style} />
@@ -600,50 +600,50 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
           </div>
 
           {/* Script preview */}
-          <div className="mb-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
-            <p className="mb-2 text-xs font-black uppercase tracking-wide text-violet-600">Vista previa del texto</p>
+          <div className="mb-4 rounded-2xl border border-[#A78BFA]/20 bg-[#7C3AED]/[0.06] p-4">
+            <p className="mb-2 text-xs font-black uppercase tracking-wide text-[#A78BFA]">Vista previa del texto</p>
             <div className="space-y-2">
               {hookText && (
-                <div className="rounded-lg bg-white/80 p-2.5">
-                  <p className="text-[10px] font-semibold uppercase text-slate-400">Hook (arriba)</p>
-                  <p className="text-sm font-semibold text-slate-800">{hookText}</p>
+                <div className="rounded-lg bg-white/[0.06] p-2.5">
+                  <p className="text-[10px] font-semibold uppercase text-white/40">Hook (arriba)</p>
+                  <p className="text-sm font-semibold text-white/80">{hookText}</p>
                 </div>
               )}
               {ctaText && (
-                <div className="rounded-lg bg-violet-600 p-2.5">
+                <div className="rounded-lg bg-[#7C3AED] p-2.5">
                   <p className="text-[10px] font-semibold uppercase text-violet-200">CTA (abajo)</p>
                   <p className="text-sm font-black text-white">{ctaText}</p>
                 </div>
               )}
               {hashtagsInput && (
-                <div className="rounded-lg bg-white/80 p-2.5">
-                  <p className="text-[10px] font-semibold uppercase text-slate-400">Hashtags</p>
-                  <p className="text-xs text-violet-600">{hashtagsInput}</p>
+                <div className="rounded-lg bg-white/[0.06] p-2.5">
+                  <p className="text-[10px] font-semibold uppercase text-white/40">Hashtags</p>
+                  <p className="text-xs text-[#A78BFA]">{hashtagsInput}</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Credits + error */}
-          <div className="mb-4 flex items-center justify-between rounded-xl bg-amber-50 px-4 py-3">
-            <span className="text-sm text-amber-800">Coste de generación</span>
+          <div className="mb-4 flex items-center justify-between rounded-xl bg-amber-500/[0.08] px-4 py-3">
+            <span className="text-sm text-amber-300">Coste de generación</span>
             <CreditsBadge credits={creditsNeeded()} />
           </div>
 
           {studioCredits.current < creditsNeeded() && (
-            <p className="mb-3 rounded-xl bg-red-50 px-4 py-2 text-sm text-red-700">
+            <p className="mb-3 rounded-xl bg-red-500/[0.08] px-4 py-2 text-sm text-red-400">
               Sin créditos suficientes. Tienes {studioCredits.current} crédito{studioCredits.current !== 1 ? "s" : ""}.
             </p>
           )}
 
           {reelError && (
-            <p className="mb-3 rounded-xl bg-red-50 px-4 py-2 text-sm text-red-700">{reelError}</p>
+            <p className="mb-3 rounded-xl bg-red-500/[0.08] px-4 py-2 text-sm text-red-400">{reelError}</p>
           )}
 
           <button
             onClick={handleGenerate}
             disabled={studioCredits.current < creditsNeeded()}
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-700 py-4 text-base font-black text-white shadow-xl transition hover:from-violet-700 hover:to-purple-800 disabled:cursor-not-allowed disabled:opacity-40"
+            className="w-full rounded-2xl bg-gradient-to-r from-[#7C3AED] to-purple-700 py-4 text-base font-black text-white shadow-xl transition hover:from-[#6D28D9] hover:to-purple-800 disabled:cursor-not-allowed disabled:opacity-40"
           >
             🎞️ Generar Reel
           </button>
@@ -654,21 +654,21 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {generating && (
         <div className="flex flex-col items-center gap-6 py-16">
           <div className="relative flex h-24 w-24 items-center justify-center">
-            <div className="absolute inset-0 animate-ping rounded-full bg-violet-200 opacity-60" />
+            <div className="absolute inset-0 animate-ping rounded-full bg-[#7C3AED]/20 opacity-60" />
             <div className="relative text-4xl">🎞️</div>
           </div>
           <div className="text-center">
-            <p className="text-lg font-black text-slate-800">Generando tu Reel...</p>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="text-lg font-black text-white">Generando tu Reel...</p>
+            <p className="mt-1 text-sm text-white/50">
               Shotstack está ensamblando clips, texto y música.
             </p>
-            <p className="mt-1 text-sm text-slate-400">Esto puede tardar 1–2 minutos.</p>
+            <p className="mt-1 text-sm text-white/40">Esto puede tardar 1–2 minutos.</p>
           </div>
-          <div className="w-full max-w-xs rounded-full bg-slate-200">
-            <div className="animate-pulse h-2 rounded-full bg-violet-500" style={{ width: "60%" }} />
+          <div className="w-full max-w-xs rounded-full bg-white/[0.10]">
+            <div className="animate-pulse h-2 rounded-full bg-[#A78BFA]" style={{ width: "60%" }} />
           </div>
           {reelJobId && (
-            <p className="text-[10px] text-slate-300">Job: {reelJobId}</p>
+            <p className="text-[10px] text-white/30">Job: {reelJobId}</p>
           )}
         </div>
       )}
@@ -677,10 +677,10 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
       {finalUrl && !generating && (
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-xl">✅</div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/[0.12] text-xl">✅</div>
             <div>
-              <p className="font-black text-slate-900">¡Tu Reel está listo!</p>
-              <p className="text-xs text-slate-500">Descárgalo y publícalo en tus redes</p>
+              <p className="font-black text-white">¡Tu Reel está listo!</p>
+              <p className="text-xs text-white/50">Descárgalo y publícalo en tus redes</p>
             </div>
           </div>
 
@@ -700,13 +700,13 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
             <a
               href={finalUrl}
               download="reel-barberia.mp4"
-              className="flex items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 text-sm font-black text-white shadow-md hover:bg-violet-700"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[#7C3AED] py-3 text-sm font-black text-white shadow-md hover:bg-[#6D28D9]"
             >
               ⬇ Descargar MP4
             </a>
             <button
               onClick={copyCaption}
-              className="flex items-center justify-center gap-2 rounded-xl border-2 border-violet-200 bg-white py-3 text-sm font-black text-violet-700 hover:bg-violet-50"
+              className="flex items-center justify-center gap-2 rounded-xl border-2 border-[#A78BFA]/30 bg-[#7C3AED]/10 py-3 text-sm font-black text-[#A78BFA] hover:bg-[#7C3AED]/20"
             >
               {copied ? "✓ Copiado" : "📋 Copiar caption"}
             </button>
@@ -714,15 +714,15 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
 
           {/* Caption preview */}
           {buildCaption() && (
-            <div className="mb-5 rounded-xl bg-slate-50 p-4">
-              <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-500">Caption para Instagram</p>
-              <p className="whitespace-pre-line text-sm text-slate-700">{buildCaption()}</p>
+            <div className="mb-5 rounded-xl bg-white/[0.04] p-4">
+              <p className="mb-2 text-xs font-black uppercase tracking-wide text-white/50">Caption para Instagram</p>
+              <p className="whitespace-pre-line text-sm text-white/70">{buildCaption()}</p>
             </div>
           )}
 
           <button
             onClick={handleReset}
-            className="w-full rounded-2xl border-2 border-slate-200 bg-white py-3 text-sm font-black text-slate-600 hover:bg-slate-50"
+            className="w-full rounded-2xl border-2 border-white/[0.10] bg-white/[0.04] py-3 text-sm font-black text-white/70 hover:bg-white/[0.08]"
           >
             + Crear otro Reel
           </button>
@@ -737,8 +737,8 @@ export function ReelWizardClient({ barbershopName, logoUrl, studioCredits }: Pro
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-sm text-slate-500">{label}</span>
-      <span className="text-sm font-semibold text-slate-800">{value}</span>
+      <span className="text-sm text-white/50">{label}</span>
+      <span className="text-sm font-semibold text-white/80">{value}</span>
     </div>
   );
 }

@@ -34,8 +34,8 @@ function CreditsPill({ credits }: { credits: StudioCredits }) {
       href="/dashboard/studio/credits"
       className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-black transition-colors ${
         low
-          ? "border-amber-300/50 bg-amber-50 text-amber-700 hover:bg-amber-100"
-          : "border-violet-200/60 bg-violet-50 text-violet-700 hover:bg-violet-100"
+          ? "border-amber-500/30 bg-amber-500/[0.08] text-amber-400 hover:bg-amber-500/[0.14]"
+          : "border-[#A78BFA]/30 bg-[#7C3AED]/10 text-[#A78BFA] hover:bg-[#7C3AED]/20"
       }`}
     >
       <Sparkles size={11} />
@@ -98,11 +98,11 @@ function VideoGenerateButton({
 
   if (state === "done" && videoUrl) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-        <Film size={14} className="shrink-0 text-emerald-700" />
-        <p className="flex-1 text-xs font-black text-emerald-800">Vídeo del anuncio listo</p>
+      <div className="flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3">
+        <Film size={14} className="shrink-0 text-emerald-400" />
+        <p className="flex-1 text-xs font-black text-emerald-300">Vídeo del anuncio listo</p>
         <a href={videoUrl} target="_blank" rel="noreferrer"
-          className="shrink-0 text-xs font-black text-emerald-700 underline hover:text-emerald-900">
+          className="shrink-0 text-xs font-black text-emerald-400 underline hover:text-emerald-300">
           Ver →
         </a>
       </div>
@@ -112,11 +112,11 @@ function VideoGenerateButton({
   if (state === "error") {
     return (
       <div className="space-y-2">
-        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
+        <p className="rounded-xl border border-red-500/20 bg-red-500/[0.08] px-4 py-2.5 text-xs font-semibold text-red-400">
           {errorMsg ?? "Error al generar el vídeo"}
         </p>
         <button onClick={() => { setState("idle"); setErrorMsg(null); }}
-          className="text-xs font-semibold text-slate-500 underline hover:text-slate-700">
+          className="text-xs font-semibold text-white/50 underline hover:text-white/70">
           Reintentar
         </button>
       </div>
@@ -125,7 +125,7 @@ function VideoGenerateButton({
 
   return (
     <button onClick={handleClick} disabled={state === "loading"}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-violet-300 bg-violet-50 px-4 py-3 text-sm font-black text-violet-700 transition hover:bg-violet-100 disabled:opacity-60">
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#A78BFA]/30 bg-[#7C3AED]/10 px-4 py-3 text-sm font-black text-[#A78BFA] transition hover:bg-[#7C3AED]/20 disabled:opacity-60">
       {state === "loading"
         ? <><RefreshCw size={14} className="animate-spin" /> Generando vídeo del anuncio (1-3 min)…</>
         : <><Film size={14} /> Crear vídeo del anuncio con IA</>}
@@ -171,68 +171,68 @@ function ResultCard({
     <div className="space-y-3">
 
       {/* Header badge */}
-      <div className="flex items-center gap-2 rounded-2xl border border-violet-200/60 bg-violet-50 px-4 py-3">
+      <div className="flex items-center gap-2 rounded-2xl border border-[#A78BFA]/20 bg-[#7C3AED]/10 px-4 py-3">
         <span className="text-lg">{campaignDef?.icon}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-black text-violet-900">{campaignDef?.label}</p>
-          <p className="text-[10px] text-violet-600">{platformDef?.label} · {platformDef?.subline}</p>
+          <p className="text-xs font-black text-white">{campaignDef?.label}</p>
+          <p className="text-[10px] text-[#A78BFA]">{platformDef?.label} · {platformDef?.subline}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-black text-violet-700">
+        <span className="shrink-0 rounded-full bg-[#7C3AED]/20 px-2 py-0.5 text-[10px] font-black text-[#A78BFA]">
           1 crédito
         </span>
       </div>
 
       {/* Hook — highlighted */}
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-        <p className="mb-1.5 text-[10px] font-black tracking-wide text-amber-600">🎯 HOOK — LO QUE PARA EL SCROLL</p>
-        <p className="text-sm font-black leading-snug text-slate-900">{result.hook}</p>
+      <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] p-4">
+        <p className="mb-1.5 text-[10px] font-black tracking-wide text-amber-400">🎯 HOOK — LO QUE PARA EL SCROLL</p>
+        <p className="text-sm font-black leading-snug text-white">{result.hook}</p>
       </div>
 
       {/* Caption */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-black text-slate-700">Caption</p>
+          <p className="text-xs font-black text-white/70">Caption</p>
           <button onClick={() => copy(`${result.caption}\n\n${hashtagStr}`, "caption")}
-            className="flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-[11px] font-semibold text-slate-500 transition hover:border-violet-200 hover:text-violet-700">
+            className="flex items-center gap-1 rounded-lg border border-white/[0.10] px-2 py-1 text-[11px] font-semibold text-white/50 transition hover:border-[#A78BFA]/30 hover:text-[#A78BFA]">
             {copied === "caption" ? <><Check size={10} /> Copiado</> : <><Copy size={10} /> Copiar</>}
           </button>
         </div>
-        <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">{result.caption}</p>
-        <p className="mt-2 text-sm text-violet-600">{hashtagStr}</p>
+        <p className="whitespace-pre-line text-sm leading-relaxed text-white/70">{result.caption}</p>
+        <p className="mt-2 text-sm text-[#A78BFA]">{hashtagStr}</p>
       </div>
 
       {/* CTA */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-        <p className="mb-0.5 text-[10px] font-black tracking-wide text-slate-500">CTA</p>
-        <p className="text-sm font-black text-slate-800">"{result.cta}"</p>
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+        <p className="mb-0.5 text-[10px] font-black tracking-wide text-white/50">CTA</p>
+        <p className="text-sm font-black text-white/80">"{result.cta}"</p>
       </div>
 
       {/* On-screen text */}
-      <div className="rounded-2xl bg-slate-900 p-4">
-        <p className="mb-2 text-[10px] font-black tracking-wide text-slate-400">TEXTO EN PANTALLA</p>
+      <div className="rounded-2xl bg-black/40 p-4">
+        <p className="mb-2 text-[10px] font-black tracking-wide text-white/50">TEXTO EN PANTALLA</p>
         <p className="whitespace-pre-line text-sm font-black leading-relaxed text-white">{result.onScreenText}</p>
       </div>
 
       {/* Visual idea */}
-      <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4">
-        <p className="mb-1.5 text-[10px] font-black tracking-wide text-violet-600">💡 CÓMO GRABARLO</p>
-        <p className="text-sm leading-relaxed text-slate-600">{result.visualIdea}</p>
+      <div className="rounded-2xl border border-[#A78BFA]/20 bg-[#7C3AED]/[0.06] p-4">
+        <p className="mb-1.5 text-[10px] font-black tracking-wide text-[#A78BFA]">💡 CÓMO GRABARLO</p>
+        <p className="text-sm leading-relaxed text-white/70">{result.visualIdea}</p>
       </div>
 
       {/* Best posting time */}
-      <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 px-4 py-3">
-        <p className="mb-0.5 text-[10px] font-black tracking-wide text-emerald-700">⏱ MEJOR HORA PARA PUBLICAR</p>
-        <p className="text-sm font-semibold text-slate-700">{result.bestPostingTime}</p>
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] px-4 py-3">
+        <p className="mb-0.5 text-[10px] font-black tracking-wide text-emerald-400">⏱ MEJOR HORA PARA PUBLICAR</p>
+        <p className="text-sm font-semibold text-white/70">{result.bestPostingTime}</p>
       </div>
 
       {/* Actions */}
       <div className="flex gap-3">
         <button onClick={() => copy(allText, "all")}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:border-violet-200 hover:bg-violet-50">
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-black text-white/70 transition hover:border-[#A78BFA]/30 hover:bg-[#7C3AED]/10">
           {copied === "all" ? <><Check size={14} /> Copiado</> : <><Download size={14} /> Copiar todo</>}
         </button>
         <button onClick={onReset}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-3 text-sm font-black text-white transition hover:bg-[#6D28D9]">
           <RefreshCw size={14} /> Crear otro
         </button>
       </div>
@@ -328,15 +328,15 @@ export function StudioClient({
                   <div key={i} className="flex flex-1 items-center">
                     <div className="flex flex-col items-center gap-1">
                       <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-black transition-all ${
-                        done   ? "bg-violet-600 text-white" :
-                        active ? "bg-violet-100 text-violet-700 ring-2 ring-violet-400" :
-                                  "bg-slate-100 text-slate-400"
+                        done   ? "bg-[#7C3AED] text-white" :
+                        active ? "bg-[#7C3AED]/20 text-[#A78BFA] ring-2 ring-[#A78BFA]/50" :
+                                  "bg-white/[0.06] text-white/40"
                       }`}>
                         {done ? <Check size={12} /> : s}
                       </div>
-                      <span className={`hidden text-[10px] font-semibold sm:block ${active ? "text-violet-700" : "text-slate-400"}`}>{label}</span>
+                      <span className={`hidden text-[10px] font-semibold sm:block ${active ? "text-[#A78BFA]" : "text-white/40"}`}>{label}</span>
                     </div>
-                    {i < 1 && <div className={`mx-1 h-px flex-1 transition-colors ${step > i + 1 ? "bg-violet-400" : "bg-slate-200"}`} />}
+                    {i < 1 && <div className={`mx-1 h-px flex-1 transition-colors ${step > i + 1 ? "bg-[#A78BFA]/60" : "bg-white/[0.10]"}`} />}
                   </div>
                 );
               })}
@@ -346,9 +346,9 @@ export function StudioClient({
 
         {/* ── No credits warning ── */}
         {noCredits && (
-          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm font-black text-amber-800">Sin créditos disponibles</p>
-            <p className="mt-0.5 text-xs text-amber-700">Necesitas créditos para generar anuncios con Studio IA.</p>
+          <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] p-4">
+            <p className="text-sm font-black text-amber-300">Sin créditos disponibles</p>
+            <p className="mt-0.5 text-xs text-amber-400/80">Necesitas créditos para generar anuncios con Studio IA.</p>
             <Link href="/dashboard/studio/credits"
               className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-black text-white transition hover:bg-amber-700">
               <CreditCard size={12} /> Comprar créditos
@@ -372,7 +372,7 @@ export function StudioClient({
         {/* ── Step 1: Campaign selection ── */}
         {!result && step === 1 && (
           <div className="space-y-4">
-            <p className="text-sm font-black text-slate-700">¿Qué resultado necesitas hoy?</p>
+            <p className="text-sm font-black text-white/80">¿Qué resultado necesitas hoy?</p>
 
             <div className="grid grid-cols-2 gap-3">
               {CAMPAIGNS.map((c) => (
@@ -382,20 +382,20 @@ export function StudioClient({
                   disabled={noCredits}
                   className={`relative flex flex-col rounded-2xl border p-4 text-left transition-all ${
                     campaign === c.type
-                      ? "border-violet-400 bg-violet-50 ring-1 ring-violet-400"
-                      : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/30"
+                      ? "border-[#A78BFA]/50 bg-[#7C3AED]/10 ring-1 ring-[#A78BFA]/50"
+                      : "border-white/[0.08] bg-white/[0.04] hover:border-[#A78BFA]/30 hover:bg-[#7C3AED]/[0.06]"
                   } ${noCredits ? "cursor-not-allowed opacity-50" : ""}`}
                 >
                   {c.badge && (
-                    <span className="absolute right-2 top-2 rounded-full bg-violet-100 px-1.5 py-0.5 text-[9px] font-black text-violet-700">
+                    <span className="absolute right-2 top-2 rounded-full bg-[#7C3AED]/20 px-1.5 py-0.5 text-[9px] font-black text-[#A78BFA]">
                       {c.badge}
                     </span>
                   )}
                   <span className="mb-2 text-xl">{c.icon}</span>
-                  <p className="text-xs font-black text-slate-900">{c.label}</p>
-                  <p className="mt-0.5 text-[10px] leading-snug text-slate-500">{c.goalLine}</p>
+                  <p className="text-xs font-black text-white">{c.label}</p>
+                  <p className="mt-0.5 text-[10px] leading-snug text-white/50">{c.goalLine}</p>
                   {campaign === c.type && (
-                    <Check size={12} className="absolute bottom-2 right-2 text-violet-600" />
+                    <Check size={12} className="absolute bottom-2 right-2 text-[#A78BFA]" />
                   )}
                 </button>
               ))}
@@ -404,7 +404,7 @@ export function StudioClient({
             <button
               onClick={() => setStep(2)}
               disabled={!campaign}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3.5 text-sm font-black text-white transition disabled:opacity-40 hover:bg-violet-700"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-3.5 text-sm font-black text-white transition disabled:opacity-40 hover:bg-[#6D28D9]"
             >
               Continuar <ArrowRight size={14} />
             </button>
@@ -415,13 +415,13 @@ export function StudioClient({
         {!result && step === 2 && campaign && (
           <div className="space-y-5">
             <button onClick={() => setStep(1)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700">
+              className="flex items-center gap-1.5 text-xs font-semibold text-white/50 hover:text-white/70">
               <ArrowLeft size={12} /> {campaignDef?.icon} {campaignDef?.label}
             </button>
 
             {/* Platform */}
             <div>
-              <p className="mb-2 text-xs font-black text-slate-700">¿Dónde vas a publicarlo?</p>
+              <p className="mb-2 text-xs font-black text-white/80">¿Dónde vas a publicarlo?</p>
               <div className="grid grid-cols-4 gap-2">
                 {PLATFORMS.map((p) => (
                   <button
@@ -429,12 +429,12 @@ export function StudioClient({
                     onClick={() => setPlatform(p.id)}
                     className={`rounded-xl border px-2 py-2.5 text-center transition-all ${
                       platform === p.id
-                        ? "border-violet-400 bg-violet-50 ring-1 ring-violet-400"
-                        : "border-slate-200 bg-white hover:border-violet-200"
+                        ? "border-[#A78BFA]/50 bg-[#7C3AED]/10 ring-1 ring-[#A78BFA]/50"
+                        : "border-white/[0.08] bg-white/[0.04] hover:border-[#A78BFA]/30"
                     }`}
                   >
-                    <p className="text-xs font-black text-slate-900">{p.label}</p>
-                    <p className="mt-0.5 text-[9px] text-slate-400">{p.subline}</p>
+                    <p className="text-xs font-black text-white">{p.label}</p>
+                    <p className="mt-0.5 text-[9px] text-white/40">{p.subline}</p>
                   </button>
                 ))}
               </div>
@@ -442,21 +442,21 @@ export function StudioClient({
 
             {/* Personalization */}
             <div className="space-y-3">
-              <p className="text-xs font-black text-slate-500">Personalizar <span className="font-normal">(opcional — mejora el resultado)</span></p>
+              <p className="text-xs font-black text-white/50">Personalizar <span className="font-normal">(opcional — mejora el resultado)</span></p>
 
               <input
                 type="text"
                 value={offerDetail}
                 onChange={(e) => setOfferDetail(e.target.value)}
                 placeholder={OFFER_PLACEHOLDER[campaign]}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200"
+                className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 placeholder:text-white/30 focus:border-[#A78BFA]/50 focus:outline-none focus:ring-1 focus:ring-[#A78BFA]/30"
               />
 
               {barbers.length > 0 ? (
                 <select
                   value={barberName}
                   onChange={(e) => setBarberName(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200"
+                  className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 focus:border-[#A78BFA]/50 focus:outline-none focus:ring-1 focus:ring-[#A78BFA]/30"
                 >
                   <option value="">Barbero protagonista (opcional)...</option>
                   {barbers.map((b) => (
@@ -469,7 +469,7 @@ export function StudioClient({
                   value={barberName}
                   onChange={(e) => setBarberName(e.target.value)}
                   placeholder="Nombre del barbero protagonista (opcional)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200"
+                  className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 placeholder:text-white/30 focus:border-[#A78BFA]/50 focus:outline-none focus:ring-1 focus:ring-[#A78BFA]/30"
                 />
               )}
 
@@ -478,13 +478,13 @@ export function StudioClient({
                 value={urgencyMessage}
                 onChange={(e) => setUrgencyMessage(e.target.value)}
                 placeholder='Mensaje urgente (ej: "Solo quedan 2 plazas esta semana")'
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200"
+                className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 placeholder:text-white/30 focus:border-[#A78BFA]/50 focus:outline-none focus:ring-1 focus:ring-[#A78BFA]/30"
               />
             </div>
 
             {/* Style */}
             <div>
-              <p className="mb-2 text-xs font-black text-slate-700">Estilo visual</p>
+              <p className="mb-2 text-xs font-black text-white/80">Estilo visual</p>
               <div className="grid grid-cols-5 gap-2">
                 {STYLES.map((s) => (
                   <button
@@ -492,19 +492,19 @@ export function StudioClient({
                     onClick={() => setStyle(s.id)}
                     className={`rounded-xl border px-1 py-2.5 text-center transition-all ${
                       style === s.id
-                        ? "border-violet-400 bg-violet-50 ring-1 ring-violet-400"
-                        : "border-slate-200 bg-white hover:border-violet-200"
+                        ? "border-[#A78BFA]/50 bg-[#7C3AED]/10 ring-1 ring-[#A78BFA]/50"
+                        : "border-white/[0.08] bg-white/[0.04] hover:border-[#A78BFA]/30"
                     }`}
                   >
                     <div className="mx-auto mb-1.5 h-4 w-4 rounded-md" style={{ backgroundColor: s.color }} />
-                    <p className="text-[10px] font-black text-slate-900">{s.label}</p>
+                    <p className="text-[10px] font-black text-white">{s.label}</p>
                   </button>
                 ))}
               </div>
             </div>
 
             {genError && (
-              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
+              <p className="rounded-xl border border-red-500/20 bg-red-500/[0.08] px-4 py-2.5 text-xs font-semibold text-red-400">
                 {genError}
               </p>
             )}
@@ -512,7 +512,7 @@ export function StudioClient({
             <button
               onClick={handleGenerate}
               disabled={generating || noCredits}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-4 text-sm font-black text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-4 text-sm font-black text-white shadow-lg shadow-[#7C3AED]/20 transition hover:bg-[#6D28D9] disabled:opacity-70"
             >
               {generating ? (
                 <><RefreshCw size={14} className="animate-spin" /> Generando anuncio…</>

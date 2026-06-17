@@ -270,6 +270,10 @@ export default function AlternativaBooksyPage() {
             <Link href="/calculadora-booksy" style={{ color: "#c9a84c", textDecoration: "underline" }}>calculadora interactiva</Link>{" "}
             para tu cifra exacta.
           </p>
+          <p style={{ marginTop: 12, fontSize: "0.82rem", color: "#999" }}>
+            ¿Listo para dar el paso? Lee la{" "}
+            <Link href="/migrar-de-booksy" style={{ color: "#c9a84c", textDecoration: "underline" }}>guía completa de migración paso a paso</Link>.
+          </p>
         </div>
       </section>
 
@@ -346,7 +350,7 @@ export default function AlternativaBooksyPage() {
           {[
             { n: "1", title: "Demo gratuita", tag: "Día 1 — 30 min", text: "Nos cuentas cómo funciona tu barbería ahora mismo: cuántos barberos, qué servicios, cómo gestionas las reservas. Sin compromiso." },
             { n: "2", title: "Configuramos tu barbería", tag: "Día 1 — nosotros lo hacemos", text: "Subimos tus servicios, barberos, horarios y precios. Generamos tu link público y QR de reservas personalizados." },
-            { n: "3", title: "Exportas tus clientes de Booksy", tag: "Día 2 — 10 minutos", text: "Desde Booksy puedes exportar tu lista de clientes en CSV. Te explicamos exactamente cómo hacerlo y los importamos en BarberíaOS. Cero pérdida de datos." },
+            { n: "3", title: "Exportas tus clientes de Booksy", tag: "Día 2 — 10 minutos", text: "Desde Booksy puedes exportar tu lista de clientes en CSV. Te explicamos exactamente cómo hacerlo y los importamos en BarberíaOS. Cero pérdida de datos. Consulta la guía completa de migración para el detalle de cada paso." },
             { n: "4", title: "Cambias el link de reservas", tag: "Día 2 — 5 minutos", text: "Actualizas el link en tu bio de Instagram, WhatsApp y Google. A partir de ese momento las reservas nuevas llegan a BarberíaOS, sin comisiones." },
             { n: "5", title: "Cancelas Booksy cuando quieras", tag: null, text: "Una vez que ves que BarberíaOS funciona, cancelas Booksy. Sin urgencia. Sin presión. A tu ritmo." },
           ].map((step, i, arr) => (
@@ -454,14 +458,16 @@ export default function AlternativaBooksyPage() {
         </Link>
         <p style={{ fontSize: "0.82rem", color: "#999" }}>
           © 2026 BarberíaOS ·{" "}
-          <Link href="/aviso-legal" style={{ color: "#999", textDecoration: "none" }}>Aviso legal</Link> ·{" "}
-          <Link href="/privacidad" style={{ color: "#999", textDecoration: "none" }}>Privacidad</Link> ·{" "}
+          <Link href="/legal/aviso-legal" style={{ color: "#999", textDecoration: "none" }}>Aviso legal</Link> ·{" "}
+          <Link href="/legal/privacidad" style={{ color: "#999", textDecoration: "none" }}>Privacidad</Link> ·{" "}
           <a href="mailto:hola@barberiaos.com" style={{ color: "#999", textDecoration: "none" }}>hola@barberiaos.com</a>
         </p>
         <p style={{ marginTop: 8, fontSize: "0.82rem", color: "#999" }}>
           <Link href="/agenda-online-barberia" style={{ color: "#999", textDecoration: "none" }}>Agenda online barbería</Link>
           {" · "}
           <Link href="/alternativa-a-booksy" style={{ color: "#999", textDecoration: "none" }}>Alternativa a Booksy</Link>
+          {" · "}
+          <Link href="/migrar-de-booksy" style={{ color: "#999", textDecoration: "none" }}>Cómo migrar de Booksy</Link>
           {" · "}
           <Link href="/calculadora-booksy" style={{ color: "#999", textDecoration: "none" }}>Calculadora Booksy</Link>
           {" · "}

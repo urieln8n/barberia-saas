@@ -39,20 +39,20 @@ function DropZone({
     const isImage = file.type.startsWith("image/");
     const preview = isImage ? URL.createObjectURL(file) : null;
     return (
-      <div className="relative overflow-hidden rounded-2xl border border-violet-200 bg-violet-50">
+      <div className="relative overflow-hidden rounded-2xl border border-[#A78BFA]/30 bg-[#7C3AED]/10">
         {preview && (
           // biome-ignore lint: no alt needed for decorative preview
           <img src={preview} alt="" className="h-40 w-full object-cover" />
         )}
         {!preview && (
-          <div className="flex h-24 items-center justify-center gap-2 text-sm text-violet-700">
+          <div className="flex h-24 items-center justify-center gap-2 text-sm text-[#A78BFA]">
             <Film size={16} />
             <span className="font-semibold">{file.name}</span>
           </div>
         )}
         <div className="flex items-center justify-between px-3 py-2">
-          <p className="truncate text-xs text-slate-500">{file.name}</p>
-          <button onClick={onClear} className="shrink-0 rounded-full p-1 hover:bg-slate-200">
+          <p className="truncate text-xs text-white/50">{file.name}</p>
+          <button onClick={onClear} className="shrink-0 rounded-full p-1 hover:bg-white/[0.10]">
             <X size={12} />
           </button>
         </div>
@@ -68,12 +68,12 @@ function DropZone({
       onDragLeave={() => setDragging(false)}
       onDrop={handleDrop}
       className={`flex h-32 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed transition-colors ${
-        dragging ? "border-violet-400 bg-violet-50" : "border-slate-200 bg-white hover:border-violet-300 hover:bg-violet-50/40"
+        dragging ? "border-[#A78BFA]/50 bg-[#7C3AED]/10" : "border-white/[0.12] bg-white/[0.04] hover:border-[#A78BFA]/40 hover:bg-[#7C3AED]/[0.06]"
       }`}
     >
-      <Upload size={20} className="text-slate-400" />
-      <p className="text-sm font-semibold text-slate-500">{label}</p>
-      <p className="text-[10px] text-slate-400">Pulsa o arrastra aquí</p>
+      <Upload size={20} className="text-white/40" />
+      <p className="text-sm font-semibold text-white/50">{label}</p>
+      <p className="text-[10px] text-white/40">Pulsa o arrastra aquí</p>
       <input ref={ref} type="file" accept={accept} className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
     </button>
@@ -88,24 +88,24 @@ function ImageResult({
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
-        <div className="overflow-hidden rounded-2xl border border-slate-200">
-          <p className="bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-500">ORIGINAL</p>
+        <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
+          <p className="bg-white/[0.04] px-3 py-1.5 text-[10px] font-black text-white/50">ORIGINAL</p>
           {/* biome-ignore lint: decorative */}
           <img src={originalUrl} alt="" className="w-full object-cover" />
         </div>
-        <div className="overflow-hidden rounded-2xl border border-violet-200">
-          <p className="bg-violet-50 px-3 py-1.5 text-[10px] font-black text-violet-600">MEJORADA ✨</p>
+        <div className="overflow-hidden rounded-2xl border border-[#A78BFA]/30">
+          <p className="bg-[#7C3AED]/10 px-3 py-1.5 text-[10px] font-black text-[#A78BFA]">MEJORADA ✨</p>
           {/* biome-ignore lint: decorative */}
           <img src={enhancedUrl} alt="" className="w-full object-cover" />
         </div>
       </div>
       <div className="flex gap-3">
         <a href={enhancedUrl} download target="_blank" rel="noreferrer"
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-3 text-sm font-black text-white transition hover:bg-[#6D28D9]">
           <Download size={14} /> Descargar
         </a>
         <button onClick={onReset}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50">
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-black text-white/70 transition hover:bg-white/[0.08]">
           <RefreshCw size={14} /> Otra imagen
         </button>
       </div>
@@ -124,22 +124,22 @@ function BeforeAfterResult({
   }
   return (
     <div className="space-y-3">
-      <div className="overflow-hidden rounded-2xl border border-violet-200">
-        <p className="bg-violet-50 px-3 py-1.5 text-[10px] font-black text-violet-600">ANTES / DESPUÉS ✨</p>
+      <div className="overflow-hidden rounded-2xl border border-[#A78BFA]/30">
+        <p className="bg-[#7C3AED]/10 px-3 py-1.5 text-[10px] font-black text-[#A78BFA]">ANTES / DESPUÉS ✨</p>
         {/* biome-ignore lint: decorative */}
         <img src={compositeUrl} alt="" className="w-full object-cover" />
       </div>
       <div className="flex gap-3">
         <a href={compositeUrl} download target="_blank" rel="noreferrer"
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-3 text-sm font-black text-white transition hover:bg-[#6D28D9]">
           <Download size={14} /> Descargar
         </a>
         <button onClick={copy}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50">
+          className="flex items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-black text-white/70 transition hover:bg-white/[0.08]">
           {copied ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar URL</>}
         </button>
         <button onClick={onReset}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50">
+          className="flex items-center gap-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-3 text-sm font-black text-white/70 transition hover:bg-white/[0.08]">
           <RefreshCw size={14} />
         </button>
       </div>
@@ -175,20 +175,20 @@ function VideoJobResult({
   if (state === "done" && videoUrl) {
     return (
       <div className="space-y-3">
-        <div className="overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-center">
-          <p className="text-sm font-black text-emerald-800">Vídeo listo</p>
+        <div className="overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 text-center">
+          <p className="text-sm font-black text-emerald-300">Vídeo listo</p>
           <a href={videoUrl} target="_blank" rel="noreferrer"
-            className="mt-2 inline-flex items-center gap-1.5 text-xs font-black text-emerald-700 underline">
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-black text-emerald-400 underline">
             <Film size={12} /> Ver vídeo →
           </a>
         </div>
         <div className="flex gap-3">
           <a href={videoUrl} download target="_blank" rel="noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-black text-white transition hover:bg-violet-700">
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-3 text-sm font-black text-white transition hover:bg-[#6D28D9]">
             <Download size={14} /> Descargar
           </a>
           <button onClick={onReset}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700">
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-black text-white/70">
             <RefreshCw size={14} /> Otra foto
           </button>
         </div>
@@ -199,19 +199,19 @@ function VideoJobResult({
   if (state === "error") {
     return (
       <div className="space-y-3">
-        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+        <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
           {err}
         </p>
-        <button onClick={onReset} className="text-xs font-semibold text-slate-500 underline">Reintentar</button>
+        <button onClick={onReset} className="text-xs font-semibold text-white/50 underline">Reintentar</button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-violet-100 bg-violet-50 p-6 text-center">
-      <RefreshCw size={20} className="mx-auto mb-2 animate-spin text-violet-500" />
-      <p className="text-sm font-black text-violet-800">Generando vídeo…</p>
-      <p className="mt-1 text-xs text-violet-600">Esto puede tardar 1–3 minutos</p>
+    <div className="rounded-2xl border border-[#A78BFA]/20 bg-[#7C3AED]/10 p-6 text-center">
+      <RefreshCw size={20} className="mx-auto mb-2 animate-spin text-[#A78BFA]" />
+      <p className="text-sm font-black text-white/90">Generando vídeo…</p>
+      <p className="mt-1 text-xs text-[#A78BFA]">Esto puede tardar 1–3 minutos</p>
     </div>
   );
 }
@@ -227,28 +227,28 @@ function SubtitlesResult({
   }
   return (
     <div className="space-y-3">
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-black text-slate-700">Transcripción completa</p>
+          <p className="text-xs font-black text-white/70">Transcripción completa</p>
           <button onClick={() => copy(text, "text")}
-            className="flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-[11px] font-semibold text-slate-500 transition hover:border-violet-200 hover:text-violet-700">
+            className="flex items-center gap-1 rounded-lg border border-white/[0.10] px-2 py-1 text-[11px] font-semibold text-white/50 transition hover:border-[#A78BFA]/30 hover:text-[#A78BFA]">
             {copiedText === "text" ? <><Check size={10} /> Copiado</> : <><Copy size={10} /> Copiar</>}
           </button>
         </div>
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-600">{text}</p>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/70">{text}</p>
       </div>
-      <div className="rounded-2xl bg-slate-900 p-4">
+      <div className="rounded-2xl bg-black/40 p-4">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-[10px] font-black tracking-wide text-slate-400">ARCHIVO SRT</p>
+          <p className="text-[10px] font-black tracking-wide text-white/50">ARCHIVO SRT</p>
           <button onClick={() => copy(srt, "srt")}
-            className="flex items-center gap-1 rounded-lg border border-slate-600 px-2 py-1 text-[11px] font-semibold text-slate-400 transition hover:border-violet-400 hover:text-violet-300">
+            className="flex items-center gap-1 rounded-lg border border-white/[0.15] px-2 py-1 text-[11px] font-semibold text-white/50 transition hover:border-[#A78BFA]/40 hover:text-[#A78BFA]">
             {copiedText === "srt" ? <><Check size={10} /> Copiado</> : <><Copy size={10} /> Copiar .srt</>}
           </button>
         </div>
-        <pre className="overflow-x-auto text-[11px] leading-relaxed text-slate-300">{srt.slice(0, 600)}{srt.length > 600 ? "\n…" : ""}</pre>
+        <pre className="overflow-x-auto text-[11px] leading-relaxed text-white/60">{srt.slice(0, 600)}{srt.length > 600 ? "\n…" : ""}</pre>
       </div>
       <button onClick={onReset}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50">
+        className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-black text-white/70 transition hover:bg-white/[0.08]">
         <RefreshCw size={14} /> Otro vídeo
       </button>
     </div>

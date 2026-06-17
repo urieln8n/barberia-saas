@@ -189,12 +189,12 @@ export function InventarioClient({
         }
       />
 
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-800">
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3 text-sm leading-6 text-emerald-400">
         Inventario conectado con Caja: las ventas de productos descuentan stock y crean un movimiento reciente.
       </div>
 
       {(errorMessage || actionError) && (
-        <div className="flex items-start gap-2 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+        <div className="flex items-start gap-2 rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
           <AlertCircle size={16} className="mt-0.5 shrink-0" />
           <span>{actionError || errorMessage}</span>
         </div>
@@ -228,11 +228,11 @@ export function InventarioClient({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.04 }}
-                  className="flex flex-col gap-3 rounded-[18px] border border-[#E7E2D8] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-[18px] border border-white/[0.08] bg-white/[0.04] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0">
-                    <p className="font-black text-[#080A0F]">{product.name}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="font-black text-white">{product.name}</p>
+                    <p className="mt-0.5 text-xs text-white/50">
                       {product.product_type === "retail" ? "Producto de venta" : "Uso interno"} · mínimo {product.min_stock} uds
                     </p>
                   </div>
@@ -240,7 +240,7 @@ export function InventarioClient({
                     <span className={product.current_stock === 0 ? "badge-danger" : "badge-warning"}>
                       {product.current_stock === 0 ? "Sin stock" : "Stock bajo"}
                     </span>
-                    <span className="text-sm font-black text-[#080A0F]">{product.current_stock} uds</span>
+                    <span className="text-sm font-black text-white">{product.current_stock} uds</span>
                   </div>
                 </motion.div>
               ))}
@@ -272,17 +272,17 @@ export function InventarioClient({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.04 }}
-                  className="flex items-center justify-between gap-3 rounded-[18px] border border-[#E7E2D8] bg-[#FAF8F4] px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-[18px] border border-white/[0.08] bg-white/[0.04] px-4 py-3"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-xs font-black text-[#C9922A]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-white/[0.06] text-xs font-black text-[#D4AF37]">
                       {index + 1}
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate font-black text-[#080A0F]">
+                      <p className="truncate font-black text-white">
                         {leader.product?.name ?? "Producto eliminado"}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-white/50">
                         Margen estimado: {leader.estimatedMargin === null ? "sin coste" : formatCurrency(leader.estimatedMargin)}
                       </p>
                     </div>
@@ -299,19 +299,19 @@ export function InventarioClient({
         title="Productos"
         description={`${filteredProducts.length} de ${products.length} productos visibles.`}
         action={
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+          <div className="flex items-center gap-2 text-xs font-semibold text-white/50">
             <Filter size={14} />
             Filtros activos
           </div>
         }
         bodyClassName="p-0"
       >
-        <div className="grid gap-3 border-b border-[#E7E2D8] bg-white p-4 md:grid-cols-[minmax(220px,1fr)_180px_170px_150px]">
+        <div className="grid gap-3 border-b border-white/[0.08] bg-white/[0.02] p-4 md:grid-cols-[minmax(220px,1fr)_180px_170px_150px]">
           <label className="relative block">
             <span className="sr-only">Buscar producto</span>
             <Search
               size={15}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/40"
             />
             <input
               value={query}
@@ -413,13 +413,13 @@ export function InventarioClient({
               return (
                 <div
                   key={movement.id}
-                  className="flex flex-col gap-2 rounded-2xl border border-[#E7E2D8] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
-                    <p className="text-sm font-black text-[#080A0F]">
+                    <p className="text-sm font-black text-white">
                       {product?.name ?? "Producto eliminado"}
                     </p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-white/50">
                       {movementLabels[movement.movement_type]} · {movement.quantity} uds
                       {movement.source === "cash_sale"
                         ? " · Venta desde caja"
@@ -429,10 +429,10 @@ export function InventarioClient({
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
-                    <p className="text-xs font-semibold text-slate-500">
+                    <p className="text-xs font-semibold text-white/50">
                       {movement.previous_stock ?? "-"} → {movement.new_stock ?? "-"}
                     </p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-white/40">
                       {formatDate(movement.created_at)}
                     </p>
                   </div>

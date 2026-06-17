@@ -25,7 +25,7 @@ export function ActivationChecklist({ percent, items, compact = false }: Activat
 
   if (compact && !expanded) {
     return (
-      <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-5 shadow-[0_1px_16px_rgba(0,0,0,0.45)] md:p-6">
+      <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#242440] to-[#1A1A30] p-5 shadow-[0_1px_16px_rgba(0,0,0,0.45)] md:p-6">
         <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
@@ -68,7 +68,7 @@ export function ActivationChecklist({ percent, items, compact = false }: Activat
   }
 
   return (
-    <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] shadow-[0_1px_16px_rgba(0,0,0,0.45)]">
+    <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#242440] to-[#1A1A30] shadow-[0_1px_16px_rgba(0,0,0,0.45)]">
       <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       {compact && (
         <div className="flex justify-end px-5 pt-4 md:px-6">

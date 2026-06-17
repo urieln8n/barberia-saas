@@ -308,6 +308,8 @@ export default function AgendaOnlineBarberiaPage() {
               BarberíaOS
             </Link>
             <nav className="flex flex-wrap gap-5 text-sm text-slate-400">
+              <Link href="/reservas-online-barberia" className="hover:text-slate-600">Reservas online</Link>
+              <Link href="/programa-reservas-barberia" className="hover:text-slate-600">Programa de reservas</Link>
               <Link href="/software-para-barberias" className="hover:text-slate-600">Software barberías</Link>
               <Link href="/alternativa-a-booksy" className="hover:text-slate-600">Alternativa Booksy</Link>
               <Link href="/calculadora-booksy" className="hover:text-slate-600">Calculadora</Link>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/src/lib/supabase/client";
 import {
   Banknote,
   CalendarDays,
@@ -102,11 +102,7 @@ export function CommandPalette({ barbershopId }: { barbershopId: string | null }
     }
     setLoadingClients(true);
     const t = setTimeout(async () => {
-      const sb = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-      );
-      const { data } = await sb
+      const { data } = await supabase
         .from("clients")
         .select("id, name, phone")
         .eq("barbershop_id", barbershopId)

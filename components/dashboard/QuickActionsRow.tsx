@@ -40,7 +40,7 @@ export function QuickActionsRow({ services, barbers, externalOpen, onExternalOpe
 
   return (
     <>
-      <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] shadow-[0_1px_16px_rgba(0,0,0,0.45)]">
+      <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-gradient-to-b from-[#242440] to-[#1A1A30] shadow-[0_1px_16px_rgba(0,0,0,0.45)]">
         <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
         <div className="px-5 py-4 md:px-6">
           <p className="label-section mb-3">Acciones rápidas</p>

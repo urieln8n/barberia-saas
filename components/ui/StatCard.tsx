@@ -39,14 +39,14 @@ export function StatCard({
 
   const containerClass =
     effectiveTone === "success"
-      ? "border-emerald-500/30 bg-[#091410] hover:border-emerald-500/50 hover:bg-[#0D1A12]"
+      ? "border-emerald-500/40 bg-[#152A20] hover:border-emerald-500/60 hover:bg-[#1C3228]"
       : effectiveTone === "warning"
-        ? "border-amber-500/30 bg-[#130F07] hover:border-amber-500/50 hover:bg-[#1A1408]"
+        ? "border-amber-500/40 bg-[#2E1E08] hover:border-amber-500/60 hover:bg-[#38240A]"
         : effectiveTone === "gold"
-          ? "border-[#D4AF37]/30 bg-[#13100A] hover:border-[#D4AF37]/50 hover:bg-[#1A1508]"
+          ? "border-[#D4AF37]/40 bg-[#281A08] hover:border-[#D4AF37]/60 hover:bg-[#30200A]"
           : effectiveTone === "highlight"
-            ? "border-[#2563EB]/30 bg-[#090D1A] hover:border-[#2563EB]/50 hover:bg-[#0C1120]"
-            : "border-[#2A2A38] bg-[#131318] hover:border-[#36364A] hover:bg-[#171720]";
+            ? "border-[#2563EB]/40 bg-[#101838] hover:border-[#2563EB]/60 hover:bg-[#141E44]"
+            : "border-[#2A2A38] bg-[#1D1D2C] hover:border-[#36364A] hover:bg-[#22222E]";
 
   const topLabel = label ?? title;
   const supportingText = hint ?? description;

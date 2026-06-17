@@ -58,42 +58,45 @@ export default async function AjustesPage() {
       />
 
       {/* Info de la barbería */}
-      <div className="rounded-[20px] border border-amber-200/40 bg-[#F6F1E8] p-6 shadow-card">
+      <div
+        className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] p-6"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+      >
         <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
-            <Store size={18} className="text-[#2F6FEB]" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D4AF37]/10">
+            <Store size={18} className="text-[#D4AF37]" />
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Tu negocio</p>
-            <h2 className="font-black text-[#111827]">Tu barbería</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Tu negocio</p>
+            <h2 className="font-black text-white">Tu barbería</h2>
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Nombre</p>
-            <p className="mt-1 font-semibold text-[#111827]">{barbershop?.name ?? "—"}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/40">Nombre</p>
+            <p className="mt-1 font-semibold text-white">{barbershop?.name ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Ciudad</p>
-            <p className="mt-1 font-semibold text-[#111827]">{barbershop?.city ?? "—"}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/40">Ciudad</p>
+            <p className="mt-1 font-semibold text-white">{barbershop?.city ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Slug / URL</p>
-            <p className="mt-1 font-mono text-sm text-neutral-700">{barbershop?.slug ?? "—"}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/40">Slug / URL</p>
+            <p className="mt-1 font-mono text-sm text-white/70">{barbershop?.slug ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">ID de barbería</p>
-            <p className="mt-1 font-mono text-xs text-neutral-500">{barbershopId}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/40">ID de barbería</p>
+            <p className="mt-1 font-mono text-xs text-white/40">{barbershopId}</p>
           </div>
         </div>
 
         {publicUrl && (
-          <div className="mt-5 rounded-2xl border border-amber-200/40 bg-[#F0EAE0] p-4">
+          <div className="mt-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-2">
-                <Globe size={15} className="shrink-0 text-[#8A641F]" />
-                <span className="truncate font-mono text-sm text-slate-700">{publicUrl}</span>
+                <Globe size={15} className="shrink-0 text-[#D4AF37]/70" />
+                <span className="truncate font-mono text-sm text-white/70">{publicUrl}</span>
               </div>
               <a
                 href={publicUrl}
@@ -129,10 +132,10 @@ export default async function AjustesPage() {
             { icon: ShieldCheck, title: "Estado de cuenta", text: `Plan actual: ${planUsage.label}.`, href: "/dashboard/pagos" },
             { icon: Store, title: "Datos de barbería", text: "Nombre, ciudad y URL pública.", href: "/onboarding" },
           ].map(({ icon: Icon, title, text, href }) => (
-            <Link key={title} href={href} className="rounded-2xl border border-amber-200/40 bg-[#FAF7F2] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300/60 hover:shadow-[var(--shadow-card)]">
-              <Icon size={18} className="text-[#2563EB]" />
-              <h3 className="mt-4 font-black text-[#080A0F]">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+            <Link key={title} href={href} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 transition hover:-translate-y-0.5 hover:border-[#D4AF37]/40 hover:bg-white/[0.06]">
+              <Icon size={18} className="text-[#D4AF37]" />
+              <h3 className="mt-4 font-black text-white">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/50">{text}</p>
             </Link>
           ))}
         </div>
@@ -150,10 +153,10 @@ export default async function AjustesPage() {
             { icon: ShieldCheck, title: "Subencargados", text: "Proveedores tecnológicos y estado.", href: "/legal/subencargados" },
             { icon: ShieldCheck, title: "Seguridad", text: "Medidas y buenas prácticas.", href: "/legal/seguridad" },
           ].map(({ icon: Icon, title, text, href }) => (
-            <Link key={title} href={href} className="rounded-2xl border border-amber-200/40 bg-[#FAF7F2] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300/60 hover:shadow-[var(--shadow-card)]">
-              <Icon size={18} className="text-[#2563EB]" />
-              <h3 className="mt-4 font-black text-[#080A0F]">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+            <Link key={title} href={href} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 transition hover:-translate-y-0.5 hover:border-[#D4AF37]/40 hover:bg-white/[0.06]">
+              <Icon size={18} className="text-[#D4AF37]" />
+              <h3 className="mt-4 font-black text-white">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/50">{text}</p>
             </Link>
           ))}
         </div>
@@ -163,7 +166,7 @@ export default async function AjustesPage() {
       <div>
         <div className="mb-4">
           <p className="label-section">Roadmap</p>
-          <h2 className="mt-0.5 text-xl font-black text-slate-950">Próximas configuraciones</h2>
+          <h2 className="mt-0.5 text-xl font-black text-white">Próximas configuraciones</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
@@ -172,23 +175,23 @@ export default async function AjustesPage() {
             { icon: QrCode, plan: "Pro",      title: "QR profesional",          text: "Ajusta el color y el logo del QR de reservas para que encaje con la identidad de tu barbería." },
             { icon: Globe,  plan: "Premium",  title: "Web propia de tu barbería", text: "Landing profesional en tu propio dominio o subdominio. Incluye página de reservas integrada." },
           ].map(({ icon: Icon, plan, title, text }) => (
-            <div key={title} className="rounded-2xl border border-amber-200/40 bg-[#FAF7F2] p-5 shadow-sm">
+            <div key={title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5">
               <div className="mb-3 flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2F6FEB]/10">
-                  <Icon size={18} className="text-[#2F6FEB]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D4AF37]/10">
+                  <Icon size={18} className="text-[#D4AF37]" />
                 </div>
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
                   plan === "Premium"
-                    ? "bg-[#0F172A] text-white"
+                    ? "bg-white/[0.10] text-white"
                     : plan === "Pro"
-                    ? "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2459bd]"
-                    : "border border-[#2F6FEB]/30 bg-[#2F6FEB]/10 text-[#2F6FEB]"
+                    ? "border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]"
+                    : "border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]/80"
                 }`}>
                   {plan}
                 </span>
               </div>
-              <h3 className="font-bold text-[#111827]">{title}</h3>
-              <p className="mt-1 text-sm leading-6 text-neutral-500">{text}</p>
+              <h3 className="font-bold text-white">{title}</h3>
+              <p className="mt-1 text-sm leading-6 text-white/50">{text}</p>
             </div>
           ))}
         </div>
@@ -210,8 +213,8 @@ export default async function AjustesPage() {
       <div className="surface-frame p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-black text-slate-950">¿Quieres cambiar los datos de tu barbería?</p>
-            <p className="mt-0.5 text-sm leading-6 text-slate-600">
+            <p className="font-black text-white">¿Quieres cambiar los datos de tu barbería?</p>
+            <p className="mt-0.5 text-sm leading-6 text-white/60">
               Edita nombre, ciudad y servicios volviendo al onboarding o desde las secciones del panel.
             </p>
           </div>

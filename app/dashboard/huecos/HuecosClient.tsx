@@ -48,23 +48,23 @@ type ScopeFilter = "all" | "now";
 const STATUS_META: Record<OperationalFreeSlot["status"] | "unavailable", { label: string; className: string; dot: string }> = {
   free_now: {
     label: "Libre ahora",
-    className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    className: "border-emerald-500/[0.25] bg-emerald-500/[0.08] text-emerald-400",
     dot: "bg-emerald-500",
   },
   free_soon: {
     label: "Libre pronto",
-    className: "border-amber-200 bg-amber-50 text-amber-700",
+    className: "border-amber-500/[0.25] bg-amber-500/[0.08] text-amber-400",
     dot: "bg-amber-500",
   },
   later: {
     label: "Con hueco hoy",
-    className: "border-slate-200 bg-slate-50 text-slate-600",
-    dot: "bg-slate-400",
+    className: "border-white/[0.08] bg-white/[0.04] text-white/50",
+    dot: "bg-white/35",
   },
   unavailable: {
     label: "Sin huecos",
-    className: "border-slate-200 bg-slate-100 text-slate-500",
-    dot: "bg-slate-300",
+    className: "border-white/[0.06] bg-white/[0.03] text-white/35",
+    dot: "bg-white/25",
   },
 };
 
@@ -103,13 +103,13 @@ function ServiceChips({ slot, limit = 3 }: { slot: OperationalFreeSlot; limit?: 
       {visibleServices.map((service) => (
         <span
           key={service.id}
-          className="rounded-full border border-[#D5A84C]/25 bg-white px-2.5 py-1 text-xs font-bold text-slate-700"
+          className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-2.5 py-1 text-xs font-bold text-[#D4AF37]"
         >
           {service.name} · {service.duration_minutes} min
         </span>
       ))}
       {slot.fits_services.length > visibleServices.length && (
-        <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-500">
+        <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-xs font-bold text-white/35">
           +{slot.fits_services.length - visibleServices.length} mas
         </span>
       )}
@@ -133,12 +133,12 @@ function BarberRadarCard({
 
   return (
     <article
-      className={`rounded-[22px] border bg-white p-4 shadow-card ${
+      className={`rounded-[22px] border bg-[#0E0E1C] p-4 ${
         status === "free_now"
-          ? "border-emerald-200 ring-2 ring-emerald-100"
+          ? "border-emerald-500/[0.25] ring-2 ring-emerald-500/[0.08]"
           : status === "free_soon"
-            ? "border-amber-200"
-            : "border-slate-200"
+            ? "border-amber-500/[0.25]"
+            : "border-white/[0.08]"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -147,28 +147,28 @@ function BarberRadarCard({
             <span className={`h-2 w-2 rounded-full ${meta.dot}`} />
             {slot?.is_next ? "Proximo hueco" : meta.label}
           </span>
-          <h3 className="mt-3 truncate text-lg font-black text-slate-950">{barber.name}</h3>
-          <p className="mt-1 text-sm font-semibold text-slate-500">
+          <h3 className="mt-3 truncate text-lg font-black text-white">{barber.name}</h3>
+          <p className="mt-1 text-sm font-semibold text-white/50">
             {slot ? `${slot.start_time} - ${slot.end_time} · ${slot.duration_minutes} min` : "Agenda sin huecos vendibles"}
           </p>
         </div>
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-[#D5A84C]">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#0A0A0D] text-[#D4AF37]">
           <Scissors size={18} />
         </div>
       </div>
 
       {slot ? (
         <>
-          <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="mt-4 space-y-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-wide text-slate-500">Servicio que cabe</p>
+              <p className="text-[10px] font-black uppercase tracking-wide text-white/35">Servicio que cabe</p>
               <div className="mt-2">
                 <ServiceChips slot={slot} limit={2} />
               </div>
             </div>
-            <div className="flex items-center justify-between gap-3 border-t border-slate-200 pt-3">
-              <span className="text-xs font-black uppercase text-slate-500">Potencial</span>
-              <span className="text-base font-black text-slate-950">{formatMoney(slot.potential_revenue)}</span>
+            <div className="flex items-center justify-between gap-3 border-t border-white/[0.06] pt-3">
+              <span className="text-xs font-black uppercase text-white/35">Potencial</span>
+              <span className="text-base font-black text-white">{formatMoney(slot.potential_revenue)}</span>
             </div>
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-3">
@@ -187,7 +187,7 @@ function BarberRadarCard({
           </div>
         </>
       ) : (
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-500">
+        <div className="mt-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3 text-sm font-semibold text-white/35">
           No hay huecos desde ahora con servicios activos. Revisa la agenda o anticipa manana.
         </div>
       )}
@@ -207,24 +207,24 @@ function SlotRow({
   const meta = STATUS_META[slot.status];
 
   return (
-    <article className="grid gap-4 rounded-[22px] border border-slate-200 bg-white p-4 shadow-card transition hover:border-[#D5A84C]/45 lg:grid-cols-[0.7fr_1fr_0.55fr_0.7fr] lg:items-center">
+    <article className="grid gap-4 rounded-[22px] border border-white/[0.08] bg-[#0E0E1C] p-4 transition hover:border-[#D4AF37]/40 lg:grid-cols-[0.7fr_1fr_0.55fr_0.7fr] lg:items-center">
       <div>
         <span className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[11px] font-black ${meta.className}`}>
           <span className={`h-2 w-2 rounded-full ${meta.dot}`} />
           {slot.is_next ? "Proximo hueco" : meta.label}
         </span>
-        <p className="mt-3 text-2xl font-black text-slate-950">{slot.start_time}</p>
-        <p className="text-sm font-semibold text-slate-500">{slot.end_time} · {slot.duration_minutes} min</p>
+        <p className="mt-3 text-2xl font-black text-white">{slot.start_time}</p>
+        <p className="text-sm font-semibold text-white/50">{slot.end_time} · {slot.duration_minutes} min</p>
       </div>
       <div>
-        <p className="text-sm font-black text-slate-950">{slot.barber_name}</p>
+        <p className="text-sm font-black text-white">{slot.barber_name}</p>
         <div className="mt-2">
           <ServiceChips slot={slot} limit={3} />
         </div>
       </div>
       <div>
-        <p className="text-[10px] font-black uppercase tracking-wide text-slate-500">Potencial</p>
-        <p className="mt-1 text-xl font-black text-slate-950">{formatMoney(slot.potential_revenue)}</p>
+        <p className="text-[10px] font-black uppercase tracking-wide text-white/35">Potencial</p>
+        <p className="mt-1 text-xl font-black text-white">{formatMoney(slot.potential_revenue)}</p>
       </div>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
         <button type="button" onClick={() => onCreateBooking(slot)} className="btn-primary justify-center">
@@ -255,15 +255,15 @@ function OwnerRecommendedAction({
         : "No hay huecos operativos ahora. Revisa manana y prepara una campana si baja la ocupacion.";
 
   return (
-    <section className="rounded-[24px] border border-[#D5A84C]/25 bg-[#FFFBF2] p-5 shadow-card">
+    <section className="rounded-[24px] border border-[#D4AF37]/40 bg-[#D4AF37]/10 p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-[#8A641F]">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
             <Zap size={14} />
             Accion recomendada
           </div>
-          <h2 className="mt-2 text-xl font-black text-slate-950">{message}</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <h2 className="mt-2 text-xl font-black text-white">{message}</h2>
+          <p className="mt-2 text-sm leading-6 text-white/60">
             Prioriza el hueco mas cercano, servicio que cabe e ingreso potencial. Todo queda precargado al agendar.
           </p>
         </div>
@@ -289,10 +289,10 @@ function GrowthActions({ nextSlot, dateISO }: { nextSlot: OperationalFreeSlot | 
   ];
 
   return (
-    <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-card">
+    <section className="rounded-[24px] border border-white/[0.08] bg-[#0E0E1C] p-5">
       <div className="flex flex-col gap-1">
-        <p className="text-xs font-black uppercase tracking-wide text-[#C9922A]">Acciones de crecimiento</p>
-        <h2 className="text-xl font-black text-slate-950">Convierte huecos en demanda</h2>
+        <p className="text-xs font-black uppercase tracking-wide text-[#D4AF37]">Acciones de crecimiento</p>
+        <h2 className="text-xl font-black text-white">Convierte huecos en demanda</h2>
       </div>
       <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {actions.map((action) => {
@@ -351,15 +351,15 @@ export function HuecosClient({ dateISO, todayISO, slots, summary, services, barb
 
   return (
     <>
-      <section className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-card md:p-5">
+      <section className="rounded-[28px] border border-white/[0.08] bg-[#0E0E1C] p-4 md:p-5">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-[#C9922A]">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-[#D4AF37]">
               <Send size={14} />
               Radar operativo
             </div>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Quien esta libre ahora</h2>
-            <p className="mt-1 text-sm font-semibold text-slate-500">
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-white">Quien esta libre ahora</h2>
+            <p className="mt-1 text-sm font-semibold text-white/50">
               Barbero, hueco, servicio compatible, potencial y accion directa.
             </p>
           </div>
@@ -381,7 +381,7 @@ export function HuecosClient({ dateISO, todayISO, slots, summary, services, barb
             <select
               value={selectedBarber}
               onChange={(event) => setSelectedBarber(event.target.value)}
-              className="min-h-11 rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800"
+              className="min-h-11 rounded-2xl border border-white/[0.08] bg-[#0A0A0D] px-3 text-sm font-bold text-white"
             >
               <option value="all">Todos los barberos</option>
               {barbers.map((barber) => (
@@ -393,7 +393,7 @@ export function HuecosClient({ dateISO, todayISO, slots, summary, services, barb
             <select
               value={minDuration}
               onChange={(event) => setMinDuration(Number(event.target.value))}
-              className="min-h-11 rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800"
+              className="min-h-11 rounded-2xl border border-white/[0.08] bg-[#0A0A0D] px-3 text-sm font-bold text-white"
             >
               <option value={0}>Cualquier duracion</option>
               <option value={30}>30+ min</option>
@@ -427,25 +427,25 @@ export function HuecosClient({ dateISO, todayISO, slots, summary, services, barb
         ].map(([label, value, description, Icon]) => {
           const MetricIcon = Icon as typeof Users;
           return (
-            <article key={label as string} className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-card">
+            <article key={label as string} className="rounded-[22px] border border-white/[0.08] bg-[#0E0E1C] p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-[11px] font-black uppercase text-slate-500">{label as string}</p>
-                <MetricIcon size={16} className="text-[#C9922A]" />
+                <p className="text-[11px] font-black uppercase text-white/35">{label as string}</p>
+                <MetricIcon size={16} className="text-[#D4AF37]" />
               </div>
-              <p className="mt-2 text-2xl font-black text-slate-950">{value as string | number}</p>
-              <p className="mt-1 text-xs font-semibold text-slate-500">{description as string}</p>
+              <p className="mt-2 text-2xl font-black text-white">{value as string | number}</p>
+              <p className="mt-1 text-xs font-semibold text-white/35">{description as string}</p>
             </article>
           );
         })}
       </section>
 
-      <section className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-card md:p-5">
+      <section className="rounded-[28px] border border-white/[0.08] bg-[#0E0E1C] p-4 md:p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-wide text-[#C9922A]">Proximos huecos de hoy</p>
-            <h2 className="mt-1 text-xl font-black text-slate-950">Prioridad para llenar agenda</h2>
+            <p className="text-xs font-black uppercase tracking-wide text-[#D4AF37]">Proximos huecos de hoy</p>
+            <h2 className="mt-1 text-xl font-black text-white">Prioridad para llenar agenda</h2>
           </div>
-          <p className="text-sm font-semibold text-slate-500">
+          <p className="text-sm font-semibold text-white/50">
             {filteredSlots.length} oportunidades encontradas
           </p>
         </div>

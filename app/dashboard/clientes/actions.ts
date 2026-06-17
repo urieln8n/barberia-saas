@@ -16,17 +16,23 @@ async function getBarbershopId() {
 
 export async function createClient_(formData: FormData) {
   const { supabase, barbershopId } = await getBarbershopId();
-  if (!barbershopId) return;
+  if (!barbershopId) return { error: "Sin barbería" };
 
-  await supabase.from("clients").insert({
+  const name = (formData.get("name") as string)?.trim();
+  if (!name) return { error: "El nombre es obligatorio" };
+
+  const { error } = await supabase.from("clients").insert({
     barbershop_id: barbershopId,
-    name:  (formData.get("name") as string).trim(),
-    phone: (formData.get("phone") as string)?.trim() || null,
-    email: (formData.get("email") as string)?.trim() || null,
-    notes: (formData.get("notes") as string)?.trim() || null,
+    name,
+    phone: (formData.get("phone") as string)?.trim().slice(0, 20) || null,
+    email: (formData.get("email") as string)?.trim().slice(0, 254) || null,
+    notes: (formData.get("notes") as string)?.trim().slice(0, 2000) || null,
   });
 
+  if (error) return { error: error.message };
+
   revalidatePath("/dashboard/clientes");
+  return { success: true };
 }
 
 export async function updateClient_(formData: FormData) {

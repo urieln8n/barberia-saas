@@ -355,8 +355,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-xs font-black text-emerald-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-emerald-500/25 bg-emerald-500/[0.08] px-3 text-xs font-black text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Reserva online disponible
             </span>
             {whatsappHref && (
@@ -416,7 +416,7 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
           </a>
         </div>
 
-        <div className="grid gap-3 rounded-[2rem] border border-amber-200/40 bg-[#F6F1E8] p-5 text-slate-950 shadow-[var(--shadow-soft)]">
+        <div className="grid gap-3 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-sm">
           {[
             {
               icon: Scissors,
@@ -433,8 +433,8 @@ export default async function PublicBookingPage({ params, searchParams }: Props)
               text: "Horas ocupadas bloqueadas automáticamente",
             },
           ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-3 text-base text-slate-700">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15 text-[#8A641F]">
+            <div key={text} className="flex items-center gap-3 text-base text-white/70">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15 text-[#D4AF37]">
                 <Icon size={16} />
               </span>
               <span className="font-semibold">{text}</span>

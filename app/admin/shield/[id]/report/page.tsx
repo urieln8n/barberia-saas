@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle2, ShieldCheck } from "lucide-react";
 import { requirePlatformAdmin } from "@/src/lib/permissions/admin";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { buildShieldCommercialReport } from "@/src/lib/audit/shield-report";
 import { getShieldManualReviewRequest } from "../../data";
 import { CopyWhatsAppSummaryButton } from "../../CopyWhatsAppSummaryButton";

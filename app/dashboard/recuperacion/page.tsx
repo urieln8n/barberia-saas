@@ -100,15 +100,15 @@ export default function RecuperacionPage() {
         <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="p-5 md:p-7">
             <div className="flex items-center gap-3">
-              <div className="metric-icon bg-[#C89B3C]/10">
-                <RotateCcw size={17} className="text-[#8A641F]" />
+              <div className="metric-icon bg-[#D4AF37]/10">
+                <RotateCcw size={17} className="text-[#D4AF37]" />
               </div>
               <div>
                 <p className="label-section">Motor de recuperación</p>
                 <h2 className="section-heading">Más citas desde clientes que ya confiaron</h2>
               </div>
             </div>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-neutral-500">
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/45">
               Antes de invertir en anuncios, una barbería puede recuperar facturación hablando con clientes que ya han venido. Esta versión prioriza una lista accionable, mensajes listos y métricas comerciales para vender el módulo Growth.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
@@ -125,25 +125,25 @@ export default function RecuperacionPage() {
               </a>
             </div>
           </div>
-          <div className="border-t border-[#E7E2D8] bg-[#FDFBF7] p-5 md:p-7 lg:border-l lg:border-t-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">
+          <div className="border-t border-white/[0.06] bg-[#0A0A0D] p-5 md:p-7 lg:border-l lg:border-t-0">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/30">
               Criterio MVP
             </p>
-            <div className="mt-3 rounded-[18px] border border-[#E7E2D8] bg-white p-4 shadow-sm">
-              <p className="text-sm leading-6 text-neutral-700">
+            <div className="mt-3 rounded-[18px] border border-white/[0.06] bg-white/[0.04] p-4">
+              <p className="text-sm leading-6 text-white/55">
                 Cliente con teléfono, sin visita reciente y con historial suficiente para una invitación comercial. En esta fase la lista es mock porque la última visita real depende de reservas/citas y no se modifica esa lógica.
               </p>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-[18px] border border-[#E7E2D8] bg-white p-4">
-                <Clock3 size={16} className="text-[#8A641F]" />
-                <p className="mt-2 text-sm font-black text-[#111827]">45+ días</p>
-                <p className="text-xs text-neutral-500">umbral sugerido</p>
+              <div className="rounded-[18px] border border-white/[0.06] bg-white/[0.04] p-4">
+                <Clock3 size={16} className="text-[#D4AF37]" />
+                <p className="mt-2 text-sm font-black text-white">45+ días</p>
+                <p className="text-xs text-white/35">umbral sugerido</p>
               </div>
-              <div className="rounded-[18px] border border-[#E7E2D8] bg-white p-4">
-                <MessageCircle size={16} className="text-[#2563EB]" />
-                <p className="mt-2 text-sm font-black text-[#111827]">WhatsApp</p>
-                <p className="text-xs text-neutral-500">canal inicial</p>
+              <div className="rounded-[18px] border border-white/[0.06] bg-white/[0.04] p-4">
+                <MessageCircle size={16} className="text-blue-400" />
+                <p className="mt-2 text-sm font-black text-white">WhatsApp</p>
+                <p className="text-xs text-white/35">canal inicial</p>
               </div>
             </div>
           </div>
@@ -152,23 +152,23 @@ export default function RecuperacionPage() {
 
       <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="panel p-0">
-          <div className="border-b border-[#E7E2D8] bg-[#FDFBF7] px-5 py-4">
+          <div className="border-b border-white/[0.06] bg-[#0A0A0D] px-5 py-4">
             <p className="label-section">Clientes inactivos</p>
             <h2 className="section-heading">Lista priorizada para recuperar</h2>
             <p className="section-subtext">Mock visual hasta conectar última visita real de forma segura.</p>
           </div>
-          <div className="divide-y divide-[#E7E2D8]">
+          <div className="divide-y divide-white/[0.06]">
             {inactiveClients.map((client) => (
               <article key={client.phone} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-black text-[#111827]">{client.name}</h3>
+                    <h3 className="font-black text-white">{client.name}</h3>
                     <span className="badge-warning">{client.segment}</span>
                   </div>
-                  <p className="mt-1 text-sm text-neutral-500">
+                  <p className="mt-1 text-sm text-white/45">
                     {client.lastService} · {client.lastVisit} · ticket medio {client.value}
                   </p>
-                  <p className="mt-1 text-xs text-neutral-500">{client.phone}</p>
+                  <p className="mt-1 text-xs text-white/30">{client.phone}</p>
                 </div>
                 <a
                   href={`https://wa.me/${client.phone.replace(/\D/g, "")}?text=${recoveryMessage}`}
@@ -192,10 +192,10 @@ export default function RecuperacionPage() {
             {templates.map((template) => (
               <article key={template.title} className="metric-card">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-black text-[#111827]">{template.title}</h3>
+                  <h3 className="font-black text-white">{template.title}</h3>
                   <span className="badge-gold">WhatsApp</span>
                 </div>
-                <p className="mt-3 text-sm leading-6 text-neutral-500">{template.text}</p>
+                <p className="mt-3 text-sm leading-6 text-white/45">{template.text}</p>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                   <button
                     type="button"
@@ -219,15 +219,15 @@ export default function RecuperacionPage() {
         </div>
       </section>
 
-      <section className="rounded-[18px] border border-[#DDE7FB] bg-white p-5 shadow-sm md:p-6">
+      <section className="rounded-[18px] border border-white/[0.08] bg-white/[0.03] p-5 md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-3">
-            <div className="metric-icon bg-[#2563EB]/10">
-              <Sparkles size={16} className="text-[#2563EB]" />
+            <div className="metric-icon bg-blue-500/10">
+              <Sparkles size={16} className="text-blue-400" />
             </div>
             <div>
-              <p className="font-black text-[#111827]">Automatización futura</p>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-neutral-500">
+              <p className="font-black text-white">Automatización futura</p>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-white/45">
                 Próxima fase: detectar inactividad desde citas reales, excluir clientes con reserva futura, programar cadencias y medir reservas recuperadas por plantilla.
               </p>
             </div>

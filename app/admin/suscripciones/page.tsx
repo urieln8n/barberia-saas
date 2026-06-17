@@ -3,6 +3,9 @@ import { createServiceRoleClient } from "@/src/lib/supabase/service-role";
 import { AdminDataError } from "../_components/AdminDataError";
 import { SuscripcionesClient } from "./SuscripcionesClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function SuscripcionesPage() {
   await requirePlatformAdmin();
 

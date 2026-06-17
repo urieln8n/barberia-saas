@@ -9,7 +9,7 @@ export const BUSINESS_CONFIG = {
   privacyEmail: "privacidad@barberiaos.com",
   domain: "barberiaos.com",
   siteUrl: SITE_URL,
-  lastUpdated: "15 de mayo de 2026",
+  lastUpdated: "15 de junio de 2026",
   jurisdiction: "España",
   applicableLaw: "legislación española y normativa europea aplicable",
   contact: "hola@barberiaos.com",
@@ -47,6 +47,11 @@ export const SEO_INTENT_PAGES = [
     path: "/alternativa-booksy-barberias",
     intent: "Alternativa a marketplaces con comisión",
     status: "redirigida",
+  },
+  {
+    path: "/migrar-de-booksy",
+    intent: "Guía de migración desde Booksy paso a paso",
+    status: "publicada",
   },
   {
     path: "/barberias",

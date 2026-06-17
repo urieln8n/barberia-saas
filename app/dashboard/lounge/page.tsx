@@ -94,26 +94,26 @@ export default async function LoungePage() {
 
       {/* ── Estado + Badge ── */}
       <div className="flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#D5A84C]/30 bg-[#C9922A]/10 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#8A641F]">
-          <Sparkles size={11} className="text-[#C9922A]" />
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#D4AF37]">
+          <Sparkles size={11} className="text-[#D4AF37]" />
           BarberíaOS Lounge
         </span>
         {hasLounge && isLoungeActive === true ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-3 py-1 text-xs font-bold text-emerald-400">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Activo
           </span>
         ) : hasLounge && isLoungeActive === false ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-bold text-red-600">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/[0.08] px-3 py-1 text-xs font-bold text-red-400">
             Inactivo
           </span>
         ) : hasLounge ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-3 py-1 text-xs font-bold text-emerald-400">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Activo
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-100 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/[0.08] px-3 py-1 text-xs font-bold text-amber-400">
             Pendiente de slug
           </span>
         )}
@@ -123,16 +123,16 @@ export default async function LoungePage() {
       {hasLounge && loungePublicUrl ? (
         <div className="surface-frame p-5 md:p-6">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-[#D4AF37]">
               <QrCode size={18} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-black text-[#080A0F]">Tu Lounge público</p>
-              <p className="mt-1 text-sm text-[#080A0F]/60">
+              <p className="font-black text-white/90">Tu Lounge público</p>
+              <p className="mt-1 text-sm text-white/50">
                 Comparte este link o imprime el QR del Lounge para tu sala de espera.
               </p>
-              <div className="mt-3 flex min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <span className="min-w-0 flex-1 break-all font-mono text-xs font-semibold text-slate-700">
+              <div className="mt-3 flex min-w-0 items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 py-3">
+                <span className="min-w-0 flex-1 break-all font-mono text-xs font-semibold text-white/60">
                   {loungePublicUrl}
                 </span>
               </div>
@@ -158,11 +158,11 @@ export default async function LoungePage() {
       ) : (
         <div className="surface-frame p-5 md:p-6">
           <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-dashed border-slate-300 bg-slate-50">
-              <Sparkles size={22} className="text-slate-400" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-dashed border-white/[0.10] bg-white/[0.04]">
+              <Sparkles size={22} className="text-white/30" />
             </div>
-            <p className="font-black text-slate-700">Activa BarberíaOS Lounge</p>
-            <p className="max-w-sm text-sm leading-6 text-slate-500">
+            <p className="font-black text-white/80">Activa BarberíaOS Lounge</p>
+            <p className="max-w-sm text-sm leading-6 text-white/50">
               Configura el slug de tu barbería para activar tu página de Lounge pública y
               convertir la sala de espera en un canal de reservas, ventas y reseñas.
             </p>
@@ -189,13 +189,13 @@ export default async function LoungePage() {
 
       {/* ── Recomendación: crear primera promoción ── */}
       {loungePromotions.length === 0 && (
-        <div className="flex items-start gap-4 rounded-[20px] border border-[#D5A84C]/25 bg-[#FDF8EE] p-5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D5A84C]/30 bg-white">
-            <Tag size={18} className="text-[#C9922A]" />
+        <div className="flex items-start gap-4 rounded-[20px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.05] p-5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/10">
+            <Tag size={18} className="text-[#D4AF37]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-black text-[#080A0F]">Crea tu primera promoción</p>
-            <p className="mt-0.5 text-sm text-[#080A0F]/60">
+            <p className="font-black text-white/90">Crea tu primera promoción</p>
+            <p className="mt-0.5 text-sm text-white/50">
               Añade una oferta al Lounge para aumentar el ticket medio mientras los clientes esperan.
             </p>
           </div>
@@ -223,12 +223,12 @@ export default async function LoungePage() {
           </Link>
         </div>
 
-        <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
-            <Package size={20} className="text-slate-400" />
+        <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-white/[0.08] bg-white/[0.02] px-6 py-10 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/[0.08] bg-white/[0.04]">
+            <Package size={20} className="text-white/30" />
           </div>
-          <p className="font-black text-slate-700">Sin productos configurados</p>
-          <p className="max-w-sm text-sm leading-6 text-slate-500">
+          <p className="font-black text-white/70">Sin productos configurados</p>
+          <p className="max-w-sm text-sm leading-6 text-white/40">
             Añade productos en tu inventario para que aparezcan en el Lounge. Tus clientes
             podrán mostrar interés mientras esperan su turno.
           </p>
@@ -263,20 +263,20 @@ export default async function LoungePage() {
             {loungePromotions.slice(0, 4).map((promo) => (
               <div
                 key={promo.id}
-                className="flex items-center gap-3 rounded-2xl border border-[#D5A84C]/15 bg-[#FDF8EE] px-4 py-3"
+                className="flex items-center gap-3 rounded-2xl border border-[#D4AF37]/15 bg-[#D4AF37]/[0.05] px-4 py-3"
               >
-                <Tag size={14} className="shrink-0 text-[#C9922A]" />
+                <Tag size={14} className="shrink-0 text-[#D4AF37]" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-[#080A0F]">{promo.title}</p>
+                  <p className="truncate text-sm font-black text-white/85">{promo.title}</p>
                   {promo.price_label && (
-                    <p className="text-xs text-[#C9922A]">{promo.price_label}</p>
+                    <p className="text-xs text-[#D4AF37]/80">{promo.price_label}</p>
                   )}
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black ${
                     promo.active
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-100 text-slate-500"
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : "bg-white/[0.05] text-white/35"
                   }`}
                 >
                   {promo.active ? "Activa" : "Inactiva"}
@@ -285,12 +285,12 @@ export default async function LoungePage() {
             ))}
           </div>
         ) : (
-          <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-slate-200 bg-white">
-              <Tag size={20} className="text-slate-400" />
+          <div className="mt-5 flex flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-white/[0.08] bg-white/[0.02] px-6 py-10 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/[0.08] bg-white/[0.04]">
+              <Tag size={20} className="text-white/30" />
             </div>
-            <p className="font-black text-slate-700">Sin promociones configuradas</p>
-            <p className="max-w-sm text-sm leading-6 text-slate-500">
+            <p className="font-black text-white/70">Sin promociones configuradas</p>
+            <p className="max-w-sm text-sm leading-6 text-white/40">
               Crea tu primera oferta para que aparezca en el Lounge y capture
               la atención de tus clientes mientras esperan.
             </p>
@@ -324,14 +324,14 @@ export default async function LoungePage() {
             (service) => (
               <div
                 key={service}
-                className="flex items-center gap-3 rounded-2xl border border-[#D5A84C]/15 bg-[#FDF8EE] px-4 py-3"
+                className="flex items-center gap-3 rounded-2xl border border-[#D4AF37]/15 bg-[#D4AF37]/[0.05] px-4 py-3"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#D5A84C]/15">
-                  <Sparkles size={14} className="text-[#8A641F]" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15">
+                  <Sparkles size={14} className="text-[#D4AF37]" />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-[#080A0F]">{service}</p>
-                  <p className="text-xs text-[#080A0F]/50">Actívalo en Servicios</p>
+                  <p className="text-sm font-black text-white/85">{service}</p>
+                  <p className="text-xs text-white/40">Actívalo en Servicios</p>
                 </div>
               </div>
             )
@@ -373,25 +373,25 @@ export default async function LoungePage() {
       </section>
 
       {/* ── Agente Lounge (Próximamente) ── */}
-      <section className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-75">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
-          <Bot size={20} className="text-slate-500" />
+      <section className="flex items-start gap-4 rounded-[20px] border border-white/[0.07] bg-white/[0.03] p-5 opacity-75">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+          <Bot size={20} className="text-white/35" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-black text-slate-700">Agente Lounge IA</h3>
-            <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+            <h3 className="font-black text-white/70">Agente Lounge IA</h3>
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[10px] font-black uppercase text-white/40">
               Próximamente
             </span>
-            <span className="rounded-full border border-[#D5A84C]/30 bg-[#FDF8EE] px-2 py-0.5 text-[10px] font-black uppercase text-[#8A641F]">
+            <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-black uppercase text-[#D4AF37]">
               Premium IA
             </span>
           </div>
-          <p className="mt-1 text-sm leading-5 text-slate-500">
+          <p className="mt-1 text-sm leading-5 text-white/40">
             Tu Agente Lounge detectará qué productos, promociones y servicios generan más interés
             para recomendar acciones automáticas y maximizar la conversión en sala de espera.
           </p>
-          <p className="mt-2 text-xs font-semibold text-slate-400">
+          <p className="mt-2 text-xs font-semibold text-white/30">
             Estado: Próximamente · Premium IA
           </p>
         </div>
@@ -399,36 +399,36 @@ export default async function LoungePage() {
 
       {/* ── Próximamente ── */}
       <section className="grid gap-4 md:grid-cols-2">
-        <div className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-70">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
-            <Tv size={20} className="text-slate-500" />
+        <div className="flex items-start gap-4 rounded-[20px] border border-white/[0.07] bg-white/[0.03] p-5 opacity-70">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+            <Tv size={20} className="text-white/35" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-black text-slate-700">Lounge TV</h3>
-              <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+              <h3 className="font-black text-white/70">Lounge TV</h3>
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[10px] font-black uppercase text-white/40">
                 Próximamente
               </span>
             </div>
-            <p className="mt-1 text-sm leading-5 text-slate-500">
+            <p className="mt-1 text-sm leading-5 text-white/40">
               Pantalla para sala de espera con agenda del día, promociones y contenido de
               marca. Tu barbería, siempre activa.
             </p>
           </div>
         </div>
 
-        <div className="flex items-start gap-4 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm opacity-70">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
-            <Tag size={20} className="text-slate-500" />
+        <div className="flex items-start gap-4 rounded-[20px] border border-white/[0.07] bg-white/[0.03] p-5 opacity-70">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+            <Tag size={20} className="text-white/35" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-black text-slate-700">Lounge Ads</h3>
-              <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-500">
+              <h3 className="font-black text-white/70">Lounge Ads</h3>
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[10px] font-black uppercase text-white/40">
                 Próximamente
               </span>
             </div>
-            <p className="mt-1 text-sm leading-5 text-slate-500">
+            <p className="mt-1 text-sm leading-5 text-white/40">
               Publicidad de productos locales en tu sala de espera. Genera ingresos
               adicionales mientras tus clientes esperan su turno.
             </p>

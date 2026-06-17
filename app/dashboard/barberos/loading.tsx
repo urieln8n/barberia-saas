@@ -13,7 +13,11 @@ export default function BarberosLoading() {
       {/* Barber cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[1, 0.9, 0.75, 0.6].map((opacity, i) => (
-          <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" style={{ opacity }}>
+          <div
+            key={i}
+            className="rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-5"
+            style={{ opacity, boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+          >
             <div className="flex items-center gap-4">
               <div className="premium-skeleton h-14 w-14 shrink-0 rounded-2xl" />
               <div className="flex-1 space-y-2">
@@ -22,7 +26,7 @@ export default function BarberosLoading() {
               </div>
               <div className="premium-skeleton h-6 w-16 rounded-xl" />
             </div>
-            <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4">
+            <div className="mt-4 flex gap-2 border-t border-white/[0.07] pt-4">
               <div className="premium-skeleton h-8 flex-1 rounded-xl" />
               <div className="premium-skeleton h-8 flex-1 rounded-xl" />
             </div>

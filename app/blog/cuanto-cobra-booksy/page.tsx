@@ -339,6 +339,10 @@ export default function CuantoCobraBooksyPage() {
             </div>
           </div>
         ))}
+        <p style={{ color: "#bbb", marginTop: 8, marginBottom: 32 }}>
+          Para el detalle completo de cada paso, incluidas las dudas más comunes sobre reseñas, historial y tiempos de inactividad, consulta la{" "}
+          <Link href="/migrar-de-booksy" style={{ color: "#c9a84c", textDecoration: "underline" }}>guía completa de migración de Booksy a BarberíaOS</Link>.
+        </p>
 
         <hr style={{ border: "none", borderTop: "1px solid #2a2a2a", margin: "40px 0" }} />
 
@@ -434,6 +438,9 @@ export default function CuantoCobraBooksyPage() {
         <div style={{ marginTop: 48, paddingTop: 32, borderTop: "1px solid #2a2a2a", display: "flex", flexWrap: "wrap", gap: 16 }}>
           <Link href="/alternativa-a-booksy" style={{ background: "#141414", border: "1px solid #2a2a2a", borderRadius: 8, padding: "12px 20px", color: "#ccc", textDecoration: "none", fontSize: "0.88rem", fontWeight: 600 }}>
             → Comparativa BarberíaOS vs Booksy
+          </Link>
+          <Link href="/migrar-de-booksy" style={{ background: "#141414", border: "1px solid #2a2a2a", borderRadius: 8, padding: "12px 20px", color: "#ccc", textDecoration: "none", fontSize: "0.88rem", fontWeight: 600 }}>
+            → Guía completa: cómo migrar de Booksy
           </Link>
           <Link href="/calculadora-booksy" style={{ background: "#141414", border: "1px solid #2a2a2a", borderRadius: 8, padding: "12px 20px", color: "#ccc", textDecoration: "none", fontSize: "0.88rem", fontWeight: 600 }}>
             → Calculadora: tu coste exacto en Booksy

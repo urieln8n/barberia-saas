@@ -316,10 +316,10 @@ function saveCampanas(list: Campana[]) {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const tipoBadge: Record<TipoCampana, { label: string; cls: string }> = {
-  descuento:    { label: "Descuento",    cls: "bg-[#C9922A]/10 text-[#8A641F] border-[#C9922A]/25"  },
-  reactivacion: { label: "Reactivación", cls: "bg-purple-50 text-purple-700 border-purple-100"     },
-  evento:       { label: "Evento",       cls: "bg-blue-50 text-blue-700 border-blue-100"           },
-  temporada:    { label: "Temporada",    cls: "bg-emerald-50 text-emerald-700 border-emerald-100"  },
+  descuento:    { label: "Descuento",    cls: "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/25"     },
+  reactivacion: { label: "Reactivación", cls: "bg-purple-500/[0.08] text-purple-400 border-purple-500/20" },
+  evento:       { label: "Evento",       cls: "bg-blue-500/[0.08] text-blue-400 border-blue-500/20"       },
+  temporada:    { label: "Temporada",    cls: "bg-emerald-500/[0.08] text-emerald-400 border-emerald-500/20" },
 };
 
 const canalLabel: Record<CanalCampana, string> = {
@@ -346,22 +346,25 @@ function CampanaCard({
   const badge = tipoBadge[campana.tipo];
 
   return (
-    <div className="flex flex-col rounded-[20px] border border-slate-200 bg-white shadow-sm">
+    <div
+      className="flex flex-col rounded-[20px] border border-white/[0.08] bg-white/[0.04]"
+      style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+    >
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-5 py-4">
+      <div className="flex items-start justify-between gap-3 border-b border-white/[0.08] px-5 py-4">
         <div className="min-w-0">
-          <p className="truncate font-bold text-[#080A0F]">{campana.nombre}</p>
+          <p className="truncate font-bold text-white">{campana.nombre}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             <span
               className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${badge.cls}`}
             >
               {badge.label}
             </span>
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-white/50">
               {canalLabel[campana.canal]}
             </span>
             {campana.fechaFin && (
-              <span className="flex items-center gap-1 text-xs text-neutral-500">
+              <span className="flex items-center gap-1 text-xs text-white/50">
                 <Calendar size={11} />
                 hasta {campana.fechaFin}
               </span>
@@ -372,26 +375,26 @@ function CampanaCard({
           type="button"
           onClick={() => onDelete(campana.id)}
           title="Eliminar campaña"
-          className="mt-0.5 shrink-0 rounded-xl p-1.5 text-neutral-300 transition-colors hover:bg-red-50 hover:text-red-500"
+          className="mt-0.5 shrink-0 rounded-xl p-1.5 text-white/30 transition-colors hover:bg-red-500/[0.08] hover:text-red-400"
         >
           <Trash2 size={14} />
         </button>
       </div>
 
       {/* Text preview */}
-      <pre className="flex-1 whitespace-pre-wrap px-5 py-4 font-sans text-sm leading-6 text-neutral-500">
+      <pre className="flex-1 whitespace-pre-wrap px-5 py-4 font-sans text-sm leading-6 text-white/60">
         {campana.texto}
       </pre>
 
       {/* Footer */}
-      <div className="border-t border-slate-100 px-5 py-3">
+      <div className="border-t border-white/[0.08] px-5 py-3">
         <button
           type="button"
           onClick={handleCopy}
           className={`flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold transition-all duration-150 ${
             copied
-              ? "bg-emerald-50 text-emerald-600"
-              : "bg-[#C9922A]/8 text-[#C9922A] hover:bg-[#C9922A]/15"
+              ? "bg-emerald-500/[0.08] text-emerald-400"
+              : "bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15"
           }`}
         >
           {copied ? (
@@ -512,14 +515,17 @@ export function CampanasTab({
   return (
     <div className="space-y-8">
       {/* Form */}
-      <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+      <div
+        className="rounded-[24px] border border-white/[0.08] bg-white/[0.04] p-6"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+      >
         <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#C9922A]/10">
-            <Sparkles size={16} className="text-[#C9922A]" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#D4AF37]/10">
+            <Sparkles size={16} className="text-[#D4AF37]" />
           </div>
           <div>
-            <p className="font-black text-[#080A0F]">Nueva campaña</p>
-            <p className="text-xs text-neutral-500">
+            <p className="font-black text-white">Nueva campaña</p>
+            <p className="text-xs text-white/50">
               Rellena los datos y genera el texto
             </p>
           </div>
@@ -575,7 +581,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Descuento{" "}
-              <span className="font-normal text-neutral-500">(opcional)</span>
+              <span className="font-normal text-white/50">(opcional)</span>
             </label>
             <div className="relative">
               <input
@@ -594,7 +600,7 @@ export function CampanasTab({
                   })
                 }
               />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-neutral-400">
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-white/40">
                 %
               </span>
             </div>
@@ -604,7 +610,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Servicio objetivo{" "}
-              <span className="font-normal text-neutral-500">(opcional)</span>
+              <span className="font-normal text-white/50">(opcional)</span>
             </label>
 
             {services.length > 0 && !isCustomService ? (
@@ -637,16 +643,16 @@ export function CampanasTab({
                   <button
                     type="button"
                     onClick={() => setIsCustomService(false)}
-                    className="self-start text-[11px] font-semibold text-[#C9922A] underline"
+                    className="self-start text-[11px] font-semibold text-[#D4AF37] underline"
                   >
                     ← Volver a la lista
                   </button>
                 )}
                 {services.length === 0 && (
-                  <p className="text-[11px] text-neutral-500">
+                  <p className="text-[11px] text-white/50">
                     <a
                       href="/dashboard/servicios"
-                      className="underline hover:text-[#C9922A]"
+                      className="underline hover:text-[#D4AF37]"
                     >
                       Añade servicios
                     </a>{" "}
@@ -661,7 +667,7 @@ export function CampanasTab({
           <div>
             <label className="form-label">
               Barbero{" "}
-              <span className="font-normal text-neutral-500">(opcional)</span>
+              <span className="font-normal text-white/50">(opcional)</span>
             </label>
             {barbers.length > 0 ? (
               <select
@@ -689,10 +695,10 @@ export function CampanasTab({
                     setDraft({ ...draft, barber: e.target.value })
                   }
                 />
-                <p className="text-[11px] text-neutral-500">
+                <p className="text-[11px] text-white/50">
                   <a
                     href="/dashboard/barberos"
-                    className="underline hover:text-[#C9922A]"
+                    className="underline hover:text-[#D4AF37]"
                   >
                     Añade barberos
                   </a>{" "}
@@ -736,10 +742,10 @@ export function CampanasTab({
                   onChange={(e) =>
                     setDraft({ ...draft, mencionar_qr: e.target.checked })
                   }
-                  className="h-4 w-4 accent-[#C9922A]"
+                  className="h-4 w-4 accent-[#D4AF37]"
                 />
-                <span className="flex items-center gap-1.5 text-sm font-semibold text-neutral-700">
-                  <QrCode size={14} className="text-neutral-400" />
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-white/70">
+                  <QrCode size={14} className="text-white/40" />
                   Mencionar QR del local en el texto
                 </span>
               </label>
@@ -760,32 +766,35 @@ export function CampanasTab({
 
       {/* Preview */}
       {preview !== null && (
-        <div className="rounded-[24px] border border-[#C9922A]/25 bg-white p-6 shadow-sm">
+        <div
+          className="rounded-[24px] border border-[#D4AF37]/25 bg-white/[0.04] p-6"
+          style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+        >
           <div className="mb-4 flex items-center justify-between">
-            <p className="font-black text-[#080A0F]">Texto generado</p>
-            <span className="rounded-full border border-[#C9922A]/25 bg-[#C9922A]/10 px-3 py-1 text-xs font-bold text-[#8A641F]">
+            <p className="font-black text-white">Texto generado</p>
+            <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1 text-xs font-bold text-[#D4AF37]">
               Previsualización
             </span>
           </div>
 
           {unresolvedInPreview.length === 0 ? (
-            <div className="mb-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5">
-              <CheckCircle2 size={14} className="shrink-0 text-emerald-500" />
-              <p className="text-xs font-semibold text-emerald-700">
+            <div className="mb-4 flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-2.5">
+              <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />
+              <p className="text-xs font-semibold text-emerald-400">
                 Mensaje listo para copiar y enviar.
               </p>
             </div>
           ) : (
-            <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5">
-              <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-500" />
-              <p className="text-xs font-semibold text-amber-700">
+            <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-2.5">
+              <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-400" />
+              <p className="text-xs font-semibold text-amber-400">
                 Antes de enviar, completa:{" "}
                 {unresolvedInPreview.join(", ")}
               </p>
             </div>
           )}
 
-          <pre className="mb-5 whitespace-pre-wrap rounded-[16px] border border-slate-100 bg-[#FAFBFF] px-5 py-4 font-sans text-sm leading-7 text-neutral-700">
+          <pre className="mb-5 whitespace-pre-wrap rounded-[16px] border border-white/[0.08] bg-[#0A0A0D] px-5 py-4 font-sans text-sm leading-7 text-white/70">
             {preview}
           </pre>
 
@@ -795,8 +804,8 @@ export function CampanasTab({
               onClick={handleCopyPreview}
               className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all duration-150 ${
                 copiedPreview
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "border border-[#C9922A]/30 bg-[#C9922A]/8 text-[#C9922A] hover:bg-[#C9922A]/15"
+                  ? "bg-emerald-500/[0.08] text-emerald-400"
+                  : "border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15"
               }`}
             >
               {copiedPreview ? (
@@ -820,7 +829,7 @@ export function CampanasTab({
             <button
               type="button"
               onClick={() => { setPreview(null); setUnresolvedInPreview([]); }}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-neutral-400 hover:text-neutral-600"
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-white/40 hover:text-white/70"
             >
               Descartar
             </button>
@@ -833,10 +842,10 @@ export function CampanasTab({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Tag size={15} className="text-[#C9922A]" />
-              <p className="font-black text-[#080A0F]">Campañas guardadas</p>
+              <Tag size={15} className="text-[#D4AF37]" />
+              <p className="font-black text-white">Campañas guardadas</p>
             </div>
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-white/50">
               {campanas.length} campaña
               {campanas.length !== 1 ? "s" : ""}
             </span>
@@ -850,20 +859,20 @@ export function CampanasTab({
       )}
 
       {campanas.length === 0 && !preview && (
-        <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50 py-10 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white">
-            <Megaphone size={18} className="text-[#C9922A]" />
+        <div className="rounded-[24px] border border-dashed border-white/[0.12] bg-white/[0.02] py-10 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+            <Megaphone size={18} className="text-[#D4AF37]" />
           </div>
-          <p className="mt-4 text-sm font-black text-slate-900">
+          <p className="mt-4 text-sm font-black text-white">
             Sin campañas todavía
           </p>
-          <p className="mx-auto mt-2 max-w-sm px-4 text-xs leading-5 text-slate-500">
+          <p className="mx-auto mt-2 max-w-sm px-4 text-xs leading-5 text-white/50">
             Genera tu primera campaña arriba. BarberíaOS usa tus datos reales — servicios, huecos y clientes — para que el texto convierta de verdad.
           </p>
         </div>
       )}
 
-      <p className="text-center text-xs text-neutral-400">
+      <p className="text-center text-xs text-white/40">
         Las campañas se guardan en este navegador. Variables entre{" "}
         <span className="font-mono">[corchetes]</span> deben completarse antes
         de enviar.

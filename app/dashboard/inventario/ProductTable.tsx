@@ -60,11 +60,15 @@ export function ProductTable({
     <>
       <div className="grid gap-3 p-4 md:hidden">
         {products.map((product) => (
-          <article key={product.id} className="rounded-[20px] border border-[#E7E2D8] bg-white p-4 shadow-sm">
+          <article
+            key={product.id}
+            className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] p-4"
+            style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-black text-[#080A0F]">{product.name}</p>
-                <p className="mt-0.5 text-xs text-slate-500">
+                <p className="font-black text-white">{product.name}</p>
+                <p className="mt-0.5 text-xs text-white/50">
                   {product.sku ? `SKU ${product.sku}` : "Sin SKU"}
                   {product.supplier ? ` · ${product.supplier}` : ""}
                 </p>
@@ -72,17 +76,17 @@ export function ProductTable({
               {getStockBadge(product)}
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-500">Stock</p>
-                <p className="mt-1 font-black text-[#080A0F]">{product.current_stock}</p>
+              <div className="rounded-2xl bg-white/[0.06] px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/50">Stock</p>
+                <p className="mt-1 font-black text-white">{product.current_stock}</p>
               </div>
-              <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-500">Venta</p>
-                <p className="mt-1 font-black text-[#080A0F]">{formatCurrency(product.sale_price)}</p>
+              <div className="rounded-2xl bg-white/[0.06] px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/50">Venta</p>
+                <p className="mt-1 font-black text-white">{formatCurrency(product.sale_price)}</p>
               </div>
-              <div className="rounded-2xl bg-[#F8F5EF] px-2 py-3">
-                <p className="text-[11px] font-bold uppercase text-slate-500">Margen</p>
-                <p className="mt-1 font-black text-[#080A0F]">{formatPercent(getMargin(product))}</p>
+              <div className="rounded-2xl bg-white/[0.06] px-2 py-3">
+                <p className="text-[11px] font-bold uppercase text-white/50">Margen</p>
+                <p className="mt-1 font-black text-white">{formatPercent(getMargin(product))}</p>
               </div>
             </div>
             <div className="mt-4 flex items-center justify-between gap-2">
@@ -93,7 +97,7 @@ export function ProductTable({
                 <button
                   type="button"
                   onClick={() => onEdit(product)}
-                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#080A0F]"
+                  className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
                   aria-label={`Editar ${product.name}`}
                   title="Editar"
                 >
@@ -102,7 +106,7 @@ export function ProductTable({
                 <button
                   type="button"
                   onClick={() => onMovement(product)}
-                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#C9922A]/10 hover:text-[#8A641F]"
+                  className="rounded-xl p-2 text-white/40 transition-colors hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
                   aria-label={`Registrar movimiento de ${product.name}`}
                   title="Registrar movimiento"
                 >
@@ -112,7 +116,7 @@ export function ProductTable({
                   type="button"
                   onClick={() => onToggle(product)}
                   disabled={togglingId === product.id}
-                  className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#080A0F] disabled:opacity-40"
+                  className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
                   aria-label={
                     product.is_active
                       ? `Desactivar ${product.name}`
@@ -129,7 +133,7 @@ export function ProductTable({
       </div>
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-sm">
-        <thead className="border-b border-[#E7E2D8] bg-[#F8F5EF]">
+        <thead className="border-b border-white/[0.08] bg-white/[0.04]">
           <tr>
             <th className="table-header-cell">Producto</th>
             <th className="table-header-cell">Categoría</th>
@@ -144,24 +148,24 @@ export function ProductTable({
             <th className="table-header-cell text-right">Acciones</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#E7E2D8]">
+        <tbody className="divide-y divide-white/[0.08]">
           {products.map((product) => (
-            <tr key={product.id} className="transition-colors hover:bg-[#FAF8F4]">
+            <tr key={product.id} className="transition-colors hover:bg-white/[0.04]">
               <td className="px-5 py-4">
                 <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
-                    <Package size={15} className="text-[#C9922A]" />
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-white/[0.06]">
+                    <Package size={15} className="text-[#D4AF37]" />
                   </span>
                   <div className="min-w-0">
-                    <p className="font-black text-[#080A0F]">{product.name}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="font-black text-white">{product.name}</p>
+                    <p className="mt-0.5 text-xs text-white/50">
                       {product.sku ? `SKU ${product.sku}` : "Sin SKU"}
                       {product.supplier ? ` · ${product.supplier}` : ""}
                     </p>
                   </div>
                 </div>
               </td>
-              <td className="px-5 py-4 text-slate-600">
+              <td className="px-5 py-4 text-white/60">
                 {product.category ?? "-"}
               </td>
               <td className="px-5 py-4">
@@ -171,20 +175,20 @@ export function ProductTable({
                   <span className="badge-neutral">Uso interno</span>
                 )}
               </td>
-              <td className="px-5 py-4 font-black text-[#080A0F]">
+              <td className="px-5 py-4 font-black text-white">
                 {product.current_stock}
               </td>
-              <td className="px-5 py-4 text-slate-600">{product.min_stock}</td>
-              <td className="px-5 py-4 text-slate-600">
+              <td className="px-5 py-4 text-white/60">{product.min_stock}</td>
+              <td className="px-5 py-4 text-white/60">
                 {formatCurrency(product.purchase_price)}
               </td>
-              <td className="px-5 py-4 text-slate-600">
+              <td className="px-5 py-4 text-white/60">
                 {formatCurrency(product.sale_price)}
               </td>
-              <td className="px-5 py-4 font-semibold text-slate-700">
+              <td className="px-5 py-4 font-semibold text-white/70">
                 {formatPercent(getMargin(product))}
               </td>
-              <td className="px-5 py-4 font-black text-[#080A0F]">
+              <td className="px-5 py-4 font-black text-white">
                 {soldUnitsByProduct?.get(product.id) ?? 0}
               </td>
               <td className="px-5 py-4">
@@ -200,7 +204,7 @@ export function ProductTable({
                   <button
                     type="button"
                     onClick={() => onEdit(product)}
-                    className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#080A0F]"
+                    className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
                     aria-label={`Editar ${product.name}`}
                     title="Editar"
                   >
@@ -209,7 +213,7 @@ export function ProductTable({
                   <button
                     type="button"
                     onClick={() => onMovement(product)}
-                    className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#C9922A]/10 hover:text-[#8A641F]"
+                    className="rounded-xl p-2 text-white/40 transition-colors hover:bg-[#D4AF37]/10 hover:text-[#D4AF37]"
                     aria-label={`Registrar movimiento de ${product.name}`}
                     title="Registrar movimiento"
                   >
@@ -223,7 +227,7 @@ export function ProductTable({
                       !product.is_active ||
                       product.current_stock <= 0
                     }
-                    className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-35"
+                    className="rounded-xl p-2 text-white/40 transition-colors hover:bg-emerald-500/[0.08] hover:text-emerald-400 disabled:cursor-not-allowed disabled:opacity-35"
                     aria-label={`Vender ${product.name}`}
                     title="Vender producto"
                   >
@@ -233,7 +237,7 @@ export function ProductTable({
                     type="button"
                     onClick={() => onToggle(product)}
                     disabled={togglingId === product.id}
-                    className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-[#080A0F] disabled:opacity-40"
+                    className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
                     aria-label={
                       product.is_active
                         ? `Desactivar ${product.name}`

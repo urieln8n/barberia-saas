@@ -18,9 +18,9 @@ const quickQuestions = [
 ];
 
 const priorityClass = {
-  low: "border-emerald-100 bg-emerald-50 text-emerald-700",
-  medium: "border-amber-100 bg-amber-50 text-amber-700",
-  high: "border-red-100 bg-red-50 text-red-700",
+  low: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-400",
+  medium: "border-amber-500/20 bg-amber-500/[0.08] text-amber-400",
+  high: "border-red-500/20 bg-red-500/[0.08] text-red-400",
 };
 
 function CopyBlock({ title, text, icon: Icon }: { title: string; text: string; icon: typeof MessageCircle }) {
@@ -33,18 +33,18 @@ function CopyBlock({ title, text, icon: Icon }: { title: string; text: string; i
   }
 
   return (
-    <div className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Icon size={16} className="text-[#C9922A]" />
-          <h3 className="font-black text-[#111827]">{title}</h3>
+          <Icon size={16} className="text-[#D4AF37]" />
+          <h3 className="font-black text-white">{title}</h3>
         </div>
         <button type="button" onClick={copy} className="btn-outline min-h-0 px-3 py-2 text-xs">
           <Clipboard size={13} />
           {copied ? "Copiado" : "Copiar"}
         </button>
       </div>
-      <p className="mt-4 whitespace-pre-wrap rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4 text-sm font-semibold leading-6 text-neutral-700">
+      <p className="mt-4 whitespace-pre-wrap rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 text-sm font-semibold leading-6 text-white/70">
         {text || "Aun no hay texto sugerido."}
       </p>
     </div>
@@ -88,7 +88,7 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
         }
       />
 
-      <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+      <section className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
         <div className="flex flex-col gap-3 lg:flex-row">
           <input
             value={question}
@@ -114,7 +114,7 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
               type="button"
               onClick={() => ask(item)}
               disabled={isPending}
-              className="rounded-full border border-[#E7E2D8] bg-[#FDFBF7] px-3 py-2 text-xs font-bold text-neutral-600 transition hover:border-[#C9922A]/40 hover:text-[#8A641F] disabled:opacity-50"
+              className="rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-xs font-bold text-white/60 transition hover:border-[#D4AF37]/30 hover:text-white disabled:opacity-50"
             >
               {item}
             </button>
@@ -123,24 +123,24 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
       </section>
 
       {isPending && (
-        <section className="rounded-2xl border border-[#E7E2D8] bg-white p-8 text-center shadow-sm">
-          <Loader2 size={24} className="mx-auto animate-spin text-[#C9922A]" />
-          <p className="mt-4 font-black text-[#111827]">Analizando citas, caja, clientes e inventario...</p>
-          <p className="mt-1 text-sm text-neutral-500">La IA recibe solo métricas resumidas de tu barbería.</p>
+        <section className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-8 text-center">
+          <Loader2 size={24} className="mx-auto animate-spin text-[#D4AF37]" />
+          <p className="mt-4 font-black text-white">Analizando citas, caja, clientes e inventario...</p>
+          <p className="mt-1 text-sm text-white/50">La IA recibe solo métricas resumidas de tu barbería.</p>
         </section>
       )}
 
       {error && (
-        <section className="rounded-2xl border border-red-100 bg-red-50 p-5 text-sm font-semibold leading-6 text-red-700">
+        <section className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] p-5 text-sm font-semibold leading-6 text-red-400">
           {error}
         </section>
       )}
 
       {!result && !isPending && (
-        <section className="rounded-2xl border border-dashed border-[#E7E2D8] bg-[#FDFBF7] p-8 text-center">
-          <Bot size={28} className="mx-auto text-[#C9922A]" />
-          <h2 className="mt-4 text-xl font-black text-[#111827]">Tu IA está lista</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-neutral-500">
+        <section className="rounded-2xl border border-dashed border-white/[0.10] bg-white/[0.02] p-8 text-center">
+          <Bot size={28} className="mx-auto text-[#D4AF37]" />
+          <h2 className="mt-4 text-xl font-black text-white">Tu IA está lista</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/50">
             Haz una pregunta o usa un botón rápido. Si OpenAI no está configurado, BarberíaOS usará análisis local sin romper la página.
           </p>
         </section>
@@ -149,17 +149,17 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
       {result && (
         <div className="space-y-6">
           {result.notice && (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">
+            <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] px-5 py-4 text-sm font-semibold text-amber-400">
               {result.notice}
             </div>
           )}
 
-          <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="label-section">{result.mode === "openai" ? `Modelo ${result.model}` : "Análisis local"}</p>
-                <h2 className="mt-2 text-2xl font-black text-[#111827]">{result.title}</h2>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-500">{result.summary}</p>
+                <h2 className="mt-2 text-2xl font-black text-white">{result.title}</h2>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-white/50">{result.summary}</p>
               </div>
               <span className={`rounded-full border px-3 py-1 text-xs font-black ${priorityClass[result.priority]}`}>
                 Prioridad {result.priority}
@@ -169,23 +169,23 @@ export function IADuenoClient({ openAIConfigured }: { openAIConfigured: boolean 
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {result.insights.map((insight) => (
-              <article key={`${insight.label}-${insight.value}`} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
-                <Sparkles size={17} className="text-[#C9922A]" />
-                <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-500">{insight.label}</p>
-                <p className="mt-1 text-2xl font-black text-[#080A0F]">{insight.value}</p>
-                <p className="mt-2 text-sm leading-6 text-neutral-500">{insight.description}</p>
+              <article key={`${insight.label}-${insight.value}`} className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
+                <Sparkles size={17} className="text-[#D4AF37]" />
+                <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-white/40">{insight.label}</p>
+                <p className="mt-1 text-2xl font-black text-white">{insight.value}</p>
+                <p className="mt-2 text-sm leading-6 text-white/50">{insight.description}</p>
               </article>
             ))}
           </section>
 
-          <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
             <h2 className="section-heading">Acciones recomendadas</h2>
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {result.recommended_actions.map((action) => (
-                <div key={`${action.action_type}-${action.title}`} className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                  <p className="font-black text-[#111827]">{action.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-neutral-500">{action.description}</p>
-                  <span className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-[#8A641F]">
+                <div key={`${action.action_type}-${action.title}`} className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4">
+                  <p className="font-black text-white">{action.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-white/50">{action.description}</p>
+                  <span className="mt-3 inline-flex rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-black text-[#D4AF37]">
                     {action.action_type}
                   </span>
                 </div>

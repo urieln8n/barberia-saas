@@ -34,16 +34,16 @@ function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm transition hover:border-slate-200">
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 transition hover:border-white/[0.10]">
       <div>
-        <p className="text-sm font-black text-[#080A0F]">{label}</p>
-        {hint && <p className="text-xs text-[#080A0F]/50">{hint}</p>}
+        <p className="text-sm font-black text-white/85">{label}</p>
+        {hint && <p className="text-xs text-white/45">{hint}</p>}
       </div>
       <div
         role="switch"
         aria-checked={checked}
         className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-          checked ? "bg-[#C9922A]" : "bg-slate-200"
+          checked ? "bg-[#D4AF37]" : "bg-white/[0.10]"
         }`}
         onClick={() => onChange(!checked)}
       >
@@ -145,7 +145,7 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
           <div>
             <label
               htmlFor="welcome_title"
-              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-[#080A0F]/60"
+              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-white/45"
             >
               Título (máx. 60 caracteres)
             </label>
@@ -156,9 +156,9 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
               value={form.welcome_title}
               onChange={(e) => setField("welcome_title", e.target.value)}
               placeholder="Mientras esperas, descubre más"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-[#080A0F] placeholder:text-slate-400 focus:border-[#C9922A]/50 focus:outline-none focus:ring-2 focus:ring-[#C9922A]/20"
+              className="w-full rounded-2xl border border-white/[0.07] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80 placeholder:text-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
             />
-            <p className="mt-1 text-right text-xs text-slate-400">
+            <p className="mt-1 text-right text-xs text-white/30">
               {form.welcome_title.length}/60
             </p>
           </div>
@@ -166,7 +166,7 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
           <div>
             <label
               htmlFor="welcome_description"
-              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-[#080A0F]/60"
+              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-white/45"
             >
               Descripción (máx. 120 caracteres)
             </label>
@@ -179,7 +179,7 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
               placeholder="Reserva tu próxima cita, explora servicios premium y deja tu reseña."
               className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-[#080A0F] placeholder:text-slate-400 focus:border-[#C9922A]/50 focus:outline-none focus:ring-2 focus:ring-[#C9922A]/20"
             />
-            <p className="mt-1 text-right text-xs text-slate-400">
+            <p className="mt-1 text-right text-xs text-white/30">
               {form.welcome_description.length}/120
             </p>
           </div>
@@ -241,7 +241,7 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
           <div>
             <label
               htmlFor="google_review_url"
-              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-[#080A0F]/60"
+              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-white/45"
             >
               URL de Reseña Google (opcional)
             </label>
@@ -251,14 +251,14 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
               value={form.google_review_url}
               onChange={(e) => setField("google_review_url", e.target.value)}
               placeholder="https://g.page/r/tu-barberia/review"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-[#080A0F] placeholder:text-slate-400 focus:border-[#C9922A]/50 focus:outline-none focus:ring-2 focus:ring-[#C9922A]/20"
+              className="w-full rounded-2xl border border-white/[0.07] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80 placeholder:text-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
             />
           </div>
 
           <div>
             <label
               htmlFor="whatsapp_url"
-              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-[#080A0F]/60"
+              className="mb-1.5 block text-xs font-black uppercase tracking-wide text-white/45"
             >
               URL de WhatsApp (opcional)
             </label>
@@ -268,9 +268,9 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
               value={form.whatsapp_url}
               onChange={(e) => setField("whatsapp_url", e.target.value)}
               placeholder="https://wa.me/34612345678"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-[#080A0F] placeholder:text-slate-400 focus:border-[#C9922A]/50 focus:outline-none focus:ring-2 focus:ring-[#C9922A]/20"
+              className="w-full rounded-2xl border border-white/[0.07] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80 placeholder:text-white/25 focus:border-[#D4AF37]/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/15"
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-white/30">
               Si no lo configuras, se usará el teléfono de la barbería.
             </p>
           </div>
@@ -282,8 +282,8 @@ export function LoungeSettingsClient({ initialSettings }: Props) {
         <div
           className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-bold ${
             feedback.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-              : "border-red-200 bg-red-50 text-red-700"
+              ? "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-400"
+              : "border-red-500/20 bg-red-500/[0.08] text-red-400"
           }`}
         >
           {feedback.type === "success" ? (

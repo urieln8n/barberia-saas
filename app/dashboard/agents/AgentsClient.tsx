@@ -206,15 +206,15 @@ const AGENTS: Agent[] = [
 // ─── Badge helpers ─────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<AgentStatus, { label: string; dot: boolean; className: string }> = {
-  active:      { label: "Activo",       dot: true,  className: "border-emerald-100 bg-emerald-50 text-emerald-700" },
-  beta:        { label: "Beta",         dot: false, className: "border-amber-100 bg-amber-50 text-amber-700" },
-  coming_soon: { label: "Próximamente", dot: false, className: "border-slate-200 bg-slate-50 text-slate-500" },
+  active:      { label: "Activo",       dot: true,  className: "border-emerald-500/[0.25] bg-emerald-500/[0.08] text-emerald-400" },
+  beta:        { label: "Beta",         dot: false, className: "border-amber-500/[0.25] bg-amber-500/[0.08] text-amber-400" },
+  coming_soon: { label: "Próximamente", dot: false, className: "border-white/[0.08] bg-white/[0.04] text-white/35" },
 };
 
 const PLAN_CONFIG: Record<AgentPlan, { label: string; className: string }> = {
-  starter: { label: "Starter",    className: "border-slate-200 bg-slate-50 text-slate-600" },
-  growth:  { label: "Growth",     className: "border-blue-100 bg-blue-50 text-blue-700" },
-  premium: { label: "Premium IA", className: "border-[#C9922A]/20 bg-[#C9922A]/10 text-[#8A641F]" },
+  starter: { label: "Starter",    className: "border-white/[0.08] bg-white/[0.04] text-white/50" },
+  growth:  { label: "Growth",     className: "border-blue-500/[0.25] bg-blue-500/[0.08] text-blue-400" },
+  premium: { label: "Premium IA", className: "border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]" },
 };
 
 function Pill({ className, children }: { className?: string; children: React.ReactNode }) {
@@ -239,11 +239,11 @@ function ValueMetric({
   sub: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-2xl border border-slate-100 bg-white px-4 py-4 text-center shadow-sm">
-      <Icon size={16} className="text-[#C9922A]" />
-      <p className="text-lg font-black text-slate-900">{value}</p>
-      <p className="text-xs font-bold text-slate-700">{label}</p>
-      <p className="text-[11px] text-slate-400">{sub}</p>
+    <div className="flex flex-col items-center gap-1 rounded-2xl border border-white/[0.08] bg-[#0E0E1C] px-4 py-4 text-center">
+      <Icon size={16} className="text-[#D4AF37]" />
+      <p className="text-lg font-black text-white">{value}</p>
+      <p className="text-xs font-bold text-white/60">{label}</p>
+      <p className="text-[11px] text-white/35">{sub}</p>
     </div>
   );
 }
@@ -328,10 +328,10 @@ function AgentCard({ agent }: { agent: Agent }) {
 
   return (
     <div
-      className={`flex flex-col rounded-[24px] border bg-white shadow-sm transition-all duration-200 ${
+      className={`flex flex-col rounded-[24px] border bg-[#0E0E1C] transition-all duration-200 ${
         isLocked
-          ? "border-slate-100 opacity-65 hover:opacity-80"
-          : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+          ? "border-white/[0.04] opacity-65 hover:opacity-80"
+          : "border-white/[0.08] hover:border-white/[0.12]"
       }`}
     >
       {/* Accent line top */}
@@ -343,14 +343,14 @@ function AgentCard({ agent }: { agent: Agent }) {
       <div className="flex items-start gap-3 p-5 pb-3">
         <div
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
-            isLocked ? "border border-slate-100 bg-slate-50" : agent.accentBg
+            isLocked ? "border border-white/[0.06] bg-white/[0.03]" : agent.accentBg
           }`}
         >
-          <Icon size={19} className={isLocked ? "text-slate-300" : agent.accentColor} />
+          <Icon size={19} className={isLocked ? "text-white/25" : agent.accentColor} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <h3 className={`text-sm font-black ${isLocked ? "text-slate-400" : "text-slate-900"}`}>
+            <h3 className={`text-sm font-black ${isLocked ? "text-white/35" : "text-white"}`}>
               {agent.name}
             </h3>
             <Pill className={status.className}>
@@ -360,10 +360,10 @@ function AgentCard({ agent }: { agent: Agent }) {
               {status.label}
             </Pill>
           </div>
-          <p className={`mt-0.5 text-xs font-semibold ${isLocked ? "text-slate-400" : "text-[#C9922A]"}`}>
+          <p className={`mt-0.5 text-xs font-semibold ${isLocked ? "text-white/35" : "text-[#D4AF37]"}`}>
             {agent.tagline}
           </p>
-          <p className={`mt-1.5 text-xs leading-5 ${isLocked ? "text-slate-400" : "text-slate-500"}`}>
+          <p className={`mt-1.5 text-xs leading-5 ${isLocked ? "text-white/25" : "text-white/50"}`}>
             {agent.description}
           </p>
         </div>
@@ -379,12 +379,12 @@ function AgentCard({ agent }: { agent: Agent }) {
             return (
               <div
                 key={m.label}
-                className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-center"
+                className="rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-center"
               >
-                <p className={`text-sm font-black ${isHighlighted ? "text-amber-700" : "text-slate-900"}`}>
+                <p className={`text-sm font-black ${isHighlighted ? "text-amber-400" : "text-white"}`}>
                   {displayValue}
                 </p>
-                <p className="text-[10px] font-medium text-slate-500">{m.label}</p>
+                <p className="text-[10px] font-medium text-white/35">{m.label}</p>
               </div>
             );
           })}
@@ -393,7 +393,7 @@ function AgentCard({ agent }: { agent: Agent }) {
 
       {/* Run error */}
       {runError && (
-        <p className="mx-5 mb-3 rounded-xl bg-red-50 px-3 py-2 text-xs text-red-700">{runError}</p>
+        <p className="mx-5 mb-3 rounded-xl bg-red-500/[0.08] px-3 py-2 text-xs text-red-400">{runError}</p>
       )}
 
       {/* Preview expandible */}
@@ -402,21 +402,21 @@ function AgentCard({ agent }: { agent: Agent }) {
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-left text-xs font-semibold text-slate-600 transition-colors hover:border-slate-200 hover:bg-white"
+            className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-left text-xs font-semibold text-white/50 transition-colors hover:border-white/[0.10] hover:bg-white/[0.06]"
           >
             {livePreview ? "Mensaje generado · listo para copiar" : (agent.previewLabel ?? "Ver ejemplo")}
             <ChevronRight
               size={13}
-              className={`text-slate-400 transition-transform duration-150 ${expanded ? "rotate-90" : ""}`}
+              className={`text-white/35 transition-transform duration-150 ${expanded ? "rotate-90" : ""}`}
             />
           </button>
           {expanded && (
-            <div className={`mt-2 rounded-2xl border p-3 ${livePreview ? "border-amber-100 bg-amber-50" : "border-slate-100 bg-slate-50"}`}>
-              <p className="text-xs leading-5 text-slate-700">{displayPreview}</p>
+            <div className={`mt-2 rounded-2xl border p-3 ${livePreview ? "border-amber-500/[0.25] bg-amber-500/[0.08]" : "border-white/[0.06] bg-white/[0.03]"}`}>
+              <p className="text-xs leading-5 text-white/60">{displayPreview}</p>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="mt-2 flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="mt-2 flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1.5 text-xs font-semibold text-white/60 transition-colors hover:bg-white/[0.08]"
               >
                 {copied
                   ? <><Check size={12} className="text-emerald-600" /> Copiado</>
@@ -429,12 +429,12 @@ function AgentCard({ agent }: { agent: Agent }) {
       )}
 
       {/* Footer */}
-      <div className="mt-auto flex items-center justify-between border-t border-slate-100 px-5 py-3">
+      <div className="mt-auto flex items-center justify-between border-t border-white/[0.06] px-5 py-3">
         <div className="flex gap-1.5">
           <Pill className={plan.className}>{plan.label}</Pill>
         </div>
         {isLocked ? (
-          <span className="flex items-center gap-1 text-[11px] text-slate-400">
+          <span className="flex items-center gap-1 text-[11px] text-white/35">
             <Lock size={10} /> Próximamente
           </span>
         ) : agent.runnable ? (
@@ -562,7 +562,7 @@ export function AgentsClient({
           <Sparkles size={11} className="text-[#C9922A]" />
           Nuevo · Agents as a Service
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/[0.25] bg-emerald-500/[0.08] px-3 py-1 text-xs font-bold text-emerald-400">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
           Fase 1 activa
         </span>
@@ -612,17 +612,17 @@ export function AgentsClient({
             return (
               <div
                 key={rec.title}
-                className={`flex items-start gap-3 rounded-2xl border ${rec.border} ${rec.bg} p-4`}
+                className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-4"
               >
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/60 ${rec.color}`}>
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] ${rec.color}`}>
                   <Icon size={15} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-slate-900">{rec.title}</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-600">{rec.body}</p>
+                  <p className="text-sm font-black text-white">{rec.title}</p>
+                  <p className="mt-1 text-xs leading-5 text-white/50">{rec.body}</p>
                   <a
                     href={`#${rec.scroll}`}
-                    className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-slate-700 underline"
+                    className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-white/60 underline"
                   >
                     {rec.cta} <ArrowRight size={11} />
                   </a>
@@ -640,7 +640,7 @@ export function AgentsClient({
             <p className="label-section">Disponibles ahora</p>
             <h2 className="section-heading mt-0.5">Agentes activos</h2>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+          <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/[0.25] bg-emerald-500/[0.08] px-3 py-1 text-xs font-bold text-emerald-400">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             {activeAgents.length} listos
           </span>
@@ -686,7 +686,7 @@ export function AgentsClient({
       </section>
 
       {/* ── Cómo funciona ────────────────────────────────────────────────── */}
-      <section id="como-funciona" className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="como-funciona" className="rounded-[28px] border border-white/[0.08] bg-[#0E0E1C] p-6">
         <p className="label-section mb-1">Transparencia total</p>
         <h2 className="section-heading">Cómo funcionan los agentes</h2>
         <p className="section-subtext mb-6">
@@ -698,16 +698,16 @@ export function AgentsClient({
             return (
               <div key={step.step} className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-xs font-black text-[#C9922A]">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-xs font-black text-[#D4AF37]">
                     {step.step}
                   </span>
-                  <div className="h-px flex-1 bg-slate-100" />
+                  <div className="h-px flex-1 bg-white/[0.06]" />
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-100 bg-slate-50">
-                  <Icon size={16} className="text-slate-600" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.03]">
+                  <Icon size={16} className="text-white/50" />
                 </div>
-                <p className="text-sm font-black text-slate-900">{step.title}</p>
-                <p className="text-xs leading-5 text-slate-500">{step.sub}</p>
+                <p className="text-sm font-black text-white">{step.title}</p>
+                <p className="text-xs leading-5 text-white/35">{step.sub}</p>
               </div>
             );
           })}
@@ -715,7 +715,7 @@ export function AgentsClient({
       </section>
 
       {/* ── Phase roadmap ────────────────────────────────────────────────── */}
-      <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-[24px] border border-white/[0.08] bg-[#0E0E1C] p-5">
         <p className="label-section mb-4">Roadmap de autonomía</p>
         <div className="flex items-start">
           {PHASES.map((phase, i) => (
@@ -724,24 +724,24 @@ export function AgentsClient({
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 ${
                     phase.done
-                      ? "border-[#C9922A] bg-[#C9922A]"
-                      : "border-slate-200 bg-white"
+                      ? "border-[#D4AF37] bg-[#D4AF37]"
+                      : "border-white/[0.12] bg-[#0A0A0D]"
                   }`}
                 >
                   {phase.done
-                    ? <CheckCircle2 size={15} className="text-white" />
-                    : <Circle size={13} className="text-slate-300" />
+                    ? <CheckCircle2 size={15} className="text-[#0A0A0D]" />
+                    : <Circle size={13} className="text-white/25" />
                   }
                 </div>
                 {i < PHASES.length - 1 && (
-                  <div className={`h-0.5 flex-1 ${phase.done ? "bg-[#C9922A]/30" : "bg-slate-100"}`} />
+                  <div className={`h-0.5 flex-1 ${phase.done ? "bg-[#D4AF37]/30" : "bg-white/[0.06]"}`} />
                 )}
               </div>
               <div className="mt-2 px-1 text-center">
-                <p className={`text-xs font-black ${phase.done ? "text-slate-900" : "text-slate-400"}`}>
+                <p className={`text-xs font-black ${phase.done ? "text-white" : "text-white/35"}`}>
                   {phase.label}
                 </p>
-                <p className="text-[11px] text-slate-400">{phase.sub}</p>
+                <p className="text-[11px] text-white/25">{phase.sub}</p>
               </div>
             </div>
           ))}
@@ -802,29 +802,29 @@ export function AgentsClient({
       </section>
 
       {/* ── Andrés Video Studio — Ecosistema ─────────────────────────────── */}
-      <section className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="rounded-[24px] border border-white/[0.08] bg-[#0E0E1C] p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50">
-            <Video size={20} className="text-slate-600" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.03]">
+            <Video size={20} className="text-white/50" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-black text-slate-900">Andrés Video Studio</h3>
-              <Pill className="border-slate-200 bg-slate-50 text-slate-500">
+              <h3 className="font-black text-white">Andrés Video Studio</h3>
+              <Pill className="border-white/[0.08] bg-white/[0.04] text-white/35">
                 Suite premium futura
               </Pill>
-              <Pill className="border-violet-100 bg-violet-50 text-violet-700">
+              <Pill className="border-violet-500/[0.25] bg-violet-500/[0.08] text-violet-400">
                 Ecosistema Andrés AI
               </Pill>
             </div>
-            <p className="mt-1 text-sm leading-6 text-slate-500">
+            <p className="mt-1 text-sm leading-6 text-white/50">
               Crea guiones, vídeos y contenido premium para negocios locales. Una suite especializada
               para barberías que quieren crecer con contenido de alto nivel en redes sociales.
               Parte del ecosistema de agencias de inteligencia artificial de Andrés Rendón.
             </p>
             <a
               href="#"
-              className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 transition-colors hover:text-slate-700"
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-white/35 transition-colors hover:text-white/60"
             >
               <ExternalLink size={12} /> Más información próximamente
             </a>

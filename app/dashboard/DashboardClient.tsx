@@ -32,10 +32,6 @@ import { BarberPerformance } from "@/components/dashboard/BarberPerformance";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
 import { QuickActionsRow } from "@/components/dashboard/QuickActionsRow";
 import { RecommendedActionCard } from "@/components/dashboard/RecommendedActionCard";
-import {
-  PremiumDashboardItem,
-  PremiumDashboardMotion,
-} from "@/components/dashboard/PremiumDashboardMotion";
 import type { BarberPerformanceItem } from "@/src/lib/cash/barber-performance";
 import type { BarberAvailabilityItem } from "@/src/lib/booking/barber-availability";
 import type { ActivationChecklistItem } from "@/components/dashboard/ActivationChecklist";
@@ -44,6 +40,7 @@ import type { ActivationChecklistItem } from "@/components/dashboard/ActivationC
 
 type AppointmentItem = {
   id: string;
+  client_id: string | null;
   appointment_date: string;
   start_time: string;
   end_time: string | null;
@@ -138,8 +135,9 @@ const OccupancyBar = memo(function OccupancyBar({ pct }: { pct: number }) {
 
 const AppointmentCard = memo(function AppointmentCard({ appointment }: { appointment: AppointmentItem }) {
   const precio = appointment.services?.price;
-  return (
-    <article className="flex items-center gap-3 rounded-xl border border-[#1E1E24] bg-[#0E0E12] p-3 transition-colors hover:border-[#2E2E36] hover:bg-[#131318]">
+  const cls = "flex items-center gap-3 rounded-xl border border-[#1E1E24] bg-[#0E0E12] p-3 transition-colors hover:border-[#2E2E36] hover:bg-[#131318]";
+  const inner = (
+    <>
       <div className="w-12 shrink-0 text-center">
         <p className="text-sm font-black text-white">{formatTime(appointment.start_time)}</p>
         <p className="text-[10px] text-white/50">hoy</p>
@@ -158,8 +156,11 @@ const AppointmentCard = memo(function AppointmentCard({ appointment }: { appoint
         )}
         <StatusBadge status={appointment.status} />
       </div>
-    </article>
+    </>
   );
+  return appointment.client_id
+    ? <Link href={`/dashboard/clientes/${appointment.client_id}`} className={cls}>{inner}</Link>
+    : <article className={cls}>{inner}</article>;
 });
 
 // Alerta contextual
@@ -286,7 +287,7 @@ export function DashboardClient({
           EXECUTIVE HEADER — Stripe/Linear/Apple Wallet inspired
           Compacto, denso, toda la info del día visible sin scroll.
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden rounded-2xl border border-[#252529] bg-[#111115] shadow-[0_2px_20px_rgba(0,0,0,0.35)]">
+      <section className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-[#1C1C28] shadow-[0_2px_20px_rgba(0,0,0,0.35)]">
         {/* Inner glow top */}
         <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
 
@@ -436,12 +437,12 @@ export function DashboardClient({
           KPI CARDS — 4 tarjetas compactas (de 6 a 4, -33% altura)
           Layout: 2×2 en mobile, 4 columnas en desktop
       ══════════════════════════════════════════════════════════════════ */}
-      <PremiumDashboardMotion className="grid gap-3 grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
 
         {/* KPI 1 — Caja */}
-        <PremiumDashboardItem>
+        <div>
           <Link href="/dashboard/caja" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0E0E1C] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_4px_20px_rgba(0,0,0,0.5)] transition-all hover:-translate-y-0.5 hover:border-white/[0.22] hover:bg-[#141428] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -467,12 +468,12 @@ export function DashboardClient({
               )}
             </div>
           </Link>
-        </PremiumDashboardItem>
+        </div>
 
         {/* KPI 2 — Reservas + ocupación */}
-        <PremiumDashboardItem>
+        <div>
           <Link href="/dashboard/agenda" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0E0E1C] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_4px_20px_rgba(0,0,0,0.5)] transition-all hover:-translate-y-0.5 hover:border-white/[0.22] hover:bg-[#141428] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div className="min-w-0 flex-1">
@@ -501,12 +502,12 @@ export function DashboardClient({
               </div>
             </div>
           </Link>
-        </PremiumDashboardItem>
+        </div>
 
         {/* KPI 3 — Huecos libres */}
-        <PremiumDashboardItem>
+        <div>
           <Link href="/dashboard/huecos" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0E0E1C] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_4px_20px_rgba(0,0,0,0.5)] transition-all hover:-translate-y-0.5 hover:border-white/[0.22] hover:bg-[#141428] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -534,12 +535,12 @@ export function DashboardClient({
               )}
             </div>
           </Link>
-        </PremiumDashboardItem>
+        </div>
 
         {/* KPI 4 — Clientes + equipo */}
-        <PremiumDashboardItem>
+        <div>
           <Link href="/dashboard/clientes" className="group block">
-            <div className="relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-gradient-to-b from-[#1C1C26] to-[#131318] p-4 shadow-[0_1px_16px_rgba(0,0,0,0.45)] transition-all hover:-translate-y-0.5 hover:border-[#36364A] hover:from-[#202030] hover:to-[#161620] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0E0E1C] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_4px_20px_rgba(0,0,0,0.5)] transition-all hover:-translate-y-0.5 hover:border-white/[0.22] hover:bg-[#141428] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.6)]">
               <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
@@ -565,9 +566,9 @@ export function DashboardClient({
               </div>
             </div>
           </Link>
-        </PremiumDashboardItem>
+        </div>
 
-      </PremiumDashboardMotion>
+      </div>
 
       {/* ── ACCIONES RÁPIDAS ──────────────────────────────────────────────── */}
       <QuickActionsRow
@@ -611,7 +612,7 @@ export function DashboardClient({
         {/* Sala de espera card */}
         <Link
           href="/dashboard/lounge"
-          className="group relative overflow-hidden rounded-2xl border border-[#252529] bg-[#111115] p-5 transition hover:-translate-y-0.5 hover:bg-[#16161A] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+          className="group relative overflow-hidden rounded-2xl border border-[#2A2A38] bg-[#1C1C28] p-5 transition hover:-translate-y-0.5 hover:bg-[#222236] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
         >
           <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-[#1E1E24]">
             <Monitor size={14} className="text-white/60" />
@@ -653,7 +654,7 @@ export function DashboardClient({
       <section className="grid gap-5 xl:grid-cols-[1.5fr_0.75fr]">
 
         {/* Agenda del día compacta */}
-        <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115]">
+        <div className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-[#1C1C28]">
           <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
           <div className="border-b border-[#1E1E24] bg-[#0E0E12] px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -745,7 +746,7 @@ export function DashboardClient({
           />
 
           {/* Resumen de caja */}
-          <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115] p-5 md:p-6">
+          <div className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-[#1C1C28] p-5 md:p-6">
             <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent" />
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -783,7 +784,7 @@ export function DashboardClient({
 
           {/* Alertas inteligentes */}
           {visibleAlerts.length > 0 && (
-            <div className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115] p-4 md:p-5">
+            <div className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-[#1C1C28] p-4 md:p-5">
               <p className="label-section mb-3">Alertas del día</p>
               <div className="flex flex-col gap-2">
                 {visibleAlerts.map((alert, i) => (
@@ -796,8 +797,8 @@ export function DashboardClient({
       </section>
 
       {/* ── E. KPI PREMIUM (4 cards grandes con StatCard) ────────────────── */}
-      <PremiumDashboardMotion className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <PremiumDashboardItem>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div>
           <StatCard
             kicker="Ingresos de hoy"
             title="Caja del día"
@@ -817,9 +818,9 @@ export function DashboardClient({
               </Link>
             }
           />
-        </PremiumDashboardItem>
+        </div>
 
-        <PremiumDashboardItem>
+        <div>
           <StatCard
             kicker="Agenda de hoy"
             title="Reservas activas"
@@ -838,9 +839,9 @@ export function DashboardClient({
               </Link>
             }
           />
-        </PremiumDashboardItem>
+        </div>
 
-        <PremiumDashboardItem>
+        <div>
           <StatCard
             kicker="Oportunidad"
             title="Huecos libres hoy"
@@ -859,9 +860,9 @@ export function DashboardClient({
               </Link>
             }
           />
-        </PremiumDashboardItem>
+        </div>
 
-        <PremiumDashboardItem>
+        <div>
           <StatCard
             kicker="Retención"
             title="Clientes para recuperar"
@@ -880,8 +881,8 @@ export function DashboardClient({
               </Link>
             }
           />
-        </PremiumDashboardItem>
-      </PremiumDashboardMotion>
+        </div>
+      </div>
 
       {/* ── F. RENDIMIENTO DEL EQUIPO ────────────────────────────────────── */}
       <BarberPerformance items={barberPerformanceItems} compact />
@@ -893,7 +894,7 @@ export function DashboardClient({
 
       {/* ── H. UPCOMING — próximas reservas (si hay más allá de hoy) ─────── */}
       {upcomingAppointments.length > 0 && (
-        <section className="relative overflow-hidden rounded-[20px] border border-[#252529] bg-[#111115]">
+        <section className="relative overflow-hidden rounded-[20px] border border-[#2A2A38] bg-[#1C1C28]">
           <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
           <div className="border-b border-[#1E1E24] bg-[#0E0E12] px-5 py-4 md:px-6">
             <div className="flex items-center justify-between gap-3">

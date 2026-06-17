@@ -45,8 +45,9 @@ export function FloatingWhatsAppButton() {
         focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 focus:ring-offset-2
       "
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/12">
-        <MessageCircle size={17} className="text-[#D4AF37]" />
+      <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/12">
+        <span className="absolute inset-0 rounded-xl bg-[#D4AF37]/25 motion-safe:animate-ping" style={{ animationDuration: "2.4s" }} aria-hidden="true" />
+        <MessageCircle size={17} className="relative text-[#D4AF37]" />
       </div>
       <div className="flex flex-col leading-tight">
         <span className="text-[13px] font-black text-[#D4AF37]">Solicitar demo</span>

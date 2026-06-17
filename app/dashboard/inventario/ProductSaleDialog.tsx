@@ -76,21 +76,21 @@ export function ProductSaleDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
-      <div className="w-full max-w-2xl rounded-[24px] border border-slate-200 bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6">
+      <div className="w-full max-w-2xl rounded-[24px] border border-white/[0.08] bg-[#0D0D11] shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-white/[0.08] px-6 py-5">
           <div>
             <p className="label-section">Vender producto</p>
             <h2 className="section-heading mt-1">{product.name}</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Stock disponible: <span className="font-black text-[#080A0F]">{product.current_stock}</span>
+            <p className="mt-1 text-sm text-white/50">
+              Stock disponible: <span className="font-black text-white">{product.current_stock}</span>
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar venta"
-            className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
+            className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           >
             <X size={18} />
           </button>
@@ -98,7 +98,7 @@ export function ProductSaleDialog({
 
         <form action={handleSubmit} className="space-y-5 px-6 py-5">
           {!openCashSession && (
-            <p className="flex gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+            <p className="flex gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-3 text-sm font-semibold text-amber-400">
               <AlertTriangle size={16} className="mt-0.5 shrink-0" />
               Abre caja antes de vender productos.
             </p>
@@ -176,51 +176,51 @@ export function ProductSaleDialog({
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-500">Total venta</p>
-              <p className="mt-2 text-2xl font-black text-[#080A0F]">{formatCurrency(total)}</p>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+              <p className="text-[10px] font-black uppercase text-white/50">Total venta</p>
+              <p className="mt-2 text-2xl font-black text-white">{formatCurrency(total)}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-500">Margen estimado</p>
-              <p className="mt-2 text-2xl font-black text-[#080A0F]">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+              <p className="text-[10px] font-black uppercase text-white/50">Margen estimado</p>
+              <p className="mt-2 text-2xl font-black text-white">
                 {estimatedProfit === null ? "Sin coste configurado" : formatCurrency(estimatedProfit)}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-500">Stock posterior</p>
-              <p className={`mt-2 text-2xl font-black ${stockAfter < product.min_stock ? "text-amber-700" : "text-[#080A0F]"}`}>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+              <p className="text-[10px] font-black uppercase text-white/50">Stock posterior</p>
+              <p className={`mt-2 text-2xl font-black ${stockAfter < product.min_stock ? "text-amber-400" : "text-white"}`}>
                 {Number.isFinite(stockAfter) ? stockAfter : product.current_stock}
               </p>
             </div>
           </div>
 
           {stockAfter < product.min_stock && stockAfter >= 0 && (
-            <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+            <p className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-3 text-sm font-semibold text-amber-400">
               Esta venta dejará el producto por debajo del stock mínimo. Reponer pronto.
             </p>
           )}
           {numericQuantity > product.current_stock && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               No hay stock suficiente para vender este producto.
             </p>
           )}
           {product.product_type !== "retail" && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               Los productos de uso interno no se venden desde caja.
             </p>
           )}
           {!product.is_active && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               No se pueden vender productos inactivos.
             </p>
           )}
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               {error}
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-5 sm:flex-row sm:justify-end">
             <PrimaryButton type="button" onClick={onClose} variant="secondary">
               Cancelar
             </PrimaryButton>

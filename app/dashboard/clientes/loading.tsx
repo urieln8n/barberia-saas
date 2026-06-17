@@ -27,16 +27,16 @@ export default function ClientesLoading() {
       </div>
 
       {/* Table skeleton */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0E0E1C]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}>
         {/* Header */}
-        <div className="flex gap-4 border-b border-slate-100 bg-slate-50 px-5 py-3.5">
+        <div className="flex gap-4 border-b border-white/[0.07] bg-white/[0.03] px-5 py-3.5">
           {[140, 100, 120, 80, 80].map((w, i) => (
             <div key={i} className="premium-skeleton h-3 rounded" style={{ width: w }} />
           ))}
         </div>
         {/* Rows */}
         {[1, 0.85, 0.72, 0.6, 0.5].map((opacity, i) => (
-          <div key={i} className="flex items-center gap-4 border-b border-slate-50 px-5 py-4" style={{ opacity }}>
+          <div key={i} className="flex items-center gap-4 border-b border-white/[0.05] px-5 py-4" style={{ opacity }}>
             <div className="premium-skeleton h-9 w-9 shrink-0 rounded-xl" />
             <div className="flex-1 space-y-1.5">
               <div className="premium-skeleton h-3.5 w-36 rounded-lg" />

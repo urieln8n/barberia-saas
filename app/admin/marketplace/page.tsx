@@ -14,6 +14,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type ShopRow = {
   id: string;
   barbershop_id: string;

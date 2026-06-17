@@ -11,6 +11,7 @@ type Relation<T> = T | T[] | null | undefined;
 
 type AppointmentItem = {
   id: string;
+  client_id: string | null;
   appointment_date: string;
   start_time: string;
   end_time: string | null;
@@ -102,6 +103,7 @@ function normalizeAppointment(item: any): AppointmentItem {
   const barber  = firstRelation(item.barbers);
   return {
     id:               item.id,
+    client_id:        item.client_id ?? null,
     appointment_date: item.appointment_date,
     start_time:       item.start_time,
     end_time:         item.end_time,
@@ -145,7 +147,7 @@ export default async function DashboardPage() {
     supabase.from("barbershops").select("id, name, slug").eq("id", barbershopId).maybeSingle(),
 
     supabase.from("appointments")
-      .select(`id, barber_id, appointment_date, start_time, end_time, status,
+      .select(`id, client_id, barber_id, appointment_date, start_time, end_time, status,
         clients (name, phone), services (name, price), barbers (name)`)
       .eq("barbershop_id", barbershopId)
       .eq("appointment_date", today)
@@ -153,7 +155,7 @@ export default async function DashboardPage() {
       .order("start_time", { ascending: true }),
 
     supabase.from("appointments")
-      .select(`id, appointment_date, start_time, end_time, status,
+      .select(`id, client_id, appointment_date, start_time, end_time, status,
         clients (name, phone), services (name, price), barbers (name)`)
       .eq("barbershop_id", barbershopId)
       .gte("appointment_date", today)

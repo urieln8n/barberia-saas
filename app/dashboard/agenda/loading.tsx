@@ -18,7 +18,10 @@ export default function AgendaLoading() {
       </div>
 
       {/* Date nav */}
-      <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+      <div
+        className="flex items-center justify-between rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-3"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.4)" }}
+      >
         <div className="premium-skeleton h-8 w-8 rounded-xl" />
         <div className="premium-skeleton h-5 w-36 rounded-lg" />
         <div className="premium-skeleton h-8 w-8 rounded-xl" />
@@ -36,8 +39,8 @@ export default function AgendaLoading() {
       </div>
 
       {/* Progress bar gold */}
-      <div className="h-0.5 w-full overflow-hidden rounded-full bg-slate-100">
-        <div className="h-full w-2/5 animate-[shimmer_1.6s_ease-in-out_infinite] rounded-full bg-[#D4AF37]/30 motion-reduce:animate-none" />
+      <div className="h-0.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+        <div className="h-full w-2/5 animate-[shimmer_1.6s_ease-in-out_infinite] rounded-full bg-[#D4AF37]/40 motion-reduce:animate-none" />
       </div>
     </div>
   );

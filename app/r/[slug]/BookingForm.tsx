@@ -71,25 +71,25 @@ function StepProgress({ step }: { step: number }) {
   if (step > 5) return null;
 
   return (
-    <div className="mt-5 rounded-2xl border border-amber-200/40 bg-[#F8F5EF] p-3">
+    <div className="mt-5 rounded-2xl border border-white/[0.06] bg-white/[0.04] p-3">
       <div className="grid grid-cols-5 gap-1.5">
         {[1, 2, 3, 4, 5].map((s) => (
           <div
             key={s}
             className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-              s <= step ? "bg-[#D4AF37]" : "bg-[#F3EDE1]"
+              s <= step ? "bg-[#D4AF37]" : "bg-white/[0.08]"
             }`}
           />
         ))}
       </div>
 
       <div className="mt-3 flex items-center justify-between text-xs">
-        <span className="font-semibold text-slate-500">Paso {step} de 5</span>
-        <span className="font-black text-slate-950">{STEP_LABELS[step - 1]}</span>
+        <span className="font-semibold text-white/40">Paso {step} de 5</span>
+        <span className="font-black text-white">{STEP_LABELS[step - 1]}</span>
       </div>
-      <div className="mt-3 hidden grid-cols-5 gap-2 text-xs font-black uppercase text-slate-500 sm:grid">
+      <div className="mt-3 hidden grid-cols-5 gap-2 text-xs font-black uppercase text-white/30 sm:grid">
         {STEP_LABELS.map((label, index) => (
-          <span key={label} className={index + 1 <= step ? "text-[#111827]" : ""}>
+          <span key={label} className={index + 1 <= step ? "text-white/70" : ""}>
             {label}
           </span>
         ))}
@@ -102,13 +102,13 @@ function TrustBadges() {
   return (
     <div className="mt-5 grid gap-2 sm:grid-cols-3">
       {[
-        { icon: BadgeCheck, label: "Sin cuenta necesaria", tone: "text-emerald-600" },
-        { icon: Clock, label: "Reserva en segundos", tone: "text-[#2F6FEB]" },
-        { icon: ShieldCheck, label: "Directo con la barberia", tone: "text-[#2F6FEB]" },
+        { icon: BadgeCheck, label: "Sin cuenta necesaria", tone: "text-emerald-400" },
+        { icon: Clock, label: "Reserva en segundos", tone: "text-blue-400" },
+        { icon: ShieldCheck, label: "Directo con la barberia", tone: "text-blue-400" },
       ].map(({ icon: Icon, label, tone }) => (
         <span
           key={label}
-          className="flex items-center gap-2 rounded-2xl border border-amber-200/40 bg-[#F8F5EF] px-3 py-2 text-xs font-semibold text-slate-600"
+          className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-semibold text-white/55"
         >
           <Icon size={13} className={tone} />
           {label}
@@ -132,10 +132,10 @@ function BookingHeader({
       </div>
 
       <div className="min-w-0">
-        <p className="truncate text-sm text-slate-600">
+        <p className="truncate text-sm text-white/40">
           {barbershopCity ? `Reserva online · ${barbershopCity}` : "Reserva online"}
         </p>
-        <h1 className="truncate text-3xl font-black tracking-normal text-slate-950">
+        <h1 className="truncate text-3xl font-black tracking-normal text-white">
           {barbershopName}
         </h1>
       </div>
@@ -152,8 +152,8 @@ function StepTitle({
 }) {
   return (
     <div>
-      <h2 className="text-2xl font-black text-slate-950">{title}</h2>
-      <p className="mt-2 text-base leading-7 text-slate-600">{description}</p>
+      <h2 className="text-2xl font-black text-white">{title}</h2>
+      <p className="mt-2 text-base leading-7 text-white/50">{description}</p>
     </div>
   );
 }
@@ -173,8 +173,8 @@ function ChoiceButton({
       onClick={onClick}
       className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] ${
         selected
-          ? "border-[#0B1220] bg-[#0B1220] text-white shadow-lg shadow-slate-900/10"
-          : "border-black/5 bg-[#F8F3EA] hover:border-[#D4AF37] hover:bg-[#F6F1E8]"
+          ? "border-[#D4AF37]/40 bg-[#D4AF37]/[0.08] text-white shadow-lg shadow-[#D4AF37]/10"
+          : "border-white/[0.08] bg-white/[0.03] text-white/80 hover:border-[#D4AF37]/30 hover:bg-white/[0.06]"
       }`}
     >
       {children}
@@ -194,10 +194,10 @@ function InfoRow({
   strong?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-slate-600">
-      <Icon size={14} className="shrink-0 text-slate-500" />
-      {label && <span className="font-medium text-slate-500">{label}</span>}
-      <span className={strong ? "font-bold text-[#111827]" : ""}>{value}</span>
+    <div className="flex items-center gap-2 text-sm text-white/50">
+      <Icon size={14} className="shrink-0 text-white/30" />
+      {label && <span className="font-medium text-white/35">{label}</span>}
+      <span className={strong ? "font-bold text-white" : ""}>{value}</span>
     </div>
   );
 }
@@ -224,9 +224,9 @@ function ReservationSummary({
     : "";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#D5CEBC] bg-[#F6F1E8]">
-      <div className="border-b border-amber-200/40 bg-[#F3EDE1] px-4 py-3">
-        <p className="text-xs font-bold uppercase tracking-wide text-[#B98B2F]">
+    <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0D0D11]">
+      <div className="border-b border-white/[0.06] bg-[#0A0A0D] px-4 py-3">
+        <p className="text-xs font-bold uppercase tracking-wide text-[#D4AF37]">
           Resumen de reserva
         </p>
       </div>
@@ -234,7 +234,7 @@ function ReservationSummary({
       <div className="space-y-3 px-4 py-4">
         <div className="flex items-start justify-between gap-3">
           <InfoRow icon={Scissors} value={service?.name ?? "Servicio"} strong />
-          <span className="shrink-0 text-lg font-black text-slate-950">
+          <span className="shrink-0 text-lg font-black text-white">
             {service?.price} €
           </span>
         </div>
@@ -245,10 +245,10 @@ function ReservationSummary({
         />
         <InfoRow icon={CalendarDays} value={`${formattedDate}${time ? ` · ${time}h` : ""}`} />
 
-        <div className="flex items-center gap-2 rounded-xl border border-[#D5CEBC] bg-[#F8F3EA] px-3 py-2.5 text-sm">
-          <CreditCard size={14} className="shrink-0 text-slate-500" />
-          <span className="font-medium text-neutral-700">Pago en el local</span>
-          <span className="ml-auto text-xs font-medium text-slate-500">sin pago online</span>
+        <div className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2.5 text-sm">
+          <CreditCard size={14} className="shrink-0 text-white/30" />
+          <span className="font-medium text-white/60">Pago en el local</span>
+          <span className="ml-auto text-xs font-medium text-white/35">sin pago online</span>
         </div>
       </div>
     </div>
@@ -281,12 +281,12 @@ function ConfirmButton({
 
 // ─── Avatar color palette para barberos ─────────────────────────────────────
 const BARBER_COLORS = [
-  "bg-violet-100 text-violet-700",
-  "bg-blue-100 text-blue-700",
-  "bg-emerald-100 text-emerald-700",
-  "bg-amber-100 text-amber-700",
-  "bg-rose-100 text-rose-700",
-  "bg-cyan-100 text-cyan-700",
+  "bg-violet-900/40 text-violet-300",
+  "bg-blue-900/40 text-blue-300",
+  "bg-emerald-900/40 text-emerald-300",
+  "bg-amber-900/40 text-amber-300",
+  "bg-rose-900/40 text-rose-300",
+  "bg-cyan-900/40 text-cyan-300",
 ];
 
 function getBarberColor(name: string): string {
@@ -596,8 +596,8 @@ export function BookingForm({
 
   return (
     <>
-      <div className="overflow-hidden rounded-[2rem] border border-black/5 bg-[#FAF8F4] text-slate-950 shadow-[var(--shadow-card)]">
-        <div className="border-b border-amber-200/40 bg-[linear-gradient(180deg,#F8F3EA_0%,#F3EDE1_100%)] p-5 md:p-7">
+      <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0C0C0F] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_4px_32px_rgba(0,0,0,0.6)]">
+        <div className="border-b border-white/[0.06] bg-[#0D0D11] p-5 md:p-7">
           <BookingHeader
             barbershopName={barbershopName}
             barbershopCity={barbershopCity}
@@ -616,7 +616,7 @@ export function BookingForm({
               setFormError(null);
               setStep(step - 1);
             }}
-            className="mb-5 flex min-h-[44px] items-center gap-1 px-1 text-sm font-bold text-slate-500 hover:text-[#111827]"
+            className="mb-5 flex min-h-[44px] items-center gap-1 px-1 text-sm font-bold text-white/40 hover:text-white"
           >
             <ChevronLeft size={15} /> Volver
           </button>
@@ -631,11 +631,11 @@ export function BookingForm({
             />
 
             {showRepeatPrompt && lastBooking && (
-              <div className="mt-4 rounded-2xl border border-[#D9B766]/40 bg-[#FFFBEB] p-4">
-                <p className="text-sm font-black text-[#111827]">
+              <div className="mt-4 rounded-2xl border border-[#D4AF37]/20 bg-[#D4AF37]/[0.05] p-4">
+                <p className="text-sm font-black text-white">
                   ¿Quieres repetir tu última cita?
                 </p>
-                <div className="mt-3 grid gap-2 text-sm text-neutral-700">
+                <div className="mt-3 grid gap-2 text-sm text-white/60">
                   <p>
                     <span className="font-semibold">Mismo servicio:</span>{" "}
                     {services.find((item) => item.id === lastBooking.serviceId)?.name}
@@ -646,7 +646,7 @@ export function BookingForm({
                       ? barbers.find((item) => item.id === lastBooking.barberId)?.name
                       : "Primer barbero disponible"}
                   </p>
-                  <p className="font-semibold text-[#8A641F]">
+                  <p className="font-semibold text-[#D4AF37]">
                     Solo cambia fecha y hora.
                   </p>
                 </div>
@@ -654,14 +654,14 @@ export function BookingForm({
                   <button
                     type="button"
                     onClick={repeatLastBooking}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#111827] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0F172A] active:scale-[0.98]"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-bold text-[#0A0A0A] transition hover:bg-[#E5C04C] active:scale-[0.98]"
                   >
                     Repetir cita
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowRepeatPrompt(false)}
-                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-[#F6F1E8]"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-white/50 transition hover:bg-white/[0.07]"
                   >
                     Elegir otra cosa
                   </button>
@@ -671,9 +671,9 @@ export function BookingForm({
 
             <div className="mt-4 grid gap-3">
               {services.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-6 text-center">
-                  <Scissors size={22} className="mx-auto text-neutral-300" />
-                  <p className="mt-2 text-sm font-semibold text-neutral-500">
+                <div className="rounded-2xl border border-dashed border-white/[0.06] bg-white/[0.02] p-6 text-center">
+                  <Scissors size={22} className="mx-auto text-white/20" />
+                  <p className="mt-2 text-sm font-semibold text-white/30">
                     Esta barbería no tiene servicios disponibles aún.
                   </p>
                 </div>
@@ -690,21 +690,21 @@ export function BookingForm({
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     {/* Miniatura del servicio */}
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/5 bg-[#F3EDE1]">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/[0.06] bg-[#D4AF37]/10">
                       {s.image_url ? (
                         <Image src={s.image_url} alt={s.name} fill sizes="48px" className="object-cover" />
                       ) : (
-                        <Scissors size={18} className="text-[#8A641F]" />
+                        <Scissors size={18} className="text-[#D4AF37]" />
                       )}
                     </div>
                     <div className="min-w-0">
                       <p className="font-bold">{s.name}</p>
                       {s.description && (
-                        <p className="mt-0.5 line-clamp-1 text-sm text-neutral-500">
+                        <p className="mt-0.5 line-clamp-1 text-sm text-white/40">
                           {s.description}
                         </p>
                       )}
-                      <p className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-500">
+                      <p className="mt-0.5 flex items-center gap-1.5 text-sm text-white/40">
                         <Clock size={12} /> {s.duration_minutes} min
                       </p>
                     </div>
@@ -738,13 +738,13 @@ export function BookingForm({
                 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100">
-                    <User size={18} className="text-slate-500" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06]">
+                    <User size={18} className="text-white/40" />
                   </div>
 
                   <div>
                     <p className="font-bold">Cualquiera</p>
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-white/40">
                       Primer barbero disponible
                     </p>
                   </div>
@@ -773,7 +773,7 @@ export function BookingForm({
                     </div>
                     <div>
                       <p className="font-bold">{b.name}</p>
-                      <p className="flex items-center gap-1 text-sm text-neutral-500">
+                      <p className="flex items-center gap-1 text-sm text-white/40">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                         Disponible
                       </p>
@@ -793,7 +793,7 @@ export function BookingForm({
               description="Selecciona un día y después una hora disponible."
             />
 
-            <label htmlFor="booking-date" className="mt-4 block text-sm font-semibold text-neutral-700">
+            <label htmlFor="booking-date" className="mt-4 block text-sm font-semibold text-white/60">
               Día
             </label>
 
@@ -815,23 +815,23 @@ export function BookingForm({
             {date && (
               <>
                 <div className="mt-5 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-neutral-700">Hora</p>
+                  <p className="text-sm font-semibold text-white/60">Hora</p>
 
                   {checkingAvailability && (
-                    <p className="rounded-full bg-[#F8FAFC] px-2.5 py-1 text-xs font-bold text-slate-500">
+                    <p className="rounded-full bg-white/[0.04] px-2.5 py-1 text-xs font-bold text-white/35">
                       Comprobando disponibilidad...
                     </p>
                   )}
                 </div>
 
                 {formError && (
-                  <p role="alert" className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+                  <p role="alert" className="mt-3 rounded-xl bg-red-500/[0.08] px-4 py-2.5 text-sm font-medium text-red-400">
                     {formError}
                   </p>
                 )}
 
                 {closedReason && (
-                  <p className="mt-3 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800">
+                  <p className="mt-3 rounded-xl bg-amber-500/[0.08] px-4 py-2.5 text-sm font-medium text-amber-400">
                     Cerrado: {closedReason}
                   </p>
                 )}
@@ -845,9 +845,9 @@ export function BookingForm({
                     let badge: { label: string; cls: string } | null = null;
                     if (!isUnavailable && !isSelected && !checkingAvailability) {
                       if (freeCount === 1) {
-                        badge = { label: "Última plaza", cls: "text-amber-600 bg-amber-50" };
+                        badge = { label: "Última plaza", cls: "text-amber-400 bg-amber-500/[0.10]" };
                       } else if (freeCount >= 2 && freeCount <= 3) {
-                        badge = { label: `${freeCount} plazas`, cls: "text-emerald-700 bg-emerald-50" };
+                        badge = { label: `${freeCount} plazas`, cls: "text-emerald-400 bg-emerald-500/[0.10]" };
                       }
                     }
 
@@ -867,10 +867,10 @@ export function BookingForm({
                         }}
                         className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border py-2.5 text-sm font-semibold transition-all active:scale-[0.96] disabled:cursor-not-allowed ${
                           isUnavailable
-                            ? "border-red-100 bg-red-50 text-red-300 line-through"
+                            ? "border-red-900/30 bg-red-950/20 text-red-700/50 line-through"
                             : isSelected
                             ? "border-[#D4AF37] bg-[#D4AF37] text-[#0A0A0A] font-black"
-                            : "border-neutral-200 hover:border-[#D4AF37] hover:bg-[#FEFCF8]"
+                            : "border-white/[0.08] text-white/60 hover:border-[#D4AF37]/40 hover:bg-white/[0.04]"
                         }`}
                       >
                         <span>{slot}</span>
@@ -886,18 +886,18 @@ export function BookingForm({
                 </div>
 
                 {visibleSlots.length === 0 && (
-                  <div className="mt-3 rounded-2xl border border-dashed border-[#E5E7EB] bg-[#F8FAFC] p-5 text-center">
-                    <CalendarDays size={20} className="mx-auto text-neutral-300" />
-                    <p className="mt-2 text-sm font-semibold text-neutral-600">
+                  <div className="mt-3 rounded-2xl border border-dashed border-white/[0.06] bg-white/[0.02] p-5 text-center">
+                    <CalendarDays size={20} className="mx-auto text-white/20" />
+                    <p className="mt-2 text-sm font-semibold text-white/35">
                       No quedan horas disponibles para este día.
                     </p>
-                    <p className="mt-1 text-xs font-medium text-slate-500">
+                    <p className="mt-1 text-xs font-medium text-white/25">
                       Prueba con otra fecha.
                     </p>
                   </div>
                 )}
 
-                <p className="mt-3 text-xs font-medium text-slate-500">
+                <p className="mt-3 text-xs font-medium text-white/30">
                   Solo mostramos horas disponibles. Si elegiste "Cualquiera",
                   se comprueba la disponibilidad del equipo.
                 </p>
@@ -928,7 +928,7 @@ export function BookingForm({
 
               {/* Nombre */}
               <div>
-                <label htmlFor="booking-name" className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-name" className="mb-1 block text-sm font-semibold text-white/60">
                   Nombre completo *
                 </label>
                 <input
@@ -947,11 +947,11 @@ export function BookingForm({
 
               {/* Teléfono */}
               <div>
-                <label htmlFor="booking-phone" className="mb-1 block text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-phone" className="mb-1 block text-sm font-semibold text-white/60">
                   Teléfono *
                 </label>
                 <div className="relative">
-                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+                  <Phone size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                   <input
                     id="booking-phone"
                     type="tel"
@@ -970,14 +970,14 @@ export function BookingForm({
 
               {/* Email opcional */}
               <div>
-                <label htmlFor="booking-email" className="mb-1 flex items-center gap-2 text-sm font-semibold text-neutral-700">
+                <label htmlFor="booking-email" className="mb-1 flex items-center gap-2 text-sm font-semibold text-white/60">
                   Email
-                    <span className="rounded-xl bg-neutral-100 px-2 py-0.5 text-xs font-bold text-slate-500">
+                    <span className="rounded-xl bg-white/[0.06] px-2 py-0.5 text-xs font-bold text-white/40">
                     opcional
                   </span>
                 </label>
                 <div className="relative">
-                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" aria-hidden="true" />
                   <input
                     id="booking-email"
                     type="email"
@@ -992,20 +992,20 @@ export function BookingForm({
             </div>
 
             {/* Consentimiento marketing */}
-            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
+            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
               <input
                 type="checkbox"
                 checked={privacyRead}
                 onChange={(e) => setPrivacyRead(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]"
               />
-              <span className="text-xs leading-relaxed text-neutral-500">
+              <span className="text-xs leading-relaxed text-white/40">
                 He leído la{" "}
-                <Link href="/legal/privacidad" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                <Link href="/legal/privacidad" className="font-semibold text-[#D4AF37] hover:text-[#E5C04C]">
                   Política de Privacidad
                 </Link>{" "}
                 y las{" "}
-                <Link href="/legal/condiciones-reservas" className="font-semibold text-[#2F6FEB] hover:text-[#1D4ED8]">
+                <Link href="/legal/condiciones-reservas" className="font-semibold text-[#D4AF37] hover:text-[#E5C04C]">
                   Condiciones de Reservas
                 </Link>
                 .
@@ -1017,13 +1017,13 @@ export function BookingForm({
                 type="checkbox"
                 checked={marketingConsent}
                 onChange={(e) => setMarketingConsent(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-[#2F6FEB]"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]"
               />
-              <span className="text-xs leading-relaxed text-neutral-500">
+              <span className="text-xs leading-relaxed text-white/40">
                 Acepto que{" "}
-                <span className="font-semibold text-neutral-700">{barbershopName}</span>{" "}
+                <span className="font-semibold text-white/60">{barbershopName}</span>{" "}
                 pueda contactarme por WhatsApp sobre esta reserva.{" "}
-                <span className="text-slate-500">(Opcional)</span>
+                <span className="text-white/30">(Opcional)</span>
               </span>
             </label>
 
@@ -1060,7 +1060,7 @@ export function BookingForm({
             </div>
 
             {/* Mensaje de confianza — desktop */}
-            <p className="mt-3 hidden text-center text-xs font-medium text-slate-500 md:block">
+            <p className="mt-3 hidden text-center text-xs font-medium text-white/30 md:block">
               Revisa tu cita antes de confirmar.
             </p>
           </section>
@@ -1081,19 +1081,19 @@ export function BookingForm({
                 date={date}
                 time={time}
               />
-              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3 text-sm text-neutral-600">
-                <Phone size={14} className="shrink-0 text-slate-500" />
+              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white/60">
+                <Phone size={14} className="shrink-0 text-white/30" />
                 <span>{name} · {phone}</span>
               </div>
             </div>
 
             {(cancelBeforeHours || cancellationPolicyText) ? (
-              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-4 py-3">
                 <div className="flex items-start gap-2">
-                  <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
+                  <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-400" />
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-amber-800">Política de cancelación</p>
-                    <p className="mt-0.5 text-xs leading-5 text-amber-700">
+                    <p className="text-xs font-semibold text-amber-400">Política de cancelación</p>
+                    <p className="mt-0.5 text-xs leading-5 text-amber-400/70">
                       {cancellationPolicyText ||
                         `Puedes cancelar hasta ${cancelBeforeHours}h antes de tu cita. Pasado ese plazo, la cita no puede modificarse.`}
                     </p>
@@ -1104,17 +1104,17 @@ export function BookingForm({
                     type="checkbox"
                     checked={policyAccepted}
                     onChange={(e) => setPolicyAccepted(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded accent-amber-600"
+                    className="mt-0.5 h-4 w-4 rounded accent-amber-500"
                   />
-                  <span className="text-xs font-semibold text-amber-800">
+                  <span className="text-xs font-semibold text-amber-400">
                     He leído y acepto la política de cancelación
                   </span>
                 </label>
               </div>
             ) : (
-              <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
-                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-600" />
-                <p className="text-xs text-amber-800">
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-4 py-3">
+                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-amber-400" />
+                <p className="text-xs text-amber-400/80">
                   <span className="font-semibold">Cancelación:</span>{" "}
                   Puedes cancelar o cambiar tu cita contactando directamente con la barbería.
                 </p>
@@ -1136,7 +1136,7 @@ export function BookingForm({
               />
             </div>
 
-              <p className="mt-3 text-center text-xs font-medium text-slate-500">
+              <p className="mt-3 text-center text-xs font-medium text-white/30">
               <ShieldCheck size={12} className="mr-1 inline-block" />
               Reserva segura · Sin comisiones · Directo con {barbershopName}
             </p>
@@ -1156,16 +1156,16 @@ export function BookingForm({
             <section className="space-y-4">
 
               {/* Hero confirmación */}
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 p-6 text-center">
-                <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 shadow-[0_0_0_6px_rgba(16,185,129,0.12)]">
-                  <CheckCircle size={34} className="text-emerald-600" />
+              <div className="rounded-2xl border border-emerald-500/20 bg-[#0D0D11] p-6 text-center">
+                <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 shadow-[0_0_0_6px_rgba(16,185,129,0.06)]">
+                  <CheckCircle size={34} className="text-emerald-400" />
                 </div>
-                <h2 className="mt-4 text-2xl font-black text-slate-950">¡Reserva confirmada!</h2>
-                <p className="mt-1.5 text-sm text-slate-500">
-                  Tu cita en <span className="font-semibold text-slate-800">{barbershopName}</span> está registrada.
+                <h2 className="mt-4 text-2xl font-black text-white">¡Reserva confirmada!</h2>
+                <p className="mt-1.5 text-sm text-white/40">
+                  Tu cita en <span className="font-semibold text-white/70">{barbershopName}</span> está registrada.
                 </p>
                 {email && (
-                  <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-emerald-700">
+                  <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-emerald-400">
                     <Mail size={12} />
                     Te enviamos un email de confirmación a <span className="font-semibold">{email}</span>
                   </p>
@@ -1174,8 +1174,8 @@ export function BookingForm({
 
               {/* Resumen */}
               <ReservationSummary service={service} barber={barber} date={date} time={time} />
-              <div className="flex items-center gap-2 rounded-2xl border border-[#D5CEBC] bg-[#F8F3EA] px-4 py-3 text-sm text-neutral-600">
-                <Phone size={14} className="shrink-0 text-slate-500" />
+              <div className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white/60">
+                <Phone size={14} className="shrink-0 text-white/30" />
                 <span>{name} · {phone}</span>
               </div>
 
@@ -1186,9 +1186,9 @@ export function BookingForm({
                     href={googleCalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/70 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.08] active:scale-[0.98]"
                   >
-                    <CalendarPlus size={15} className="text-[#C9922A]" />
+                    <CalendarPlus size={15} className="text-[#D4AF37]" />
                     Google Calendar
                   </a>
                 )}
@@ -1196,18 +1196,18 @@ export function BookingForm({
                   <button
                     type="button"
                     onClick={() => downloadICS(calTitle, date, time, durationMinutes, calLocation, calDesc)}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/70 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.08] active:scale-[0.98]"
                   >
-                    <Download size={15} className="text-slate-500" />
+                    <Download size={15} className="text-white/40" />
                     iPhone / Outlook (.ics)
                   </button>
                 )}
                 {barbershopPhone && (
                   <a
                     href={`tel:${barbershopPhone}`}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/70 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.08] active:scale-[0.98]"
                   >
-                    <Phone size={15} className="text-slate-500" />
+                    <Phone size={15} className="text-white/40" />
                     Llamar a la barbería
                   </a>
                 )}
@@ -1216,19 +1216,19 @@ export function BookingForm({
                     href={barbershopMapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#D5CEBC] bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#D4AF37] hover:bg-[#FEFCF8] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/70 transition hover:border-[#D4AF37]/40 hover:bg-white/[0.08] active:scale-[0.98]"
                   >
-                    <Navigation size={15} className="text-slate-500" />
+                    <Navigation size={15} className="text-white/40" />
                     Cómo llegar
                   </a>
                 )}
               </div>
 
               {/* Nota cancelación */}
-              <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-slate-400" />
-                <p className="text-xs text-slate-500">
-                  Para cambiar o cancelar tu cita, contacta directamente con <span className="font-semibold text-slate-600">{barbershopName}</span>.
+              <div className="flex items-start gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3">
+                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-white/25" />
+                <p className="text-xs text-white/35">
+                  Para cambiar o cancelar tu cita, contacta directamente con <span className="font-semibold text-white/50">{barbershopName}</span>.
                 </p>
               </div>
 
@@ -1236,14 +1236,14 @@ export function BookingForm({
               <button
                 type="button"
                 onClick={reset}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E7EB] py-3.5 text-sm font-bold text-slate-700 transition hover:bg-[#F8FAFC] active:scale-[0.98]"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] py-3.5 text-sm font-bold text-white/50 transition hover:bg-white/[0.04] active:scale-[0.98]"
               >
                 <CalendarDays size={15} />
                 Reservar otra cita
               </button>
 
-              <p className="text-center text-xs text-slate-400">
-                Reserva gestionada con <span className="font-semibold text-slate-500">BarberíaOS</span> · Sin comisiones
+              <p className="text-center text-xs text-white/25">
+                Reserva gestionada con <span className="font-semibold text-white/35">BarberíaOS</span> · Sin comisiones
               </p>
             </section>
           );

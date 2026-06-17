@@ -210,21 +210,21 @@ export default function BarberChair3D() {
   return (
     <div className="relative h-[400px] w-full md:h-[500px]">
       {/* Floating UI overlay badges */}
-      <div className="pointer-events-none absolute left-2 top-6 z-10 rounded-2xl border border-[#D5A84C]/20 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-sm">
+      <div className="pointer-events-none absolute left-2 top-6 z-10 rounded-2xl border border-[#D5A84C]/20 bg-[#0E0E1C]/85 px-3 py-2 backdrop-blur-sm">
         <p className="text-[11px] font-black text-[#D5A84C]">24/7</p>
-        <p className="text-[10px] text-[#080A0F]/50">Reservas</p>
+        <p className="text-[10px] text-white/50">Reservas</p>
       </div>
-      <div className="pointer-events-none absolute right-2 bottom-10 z-10 rounded-2xl border border-[#080A0F]/8 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-sm">
+      <div className="pointer-events-none absolute right-2 bottom-10 z-10 rounded-2xl border border-white/[0.08] bg-[#0E0E1C]/85 px-3 py-2 backdrop-blur-sm">
         <div className="flex items-center gap-1.5">
           <QrCode size={12} className="text-[#D5A84C]" />
-          <p className="text-[11px] font-black text-[#080A0F]">QR listo</p>
+          <p className="text-[11px] font-black text-white">QR listo</p>
         </div>
-        <p className="text-[10px] text-[#080A0F]/45">Escanea y reserva</p>
+        <p className="text-[10px] text-white/45">Escanea y reserva</p>
       </div>
-      <div className="pointer-events-none absolute right-4 top-6 z-10 rounded-2xl border border-[#080A0F]/8 bg-white/80 px-3 py-2 shadow-sm backdrop-blur-sm">
+      <div className="pointer-events-none absolute right-4 top-6 z-10 rounded-2xl border border-white/[0.08] bg-[#0E0E1C]/85 px-3 py-2 backdrop-blur-sm">
         <div className="flex items-center gap-1.5">
-          <Scissors size={11} className="text-[#080A0F]/60" />
-          <p className="text-[11px] font-black text-[#080A0F]">0% comisión</p>
+          <Scissors size={11} className="text-white/60" />
+          <p className="text-[11px] font-black text-white">0% comisión</p>
         </div>
       </div>
 

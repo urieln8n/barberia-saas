@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { SITE_URL } from "@/src/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Programa de fidelización para barberías | BarberíaOS",
@@ -69,6 +70,19 @@ const jsonLd = [
           "@type": "Answer",
           text: "Sí. El historial registra qué barbero atendió cada cita para un seguimiento personalizado.",
         },
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Programa de fidelización para barberías",
+        item: `${SITE_URL}/programa-fidelizacion-barberias`,
       },
     ],
   },

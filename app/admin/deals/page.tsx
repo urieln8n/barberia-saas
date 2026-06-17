@@ -3,6 +3,9 @@ import { createClient } from "@/src/lib/supabase/server";
 import { AdminDataError } from "../_components/AdminDataError";
 import { DealsClient } from "./DealsClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DealsPage() {
   await requirePlatformAdmin();
 

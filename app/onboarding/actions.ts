@@ -10,12 +10,17 @@ export async function createBarbershop(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const name     = formData.get("name") as string;
-  const slug     = formData.get("slug") as string;
-  const phone    = formData.get("phone") as string;
-  const city     = formData.get("city") as string;
+  const name  = (formData.get("name") as string)?.trim();
+  const slug  = (formData.get("slug") as string)?.trim().toLowerCase();
+  const phone = (formData.get("phone") as string)?.trim();
+  const city  = (formData.get("city") as string)?.trim();
 
-  if (!name?.trim() || !slug?.trim()) return;
+  if (!name || !slug) redirect("/onboarding?error=required");
+
+  // Slug: solo letras minúsculas, números y guiones, 2-80 caracteres
+  if (!/^[a-z0-9][a-z0-9-]{0,78}[a-z0-9]$/.test(slug)) {
+    redirect("/onboarding?error=invalid-slug");
+  }
 
   // Crear perfil si no existe
   await supabase.from("profiles").upsert({

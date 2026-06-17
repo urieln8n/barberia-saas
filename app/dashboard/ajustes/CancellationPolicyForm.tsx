@@ -54,7 +54,7 @@ export function CancellationPolicyForm({ barbershopId, initialCancelBeforeHours,
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="mb-1.5 block text-sm font-semibold text-slate-700">
+        <label className="mb-1.5 block text-sm font-semibold text-white/70">
           Plazo mínimo de cancelación
         </label>
         <select
@@ -66,13 +66,13 @@ export function CancellationPolicyForm({ barbershopId, initialCancelBeforeHours,
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-white/40">
           Si configuras un plazo, el cliente verá esta restricción al confirmar su reserva y deberá aceptarla.
         </p>
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-semibold text-slate-700">
+        <label className="mb-1.5 block text-sm font-semibold text-white/70">
           Texto personalizado de política (opcional)
         </label>
         <textarea
@@ -83,19 +83,19 @@ export function CancellationPolicyForm({ barbershopId, initialCancelBeforeHours,
           placeholder="Ej: Se puede cancelar hasta 24h antes. Los no-shows reiterados pueden bloquear futuras reservas."
           className="input-field resize-none py-3"
         />
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-white/40">
           Si lo dejas vacío se usa el texto automático según el plazo configurado.
         </p>
       </div>
 
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-xl bg-red-500/[0.08] px-4 py-3 text-sm text-red-400">{error}</p>
       )}
 
       <button
         type="submit"
         disabled={saving}
-        className="flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-black text-white transition hover:bg-slate-700 disabled:opacity-40"
+        className="flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-black text-[#09090B] transition hover:bg-[#C9A130] disabled:opacity-40"
       >
         {saved
           ? <><CheckCircle2 size={15} className="text-emerald-400" /> Guardado</>

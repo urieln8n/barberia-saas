@@ -76,22 +76,22 @@ const helpCards = [
 // Design system: 3 tonos semánticos únicamente
 const toneMap: Record<string, { icon: string; border: string; bg: string; cta: string }> = {
   gold:    {
-    icon: "text-[#C9922A]",
+    icon: "text-[#D4AF37]",
     border: "border-[#D4AF37]/25",
-    bg: "bg-[#D4AF37]/5",
-    cta: "text-[#8A641F] hover:bg-[#D4AF37]/12 border-[#D4AF37]/30",
+    bg: "bg-[#D4AF37]/[0.08]",
+    cta: "text-[#D4AF37] hover:bg-[#D4AF37]/10 border-[#D4AF37]/30",
   },
   success: {
-    icon: "text-emerald-600",
-    border: "border-emerald-100",
-    bg: "bg-emerald-50",
-    cta: "text-emerald-700 hover:bg-emerald-100 border-emerald-200",
+    icon: "text-emerald-400",
+    border: "border-emerald-500/20",
+    bg: "bg-emerald-500/[0.08]",
+    cta: "text-emerald-400 hover:bg-emerald-500/10 border-emerald-500/20",
   },
   neutral: {
-    icon: "text-slate-500",
-    border: "border-slate-200",
-    bg: "bg-slate-50",
-    cta: "text-slate-600 hover:bg-slate-100 border-slate-200",
+    icon: "text-white/40",
+    border: "border-white/[0.08]",
+    bg: "bg-white/[0.04]",
+    cta: "text-white/60 hover:bg-white/[0.06] border-white/[0.10]",
   },
 };
 
@@ -123,13 +123,13 @@ export default function SoportePage() {
           return (
             <article
               key={card.title}
-              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-card-md"
+              className="flex flex-col rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5 transition hover:-translate-y-0.5 hover:border-white/[0.12]"
             >
               <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border ${t.border} ${t.bg}`}>
                 <Icon size={18} className={t.icon} />
               </div>
-              <h2 className="text-sm font-black text-slate-900">{card.title}</h2>
-              <p className="mt-2 flex-1 text-xs leading-5 text-slate-500">{card.description}</p>
+              <h2 className="text-sm font-black text-white">{card.title}</h2>
+              <p className="mt-2 flex-1 text-xs leading-5 text-white/50">{card.description}</p>
               <a
                 href={card.href}
                 target={card.external ? "_blank" : undefined}
@@ -145,10 +145,10 @@ export default function SoportePage() {
       </div>
 
       {/* Quick links */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-6">
         <div className="mb-4 flex items-center gap-2">
           <Zap size={16} className="text-[#D4AF37]" />
-          <h2 className="text-sm font-black text-slate-900">Accesos rápidos</h2>
+          <h2 className="text-sm font-black text-white">Accesos rápidos</h2>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
           {quickLinks.map((link) => (
@@ -157,22 +157,22 @@ export default function SoportePage() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-[#D4AF37]/30 hover:bg-[#FDFAF3] hover:text-slate-900"
+              className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-xs font-semibold text-white/60 transition hover:border-[#D4AF37]/30 hover:bg-[#D4AF37]/[0.06] hover:text-white"
             >
-              <CheckCircle2 size={13} className="shrink-0 text-slate-400" />
+              <CheckCircle2 size={13} className="shrink-0 text-white/30" />
               {link.label}
-              <ExternalLink size={10} className="ml-auto shrink-0 text-slate-300" />
+              <ExternalLink size={10} className="ml-auto shrink-0 text-white/20" />
             </a>
           ))}
         </div>
       </div>
 
       {/* Direct contact */}
-      <div className="rounded-2xl border border-[#D4AF37]/20 bg-[#FDFAF3] p-6 shadow-card">
+      <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.05] p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-black text-slate-900">¿Necesitas ayuda personalizada?</p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="text-sm font-black text-white">¿Necesitas ayuda personalizada?</p>
+            <p className="mt-1 text-xs text-white/50">
               Nuestro equipo responde en menos de 24 horas, de lunes a viernes.
             </p>
           </div>

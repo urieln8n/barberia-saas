@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { BarberiaOSLogo } from "@/components/brand/BarberiaOSLogo";
 import {
   CalendarCheck, QrCode, Wallet, Users, Clapperboard,
   Clock, ArrowRight, Check, ShieldCheck,
@@ -12,6 +14,8 @@ import {
 } from "lucide-react";
 
 const FAQAccordionLanding = dynamic(() => import("./FAQAccordionLanding"), { ssr: false });
+const QRBookingSection = dynamic(() => import("./QRBookingSection").then((m) => m.QRBookingSection), { ssr: false });
+const ActivationTimeline = dynamic(() => import("./ActivationTimeline").then((m) => m.ActivationTimeline), { ssr: false });
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -121,8 +125,26 @@ function Nav() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+
+  const headlineLines = ["El sistema operativo", "de tu barbería."];
+
+  const fadeUp = (delay = 0) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
+        };
+
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#09090B] pb-20 pt-28">
+      {/* Marca de agua: la "B" del logo, gigante y casi invisible, como textura de fondo */}
+      <div className="pointer-events-none absolute right-[-8%] top-[-6%] opacity-[0.05] [filter:grayscale(1)_brightness(2.2)] sm:right-[-4%]">
+        <BarberiaOSLogo variant="icon" size={520} />
+      </div>
+
       {/* 1. Dot grid gold */}
       <div
         className="pointer-events-none absolute inset-0 opacity-100"
@@ -144,29 +166,40 @@ function Hero() {
 
       <div className="relative mx-auto max-w-5xl px-4 md:px-6">
         {/* Badge */}
-        <div className="flex justify-center">
+        <motion.div className="flex justify-center" {...fadeUp(0)}>
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/22 bg-[#D4AF37]/[0.07] px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-[#D4AF37]">
             <Zap size={9} fill="currentColor" />
-            Sin comisiones · Sin Booksy · Sin papel
+            Cuota fija mensual · 0% comisión por reserva
           </div>
-        </div>
+        </motion.div>
 
         {/* Headline */}
-        <h1 className="mx-auto max-w-3xl text-center text-[2.6rem] font-black leading-[1.06] tracking-tight text-white md:text-6xl lg:text-[4.25rem]">
-          La agenda de tu barbería.{" "}
-          <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5D060] to-[#C8991F] bg-clip-text text-transparent">Siempre llena.</span>
-          <br className="hidden sm:block" />
-          <span className="text-white/55">Sin perder un euro.</span>
+        <h1 className="mx-auto max-w-3xl text-center text-[2.75rem] font-extrabold leading-[1.05] tracking-tight text-white md:text-6xl lg:text-[4.5rem]">
+          {headlineLines.map((line, i) => (
+            <motion.span key={line} className="block overflow-hidden">
+              <motion.span className="block" {...fadeUp(0.08 + i * 0.1)}>
+                {i === 1 ? (
+                  <span className="bg-gradient-to-r from-[#D4AF37] via-[#F5D060] to-[#C8991F] bg-clip-text text-transparent">
+                    {line}
+                  </span>
+                ) : (
+                  line
+                )}
+              </motion.span>
+            </motion.span>
+          ))}
         </h1>
 
-        <p className="mx-auto mt-5 max-w-lg text-center text-[1rem] leading-relaxed text-white/48 md:text-lg">
-          Reservas online desde Instagram, WhatsApp y QR.
-          Agenda, caja y clientes en un panel.{" "}
-          <span className="font-semibold text-white/68">Cuota fija. Cero comisiones.</span>
-        </p>
+        <motion.p
+          className="mx-auto mt-5 max-w-lg text-center text-[1rem] leading-relaxed text-white/48 md:text-lg"
+          {...fadeUp(0.32)}
+        >
+          Reservas que nunca duermen, agenda siempre al día y caja controlada{" "}
+          <span className="font-semibold text-white/68">desde un único panel.</span> Cuota fija mensual, sin comisión por reserva.
+        </motion.p>
 
         {/* CTAs */}
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <motion.div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row" {...fadeUp(0.42)}>
           <Link
             href="/register"
             className="inline-flex h-[52px] items-center gap-2.5 rounded-2xl bg-[#D4AF37] px-8 text-[15px] font-black text-[#09090B] shadow-[0_8px_36px_rgba(212,175,55,0.38)] transition hover:bg-[#E8C84A] hover:shadow-[0_12px_48px_rgba(212,175,55,0.48)] active:scale-[0.98]"
@@ -179,13 +212,16 @@ function Hero() {
           >
             Ver demo en vivo
           </Link>
-        </div>
-        <p className="mt-3.5 text-center text-[11.5px] text-white/25">
+        </motion.div>
+        <motion.p className="mt-3.5 text-center text-[11.5px] text-white/25" {...fadeUp(0.48)}>
           Sin tarjeta · Sin permanencia · Activo en 30 minutos
-        </p>
+        </motion.p>
 
         {/* Dashboard mockup */}
-        <div className="mt-14 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0F0F11] shadow-[0_40px_100px_rgba(0,0,0,0.65)]">
+        <motion.div
+          className="mt-14 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0F0F11] shadow-[0_40px_100px_rgba(0,0,0,0.65)]"
+          {...fadeUp(0.56)}
+        >
           {/* Window chrome */}
           <div className="flex items-center gap-2.5 border-b border-white/[0.06] bg-[#111113] px-5 py-3.5">
             <div className="flex gap-1.5">
@@ -205,16 +241,20 @@ function Hero() {
               { label: "Caja del día", value: "487 €", icon: Wallet, color: "text-emerald-400", bg: "bg-emerald-400/10", sub: "+12% vs ayer" },
               { label: "Reservas hoy", value: "12 / 14", icon: CalendarCheck, color: "text-blue-400", bg: "bg-blue-400/10", sub: "2 huecos libres" },
               { label: "Clientes activos", value: "847", icon: Users, color: "text-amber-400", bg: "bg-amber-400/10", sub: "+8 este mes" },
-              { label: "Comisión Booksy", value: "0 €", icon: ShieldCheck, color: "text-emerald-400", bg: "bg-emerald-400/10", sub: "Ahorro total" },
-            ].map(({ label, value, icon: Icon, color, bg, sub }) => (
-              <div key={label} className="rounded-xl border border-white/[0.05] bg-white/[0.025] p-4">
+              { label: "Cuota mensual", value: "Fija", icon: ShieldCheck, color: "text-emerald-400", bg: "bg-emerald-400/10", sub: "Sin sorpresas" },
+            ].map(({ label, value, icon: Icon, color, bg, sub }, i) => (
+              <motion.div
+                key={label}
+                className="rounded-xl border border-white/[0.05] bg-white/[0.025] p-4"
+                {...fadeUp(0.66 + i * 0.06)}
+              >
                 <div className={`mb-2.5 flex h-8 w-8 items-center justify-center rounded-lg ${bg}`}>
                   <Icon size={14} className={color} />
                 </div>
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-white/28">{label}</p>
                 <p className="mt-0.5 text-xl font-black tabular-nums text-white">{value}</p>
                 <p className="mt-0.5 text-[10px] text-white/22">{sub}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -225,7 +265,13 @@ function Hero() {
                 <p className="text-[11px] font-black uppercase tracking-wide text-white/38">
                   Agenda — Hoy, miércoles
                 </p>
-                <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                  <span className="relative flex h-1.5 w-1.5">
+                    {!prefersReducedMotion && (
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                    )}
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  </span>
                   En directo
                 </span>
               </div>
@@ -235,19 +281,19 @@ function Hero() {
                   { time: "10:30", name: "Javier R.", service: "Corte fade", barber: "Marco", dot: "bg-blue-400", dim: false },
                   { time: "11:00", name: "—", service: "Hueco libre", barber: "Dani", dot: "bg-white/12", dim: true },
                   { time: "11:30", name: "David L.", service: "Barba premium", barber: "Marco", dot: "bg-amber-400", dim: false },
-                ].map(({ time, name, service, barber, dot, dim }) => (
-                  <div key={time} className="flex items-center gap-3">
+                ].map(({ time, name, service, barber, dot, dim }, i) => (
+                  <motion.div key={time} className="flex items-center gap-3" {...fadeUp(0.85 + i * 0.06)}>
                     <span className="w-10 shrink-0 text-[11px] font-bold tabular-nums text-white/28">{time}</span>
                     <div className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} />
                     <span className={`flex-1 text-[12px] font-semibold ${dim ? "italic text-white/20" : "text-white/65"}`}>{name}</span>
                     <span className="hidden text-[11px] text-white/28 sm:block">{service}</span>
                     <span className="shrink-0 rounded-full bg-white/[0.05] px-2 py-0.5 text-[10px] text-white/22">{barber}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -304,7 +350,7 @@ function PainSection() {
             El coste oculto
           </p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
-            ¿Cuánto te está costando Booksy?
+            ¿Cuánto te está costando cada reserva?
           </h2>
           <p className="mt-3 text-white/42">
             Cada reserva tiene un precio. El tuyo, no el del cliente.
@@ -429,7 +475,7 @@ function Features() {
     {
       icon: Instagram,
       title: "Página de reservas pública",
-      desc: "Tu URL propia. Ponla en Instagram, WhatsApp o Google. Tu marca, no la de Booksy.",
+      desc: "Tu URL propia. Ponla en Instagram, WhatsApp o Google. Tu marca, tus clientes.",
       accent: "text-pink-400",
       bg: "bg-pink-400/8",
       border: "border-pink-400/15",
@@ -497,7 +543,7 @@ function ComparisonSection() {
             Comparativa
           </p>
           <h2 className="mt-3 text-4xl font-black tracking-tight text-white">
-            BarberíaOS vs el resto
+            Todo lo que incluye BarberíaOS
           </h2>
           <p className="mt-3 text-white/42">
             Sin comisiones. Sin marketplaces. Sin depender de nadie.
@@ -604,69 +650,29 @@ function StatsBar() {
 
 // ─── How it works ─────────────────────────────────────────────────────────────
 
-function HowItWorks() {
-  const steps = [
-    {
-      n: "01",
-      icon: Zap,
-      title: "Crea tu cuenta en 2 minutos",
-      desc: "Sin tarjeta. Sin configuración técnica. Solo nombre, barbería y listo. Te acompañamos en cada paso.",
-    },
-    {
-      n: "02",
-      icon: Scissors,
-      title: "Añade barberos y servicios",
-      desc: "Configura tu equipo, horarios, precios y personaliza tu página pública de reservas en menos de 30 minutos.",
-    },
-    {
-      n: "03",
-      icon: CalendarCheck,
-      title: "Comparte y recibe reservas",
-      desc: "Pega tu QR en la puerta. Añade el link a Instagram. Los clientes reservan solos. Tú gestionas todo desde el panel.",
-    },
-  ];
-
-  return (
-    <section className="bg-[#09090B] py-24">
-      <div className="mx-auto max-w-5xl px-4 md:px-6">
-        <div className="mb-12 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#D4AF37]">
-            Cómo funciona
-          </p>
-          <h2 className="mt-3 text-4xl font-black tracking-tight text-white">
-            Activo en 30 minutos
-          </h2>
-          <p className="mt-3 text-white/42">Tres pasos. Sin técnicos. Sin manuales.</p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {steps.map(({ n, icon: Icon, title, desc }) => (
-            <div
-              key={n}
-              className="relative rounded-2xl border border-white/[0.07] bg-[#111111] p-7"
-            >
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/10 ring-1 ring-[#D4AF37]/18">
-                  <Icon size={16} className="text-[#D4AF37]" />
-                </div>
-                <span className="text-4xl font-black tabular-nums text-[#D4AF37]/18">{n}</span>
-              </div>
-              <h3 className="text-[16px] font-black leading-snug text-white">{title}</h3>
-              <p className="mt-2 text-[13px] leading-relaxed text-white/40">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── Video Demo ───────────────────────────────────────────────────────────────
-// Reemplaza VIDEO_ID con el ID de tu vídeo de YouTube (ej. "dQw4w9WgXcQ")
-const DEMO_VIDEO_ID = ""; // <-- pega aquí el ID de tu vídeo
+// Vídeo autohospedado en /public/videos/demo.mp4
+const DEMO_VIDEO_SRC = "/videos/demo.mp4";
+// TODO(assets): crear /public/videos/demo-poster.webp (1280x720, <40KB) con
+// un frame estático representativo (ej. dashboard o reserva pública en
+// pantalla) y añadir poster={DEMO_VIDEO_POSTER} al <video> de abajo.
+// Sin poster, el navegador debe pedir al menos las cabeceras/metadata del
+// .mp4 para pintar el primer frame — un poster evita esa petición de red
+// adicional en mobile y el "flash" de fondo negro mientras carga. Esta
+// sección está bajo el fold (no es LCP), así que no es crítico, pero sigue
+// siendo una mejora de CLS/percepción. No se activa el atributo todavía
+// para evitar una petición 404 al archivo inexistente.
+// const DEMO_VIDEO_POSTER = "/videos/demo-poster.webp";
 
 function VideoDemo() {
-  if (!DEMO_VIDEO_ID) return null;
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  function handlePlay() {
+    setPlaying(true);
+    videoRef.current?.play();
+  }
+
   return (
     <section className="relative overflow-hidden bg-[#09090B] py-20 md:py-28">
       {/* Dot grid */}
@@ -686,9 +692,9 @@ function VideoDemo() {
       <div className="relative mx-auto max-w-5xl px-4 md:px-6">
         {/* Header */}
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D4AF37]/60">Demo en vivo</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D4AF37]/60">Hecho para barberías reales</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
-            Míralo funcionar en{" "}
+            La experiencia que{" "}
             <span
               style={{
                 background: "linear-gradient(135deg, #F5D060 0%, #D4AF37 60%, #B8860B 100%)",
@@ -697,11 +703,11 @@ function VideoDemo() {
                 backgroundClip: "text",
               }}
             >
-              2 minutos
+              tus clientes recuerdan
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/40">
-            Desde que el cliente reserva desde Instagram hasta que tú lo ves en el panel — sin complicaciones.
+            Reservas online, agenda y caja para que tú te concentres en el sillón — no en el papeleo.
           </p>
         </div>
 
@@ -709,24 +715,38 @@ function VideoDemo() {
         <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_40px_100px_rgba(0,0,0,0.6)]">
           {/* Top shine */}
           <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
-          {/* Browser chrome bar */}
-          <div className="flex items-center gap-1.5 bg-[#111115] px-4 py-3 border-b border-white/[0.05]">
-            <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
-            <div className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
-            <div className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
-            <div className="mx-3 flex flex-1 items-center rounded-md bg-white/[0.04] px-3 py-1">
-              <span className="text-[11px] text-white/20">barberiaos.com/dashboard</span>
-            </div>
-          </div>
-          {/* YouTube iframe */}
+          {/* Self-hosted video */}
           <div className="relative aspect-video bg-black">
-            <iframe
-              src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}?rel=0&modestbranding=1&color=white`}
-              title="BarberíaOS — Demo del sistema"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
+            <video
+              ref={videoRef}
+              src={DEMO_VIDEO_SRC}
+              controls={playing}
+              playsInline
+              preload="metadata"
+              onPause={() => setPlaying(false)}
+              onEnded={() => setPlaying(false)}
+              className="absolute inset-0 h-full w-full object-cover"
             />
+            {!playing && (
+              <button
+                type="button"
+                onClick={handlePlay}
+                aria-label="Reproducir vídeo de BarberíaOS"
+                className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/10"
+              >
+                <span
+                  className="flex h-20 w-20 items-center justify-center rounded-full transition-transform duration-200 group-hover:scale-105"
+                  style={{
+                    background: "linear-gradient(135deg, #F5D060 0%, #D4AF37 60%, #B8860B 100%)",
+                    boxShadow: "0 0 0 1px rgba(212,175,55,0.4), 0 16px 48px rgba(212,175,55,0.35)",
+                  }}
+                >
+                  <svg width="26" height="30" viewBox="0 0 26 30" fill="none" aria-hidden="true">
+                    <path d="M2 2.5C2 1.05 3.6.18 4.83.9l20.1 11.6a1.7 1.7 0 0 1 0 2.94L4.83 27.04A1.7 1.7 0 0 1 2 25.58V2.5Z" fill="#09090B" />
+                  </svg>
+                </span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -1048,7 +1068,7 @@ function Footer() {
               ["Términos", "/legal/terminos"],
               ["Contacto", `mailto:${BUSINESS_CONFIG.legalEmail}`],
               ["Ver demo", BUSINESS_CONFIG.demoUrl],
-              ["Alternativa a Booksy", "/alternativa-booksy-barberias"],
+              ["Alternativa a Booksy", "/alternativa-a-booksy"],
             ].map(([label, href]) => (
               <Link key={href} href={href} className="transition hover:text-white/52">
                 {label}
@@ -1097,9 +1117,10 @@ export function BarberíaOSHomeLanding() {
       <ChannelBar />
       <PainSection />
       <Features />
+      <QRBookingSection id="qr" />
       <ComparisonSection />
       <StatsBar />
-      <HowItWorks />
+      <ActivationTimeline />
       <VideoDemo />
       <TrustBar />
       <Pricing />

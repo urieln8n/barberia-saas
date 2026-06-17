@@ -144,7 +144,8 @@ export async function POST(request: Request) {
       await supabase
         .from("security_audits")
         .update({ status: "error", report: { error: "Audit unavailable" } })
-        .eq("id", auditId);
+        .eq("id", auditId)
+        .eq("barbershop_id", barbershopId);
 
       console.error("[security-audit] Passive audit failed:", msg);
       return NextResponse.json(

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { BUSINESS_CONFIG } from "@/src/lib/site-config";
+import { SITE_URL } from "@/src/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Tarjeta de puntos digital para barberías | BarberíaOS",
@@ -129,15 +130,36 @@ const faqs = [
   },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map(({ q, a }) => ({
-    "@type": "Question",
-    name: q,
-    acceptedAnswer: { "@type": "Answer", text: a },
-  })),
-};
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Programa de fidelización para barberías",
+        item: `${SITE_URL}/programa-fidelizacion-barberias`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Tarjeta de puntos digital",
+        item: `${SITE_URL}/tarjeta-puntos-digital-barberia`,
+      },
+    ],
+  },
+];
 
 function StampCard() {
   return (

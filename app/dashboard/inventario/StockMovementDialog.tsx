@@ -84,15 +84,15 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
-      <div className="w-full max-w-2xl rounded-[24px] border border-[#E7E2D8] bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-[#E7E2D8] px-6 py-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6">
+      <div className="w-full max-w-2xl rounded-[24px] border border-white/[0.08] bg-[#0D0D11] shadow-2xl">
+        <div className="flex items-start justify-between gap-4 border-b border-white/[0.08] px-6 py-5">
           <div>
             <p className="label-section">Movimiento de stock</p>
             <h2 className="section-heading mt-1">{product.name}</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-white/50">
               Stock actual:{" "}
-              <span className="font-black text-[#080A0F]">
+              <span className="font-black text-white">
                 {product.current_stock}
               </span>
             </p>
@@ -101,7 +101,7 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Cerrar movimiento"
-            className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-slate-900"
+            className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           >
             <X size={18} />
           </button>
@@ -122,15 +122,15 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
                     onClick={() => setMovementType(option.value)}
                     className={`rounded-2xl border px-4 py-3 text-left transition-all ${
                       active
-                        ? "border-[#C9922A]/40 bg-[#C9922A]/10"
-                        : "border-[#E7E2D8] bg-white hover:border-[#D5CEBC] hover:bg-[#FAF8F4]"
+                        ? "border-[#D4AF37]/40 bg-[#D4AF37]/10"
+                        : "border-white/[0.08] bg-white/[0.04] hover:border-white/[0.16] hover:bg-white/[0.06]"
                     }`}
                   >
-                    <span className="flex items-center gap-2 text-sm font-black text-[#080A0F]">
-                      <Icon size={15} className={active ? "text-[#C9922A]" : "text-slate-400"} />
+                    <span className="flex items-center gap-2 text-sm font-black text-white">
+                      <Icon size={15} className={active ? "text-[#D4AF37]" : "text-white/40"} />
                       {option.label}
                     </span>
-                    <span className="mt-1 block text-xs text-slate-500">
+                    <span className="mt-1 block text-xs text-white/50">
                       {option.description}
                     </span>
                   </button>
@@ -162,13 +162,13 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3">
-              <p className="text-[10px] font-black uppercase text-slate-500">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+              <p className="text-[10px] font-black uppercase text-white/50">
                 Stock resultante
               </p>
               <p
                 className={`mt-2 text-2xl font-black ${
-                  previewStock < 0 ? "text-red-600" : "text-[#080A0F]"
+                  previewStock < 0 ? "text-red-400" : "text-white"
                 }`}
               >
                 {Number.isFinite(previewStock) ? previewStock : product.current_stock}
@@ -187,12 +187,12 @@ export function StockMovementDialog({ product, onClose, onSaved }: Props) {
           </div>
 
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               {error}
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-[#E7E2D8] pt-5 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-5 sm:flex-row sm:justify-end">
             <PrimaryButton type="button" onClick={onClose} variant="secondary">
               Cancelar
             </PrimaryButton>

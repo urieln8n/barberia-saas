@@ -232,7 +232,7 @@ export function QuickBookingPanel({
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.3s cubic-bezier(0.16,1,0.3,1)",
         }}
-        className="fixed right-0 top-0 z-[1001] flex h-full w-full max-w-lg flex-col bg-[#F6F1E8] shadow-[0_0_80px_rgba(5,10,20,0.40)]"
+        className="fixed right-0 top-0 z-[1001] flex h-full w-full max-w-lg flex-col bg-[#0C0C0F] shadow-[0_0_80px_rgba(0,0,0,0.80)]"
       >
 
         {/* ── PANTALLA DE ÉXITO PREMIUM ──────────────────────────────────── */}
@@ -365,10 +365,10 @@ export function QuickBookingPanel({
           </div>
         )}
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#D5CEBC] bg-[#F8F3EA] px-5 py-4 shrink-0">
+        <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0E0E1C] px-5 py-4 shrink-0">
           <div>
-            <h2 className="text-lg font-black text-[#080A0F]">Nueva cita</h2>
-            <p className="text-xs font-medium text-slate-500 mt-0.5">
+            <h2 className="text-lg font-black text-white/90">Nueva cita</h2>
+            <p className="text-xs font-medium text-white/40 mt-0.5">
               Crea una reserva rápida desde el panel
             </p>
           </div>
@@ -377,7 +377,7 @@ export function QuickBookingPanel({
             onClick={() => !isSubmitting && onOpenChange(false)}
             disabled={isSubmitting}
             aria-label="Cerrar panel"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#D5CEBC] bg-white text-slate-500 transition-all duration-150 hover:border-[#C9922A]/40 hover:bg-[#FAF8F4] hover:text-[#080A0F] disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.10] bg-white/[0.05] text-white/40 transition-all duration-150 hover:border-white/[0.20] hover:bg-white/[0.09] hover:text-white/70 disabled:opacity-40"
           >
             <X size={16} />
           </button>
@@ -392,14 +392,14 @@ export function QuickBookingPanel({
         >
           {/* Section 1: Cliente */}
           <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#B98B2F] mb-3">
+            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#D4AF37] mb-3">
               <User size={13} />
               Cliente
             </legend>
 
             <div className="form-field-group">
               <label htmlFor="qb-name" className="form-label">
-                Nombre <span className="text-[#E5484D]">*</span>
+                Nombre <span className="text-red-400">*</span>
               </label>
               <input
                 id="qb-name"
@@ -413,13 +413,13 @@ export function QuickBookingPanel({
                 className={`input-field ${errors.customerName ? "input-error" : ""}`}
               />
               {errors.customerName && (
-                <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.customerName}</p>
+                <p className="mt-1 text-xs font-medium text-red-400">{errors.customerName}</p>
               )}
             </div>
 
             <div className="form-field-group">
               <label htmlFor="qb-phone" className="form-label">
-                Teléfono <span className="text-[#E5484D]">*</span>
+                Teléfono <span className="text-red-400">*</span>
               </label>
               <input
                 id="qb-phone"
@@ -432,13 +432,13 @@ export function QuickBookingPanel({
                 className={`input-field ${errors.customerPhone ? "input-error" : ""}`}
               />
               {errors.customerPhone && (
-                <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.customerPhone}</p>
+                <p className="mt-1 text-xs font-medium text-red-400">{errors.customerPhone}</p>
               )}
             </div>
 
             <div className="form-field-group">
               <label htmlFor="qb-email" className="form-label">
-                Email <span className="text-xs font-normal text-slate-500">(opcional)</span>
+                Email <span className="text-xs font-normal text-white/30">(opcional)</span>
               </label>
               <input
                 id="qb-email"
@@ -454,18 +454,18 @@ export function QuickBookingPanel({
           </fieldset>
 
           {/* Divider */}
-          <div className="border-t border-[#D5CEBC]" />
+          <div className="border-t border-white/[0.07]" />
 
           {/* Section 2: Servicio + Barbero */}
           <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#B98B2F] mb-3">
+            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#D4AF37] mb-3">
               <Scissors size={13} />
               Servicio y barbero
             </legend>
 
             <div className="form-field-group">
               <label htmlFor="qb-service" className="form-label">
-                Servicio <span className="text-[#E5484D]">*</span>
+                Servicio <span className="text-red-400">*</span>
               </label>
               <select
                 id="qb-service"
@@ -484,13 +484,13 @@ export function QuickBookingPanel({
                 ))}
               </select>
               {errors.serviceId && (
-                <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.serviceId}</p>
+                <p className="mt-1 text-xs font-medium text-red-400">{errors.serviceId}</p>
               )}
             </div>
 
             <div className="form-field-group">
               <label htmlFor="qb-barber" className="form-label">
-                Barbero <span className="text-[#E5484D]">*</span>
+                Barbero <span className="text-red-400">*</span>
               </label>
               <select
                 id="qb-barber"
@@ -507,17 +507,17 @@ export function QuickBookingPanel({
                 ))}
               </select>
               {errors.barberId && (
-                <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.barberId}</p>
+                <p className="mt-1 text-xs font-medium text-red-400">{errors.barberId}</p>
               )}
             </div>
           </fieldset>
 
           {/* Divider */}
-          <div className="border-t border-[#D5CEBC]" />
+          <div className="border-t border-white/[0.07]" />
 
           {/* Section 3: Fecha + Hora + Notas */}
           <fieldset className="space-y-4">
-            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#B98B2F] mb-3">
+            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#D4AF37] mb-3">
               <Calendar size={13} />
               Fecha y hora
             </legend>
@@ -525,7 +525,7 @@ export function QuickBookingPanel({
             <div className="grid grid-cols-2 gap-3">
               <div className="form-field-group">
                 <label htmlFor="qb-date" className="form-label">
-                  Fecha <span className="text-[#E5484D]">*</span>
+                  Fecha <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="qb-date"
@@ -537,13 +537,13 @@ export function QuickBookingPanel({
                   className={`input-field ${errors.appointmentDate ? "input-error" : ""}`}
                 />
                 {errors.appointmentDate && (
-                  <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.appointmentDate}</p>
+                  <p className="mt-1 text-xs font-medium text-red-400">{errors.appointmentDate}</p>
                 )}
               </div>
 
               <div className="form-field-group">
                 <label htmlFor="qb-time" className="form-label">
-                  Hora <span className="text-[#E5484D]">*</span>
+                  Hora <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="qb-time"
@@ -555,7 +555,7 @@ export function QuickBookingPanel({
                   className={`input-field ${errors.appointmentTime ? "input-error" : ""}`}
                 />
                 {errors.appointmentTime && (
-                  <p className="mt-1 text-xs font-medium text-[#E5484D]">{errors.appointmentTime}</p>
+                  <p className="mt-1 text-xs font-medium text-red-400">{errors.appointmentTime}</p>
                 )}
               </div>
             </div>
@@ -565,7 +565,7 @@ export function QuickBookingPanel({
                 <span className="flex items-center gap-1.5">
                   <FileText size={12} />
                   Notas internas
-                  <span className="text-xs font-normal text-slate-500">(opcional)</span>
+                  <span className="text-xs font-normal text-white/30">(opcional)</span>
                 </span>
               </label>
               <textarea
@@ -581,16 +581,16 @@ export function QuickBookingPanel({
           </fieldset>
 
           {/* Divider */}
-          <div className="border-t border-[#D5CEBC]" />
+          <div className="border-t border-white/[0.07]" />
 
           {/* Section 4: Estado de pago */}
           <fieldset>
-            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#B98B2F] mb-3">
+            <legend className="flex items-center gap-2 text-xs font-black uppercase text-[#D4AF37] mb-3">
               <CreditCard size={13} />
               Estado del pago
             </legend>
             <div className="flex gap-3">
-              <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-150 ${form.paymentStatus === "pending" ? "border-[#C9922A]/50 bg-[#C9922A]/8 ring-2 ring-[#C9922A]/20" : "border-[#D5CEBC] bg-white hover:border-[#C9922A]/30"}`}>
+              <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-150 ${form.paymentStatus === "pending" ? "border-amber-500/40 bg-amber-500/[0.08] ring-1 ring-amber-500/20" : "border-white/[0.08] bg-white/[0.03] hover:border-amber-500/20"}`}>
                 <input
                   type="radio"
                   name="paymentStatus"
@@ -598,14 +598,14 @@ export function QuickBookingPanel({
                   checked={form.paymentStatus === "pending"}
                   onChange={() => setField("paymentStatus", "pending")}
                   disabled={isSubmitting}
-                  className="accent-[#C9922A]"
+                  className="accent-amber-500"
                 />
                 <span>
-                  <span className="block text-sm font-bold text-[#080A0F]">Pendiente</span>
-                  <span className="text-xs text-slate-500">Se cobra en barbería</span>
+                  <span className="block text-sm font-bold text-white/80">Pendiente</span>
+                  <span className="text-xs text-white/35">Se cobra en barbería</span>
                 </span>
               </label>
-              <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-150 ${form.paymentStatus === "paid" ? "border-emerald-400/50 bg-emerald-50/80 ring-2 ring-emerald-400/20" : "border-[#D5CEBC] bg-white hover:border-emerald-300/40"}`}>
+              <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-150 ${form.paymentStatus === "paid" ? "border-emerald-500/40 bg-emerald-500/[0.08] ring-1 ring-emerald-500/20" : "border-white/[0.08] bg-white/[0.03] hover:border-emerald-500/20"}`}>
                 <input
                   type="radio"
                   name="paymentStatus"
@@ -613,11 +613,11 @@ export function QuickBookingPanel({
                   checked={form.paymentStatus === "paid"}
                   onChange={() => setField("paymentStatus", "paid")}
                   disabled={isSubmitting}
-                  className="accent-emerald-600"
+                  className="accent-emerald-500"
                 />
                 <span>
-                  <span className="block text-sm font-bold text-[#080A0F]">Pagado</span>
-                  <span className="text-xs text-slate-500">Ya cobrado</span>
+                  <span className="block text-sm font-bold text-white/80">Pagado</span>
+                  <span className="text-xs text-white/35">Ya cobrado</span>
                 </span>
               </label>
             </div>
@@ -628,7 +628,7 @@ export function QuickBookingPanel({
         </form>
 
         {/* Sticky footer */}
-        <div className="shrink-0 border-t border-[#D5CEBC] bg-[#F8F3EA] px-5 py-4">
+        <div className="shrink-0 border-t border-white/[0.08] bg-[#0E0E1C] px-5 py-4">
           <div className="flex gap-3">
             <button
               type="button"
@@ -643,6 +643,7 @@ export function QuickBookingPanel({
               form="quick-booking-form"
               isLoading={isSubmitting}
               loadingText="Creando cita..."
+              variant="gold"
               className="flex-1"
             >
               Crear cita

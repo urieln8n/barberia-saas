@@ -76,13 +76,13 @@ export function QRClient({ name, slug }: Props) {
       />
 
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm lg:w-96 lg:shrink-0">
+        <div className="flex w-full flex-col items-center gap-5 rounded-[28px] border border-white/[0.08] bg-[#0E0E1C] p-6 lg:w-96 lg:shrink-0">
           <div className="flex w-full items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">QR</p>
-              <h2 className="mt-0.5 font-black text-[#111827]">QR de reservas</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">QR</p>
+              <h2 className="mt-0.5 font-black text-white">QR de reservas</h2>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#C9922A]/20 bg-[#C9922A]/10 text-[#C9922A]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-[#D4AF37]">
               <QrCode size={18} />
             </div>
           </div>
@@ -97,8 +97,8 @@ export function QRClient({ name, slug }: Props) {
           />
 
           <div className="text-center">
-            <p className="font-black text-[#111827]">{name}</p>
-            <p className="mt-0.5 text-xs text-neutral-500">Escanear para reservar</p>
+            <p className="font-black text-white">{name}</p>
+            <p className="mt-0.5 text-xs text-white/50">Escanear para reservar</p>
           </div>
 
           <div className="grid w-full gap-2">
@@ -116,26 +116,26 @@ export function QRClient({ name, slug }: Props) {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Enlace público</p>
-            <h2 className="mt-0.5 font-black text-[#111827]">Tu enlace de reservas</h2>
-            <p className="mt-1 text-sm text-neutral-500">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Enlace público</p>
+            <h2 className="mt-0.5 font-black text-white">Tu enlace de reservas</h2>
+            <p className="mt-1 text-sm text-white/50">
               Copia y pega este link donde quieras. Tus clientes reservan sin crear cuenta.
             </p>
 
-            <div className="mt-4 flex min-w-0 items-center gap-2 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3">
-              <span className="min-w-0 flex-1 break-all font-mono text-sm text-neutral-700">{publicUrl}</span>
+            <div className="mt-4 flex min-w-0 items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+              <span className="min-w-0 flex-1 break-all font-mono text-sm text-white/70">{publicUrl}</span>
 
               <button
                 type="button"
                 onClick={() => copyToClipboard("publicUrl", publicUrl)}
-                className="shrink-0 rounded-xl border border-[#E5E7EB] p-2 transition-colors hover:bg-white"
+                className="shrink-0 rounded-xl border border-white/[0.10] p-2 transition-colors hover:bg-white/[0.06]"
                 title="Copiar enlace"
               >
                 {copied === "publicUrl" ? (
-                  <Check size={15} className="text-green-600" />
+                  <Check size={15} className="text-emerald-400" />
                 ) : (
-                  <Copy size={15} className="text-neutral-500" />
+                  <Copy size={15} className="text-white/40" />
                 )}
               </button>
 
@@ -143,22 +143,22 @@ export function QRClient({ name, slug }: Props) {
                 href={publicUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 rounded-xl border border-[#E5E7EB] p-2 transition-colors hover:bg-white"
+                className="shrink-0 rounded-xl border border-white/[0.10] p-2 transition-colors hover:bg-white/[0.06]"
                 title="Abrir página pública"
               >
-                <ExternalLink size={15} className="text-neutral-500" />
+                <ExternalLink size={15} className="text-white/40" />
               </a>
             </div>
 
             {copied === "publicUrl" && (
-              <p className="mt-2 text-xs font-semibold text-green-600">✓ Enlace copiado al portapapeles</p>
+              <p className="mt-2 text-xs font-semibold text-emerald-400">✓ Enlace copiado al portapapeles</p>
             )}
           </div>
 
           <div className="grid gap-4 xl:grid-cols-2">
             <ChannelCard
               icon={Instagram}
-              iconClassName="bg-pink-50 text-pink-600"
+              iconClassName="bg-pink-500/[0.10] text-pink-400"
               title="Consigue reservas desde Instagram"
               description="Pega este enlace en la bio de Instagram."
               body={instagramText}
@@ -180,7 +180,7 @@ export function QRClient({ name, slug }: Props) {
 
             <ChannelCard
               icon={MessageCircle}
-              iconClassName="bg-green-50 text-green-700"
+              iconClassName="bg-emerald-500/[0.10] text-emerald-400"
               title="Convierte WhatsApp en canal de reservas"
               description="Envía este mensaje a clientes o grupos."
               body={whatsappMessage}
@@ -195,7 +195,7 @@ export function QRClient({ name, slug }: Props) {
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F8FAFC]"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.08]"
                   >
                     <ExternalLink size={15} /> Abrir WhatsApp
                   </a>
@@ -205,7 +205,7 @@ export function QRClient({ name, slug }: Props) {
 
             <ChannelCard
               icon={Globe}
-              iconClassName="bg-blue-50 text-blue-700"
+              iconClassName="bg-blue-500/[0.10] text-blue-400"
               title="Añade tu botón de citas en Google"
               description="Añade este enlace como URL de citas en tu perfil de Google Business."
               body={publicUrl}
@@ -220,7 +220,7 @@ export function QRClient({ name, slug }: Props) {
 
             <ChannelCard
               icon={Scissors}
-              iconClassName="bg-[#2F6FEB]/10 text-[#2F6FEB]"
+              iconClassName="bg-[#D4AF37]/10 text-[#D4AF37]"
               title="Widget web simple"
               description="Usa este enlace como botón básico en tu web."
               body={widgetSnippet}
@@ -241,7 +241,7 @@ export function QRClient({ name, slug }: Props) {
           >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
               {["Recepción", "Espejo", "Instagram", "WhatsApp", "Google"].map((place) => (
-                <div key={place} className="rounded-2xl border border-[#2563EB]/10 bg-[#2563EB]/5 p-4 text-sm font-black text-[#080A0F]">
+                <div key={place} className="rounded-2xl border border-[#D4AF37]/15 bg-[#D4AF37]/[0.06] p-4 text-sm font-black text-white/80">
                   Pon este QR en {place}.
                 </div>
               ))}
@@ -271,19 +271,19 @@ function ChannelCard({
   code?: boolean;
 }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="flex min-w-0 flex-col rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
       <div className="flex gap-3">
         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconClassName}`}>
           <Icon size={18} />
         </div>
         <div className="min-w-0">
-          <h3 className="font-black leading-snug text-[#111827]">{title}</h3>
-          <p className="mt-1 text-sm leading-5 text-neutral-500">{description}</p>
+          <h3 className="font-black leading-snug text-white">{title}</h3>
+          <p className="mt-1 text-sm leading-5 text-white/50">{description}</p>
         </div>
       </div>
 
       <div
-        className={`mt-4 min-h-[76px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4 text-sm leading-6 text-neutral-700 ${
+        className={`mt-4 min-h-[76px] rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 text-sm leading-6 text-white/70 ${
           code ? "break-all font-mono text-xs" : "break-words"
         }`}
       >
@@ -308,7 +308,7 @@ function CopyButton({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#F8FAFC]"
+      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.08]"
     >
       {copied ? <Check size={15} className="text-green-600" /> : <Copy size={15} />}
       {copied ? "Copiado" : label}

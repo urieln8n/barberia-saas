@@ -94,13 +94,13 @@ function statusLabel(status: string) {
 
 function statusClass(status: string) {
   const classes: Record<string, string> = {
-    pending: "border-amber-100 bg-amber-50 text-amber-700",
-    google_redirect_ready: "border-emerald-100 bg-emerald-50 text-emerald-700",
-    private_feedback: "border-red-100 bg-red-50 text-red-700",
-    archived: "border-neutral-200 bg-neutral-100 text-neutral-600",
+    pending: "border-amber-500/20 bg-amber-500/[0.08] text-amber-400",
+    google_redirect_ready: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-400",
+    private_feedback: "border-red-500/20 bg-red-500/[0.08] text-red-400",
+    archived: "border-white/[0.08] bg-white/[0.04] text-white/40",
   };
 
-  return classes[status] ?? "border-neutral-200 bg-neutral-100 text-neutral-600";
+  return classes[status] ?? "border-white/[0.08] bg-white/[0.04] text-white/40";
 }
 
 function buildReviewUrl(baseUrl: string, token: string) {
@@ -268,11 +268,11 @@ export default async function ReviewsDashboardPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+      <section className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-black text-neutral-950">Lista de reseñas</h2>
-            <p className="mt-1 text-sm text-neutral-500">
+            <h2 className="text-xl font-black text-white">Lista de reseñas</h2>
+            <p className="mt-1 text-sm text-white/50">
               {pending > 0
                 ? `${pending} enlaces pendientes de responder.`
                 : "Valoraciones y feedback recibidos por enlaces públicos."}
@@ -281,12 +281,12 @@ export default async function ReviewsDashboardPage() {
         </div>
 
         {reviews.length === 0 ? (
-          <div className="mt-6 rounded-[24px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white">
-              <Star size={20} className="text-[#C9922A]" />
+          <div className="mt-6 rounded-[24px] border border-dashed border-white/[0.10] bg-white/[0.03] p-8 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+              <Star size={20} className="text-[#D4AF37]" />
             </div>
-            <p className="mt-4 font-black text-slate-900">Sin reseñas todavía</p>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
+            <p className="mt-4 font-black text-white">Sin reseñas todavía</p>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-white/50">
               Las reseñas de Google determinan si te encuentran o te ignoran. Activa el Agente Reseñas IA para generar solicitudes personalizadas después de cada cita.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -314,7 +314,7 @@ export default async function ReviewsDashboardPage() {
               return (
                 <article
                   key={review.id}
-                  className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4"
                 >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
@@ -322,15 +322,15 @@ export default async function ReviewsDashboardPage() {
                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(review.status)}`}>
                           {statusLabel(review.status)}
                         </span>
-                        <span className="text-xs font-semibold text-neutral-500">
+                        <span className="text-xs font-semibold text-white/40">
                           {formatDate(review.created_at)}
                         </span>
                       </div>
 
-                      <h3 className="mt-3 font-black text-[#111827]">
+                      <h3 className="mt-3 font-black text-white">
                         {client?.name ?? "Cliente sin vincular"}
                       </h3>
-                      <p className="mt-1 text-sm text-neutral-500">
+                      <p className="mt-1 text-sm text-white/50">
                         {formatAppointmentDate(
                           appointment?.appointment_date,
                           appointment?.start_time
@@ -338,23 +338,23 @@ export default async function ReviewsDashboardPage() {
                       </p>
 
                       {review.rating ? (
-                        <p className="mt-3 text-sm font-bold text-[#111827]">
+                        <p className="mt-3 text-sm font-bold text-white">
                           {review.rating}/5 estrellas
                         </p>
                       ) : (
-                        <p className="mt-3 text-sm font-semibold text-neutral-500">
+                        <p className="mt-3 text-sm font-semibold text-white/40">
                           Enlace pendiente de valoración
                         </p>
                       )}
 
                       {review.comment && (
-                        <p className="mt-3 max-w-3xl rounded-2xl bg-neutral-50 p-3 text-sm leading-6 text-neutral-600">
+                        <p className="mt-3 max-w-3xl rounded-2xl bg-white/[0.04] p-3 text-sm leading-6 text-white/60">
                           {review.comment}
                         </p>
                       )}
 
                       {review.respuesta_sugerida && (
-                        <p className="mt-3 max-w-3xl rounded-2xl border border-[#DDE7FB] bg-[#EFF6FF] p-3 text-xs leading-5 text-blue-800">
+                        <p className="mt-3 max-w-3xl rounded-2xl border border-blue-500/20 bg-blue-500/[0.08] p-3 text-xs leading-5 text-blue-400">
                           <span className="font-bold">Respuesta sugerida futura:</span>{" "}
                           {review.respuesta_sugerida}
                         </p>
@@ -373,14 +373,14 @@ export default async function ReviewsDashboardPage() {
                     </div>
 
                     <div className="lg:w-80">
-                      <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">
+                      <p className="text-xs font-bold uppercase tracking-wide text-white/40">
                         Enlace privado
                       </p>
                       <a
                         href={reviewUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-2 block break-all rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-3 text-xs font-semibold text-neutral-600 transition hover:border-[#C89B3C]"
+                        className="mt-2 block break-all rounded-2xl border border-white/[0.08] bg-white/[0.04] p-3 text-xs font-semibold text-white/50 transition hover:border-[#D4AF37]/30"
                       >
                         {reviewUrl}
                       </a>

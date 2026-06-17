@@ -353,7 +353,7 @@ export default async function ClientesPage() {
       />
 
       {errorMessage && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-500/30 bg-red-950/40 p-4 text-sm text-red-400">
           Error leyendo clientes: {errorMessage}
         </div>
       )}
@@ -365,7 +365,10 @@ export default async function ClientesPage() {
         <StatCard label="Frecuentes" value={recurringClients} description="Más de una visita" icon={TrendingUp} iconBg="bg-amber-50" iconColor="text-amber-700" />
       </section>
 
-      <section className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+      <section
+        className="rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-5"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+      >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="label-section">Filtros CRM</p>
@@ -386,7 +389,7 @@ export default async function ClientesPage() {
             ["VIP", vipClients],
             ["Sin próxima cita", withoutNextAppointment],
           ].map(([label, value]) => (
-            <span key={String(label)} className="rounded-full border border-[#E7E2D8] bg-[#FDFBF7] px-3 py-2 text-xs font-black text-neutral-700">
+            <span key={String(label)} className="rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-2 text-xs font-black text-white/70">
               {label} · {value}
             </span>
           ))}
@@ -395,12 +398,12 @@ export default async function ClientesPage() {
 
       <section className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
         <div id="crear-cliente" className="panel overflow-hidden p-0">
-          <div className="border-b border-[#E5E7EB] bg-[linear-gradient(180deg,rgba(47,111,235,0.06),rgba(255,255,255,0))] px-5 py-5 md:px-6">
+          <div className="border-b border-white/[0.07] bg-[linear-gradient(180deg,rgba(109,40,217,0.08),transparent)] px-5 py-5 md:px-6">
             <p className="label-section">Clientes</p>
-            <h2 className="mt-2 text-xl font-black text-[#111827]">
+            <h2 className="mt-2 text-xl font-black text-white/90">
               Crear cliente manual
             </h2>
-            <p className="mt-1.5 max-w-xl text-sm text-neutral-500">
+            <p className="mt-1.5 max-w-xl text-sm text-white/50">
               Añade clientes que todavía no han reservado online con una ficha
               limpia y lista para usar en agenda.
             </p>
@@ -456,7 +459,7 @@ export default async function ClientesPage() {
               />
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-5 sm:flex-row">
+            <div className="flex flex-col gap-3 border-t border-white/[0.07] pt-5 sm:flex-row">
               <button
                 type="submit"
                 className="btn-primary flex-1"

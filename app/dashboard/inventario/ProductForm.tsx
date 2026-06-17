@@ -50,15 +50,15 @@ export function ProductForm({ product, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
-      <div className="max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-[24px] border border-[#E7E2D8] bg-white shadow-2xl">
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#E7E2D8] bg-white px-6 py-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6">
+      <div className="max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-[24px] border border-white/[0.08] bg-[#0D0D11] shadow-2xl">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/[0.08] bg-[#0D0D11] px-6 py-5">
           <div>
             <p className="label-section">Inventario</p>
             <h2 className="section-heading mt-1">
               {product ? "Editar producto" : "Nuevo producto"}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-white/50">
               Gestiona productos de venta y consumibles internos.
             </p>
           </div>
@@ -66,7 +66,7 @@ export function ProductForm({ product, onClose, onSaved }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Cerrar formulario"
-            className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-[#FAF8F4] hover:text-slate-900"
+            className="rounded-xl p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           >
             <X size={18} />
           </button>
@@ -97,7 +97,7 @@ export function ProductForm({ product, onClose, onSaved }: Props) {
 
             <div>
               <label className="form-label">Tipo</label>
-              <div className="grid grid-cols-2 gap-2 rounded-[16px] border border-[#E7E2D8] bg-[#F8F5EF] p-1">
+              <div className="grid grid-cols-2 gap-2 rounded-[16px] border border-white/[0.08] bg-white/[0.04] p-1">
                 {[
                   { value: "retail", label: "Venta" },
                   { value: "internal", label: "Uso interno" },
@@ -108,8 +108,8 @@ export function ProductForm({ product, onClose, onSaved }: Props) {
                     onClick={() => setProductType(option.value as InventoryProductType)}
                     className={`rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
                       productType === option.value
-                        ? "bg-white text-[#080A0F] shadow-sm"
-                        : "text-slate-500 hover:text-slate-900"
+                        ? "bg-white/[0.10] text-white"
+                        : "text-white/50 hover:text-white"
                     }`}
                   >
                     {option.label}
@@ -202,25 +202,25 @@ export function ProductForm({ product, onClose, onSaved }: Props) {
             </div>
           </div>
 
-          <label className="flex items-center gap-3 rounded-2xl border border-[#E7E2D8] bg-[#F8F5EF] px-4 py-3">
+          <label className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
             <input
               type="checkbox"
               checked={isActive}
               onChange={(event) => setIsActive(event.target.checked)}
-              className="h-4 w-4 accent-[#C9922A]"
+              className="h-4 w-4 accent-[#D4AF37]"
             />
-            <span className="text-sm font-semibold text-slate-700">
+            <span className="text-sm font-semibold text-white/70">
               Producto activo
             </span>
           </label>
 
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] px-4 py-3 text-sm font-semibold text-red-400">
               {error}
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-[#E7E2D8] pt-5 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-5 sm:flex-row sm:justify-end">
             <PrimaryButton type="button" onClick={onClose} variant="secondary">
               Cancelar
             </PrimaryButton>

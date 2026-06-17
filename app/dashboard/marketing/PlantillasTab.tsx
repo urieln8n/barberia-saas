@@ -194,9 +194,9 @@ const canalConfig: Record<
   Canal,
   { label: string; icon: LucideIcon; color: string; bg: string }
 > = {
-  whatsapp:  { label: "WhatsApp",  icon: MessageCircle, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-100"  },
-  instagram: { label: "Instagram", icon: Instagram,     color: "text-pink-600",    bg: "bg-pink-50 border-pink-100"         },
-  general:   { label: "General",   icon: Hash,          color: "text-slate-500",   bg: "bg-slate-50 border-slate-100"       },
+  whatsapp:  { label: "WhatsApp",  icon: MessageCircle, color: "text-emerald-400", bg: "bg-emerald-500/[0.08] border-emerald-500/20"  },
+  instagram: { label: "Instagram", icon: Instagram,     color: "text-pink-400",    bg: "bg-pink-500/[0.08] border-pink-500/20"         },
+  general:   { label: "General",   icon: Hash,          color: "text-white/50",   bg: "bg-white/[0.04] border-white/[0.08]"           },
 };
 
 const filtros: { id: Canal | "todos"; label: string }[] = [
@@ -217,7 +217,7 @@ function renderTemplate(texto: string, variables: MarketingVariables) {
       return (
         <span
           key={i}
-          className="rounded bg-emerald-100 px-1 font-mono text-[11px] font-bold text-emerald-700"
+          className="rounded bg-emerald-500/[0.12] px-1 font-mono text-[11px] font-bold text-emerald-400"
         >
           {resolved}
         </span>
@@ -226,7 +226,7 @@ function renderTemplate(texto: string, variables: MarketingVariables) {
     return (
       <span
         key={i}
-        className="rounded bg-[#C9922A]/15 px-1 font-mono text-[11px] font-bold text-[#8A641F]"
+        className="rounded bg-[#D4AF37]/15 px-1 font-mono text-[11px] font-bold text-[#D4AF37]"
       >
         {part}
       </span>
@@ -264,18 +264,18 @@ function VarChip({
       title={`Copiar: ${value}`}
       className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs transition-all duration-150 ${
         copied
-          ? "border-emerald-200 bg-emerald-50"
-          : "border-slate-200 bg-white hover:border-[#C9922A]/30 hover:bg-[#C9922A]/5"
+          ? "border-emerald-500/20 bg-emerald-500/[0.08]"
+          : "border-white/[0.08] bg-white/[0.04] hover:border-[#D4AF37]/30 hover:bg-[#D4AF37]/5"
       }`}
     >
       <span
-        className={`font-mono font-bold ${copied ? "text-emerald-600" : "text-[#8A641F]"}`}
+        className={`font-mono font-bold ${copied ? "text-emerald-400" : "text-[#D4AF37]"}`}
       >
         {varName}
       </span>
-      <span className="text-neutral-200">→</span>
+      <span className="text-white/20">→</span>
       <span
-        className={`max-w-[160px] truncate ${copied ? "text-emerald-600" : "text-neutral-600"}`}
+        className={`max-w-[160px] truncate ${copied ? "text-emerald-400" : "text-white/60"}`}
       >
         {copied ? "¡Copiado!" : value}
       </span>
@@ -357,16 +357,16 @@ export function PlantillasTab({
   return (
     <div className="space-y-5">
       {/* Intro */}
-      <div className="rounded-[20px] border border-[#C9922A]/20 bg-[#C9922A]/5 px-5 py-4">
-        <p className="text-sm leading-6 text-[#080A0F]">
+      <div className="rounded-[20px] border border-[#D4AF37]/20 bg-[#D4AF37]/5 px-5 py-4">
+        <p className="text-sm leading-6 text-white/80">
           Las variables de tu barbería se{" "}
-          <span className="font-bold">sustituyen automáticamente</span> al
+          <span className="font-bold text-white">sustituyen automáticamente</span> al
           copiar.{" "}
-          <span className="rounded bg-emerald-100 px-1 font-mono text-[11px] font-bold text-emerald-700">
+          <span className="rounded bg-emerald-500/[0.12] px-1 font-mono text-[11px] font-bold text-emerald-400">
             así
           </span>{" "}
           = ya sustituido.{" "}
-          <span className="rounded bg-[#C9922A]/15 px-1 font-mono text-[11px] font-bold text-[#8A641F]">
+          <span className="rounded bg-[#D4AF37]/15 px-1 font-mono text-[11px] font-bold text-[#D4AF37]">
             [NOMBRE]
           </span>{" "}
           = completa antes de enviar.
@@ -375,8 +375,8 @@ export function PlantillasTab({
 
       {/* Tus variables */}
       {vars.length > 0 && (
-        <div className="rounded-[20px] border border-slate-100 bg-slate-50 px-5 py-4">
-          <p className="mb-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
+        <div className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] px-5 py-4">
+          <p className="mb-2.5 text-[10px] font-black uppercase tracking-widest text-white/40">
             Tus variables — haz clic para copiar el valor
           </p>
           <div className="flex flex-wrap gap-2">
@@ -393,9 +393,9 @@ export function PlantillasTab({
           {(inactiveClientsCount > 0 || totalFreeSlotsToday > 0) && (
             <div className="mt-3 flex flex-wrap gap-3">
               {inactiveClientsCount > 0 && (
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-white/50">
                   💤{" "}
-                  <strong className="text-neutral-700">
+                  <strong className="text-white/80">
                     {inactiveClientsCount} clientes
                   </strong>{" "}
                   sin visita en +30 días — usa las plantillas de{" "}
@@ -403,9 +403,9 @@ export function PlantillasTab({
                 </p>
               )}
               {totalFreeSlotsToday > 0 && (
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-white/50">
                   🕐{" "}
-                  <strong className="text-neutral-700">
+                  <strong className="text-white/80">
                     {totalFreeSlotsToday} huecos libres
                   </strong>{" "}
                   hoy — usa las plantillas de <strong>Huecos</strong>.
@@ -417,13 +417,16 @@ export function PlantillasTab({
       )}
 
       {/* Stats */}
-      <div className="rounded-[20px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+      <div
+        className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] px-5 py-4"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+      >
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="font-black text-[#080A0F]">
+            <p className="font-black text-white">
               Tus plantillas más usadas
             </p>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-white/40">
               Basado en las copias hechas en este navegador
             </p>
           </div>
@@ -434,24 +437,24 @@ export function PlantillasTab({
             {topTemplates.map((stat) => (
               <div
                 key={stat.templateId}
-                className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3"
               >
-                <p className="line-clamp-2 text-sm font-bold text-[#080A0F]">
+                <p className="line-clamp-2 text-sm font-bold text-white">
                   {stat.templateTitle}
                 </p>
-                <p className="mt-1 text-xs font-semibold text-[#8A641F]">
+                <p className="mt-1 text-xs font-semibold text-[#D4AF37]">
                   {stat.copiedCount} copia
                   {stat.copiedCount === 1 ? "" : "s"}
                 </p>
-                <p className="mt-1 text-[11px] text-neutral-400">
+                <p className="mt-1 text-[11px] text-white/40">
                   Última vez: {formatStatDate(stat.lastCopiedAt)}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4">
-            <p className="text-sm text-neutral-400">
+          <div className="rounded-2xl border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-4">
+            <p className="text-sm text-white/40">
               Cuando copies plantillas, tus más usadas aparecerán aquí.
             </p>
           </div>
@@ -467,14 +470,14 @@ export function PlantillasTab({
             onClick={() => setFiltro(f.id)}
             className={`rounded-2xl border px-4 py-1.5 text-xs font-bold transition-all duration-150 ${
               filtro === f.id
-                ? "border-[#C9922A]/40 bg-[#C9922A]/10 text-[#080A0F]"
-                : "border-slate-200 bg-white text-neutral-500 hover:border-slate-300 hover:text-neutral-800"
+                ? "border-[#D4AF37]/40 bg-[#D4AF37]/10 text-white"
+                : "border-white/[0.08] bg-white/[0.04] text-white/50 hover:border-white/[0.16] hover:text-white/80"
             }`}
           >
             {f.label}
           </button>
         ))}
-        <span className="ml-auto self-center text-xs text-neutral-400">
+        <span className="ml-auto self-center text-xs text-white/40">
           {visibles.length} plantillas
         </span>
       </div>
@@ -492,24 +495,25 @@ export function PlantillasTab({
           return (
             <div
               key={p.id}
-              className="flex flex-col rounded-[20px] border border-slate-200 bg-white shadow-sm transition-shadow duration-150 hover:shadow-md"
+              className="flex flex-col rounded-[20px] border border-white/[0.08] bg-white/[0.04] transition-shadow duration-150 hover:border-white/[0.14]"
+              style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
             >
               {/* Card header */}
-              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+              <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3">
                 <div className="flex items-center gap-2">
                   <span
                     className={`flex h-7 w-7 items-center justify-center rounded-xl border ${canal.bg}`}
                   >
                     <CanalIcon size={14} className={canal.color} />
                   </span>
-                  <span className="text-xs font-bold text-neutral-400">
+                  <span className="text-xs font-bold text-white/40">
                     {canal.label}
                   </span>
-                  <span className="text-neutral-200">·</span>
-                  <span className="text-xs text-neutral-400">{p.categoria}</span>
+                  <span className="text-white/20">·</span>
+                  <span className="text-xs text-white/40">{p.categoria}</span>
                 </div>
                 {isTopTemplate && (
-                  <span className="rounded-full border border-[#C9922A]/25 bg-[#C9922A]/10 px-2 py-0.5 text-[10px] font-bold text-[#8A641F]">
+                  <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
                     ⭐ Más usada
                   </span>
                 )}
@@ -518,30 +522,30 @@ export function PlantillasTab({
               {/* Card body */}
               <div className="flex flex-1 flex-col gap-3 p-5">
                 <div>
-                  <p className="font-bold text-[#080A0F]">{p.titulo}</p>
+                  <p className="font-bold text-white">{p.titulo}</p>
                   {stat && stat.copiedCount > 0 && (
-                    <p className="mt-1 text-xs text-neutral-400">
+                    <p className="mt-1 text-xs text-white/40">
                       Copiada {stat.copiedCount} vez
                       {stat.copiedCount === 1 ? "" : "es"}
                     </p>
                   )}
                 </div>
-                <p className="flex-1 whitespace-pre-line text-sm leading-6 text-neutral-500">
+                <p className="flex-1 whitespace-pre-line text-sm leading-6 text-white/60">
                   {renderTemplate(p.texto, variables)}
                 </p>
               </div>
 
               {/* Card footer */}
-              <div className="border-t border-slate-100 px-5 py-3">
+              <div className="border-t border-white/[0.08] px-5 py-3">
                 <button
                   type="button"
                   onClick={() => handleCopy(p)}
                   className={`flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold transition-all duration-150 ${
                     isCopied
                       ? unresolvedCount === 0
-                        ? "bg-emerald-50 text-emerald-600"
-                        : "bg-amber-50 text-amber-700"
-                      : "bg-[#C9922A]/8 text-[#C9922A] hover:bg-[#C9922A]/15"
+                        ? "bg-emerald-500/[0.08] text-emerald-400"
+                        : "bg-amber-500/[0.08] text-amber-400"
+                      : "bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15"
                   }`}
                 >
                   {isCopied ? (

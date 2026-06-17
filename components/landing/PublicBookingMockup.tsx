@@ -9,10 +9,10 @@ const services = [
 export function PublicBookingMockup() {
   return (
     <div className="premium-mockup rounded-[28px] border p-4">
-      <div className="rounded-[24px] border border-[#38BDF8]/[0.16] bg-[#07111f]/[0.78] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+      <div className="rounded-[24px] border border-[#D5A84C]/[0.16] bg-[#0E0E1C]/[0.92] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-[0_12px_30px_rgba(37,99,235,0.30)]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F5D060] via-[#D5A84C] to-[#B8860B] text-[#09090B] shadow-[0_12px_30px_rgba(213,168,76,0.30)]">
               <Scissors size={19} />
             </div>
             <div>
@@ -20,7 +20,7 @@ export function PublicBookingMockup() {
               <p className="text-xs text-white/42">Ejemplo de página pública</p>
             </div>
           </div>
-          <QrCode className="text-[#38BDF8]" size={26} />
+          <QrCode className="text-[#D5A84C]" size={26} />
         </div>
 
         <div className="mt-5 space-y-2">
@@ -33,12 +33,12 @@ export function PublicBookingMockup() {
                 <p className="text-sm font-black text-white">{service.name}</p>
                 <p className="text-xs text-white/40">{service.duration}</p>
               </div>
-              <span className="text-sm font-black text-[#38BDF8]">{service.price}</span>
+              <span className="text-sm font-black text-[#D5A84C]">{service.price}</span>
             </div>
           ))}
         </div>
 
-        <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#38BDF8] via-[#2563EB] to-[#1D4ED8] px-4 py-3 text-center text-sm font-black text-white shadow-[0_16px_38px_rgba(37,99,235,0.34)]">
+        <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#F5D060] via-[#D5A84C] to-[#B8860B] px-4 py-3 text-center text-sm font-black text-[#09090B] shadow-[0_16px_38px_rgba(213,168,76,0.34)]">
           Ver flujo de reserva
         </div>
       </div>

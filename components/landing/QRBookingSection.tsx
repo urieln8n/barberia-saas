@@ -60,17 +60,17 @@ function AnimatedQRCode() {
         initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.88 }}
         animate={inView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-[28px] border border-[#D5A84C]/20 bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.08),0_0_0_1px_rgba(213,168,76,0.08)]"
+        className="relative overflow-hidden rounded-[28px] border border-[#D5A84C]/20 bg-[#0E0E1C] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5),0_0_0_1px_rgba(213,168,76,0.10)]"
         style={{ willChange: "transform, opacity" }}
       >
         {/* Header */}
         <div className="mb-4 flex items-center gap-2">
           <div className="h-2.5 w-2.5 rounded-full bg-[#D5A84C]" />
-          <span className="text-xs font-black text-[#080A0F]/60">barberia-demo.com/reservar</span>
+          <span className="text-xs font-black text-white/50">barberia-demo.com/reservar</span>
         </div>
 
         {/* QR grid */}
-        <div className="relative rounded-2xl border border-[#080A0F]/8 bg-[#F8F8F6] p-4">
+        <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
           {/* Corner markers */}
           {[
             ["top-0 left-0", "border-t-2 border-l-2"],
@@ -101,7 +101,7 @@ function AnimatedQRCode() {
               <div
                 key={i}
                 className={`h-3 w-3 rounded-[2px] transition-opacity duration-300 ${
-                  cell ? "bg-[#080A0F]" : "bg-transparent"
+                  cell ? "bg-white/85" : "bg-transparent"
                 }`}
                 style={{
                   animationDelay: `${i * 12}ms`,
@@ -131,7 +131,7 @@ function AnimatedQRCode() {
         </div>
 
         {/* Label below */}
-        <p className="mt-3 text-center text-[11px] font-black text-[#080A0F]/45">
+        <p className="mt-3 text-center text-[11px] font-black text-white/45">
           Escanea para reservar
         </p>
       </motion.div>
@@ -165,10 +165,9 @@ function FlowSteps() {
               delay: 0.15 + i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="flex items-start gap-4 rounded-2xl border bg-white p-4 shadow-sm"
+            className="flex items-start gap-4 rounded-2xl border bg-[#0E0E1C] p-4"
             style={{
               borderColor: step.border,
-              backgroundColor: "white",
               willChange: "transform, opacity",
             }}
           >
@@ -186,11 +185,11 @@ function FlowSteps() {
                 >
                   Paso {i + 1}
                 </span>
-                <span className="text-sm font-black text-[#080A0F]">
+                <span className="text-sm font-black text-white">
                   {step.label}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs leading-5 text-[#080A0F]/50">
+              <p className="mt-0.5 text-xs leading-5 text-white/50">
                 {step.desc}
               </p>
             </div>
@@ -210,7 +209,7 @@ export function QRBookingSection({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="bg-[#F8F8F6] px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
+      className="bg-[#0D0D0F] px-5 py-16 text-white md:py-24 lg:px-8"
       aria-labelledby="qr-section-heading"
     >
       <div className="mx-auto max-w-7xl">
@@ -227,11 +226,11 @@ export function QRBookingSection({ id }: { id?: string }) {
           </p>
           <h2
             id="qr-section-heading"
-            className="mt-3 text-3xl font-black leading-tight text-[#080A0F] md:text-5xl"
+            className="mt-3 text-3xl font-black leading-tight text-white md:text-5xl"
           >
             El cliente escanea y reserva en menos de 60 segundos.
           </h2>
-          <p className="mt-4 text-base leading-7 text-[#080A0F]/55">
+          <p className="mt-4 text-base leading-7 text-white/55">
             Sin instalar apps, sin escribir por WhatsApp, sin llamadas. Pon el
             QR en el mostrador, Instagram, tarjetas o Google y convierte ese
             tráfico en reservas ordenadas.

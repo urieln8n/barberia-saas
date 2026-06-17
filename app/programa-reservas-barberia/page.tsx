@@ -69,9 +69,43 @@ const faqs = [
   },
 ];
 
+const programaReservasJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Programa de reservas para barbería",
+        item: `${SITE_URL}/programa-reservas-barberia`,
+      },
+    ],
+  },
+];
+
 export default function ProgramaReservasBarberiaPage() {
   return (
-    <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
+    <>
+      {programaReservasJsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+      <main className="min-h-screen bg-[#FAFBFF] text-[#080A0F]">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
@@ -183,6 +217,29 @@ export default function ProgramaReservasBarberiaPage() {
         </div>
       </section>
 
+      <section className="border-t border-slate-100 bg-[#F6F8FB] px-5 py-12 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-xl font-black text-[#080A0F]">También te puede interesar</h2>
+          <ul className="mt-5 flex flex-wrap justify-center gap-3">
+            {[
+              { label: "Reservas online para barberías", href: "/reservas-online-barberia" },
+              { label: "Agenda online para barberías", href: "/agenda-online-barberia" },
+              { label: "QR de reservas", href: "/qr-reservas-barberias" },
+              { label: "Alternativa a Booksy", href: "/alternativa-a-booksy" },
+            ].map(({ label, href }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#C9922A]/40 hover:text-[#080A0F]"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <footer className="border-t border-slate-200 bg-white px-5 py-8 text-center text-xs text-slate-400 lg:px-8">
         <div className="flex flex-wrap justify-center gap-5">
           <Link href="/" className="font-bold text-slate-600 hover:text-[#080A0F]">
@@ -195,5 +252,6 @@ export default function ProgramaReservasBarberiaPage() {
         <p className="mt-2">© {new Date().getFullYear()} BarberíaOS — Programa de reservas para barberías.</p>
       </footer>
     </main>
+    </>
   );
 }

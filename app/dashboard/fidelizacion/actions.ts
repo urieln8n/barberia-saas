@@ -150,7 +150,8 @@ export async function removeManualStamp(formData: FormData) {
     const { error: updateError } = await supabase
       .from("loyalty_cards")
       .update({ current_stamps: card.current_stamps - 1, updated_at: new Date().toISOString() })
-      .eq("id", card.id);
+      .eq("id", card.id)
+      .eq("barbershop_id", barbershopId);
     if (updateError) return err(updateError.message);
 
     // Registrar evento

@@ -39,12 +39,12 @@ type Expense = {
 };
 
 const CATEGORIES = [
-  { value: "alquiler",     label: "Alquiler",         icon: Building2,      color: "text-blue-600 bg-blue-50"     },
-  { value: "productos",    label: "Productos",         icon: ShoppingBag,    color: "text-purple-600 bg-purple-50" },
-  { value: "herramientas", label: "Herramientas",      icon: Wrench,         color: "text-orange-600 bg-orange-50" },
-  { value: "marketing",    label: "Marketing",         icon: Megaphone,      color: "text-pink-600 bg-pink-50"     },
-  { value: "nomina",       label: "Nómina / Barberos", icon: Users,          color: "text-indigo-600 bg-indigo-50" },
-  { value: "otros",        label: "Otros",             icon: MoreHorizontal, color: "text-neutral-600 bg-neutral-100" },
+  { value: "alquiler",     label: "Alquiler",         icon: Building2,      color: "text-blue-400 bg-blue-500/[0.10]"     },
+  { value: "productos",    label: "Productos",         icon: ShoppingBag,    color: "text-purple-400 bg-purple-500/[0.10]" },
+  { value: "herramientas", label: "Herramientas",      icon: Wrench,         color: "text-orange-400 bg-orange-500/[0.10]" },
+  { value: "marketing",    label: "Marketing",         icon: Megaphone,      color: "text-pink-400 bg-pink-500/[0.10]"     },
+  { value: "nomina",       label: "Nómina / Barberos", icon: Users,          color: "text-indigo-400 bg-indigo-500/[0.10]" },
+  { value: "otros",        label: "Otros",             icon: MoreHorizontal, color: "text-white/50 bg-white/[0.08]" },
 ] as const;
 
 function getCat(value: string) {
@@ -122,25 +122,28 @@ export function FinanzasClient({
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Ingresos hoy" value={`${ingresosHoy.toFixed(0)} €`} description="Pagos cobrados" icon={TrendingUp} />
         <StatCard label="Ingresos mes" value={`${ingresosMes.toFixed(0)} €`} description="Pagos registrados" icon={TrendingUp} />
-        <StatCard label="Gastos mes" value={`${gastosMes.toFixed(0)} €`} description="Gastos registrados" icon={TrendingDown} iconBg="bg-amber-50" iconColor="text-amber-600" />
+        <StatCard label="Gastos mes" value={`${gastosMes.toFixed(0)} €`} description="Gastos registrados" icon={TrendingDown} iconBg="bg-amber-500/[0.10]" iconColor="text-amber-400" />
 
-        <div className={`rounded-2xl border p-5 shadow-sm ${
-          beneficio >= 0
-            ? "border-emerald-100 bg-emerald-50"
-            : "border-red-100 bg-red-50"
-        }`}>
+        <div
+          className={`rounded-2xl border p-5 ${
+            beneficio >= 0
+              ? "border-emerald-500/20 bg-emerald-500/[0.08]"
+              : "border-red-500/20 bg-red-500/[0.08]"
+          }`}
+          style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+        >
           <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Beneficio est.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/40">Beneficio est.</p>
             <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-              beneficio >= 0 ? "bg-emerald-100" : "bg-red-100"
+              beneficio >= 0 ? "bg-emerald-500/15" : "bg-red-500/15"
             }`}>
-              <Wallet size={15} className={beneficio >= 0 ? "text-emerald-600" : "text-red-600"} />
+              <Wallet size={15} className={beneficio >= 0 ? "text-emerald-400" : "text-red-400"} />
             </div>
           </div>
-          <p className={`mt-3 text-4xl font-black ${beneficio >= 0 ? "text-emerald-700" : "text-red-700"}`}>
+          <p className={`mt-3 text-4xl font-black ${beneficio >= 0 ? "text-emerald-300" : "text-red-300"}`}>
             {beneficio >= 0 ? "+" : ""}{beneficio.toFixed(0)} €
           </p>
-          <p className={`mt-1.5 text-xs ${beneficio >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+          <p className={`mt-1.5 text-xs ${beneficio >= 0 ? "text-emerald-400" : "text-red-400"}`}>
             Este mes
           </p>
         </div>
@@ -150,8 +153,8 @@ export function FinanzasClient({
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Ticket medio" value={`${(ingresosMes / Math.max(1, initialExpenses.length + 8)).toFixed(0)} €`} description="Promedio estimado mensual" icon={Ticket} />
         <StatCard label="Clientes nuevos" value="--" description="Pendiente de datos CRM" icon={UserPlus} />
-        <StatCard label="Clientes recurrentes" value="--" description="Requiere historial de visitas" icon={UserCheck} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
-        <StatCard label="No-shows" value="--" description="Desde estados de agenda" icon={XCircle} iconBg="bg-red-50" iconColor="text-red-700" />
+        <StatCard label="Clientes recurrentes" value="--" description="Requiere historial de visitas" icon={UserCheck} iconBg="bg-emerald-500/[0.10]" iconColor="text-emerald-400" />
+        <StatCard label="No-shows" value="--" description="Desde estados de agenda" icon={XCircle} iconBg="bg-red-500/[0.10]" iconColor="text-red-400" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
@@ -159,11 +162,11 @@ export function FinanzasClient({
           title="Ventas por día"
           description="Lectura visual del mes actual."
         >
-          <div className="flex h-56 items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex h-56 items-end gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
             {[34, 58, 42, 75, 61, 88, 52, 69, 94, 73, 46, 82].map((height, index) => (
               <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2">
-                <span className="w-full rounded-t-xl bg-[#2563EB]" style={{ height: `${height}%`, opacity: 0.35 + index * 0.04 }} />
-                <span className="text-[10px] font-bold text-slate-500">{index + 1}</span>
+                <span className="w-full rounded-t-xl bg-[#D4AF37]" style={{ height: `${height}%`, opacity: 0.35 + index * 0.04 }} />
+                <span className="text-[10px] font-bold text-white/40">{index + 1}</span>
               </div>
             ))}
           </div>
@@ -179,10 +182,10 @@ export function FinanzasClient({
               { icon: CalendarClock, label: "Horas con más demanda", value: "11:00, 17:00, 19:00" },
               { icon: BarChart3, label: "Ventas por barbero", value: "Disponible desde Caja" },
             ].map(({ icon: Icon, label, value }) => (
-              <div key={label} className="rounded-2xl border border-slate-200 bg-white p-4">
-                <Icon size={17} className="text-[#2563EB]" />
-                <p className="mt-3 text-xs font-bold uppercase text-slate-500">{label}</p>
-                <p className="mt-1 font-black text-[#080A0F]">{value}</p>
+              <div key={label} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
+                <Icon size={17} className="text-[#D4AF37]" />
+                <p className="mt-3 text-xs font-bold uppercase text-white/40">{label}</p>
+                <p className="mt-1 font-black text-white">{value}</p>
               </div>
             ))}
           </div>
@@ -196,7 +199,7 @@ export function FinanzasClient({
               <div>
                 <label className="form-label">Importe *</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-neutral-400">€</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-white/40">€</span>
                   <input
                     name="amount"
                     type="number"
@@ -246,7 +249,7 @@ export function FinanzasClient({
               </div>
 
               {error && (
-                <p className="col-span-full rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+                <p className="col-span-full rounded-2xl bg-red-500/[0.08] px-4 py-3 text-sm text-red-400">{error}</p>
               )}
 
               <div className="col-span-full flex gap-3">
@@ -275,7 +278,7 @@ export function FinanzasClient({
         title="Gastos registrados"
         description="Gastos del mes actual."
         action={
-          <span className="rounded-full border border-neutral-200 bg-[#F8FAFC] px-3 py-1 text-xs font-semibold text-neutral-500">
+          <span className="rounded-full border border-white/[0.10] bg-white/[0.05] px-3 py-1 text-xs font-semibold text-white/50">
             {expenses.length} registros
           </span>
         }
@@ -288,6 +291,7 @@ export function FinanzasClient({
               icon={TrendingDown}
               title="Sin gastos registrados"
               description="Registra tus gastos para ver el beneficio real del mes."
+              tone="dark"
               action={
                 <PrimaryButton
                   type="button"
@@ -300,25 +304,25 @@ export function FinanzasClient({
             />
           </div>
         ) : (
-          <div className="divide-y divide-[#E5E7EB]">
+          <div className="divide-y divide-white/[0.06]">
             {expenses.map((expense) => {
               const cat  = getCat(expense.category);
               const Icon = cat.icon;
               return (
                 <div
                   key={expense.id}
-                  className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-[#F8FAFC]/50"
+                  className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-white/[0.04]"
                 >
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${cat.color}`}>
                     <Icon size={16} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-[#111827]">{cat.label}</p>
+                    <p className="text-sm font-bold text-white">{cat.label}</p>
                     {expense.description && (
-                      <p className="truncate text-xs text-neutral-500">{expense.description}</p>
+                      <p className="truncate text-xs text-white/50">{expense.description}</p>
                     )}
-                    <p className="mt-0.5 text-xs text-neutral-500">
+                    <p className="mt-0.5 text-xs text-white/40">
                       {new Date(expense.expense_date + "T00:00:00").toLocaleDateString("es-ES", {
                         day: "numeric",
                         month: "short",
@@ -328,14 +332,14 @@ export function FinanzasClient({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-base font-black text-[#111827]">
+                    <span className="text-base font-black text-white">
                       {Number(expense.amount).toFixed(2)} €
                     </span>
                     <button
                       type="button"
                       onClick={() => handleDelete(expense.id)}
                       disabled={deleting === expense.id}
-                      className="rounded-xl p-2 text-neutral-300 transition-colors hover:bg-red-50 hover:text-[#E5484D] disabled:opacity-40"
+                      className="rounded-xl p-2 text-white/30 transition-colors hover:bg-red-500/[0.10] hover:text-red-400 disabled:opacity-40"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -347,7 +351,7 @@ export function FinanzasClient({
         )}
       </SectionCard>
 
-      <p className="text-center text-xs text-neutral-500">
+      <p className="text-center text-xs text-white/40">
         Ingresos = pagos con estado &quot;cobrado&quot; · Beneficio = Ingresos − Gastos del mes
       </p>
 

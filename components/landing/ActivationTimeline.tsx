@@ -66,7 +66,7 @@ function DesktopTimeline({ inView }: { inView: boolean }) {
       {/* Progress line */}
       <div className="relative mb-2 flex items-center justify-between px-12">
         {/* Background track */}
-        <div className="absolute inset-x-12 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-[#080A0F]/8" />
+        <div className="absolute inset-x-12 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-white/[0.08]" />
 
         {/* Animated fill */}
         <motion.div
@@ -120,7 +120,7 @@ function DesktopTimeline({ inView }: { inView: boolean }) {
                 delay: 0.35 + i * 0.12,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="rounded-2xl border bg-white p-4 shadow-sm"
+              className="rounded-2xl border bg-[#0E0E1C] p-4"
               style={{ borderColor: m.border, willChange: "transform, opacity" }}
             >
               <div
@@ -132,8 +132,8 @@ function DesktopTimeline({ inView }: { inView: boolean }) {
               <p className="mt-3 text-[11px] font-black" style={{ color: m.color }}>
                 {m.time}
               </p>
-              <p className="mt-1 text-sm font-black text-[#080A0F]">{m.title}</p>
-              <p className="mt-1.5 text-[11px] leading-4 text-[#080A0F]/50">{m.desc}</p>
+              <p className="mt-1 text-sm font-black text-white">{m.title}</p>
+              <p className="mt-1.5 text-[11px] leading-4 text-white/50">{m.desc}</p>
             </motion.div>
           );
         })}
@@ -150,7 +150,7 @@ function MobileTimeline({ inView }: { inView: boolean }) {
     <div className="lg:hidden">
       <div className="relative space-y-4 pl-6">
         {/* Vertical track */}
-        <div className="absolute left-2 top-0 h-full w-0.5 rounded-full bg-[#080A0F]/8" />
+        <div className="absolute left-2 top-0 h-full w-0.5 rounded-full bg-white/[0.08]" />
 
         {/* Animated fill */}
         <motion.div
@@ -191,7 +191,7 @@ function MobileTimeline({ inView }: { inView: boolean }) {
 
               {/* Card */}
               <div
-                className="flex-1 rounded-2xl border bg-white p-4 shadow-sm"
+                className="flex-1 rounded-2xl border bg-[#0E0E1C] p-4"
                 style={{ borderColor: m.border }}
               >
                 <div className="flex items-center gap-3">
@@ -205,10 +205,10 @@ function MobileTimeline({ inView }: { inView: boolean }) {
                     <p className="text-[11px] font-black" style={{ color: m.color }}>
                       {m.time}
                     </p>
-                    <p className="text-sm font-black text-[#080A0F]">{m.title}</p>
+                    <p className="text-sm font-black text-white">{m.title}</p>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-[#080A0F]/50">{m.desc}</p>
+                <p className="mt-2 text-xs leading-5 text-white/50">{m.desc}</p>
               </div>
             </motion.div>
           );
@@ -228,7 +228,7 @@ export function ActivationTimeline() {
 
   return (
     <section
-      className="bg-white px-5 py-16 text-[#080A0F] md:py-24 lg:px-8"
+      className="bg-[#09090B] px-5 py-16 text-white md:py-24 lg:px-8"
       aria-labelledby="timeline-heading"
     >
       <div className="mx-auto max-w-7xl">
@@ -245,11 +245,11 @@ export function ActivationTimeline() {
           </p>
           <h2
             id="timeline-heading"
-            className="mt-3 text-3xl font-black leading-tight text-[#080A0F] md:text-5xl"
+            className="mt-3 text-3xl font-black leading-tight text-white md:text-5xl"
           >
             De cero a barbería operativa en un día.
           </h2>
-          <p className="mt-4 text-base leading-7 text-[#080A0F]/55">
+          <p className="mt-4 text-base leading-7 text-white/55">
             No compras una herramienta sin más. Sales con tu barbería
             configurada: agenda, QR, página pública y primeros clientes listos.
           </p>
@@ -270,7 +270,7 @@ export function ActivationTimeline() {
         >
           <a
             href="/pedir-demo"
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#080A0F] px-6 py-3.5 text-sm font-black text-white shadow-[0_4px_20px_rgba(8,10,15,0.15)] transition-all duration-200 hover:bg-[#1a1d26] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#D5A84C] px-6 py-3.5 text-sm font-black text-[#09090B] shadow-[0_4px_20px_rgba(213,168,76,0.30)] transition-all duration-200 hover:bg-[#E8C46A] active:scale-[0.98]"
             style={{ willChange: "transform" }}
           >
             Activar mi barbería
@@ -278,7 +278,7 @@ export function ActivationTimeline() {
           </a>
           <a
             href="/r/demo-barber"
-            className="inline-flex items-center gap-2 rounded-2xl border border-[#080A0F]/12 bg-[#F8F8F6] px-6 py-3.5 text-sm font-black text-[#080A0F]/70 shadow-sm transition-all duration-200 hover:border-[#D5A84C]/30 hover:bg-[#D5A84C]/5 active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.10] bg-white/[0.04] px-6 py-3.5 text-sm font-black text-white/70 transition-all duration-200 hover:border-[#D5A84C]/30 hover:bg-[#D5A84C]/[0.06] hover:text-white active:scale-[0.98]"
             style={{ willChange: "transform" }}
           >
             Ver demo interactiva

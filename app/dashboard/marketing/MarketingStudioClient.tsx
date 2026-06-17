@@ -60,15 +60,18 @@ function getConsejoIndex(): number {
 
 function ConsejoSemana() {
   return (
-    <div className="flex gap-3 rounded-[22px] border border-[#D4AF37]/25 bg-[#FDFAF3] px-5 py-4 shadow-sm">
+    <div
+      className="flex gap-3 rounded-[22px] border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] px-5 py-4"
+      style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+    >
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10">
-        <Lightbulb size={15} className="text-[#C9922A]" />
+        <Lightbulb size={15} className="text-[#D4AF37]" />
       </div>
       <div>
-        <p className="text-xs font-black uppercase tracking-wide text-[#C9922A]">
+        <p className="text-xs font-black uppercase tracking-wide text-[#D4AF37]">
           Consejo semanal
         </p>
-        <p className="mt-1 text-sm leading-6 text-slate-600">
+        <p className="mt-1 text-sm leading-6 text-white/70">
           {CONSEJOS[getConsejoIndex()]}
         </p>
       </div>
@@ -89,10 +92,10 @@ type DataItem = {
 
 function statusIcon(status: DataStatus) {
   if (status === "connected")
-    return <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />;
+    return <CheckCircle2 size={13} className="shrink-0 text-emerald-400" />;
   if (status === "pending")
-    return <AlertCircle size={13} className="shrink-0 text-amber-500" />;
-  return <MinusCircle size={13} className="shrink-0 text-neutral-300" />;
+    return <AlertCircle size={13} className="shrink-0 text-amber-400" />;
+  return <MinusCircle size={13} className="shrink-0 text-white/30" />;
 }
 
 function DatosConectados({
@@ -166,7 +169,7 @@ function DatosConectados({
         <p className="label-section">
           Datos conectados
         </p>
-        <span className="text-xs font-bold text-slate-600">
+        <span className="text-xs font-bold text-white/60">
           {connectedCount}/{items.length}
         </span>
       </div>
@@ -174,20 +177,20 @@ function DatosConectados({
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start gap-1.5 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 shadow-sm"
+            className="flex items-start gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2"
           >
             <span className="mt-0.5">{statusIcon(item.status)}</span>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-slate-950">
+              <p className="text-xs font-bold text-white">
                 {item.label}
               </p>
-              <p className="truncate text-xs text-slate-600">
+              <p className="truncate text-xs text-white/60">
                 {item.detail}
               </p>
               {item.href && item.status === "pending" && (
                 <a
                   href={item.href}
-                  className="text-xs font-bold text-[#B98B2F] underline"
+                  className="text-xs font-bold text-[#D4AF37] underline"
                 >
                   Configurar →
                 </a>
@@ -245,7 +248,7 @@ export function MarketingStudioClient({
       />
 
       {/* Tab bar */}
-      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-slate-200 bg-slate-100 p-1 shadow-sm">
+      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-[20px] border border-white/[0.08] bg-white/[0.04] p-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -258,13 +261,13 @@ export function MarketingStudioClient({
               onClick={() => setActiveTab(tab.id)}
               className={`flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-semibold transition-all duration-150 ${
                 active
-                  ? "bg-white text-[#111827] shadow-sm"
-                  : "text-slate-600 hover:bg-white hover:text-[#111827]"
+                  ? "bg-white/[0.10] text-white"
+                  : "text-white/50 hover:bg-white/[0.06] hover:text-white"
               }`}
             >
               <Icon
                 size={16}
-                className={active ? "text-[#C9922A]" : "text-slate-400"}
+                className={active ? "text-[#D4AF37]" : "text-white/30"}
               />
               {tab.label}
             </button>

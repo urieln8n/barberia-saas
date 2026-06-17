@@ -8,7 +8,7 @@ type FAQAccordionProps = {
   dark?: boolean;
 };
 
-export function FAQAccordion({ items, dark = false }: FAQAccordionProps) {
+export function FAQAccordion({ items, dark = true }: FAQAccordionProps) {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
@@ -45,17 +45,22 @@ export function FAQAccordion({ items, dark = false }: FAQAccordionProps) {
               {open === i ? <X size={13} /> : <Plus size={13} />}
             </span>
           </button>
-          {open === i && (
-            <div
-              className={`border-t px-5 pb-5 pt-4 ${
-                dark ? "border-white/[0.08]" : "border-slate-100"
-              }`}
-            >
-              <p className={`text-sm leading-7 ${dark ? "text-white/60" : "text-slate-500"}`}>
-                {answer}
-              </p>
+          <div
+            className="grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ gridTemplateRows: open === i ? "1fr" : "0fr" }}
+          >
+            <div className="overflow-hidden">
+              <div
+                className={`border-t px-5 pb-5 pt-4 ${
+                  dark ? "border-white/[0.08]" : "border-slate-100"
+                }`}
+              >
+                <p className={`text-sm leading-7 ${dark ? "text-white/60" : "text-slate-500"}`}>
+                  {answer}
+                </p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       ))}
     </div>

@@ -26,7 +26,7 @@ const checklists: Checklist[] = [
     icon: Globe,
     titulo: "Google Business",
     accentColor: "text-[#EA4335]",
-    iconBg: "bg-red-50 border-red-100",
+    iconBg: "bg-red-500/[0.08] border-red-500/20",
     items: [
       { id: "g1",  label: "Nombre correcto del negocio" },
       { id: "g2",  label: 'Categoría principal configurada como "Barbería"' },
@@ -45,7 +45,7 @@ const checklists: Checklist[] = [
     icon: Instagram,
     titulo: "Instagram",
     accentColor: "text-[#E1306C]",
-    iconBg: "bg-pink-50 border-pink-100",
+    iconBg: "bg-pink-500/[0.08] border-pink-500/20",
     items: [
       { id: "i1", label: "Cuenta configurada como Profesional o Empresa" },
       { id: "i2", label: "Nombre de usuario reconocible (@tu-barberia)" },
@@ -63,7 +63,7 @@ const checklists: Checklist[] = [
     icon: MessageCircle,
     titulo: "WhatsApp Business",
     accentColor: "text-[#25D366]",
-    iconBg: "bg-emerald-50 border-emerald-100",
+    iconBg: "bg-emerald-500/[0.08] border-emerald-500/20",
     items: [
       { id: "w1", label: "Cuenta de WhatsApp Business activada" },
       { id: "w2", label: "Foto de perfil del local" },
@@ -95,17 +95,17 @@ function saveChecks(checked: Set<string>) {
 function ProgressBar({ done, total }: { done: number; total: number }) {
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
   const color =
-    pct === 100 ? "bg-emerald-500" : pct >= 60 ? "bg-[#C9922A]" : "bg-slate-300";
+    pct === 100 ? "bg-emerald-500" : pct >= 60 ? "bg-[#D4AF37]" : "bg-white/20";
 
   return (
     <div className="flex items-center gap-3">
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
         <div
           className={`h-full rounded-full transition-all duration-300 ${color}`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="w-10 text-right text-xs font-bold text-neutral-500">
+      <span className="w-10 text-right text-xs font-bold text-white/50">
         {done}/{total}
       </span>
     </div>
@@ -135,21 +135,24 @@ export function PresenciaTab() {
   return (
     <div className="space-y-5">
       {/* Global progress */}
-      <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div
+        className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] p-5"
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
+      >
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-black text-[#080A0F]">Presencia online completa</p>
-            <p className="mt-0.5 text-sm text-neutral-400">
+            <p className="font-black text-white">Presencia online completa</p>
+            <p className="mt-0.5 text-sm text-white/40">
               {done} de {total} elementos completados
             </p>
           </div>
           <span
             className={`text-2xl font-black ${
               totalPct === 100
-                ? "text-emerald-500"
+                ? "text-emerald-400"
                 : totalPct >= 60
-                  ? "text-[#C9922A]"
-                  : "text-slate-300"
+                  ? "text-[#D4AF37]"
+                  : "text-white/30"
             }`}
           >
             {totalPct}%
@@ -170,21 +173,22 @@ export function PresenciaTab() {
           return (
             <div
               key={cl.id}
-              className="flex flex-col rounded-[20px] border border-slate-200 bg-white shadow-sm"
+              className="flex flex-col rounded-[20px] border border-white/[0.08] bg-white/[0.04]"
+              style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
             >
               {/* Header */}
-              <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+              <div className="flex items-center gap-3 border-b border-white/[0.08] px-5 py-4">
                 <div className={`flex h-9 w-9 items-center justify-center rounded-xl border ${cl.iconBg}`}>
                   <Icon size={16} className={cl.accentColor} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-black text-[#080A0F]">{cl.titulo}</p>
+                  <p className="font-black text-white">{cl.titulo}</p>
                   <ProgressBar done={clDone} total={clTotal} />
                 </div>
               </div>
 
               {/* Items */}
-              <ul className="flex flex-1 flex-col divide-y divide-slate-100 px-2 py-2">
+              <ul className="flex flex-1 flex-col divide-y divide-white/[0.08] px-2 py-2">
                 {cl.items.map((item) => {
                   const isChecked = checked.has(item.id);
                   return (
@@ -192,25 +196,25 @@ export function PresenciaTab() {
                       <button
                         type="button"
                         onClick={() => toggle(item.id)}
-                        className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-100 hover:bg-slate-50 ${
+                        className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-100 hover:bg-white/[0.06] ${
                           isChecked ? "opacity-60" : ""
                         }`}
                       >
                         {isChecked ? (
-                          <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-500" />
+                          <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-400" />
                         ) : (
-                          <Circle size={17} className="mt-0.5 shrink-0 text-slate-300" />
+                          <Circle size={17} className="mt-0.5 shrink-0 text-white/30" />
                         )}
                         <div className="min-w-0">
                           <p
                             className={`text-sm font-medium leading-5 ${
-                              isChecked ? "line-through text-neutral-400" : "text-neutral-700"
+                              isChecked ? "line-through text-white/40" : "text-white/70"
                             }`}
                           >
                             {item.label}
                           </p>
                           {item.descripcion && !isChecked && (
-                            <p className="mt-0.5 text-xs leading-5 text-neutral-400">
+                            <p className="mt-0.5 text-xs leading-5 text-white/40">
                               {item.descripcion}
                             </p>
                           )}
@@ -223,8 +227,8 @@ export function PresenciaTab() {
 
               {/* Footer badge */}
               {clDone === clTotal && (
-                <div className="border-t border-emerald-100 bg-emerald-50 px-5 py-2.5 text-center">
-                  <p className="text-xs font-bold text-emerald-600">✓ {cl.titulo} completado</p>
+                <div className="border-t border-emerald-500/20 bg-emerald-500/[0.08] px-5 py-2.5 text-center">
+                  <p className="text-xs font-bold text-emerald-400">✓ {cl.titulo} completado</p>
                 </div>
               )}
             </div>
@@ -232,7 +236,7 @@ export function PresenciaTab() {
         })}
       </div>
 
-      <p className="text-center text-xs text-neutral-400">
+      <p className="text-center text-xs text-white/40">
         Tu progreso se guarda automáticamente en este navegador.
       </p>
     </div>

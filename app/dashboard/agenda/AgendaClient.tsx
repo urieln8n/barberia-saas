@@ -364,9 +364,7 @@ export function AgendaClient({
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden pb-12 text-slate-900"
-      style={{ backgroundColor: "#FAF8F4" }}
-    >
+    <div className="relative min-h-screen overflow-x-hidden pb-12">
       {/* Textura radial dorada — esquina inferior derecha, muy sutil */}
       <div
         aria-hidden="true"
@@ -399,14 +397,14 @@ export function AgendaClient({
 
       <div className="relative z-10 space-y-4">
         {/* ═══ HEADER ═══ */}
-        <div className="border-b border-slate-200 bg-white px-1 pb-3 pt-1 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+        <div className="border-b border-white/[0.07] bg-[#0C0C0F] px-1 pb-3 pt-1">
           {/* Top row: title + actions */}
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="hidden text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:block">
                 Agenda · Centro de operaciones
               </p>
-              <h1 className="truncate text-lg font-black tracking-tight text-slate-900 sm:text-xl">
+              <h1 className="truncate text-lg font-black tracking-tight text-white/90 sm:text-xl">
                 {new Date().toLocaleDateString("es-ES", {
                   weekday: "long",
                   day: "numeric",
@@ -434,22 +432,22 @@ export function AgendaClient({
           {view !== "opportunities" && (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
               {[
-                { label: "Hoy",        value: visibleMetrics.todayAppointments,    color: "text-slate-900" },
+                { label: "Hoy",        value: visibleMetrics.todayAppointments,    color: "text-white/90" },
                 { label: "Sem. €",     value: money(visibleMetrics.estimatedRevenue), color: "text-[#D4AF37]" },
-                { label: "Libres",     value: visibleMetrics.freeSlots,            color: "text-emerald-600" },
-                { label: "Pend.",      value: visibleMetrics.pendingAppointments,  color: visibleMetrics.pendingAppointments > 0 ? "text-amber-500" : "text-slate-500" },
-                { label: "Nuevos",     value: visibleMetrics.newClients,           color: "text-blue-600" },
-                { label: "Próxima",    value: nextApptLabel,                       color: "text-slate-700" },
+                { label: "Libres",     value: visibleMetrics.freeSlots,            color: "text-emerald-400" },
+                { label: "Pend.",      value: visibleMetrics.pendingAppointments,  color: visibleMetrics.pendingAppointments > 0 ? "text-amber-400" : "text-white/40" },
+                { label: "Nuevos",     value: visibleMetrics.newClients,           color: "text-blue-400" },
+                { label: "Próxima",    value: nextApptLabel,                       color: "text-white/70" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-[#FEFCF9] px-2.5 py-1.5">
-                  <span className="text-[10px] font-semibold text-slate-400">{label}</span>
+                <div key={label} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.05] px-2.5 py-1.5">
+                  <span className="text-[10px] font-semibold text-white/30">{label}</span>
                   <span className={`text-sm font-black tabular-nums leading-none ${color}`}>{value}</span>
                 </div>
               ))}
               {visibleMetrics.freeSlots > 0 && (
                 <a
                   href="/dashboard/studio?type=fill_empty_slots"
-                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#A78BFA]/30 bg-[#F6F3FF] px-2.5 py-1.5 text-[11px] font-black text-[#5B21B6] transition hover:bg-[#EDE9FE]"
+                  className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#A78BFA]/30 bg-[#A78BFA]/[0.10] px-2.5 py-1.5 text-[11px] font-black text-[#A78BFA] transition hover:bg-[#A78BFA]/[0.18]"
                 >
                   <Clapperboard size={11} />
                   Llenar con IA
@@ -522,27 +520,27 @@ export function AgendaClient({
                 dateISO={dateISO}
               />
               {appointments.length === 0 && (
-                <section className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center shadow-sm">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-400">
+                <section className="rounded-2xl border border-dashed border-white/[0.10] bg-[#0E0E1C] p-8 text-center" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04)" }}>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.10] bg-white/[0.05] text-white/30">
                     <CalendarDays size={22} />
                   </div>
-                  <h2 className="mt-4 text-xl font-black text-slate-900">
+                  <h2 className="mt-4 text-xl font-black text-white/80">
                     Sin citas esta semana.
                   </h2>
-                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500">
+                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/50">
                     Crea la primera reserva o comparte tu link para recibir reservas online.
                   </p>
                   <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
                     <button
                       type="button"
                       onClick={() => setShowModal(true)}
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-black text-white transition hover:bg-slate-700"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 text-sm font-black text-[#0A0A0A] shadow-[0_2px_8px_rgba(212,175,55,0.25)] transition hover:bg-[#E5C04C]"
                     >
                       <Plus size={16} /> Crear primera reserva
                     </button>
                     <Link
                       href="/dashboard/qr"
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-black text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/[0.10] px-4 text-sm font-black text-white/50 transition hover:border-white/[0.20] hover:text-white/80"
                     >
                       Ver link de reservas
                     </Link>
@@ -551,8 +549,8 @@ export function AgendaClient({
               )}
 
               {barbers.length === 0 && (
-                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <h2 className="font-black text-slate-950">
+                <section className="rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-5">
+                  <h2 className="font-black text-white/70">
                     Añade barberos para ver la ocupación por barbero.
                   </h2>
                 </section>
@@ -569,7 +567,7 @@ export function AgendaClient({
                 services={services}
               />
 
-              <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 shadow-sm">
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/50">
                 {selectedBarberRow
                   ? `Mostrando agenda de ${selectedBarberRow.name}.`
                   : "Mostrando agenda de todos los barberos."}
@@ -598,8 +596,8 @@ export function AgendaClient({
               onDayClick={handleDayClick}
             />
           ) : view === "month" ? (
-            <div className="rounded-2xl border border-dashed border-[#080A0F]/12 bg-white p-8 text-center">
-              <p className="text-[#080A0F]/50">Cargando datos del mes...</p>
+            <div className="rounded-2xl border border-dashed border-white/[0.08] bg-[#0E0E1C] p-8 text-center">
+              <p className="text-white/40">Cargando datos del mes...</p>
             </div>
           ) : null}
 
@@ -618,10 +616,10 @@ export function AgendaClient({
 
       {/* Error inline — reemplaza alert() */}
       {statusError && (
-        <div className="fixed bottom-24 left-1/2 z-[60] -translate-x-1/2 flex items-center gap-3 rounded-2xl border border-red-200 bg-white px-5 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.14)] md:bottom-6">
+        <div className="fixed bottom-24 left-1/2 z-[60] -translate-x-1/2 flex items-center gap-3 rounded-2xl border border-red-500/30 bg-[#0E0E1C] px-5 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.6)] md:bottom-6">
           <span className="h-2 w-2 shrink-0 rounded-full bg-red-500" />
-          <p className="text-sm font-semibold text-red-700">{statusError}</p>
-          <button type="button" onClick={() => setStatusError("")} className="text-red-400 hover:text-red-600">
+          <p className="text-sm font-semibold text-red-400">{statusError}</p>
+          <button type="button" onClick={() => setStatusError("")} className="text-red-400 hover:text-red-300">
             <X size={14} />
           </button>
         </div>
@@ -656,18 +654,18 @@ export function AgendaClient({
       {/* New appointment modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/[0.12] bg-[#0E0E1C]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.8)" }}>
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37]">Nueva cita</p>
-                  <h2 className="mt-0.5 text-lg font-black text-slate-900">Crear reserva</h2>
+                  <h2 className="mt-0.5 text-lg font-black text-white/90">Crear reserva</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => { setShowModal(false); setClientSearch(""); setSelectedClientId(""); setClientComboOpen(false); }}
                   aria-label="Cerrar"
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:border-slate-300 hover:text-slate-600"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.10] text-white/30 transition hover:border-white/[0.20] hover:text-white/60"
                 >
                   <X size={16} />
                 </button>
@@ -678,7 +676,7 @@ export function AgendaClient({
 
                 {/* ── Combobox cliente con búsqueda ── */}
                 <div className="relative">
-                  <label className="mb-1.5 block text-xs font-semibold text-slate-500">Cliente *</label>
+                  <label className="mb-1.5 block text-xs font-semibold text-white/50">Cliente *</label>
                   <input
                     type="text"
                     placeholder="Buscar por nombre o teléfono..."
@@ -691,15 +689,15 @@ export function AgendaClient({
                     }}
                     onFocus={() => setClientComboOpen(true)}
                     onBlur={() => setTimeout(() => setClientComboOpen(false), 180)}
-                    className={`w-full rounded-xl border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition ${
+                    className={`w-full rounded-xl border bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none transition placeholder:text-white/25 ${
                       selectedClientId
                         ? "border-[#D4AF37] ring-1 ring-[#D4AF37]/20"
-                        : "border-slate-200 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
+                        : "border-white/[0.10] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
                     }`}
                   />
                   <input type="hidden" name="client_id" value={selectedClientId} />
                   {clientComboOpen && (
-                    <div className="absolute z-50 mt-1 max-h-52 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+                    <div className="absolute z-50 mt-1 max-h-52 w-full overflow-y-auto rounded-xl border border-white/[0.10] bg-[#0A0A0D] shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
                       {(() => {
                         const q = clientSearch.toLowerCase().trim();
                         const matches = q
@@ -709,7 +707,7 @@ export function AgendaClient({
                             ).slice(0, 8)
                           : clients.slice(0, 8);
                         if (matches.length === 0) return (
-                          <p className="px-3 py-3 text-xs text-slate-400">Sin resultados</p>
+                          <p className="px-3 py-3 text-xs text-white/30">Sin resultados</p>
                         );
                         return matches.map(c => (
                           <button
@@ -720,10 +718,10 @@ export function AgendaClient({
                               setClientSearch(`${c.name}${c.phone ? ` · ${c.phone}` : ""}`);
                               setClientComboOpen(false);
                             }}
-                            className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition hover:bg-[#FEF9EE]"
+                            className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition hover:bg-white/[0.06]"
                           >
-                            <span className="font-semibold text-sm text-slate-900">{c.name}</span>
-                            {c.phone && <span className="text-xs text-slate-400">{c.phone}</span>}
+                            <span className="font-semibold text-sm text-white/80">{c.name}</span>
+                            {c.phone && <span className="text-xs text-white/40">{c.phone}</span>}
                           </button>
                         ));
                       })()}
@@ -739,11 +737,11 @@ export function AgendaClient({
                     options: [{ value: "", label: "Cualquiera / Sin asignar" }, ...barbers.map(b => ({ value: b.id, label: b.name }))] },
                 ].map(({ label, name, required, options }) => (
                   <div key={name}>
-                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">{label}</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-white/50">{label}</label>
                     <select
                       name={name}
                       required={required}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
+                      className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20"
                     >
                       {options.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -754,21 +752,21 @@ export function AgendaClient({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">Fecha *</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-white/50">Fecha *</label>
                     <input
                       name="appointment_date"
                       type="date"
                       defaultValue={view === "day" ? dateISO : getTodayISO()}
                       required
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400"
+                      className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none transition focus:border-[#D4AF37]/50"
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-slate-500">Hora *</label>
+                    <label className="mb-1.5 block text-xs font-semibold text-white/50">Hora *</label>
                     <select
                       name="start_time"
                       required
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400"
+                      className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 outline-none transition focus:border-[#D4AF37]/50"
                     >
                       <option value="">Hora...</option>
                       {slots.map((slot) => (
@@ -779,16 +777,16 @@ export function AgendaClient({
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-slate-500">Notas</label>
+                  <label className="mb-1.5 block text-xs font-semibold text-white/50">Notas</label>
                   <input
                     name="notes"
                     placeholder="Ej: Trae referencia de foto"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-300 outline-none transition focus:border-slate-400"
+                    className="w-full rounded-xl border border-white/[0.10] bg-[#0A0A0D] px-3 py-2.5 text-sm text-white/80 placeholder:text-white/25 outline-none transition focus:border-[#D4AF37]/50"
                   />
                 </div>
 
                 {formError && (
-                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+                  <p className="rounded-xl border border-red-500/30 bg-red-950/40 px-4 py-3 text-sm font-semibold text-red-400">
                     {formError}
                   </p>
                 )}
@@ -797,7 +795,7 @@ export function AgendaClient({
                   <button
                     type="button"
                     onClick={() => { setShowModal(false); setClientSearch(""); setSelectedClientId(""); setClientComboOpen(false); }}
-                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
+                    className="inline-flex min-h-10 flex-1 items-center justify-center rounded-xl border border-white/[0.10] px-4 text-sm font-semibold text-white/40 transition hover:border-white/[0.20] hover:text-white/70"
                   >
                     Cancelar
                   </button>

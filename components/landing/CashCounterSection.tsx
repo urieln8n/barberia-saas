@@ -62,18 +62,26 @@ function RevenueCard({ inView }: { inView: boolean }) {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-[28px] p-8 md:p-10"
+      className="group relative overflow-hidden rounded-[28px] p-8 transition-transform duration-500 hover:-translate-y-1 md:p-10"
       style={{
         background:
           "linear-gradient(135deg, #0d1117 0%, #111827 50%, #0a0e1a 100%)",
         border: "1px solid rgba(213,168,76,0.15)",
         boxShadow:
-          "0 32px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(213,168,76,0.06), inset 0 1px 0 rgba(213,168,76,0.1)",
+          "0 1px 0 rgba(213,168,76,0.10) inset, 0 24px 48px -12px rgba(0,0,0,0.45), 0 48px 100px -24px rgba(0,0,0,0.35), 0 0 0 1px rgba(213,168,76,0.06)",
         willChange: "transform, opacity",
       }}
     >
       {/* Top gradient line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D5A84C]/60 to-transparent" />
+      {/* Faint radial wash for depth (Stripe-style) */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(circle at 15% 0%, rgba(213,168,76,0.08), transparent 55%)",
+        }}
+      />
 
       {/* Eyebrow */}
       <p className="text-xs font-black uppercase tracking-widest text-[#D5A84C]/70">
@@ -106,7 +114,10 @@ function RevenueCard({ inView }: { inView: boolean }) {
           { Icon: Users, label: "Barberos", value: "4", color: "text-[#38BDF8]" },
           { Icon: ShoppingBag, label: "Productos", value: "3", color: "text-emerald-400" },
         ].map(({ Icon, label, value, color }) => (
-          <div key={label} className="text-center">
+          <div
+            key={label}
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] py-3 text-center transition-colors duration-300 hover:bg-white/[0.04]"
+          >
             <Icon size={16} className={`mx-auto ${color}`} />
             <p className={`mt-2 text-xl font-black text-white`}>{value}</p>
             <p className="mt-0.5 text-[10px] font-bold text-white/35">{label}</p>

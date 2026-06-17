@@ -26,8 +26,18 @@ const miniStats = [
 
 export function DashboardMockup() {
   return (
-    <ProductMockupCard dark className="premium-mockup relative mx-auto w-full max-w-4xl rounded-[30px]">
-      <div className="rounded-[24px] border border-[#38BDF8]/[0.14] bg-[#0b1019]/[0.90] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] md:p-5">
+    <ProductMockupCard dark className="premium-mockup relative mx-auto w-full max-w-4xl rounded-[30px] transition-transform duration-500 hover:-translate-y-1">
+      <div className="rounded-[24px] border border-white/[0.08] bg-[#0b1019]/[0.92] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_1px_0_rgba(0,0,0,0.4)] md:p-5">
+
+        {/* Browser-style chrome bar */}
+        <div className="mb-4 flex items-center gap-1.5 pb-3 opacity-80">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]/70" />
+          <span className="ml-3 truncate text-[10px] font-bold text-white/25">
+            app.barberiaos.com/panel
+          </span>
+        </div>
 
         {/* Header */}
         <div className="flex items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
@@ -36,7 +46,7 @@ export function DashboardMockup() {
               <Scissors size={15} className="text-[#080A0F]" />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-[#38BDF8]">BarberíaOS</p>
+              <p className="text-[10px] font-black uppercase tracking-wide text-[#D5A84C]/80">BarberíaOS</p>
               <h3 className="text-base font-black text-white md:text-lg">Panel del dueño</h3>
             </div>
           </div>
@@ -72,11 +82,11 @@ export function DashboardMockup() {
           {miniStats.map(({ label, value, Icon }) => (
             <div
               key={label}
-              className="rounded-xl border border-[#38BDF8]/[0.10] bg-white/[0.04] p-2.5"
+              className="group rounded-xl border border-white/[0.08] bg-white/[0.04] p-2.5 transition-colors duration-300 hover:border-[#D5A84C]/[0.20] hover:bg-white/[0.06]"
             >
               <div className="flex items-center justify-between gap-1">
                 <p className="text-[9px] font-black uppercase text-white/[0.35]">{label}</p>
-                <Icon size={11} className="shrink-0 text-[#38BDF8]/70" />
+                <Icon size={11} className="shrink-0 text-white/40 transition-colors duration-300 group-hover:text-[#D5A84C]/80" />
               </div>
               <p className="mt-1.5 text-sm font-black text-white">{value}</p>
             </div>
@@ -87,16 +97,16 @@ export function DashboardMockup() {
         <div className="mt-3 grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
 
           {/* Agenda */}
-          <div className="rounded-2xl border border-[#2F6FEB]/[0.18] bg-[#07111f]/80 p-4">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#07111f]/80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-black text-white">Agenda conectada</p>
-              <QrCode size={14} className="text-[#38BDF8]" />
+              <QrCode size={14} className="text-[#38BDF8]/80" />
             </div>
             <div className="space-y-1.5">
               {appointments.map(({ time, service, barber, status }) => (
                 <div
                   key={`${time}-${service}`}
-                  className="grid grid-cols-[48px_1fr_auto] items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2"
+                  className="grid grid-cols-[48px_1fr_auto] items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 transition-colors duration-300 hover:border-white/[0.14] hover:bg-white/[0.06]"
                 >
                   <p className="text-sm font-black text-[#38BDF8]">{time}</p>
                   <div>
@@ -122,14 +132,14 @@ export function DashboardMockup() {
           {/* Side metrics */}
           <div className="grid gap-3">
             {/* Barbero top */}
-            <div className="rounded-2xl border border-[#38BDF8]/[0.15] bg-[#07111f]/75 p-4">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#07111f]/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-black text-white">Barbero top · hoy</p>
                 <Star size={13} className="text-[#D5A84C]" />
               </div>
               <p className="mt-2 text-base font-black text-white">Dani · 12 citas</p>
               <div className="mt-2 h-1.5 w-full rounded-full bg-white/[0.08]">
-                <div className="h-1.5 w-[78%] rounded-full bg-gradient-to-r from-[#38BDF8] to-[#2563EB] shadow-[0_0_8px_rgba(56,189,248,0.40)]" />
+                <div className="h-1.5 w-[78%] rounded-full bg-gradient-to-r from-[#D5A84C] to-[#38BDF8] shadow-[0_0_8px_rgba(213,168,76,0.35)]" />
               </div>
               <p className="mt-1 text-[10px] text-white/38">78% ocupación · 3 barberos activos</p>
             </div>
