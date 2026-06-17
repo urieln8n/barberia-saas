@@ -419,7 +419,6 @@ export default async function ClientesPage() {
         {/* Formulario colapsable */}
         <CollapsibleSection
           title="Añadir cliente manual"
-          icon={UserPlus}
           badge="Manual"
           badgeCls="border-white/[0.10] bg-white/[0.06] text-white/40"
           defaultOpen={false}
