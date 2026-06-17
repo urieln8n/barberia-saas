@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Bot, CheckCircle2, Clock3, Mail, MessageCircle, Power, Workflow, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 import { createClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
 
@@ -168,7 +169,7 @@ export default async function AutomatizacionesPage() {
       />
 
       {error && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-800">
+        <div className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.08] px-5 py-4 text-sm leading-6 text-amber-400">
           Aplica la migracion 018_automation_rules.sql para guardar cambios. Mientras tanto puedes revisar las plantillas base.
         </div>
       )}
@@ -188,7 +189,7 @@ export default async function AutomatizacionesPage() {
         ))}
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      <section className="space-y-3">
         {rules.map((rule) => {
           const Icon = channelIcon(rule.channel);
           const preview = (rule.template ?? "")
@@ -206,43 +207,37 @@ export default async function AutomatizacionesPage() {
             .replaceAll("{{link_resena}}", "tu enlace de Google");
 
           return (
-            <article key={rule.type} className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] text-[#D4AF37]">
-                    <Icon size={18} />
-                  </div>
-                  <div>
-                    <h2 className="font-black text-white">{rule.name}</h2>
-                    <p className="mt-1 text-sm leading-6 text-white/50">{rule.description}</p>
-                  </div>
-                </div>
-                <span className={rule.is_active ? "badge-success" : "badge-warning"}>
-                  {rule.is_active ? "Activa" : "Inactiva"}
-                </span>
-              </div>
-
-              <form action={toggleAutomationRule} className="mt-4 space-y-4">
+            <CollapsibleSection
+              key={rule.type}
+              title={rule.name}
+              icon={Icon}
+              badge={rule.is_active ? "Activa" : "Inactiva"}
+              badgeCls={rule.is_active
+                ? "bg-emerald-500/[0.08] text-emerald-400 border-emerald-500/20"
+                : "bg-amber-500/[0.08] text-amber-400 border-amber-500/20"}
+            >
+              <p className="mb-4 text-sm leading-6 text-white/50">{rule.description}</p>
+              <form action={toggleAutomationRule} className="space-y-4">
                 <input type="hidden" name="type" value={rule.type} />
                 <input type="hidden" name="is_active" value={String(!rule.is_active)} />
                 <div>
                   <label className="form-label">Plantilla editable</label>
                   <textarea name="template" rows={3} defaultValue={rule.template ?? ""} className="input resize-none py-3" />
                 </div>
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">Vista previa segura</p>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">Vista previa</p>
                   <p className="mt-2 text-sm font-semibold leading-6 text-white/70">{preview || "Sin plantilla configurada."}</p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs font-semibold text-white/40">
-                    Ultima ejecucion: {rule.last_run_at ? new Date(rule.last_run_at).toLocaleString("es-ES") : "Nunca"}
+                  <p className="text-xs text-white/30">
+                    Última ejecución: {rule.last_run_at ? new Date(rule.last_run_at).toLocaleString("es-ES") : "Nunca"}
                   </p>
                   <button type="submit" className={rule.is_active ? "btn-outline" : "btn-dark"}>
                     {rule.is_active ? "Desactivar" : "Activar"} <CheckCircle2 size={14} />
                   </button>
                 </div>
               </form>
-            </article>
+            </CollapsibleSection>
           );
         })}
       </section>

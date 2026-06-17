@@ -183,8 +183,8 @@ function AlertBanner({
       icon: <AlertTriangle size={14} className="shrink-0 text-amber-400" />,
     },
     info: {
-      wrapper: "border-blue-500/20 bg-blue-500/[0.08] text-blue-300",
-      icon: <Info size={14} className="shrink-0 text-blue-400" />,
+      wrapper: "border-white/[0.12] bg-white/[0.05] text-white/60",
+      icon: <Info size={14} className="shrink-0 text-white/45" />,
     },
     success: {
       wrapper: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300",
@@ -492,8 +492,8 @@ export function DashboardClient({
                       : "Sin pendientes"}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/[0.15]">
-                  <CalendarCheck size={16} className="text-blue-400" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/[0.15]">
+                  <CalendarCheck size={16} className="text-[#D4AF37]" />
                 </div>
               </div>
               <div className="mt-3">

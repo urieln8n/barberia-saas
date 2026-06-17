@@ -64,7 +64,7 @@ function formatDate(d: string | null) {
 function stampEventLabel(type: string, delta: number) {
   if (type === "stamp_added")      return { label: "+1 sello", cls: "text-emerald-400 bg-emerald-500/[0.08] border-emerald-500/[0.25]" };
   if (type === "reward_unlocked")  return { label: "🎁 Recompensa desbloqueada", cls: "text-amber-400 bg-amber-500/[0.08] border-amber-500/[0.25]" };
-  if (type === "reward_redeemed")  return { label: "✅ Recompensa canjeada", cls: "text-blue-400 bg-blue-500/[0.08] border-blue-500/[0.25]" };
+  if (type === "reward_redeemed")  return { label: "✅ Recompensa canjeada", cls: "text-emerald-400 bg-emerald-500/[0.08] border-emerald-500/[0.25]" };
   if (delta < 0)                   return { label: "-1 sello", cls: "text-red-400 bg-red-500/[0.08] border-red-500/[0.25]" };
   return { label: "+1 manual", cls: "text-white/35 bg-white/[0.04] border-white/[0.08]" };
 }
@@ -119,7 +119,7 @@ function StatCard({
     default: { icon: "text-white/35", value: "text-white" },
     gold:    { icon: "text-[#D4AF37]", value: "text-[#D4AF37]" },
     green:   { icon: "text-emerald-400", value: "text-emerald-400" },
-    blue:    { icon: "text-blue-400",  value: "text-blue-400"  },
+    blue:    { icon: "text-violet-400",  value: "text-violet-400"  },
     amber:   { icon: "text-amber-400", value: "text-amber-400" },
     purple:  { icon: "text-violet-400", value: "text-violet-400" },
   }[tone];
@@ -623,7 +623,7 @@ export function FidelizacionClient({
                       const cls = {
                         gold:  "border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15",
                         green: "border-emerald-500/[0.25] bg-emerald-500/[0.08] text-emerald-400 hover:bg-emerald-500/[0.15]",
-                        blue:  "border-blue-500/[0.25] bg-blue-500/[0.08] text-blue-400 hover:bg-blue-500/[0.15]",
+                        blue:  "border-violet-500/[0.25] bg-violet-500/[0.08] text-violet-400 hover:bg-violet-500/[0.15]",
                         amber: "border-amber-500/[0.25] bg-amber-500/[0.08] text-amber-400 hover:bg-amber-500/[0.15]",
                       }[item.color as "gold"|"green"|"blue"|"amber"];
 

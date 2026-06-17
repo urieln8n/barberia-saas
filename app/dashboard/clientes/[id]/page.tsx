@@ -93,7 +93,7 @@ function getSegmentBadge(opts: {
   if (totalAppointments >= 10 || totalRevenue >= 200)
     return { label: "VIP",       cls: "border-[#D4AF37]/35 bg-[#D4AF37]/[0.10] text-[#D4AF37]",       Icon: Crown };
   if (totalAppointments === 0)
-    return { label: "Nuevo",     cls: "border-blue-500/25 bg-blue-500/[0.08] text-blue-400",           Icon: Star };
+    return { label: "Nuevo",     cls: "border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] text-[#D4AF37]",       Icon: Star };
   const days = daysSince(lastVisitAt);
   if (days !== null && days > 75)
     return { label: "Perdido",   cls: "border-red-500/25 bg-red-500/[0.08] text-red-400",              Icon: CalendarDays };
@@ -107,7 +107,7 @@ function getSegmentBadge(opts: {
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   scheduled: { label: "Pendiente",  cls: "border-amber-500/20 bg-amber-500/[0.08] text-amber-300" },
   confirmed:  { label: "Confirmada", cls: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300" },
-  completed:  { label: "Completada", cls: "border-blue-500/20 bg-blue-500/[0.08] text-blue-300" },
+  completed:  { label: "Completada", cls: "border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300" },
   cancelled:  { label: "Cancelada",  cls: "border-red-500/20 bg-red-500/[0.08] text-red-300" },
   no_show:    { label: "No show",    cls: "border-rose-500/20 bg-rose-500/[0.08] text-rose-300" },
 };

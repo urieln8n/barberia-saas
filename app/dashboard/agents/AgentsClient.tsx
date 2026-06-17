@@ -116,8 +116,8 @@ const AGENTS: Agent[] = [
     status: "active",
     plan: "growth",
     phase: "copilot",
-    accentColor: "text-blue-700",
-    accentBg: "bg-blue-50",
+    accentColor: "text-violet-400",
+    accentBg: "bg-violet-500/[0.12]",
     metrics: [
       { label: "Huecos detectados hoy", value: "—" },
       { label: "Ingreso potencial", value: "—" },
@@ -213,7 +213,7 @@ const STATUS_CONFIG: Record<AgentStatus, { label: string; dot: boolean; classNam
 
 const PLAN_CONFIG: Record<AgentPlan, { label: string; className: string }> = {
   starter: { label: "Starter",    className: "border-white/[0.08] bg-white/[0.04] text-white/50" },
-  growth:  { label: "Growth",     className: "border-blue-500/[0.25] bg-blue-500/[0.08] text-blue-400" },
+  growth:  { label: "Growth",     className: "border-amber-500/[0.25] bg-amber-500/[0.08] text-amber-400" },
   premium: { label: "Premium IA", className: "border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]" },
 };
 
@@ -495,9 +495,9 @@ export function AgentsClient({
     },
     !hasTodayAppts && hasBarbers && {
       icon: CalendarX2,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      border: "border-blue-100",
+      color: "text-violet-400",
+      bg: "bg-violet-500/[0.08]",
+      border: "border-violet-500/20",
       title: "Huecos libres detectados en tu agenda",
       body: "El Agente Huecos Libres genera el copy de Instagram Stories y WhatsApp en 10 segundos. Un post puede llenar tu tarde.",
       cta: "Ver Agente Huecos",

@@ -141,7 +141,7 @@ export default function RecuperacionPage() {
                 <p className="text-xs text-white/35">umbral sugerido</p>
               </div>
               <div className="rounded-[18px] border border-white/[0.06] bg-white/[0.04] p-4">
-                <MessageCircle size={16} className="text-blue-400" />
+                <MessageCircle size={16} className="text-emerald-400" />
                 <p className="mt-2 text-sm font-black text-white">WhatsApp</p>
                 <p className="text-xs text-white/35">canal inicial</p>
               </div>
@@ -222,8 +222,8 @@ export default function RecuperacionPage() {
       <section className="rounded-[18px] border border-white/[0.08] bg-white/[0.03] p-5 md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-3">
-            <div className="metric-icon bg-blue-500/10">
-              <Sparkles size={16} className="text-blue-400" />
+            <div className="metric-icon bg-white/[0.06]">
+              <Sparkles size={16} className="text-white/50" />
             </div>
             <div>
               <p className="font-black text-white">Automatización futura</p>
