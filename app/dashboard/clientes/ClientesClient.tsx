@@ -287,16 +287,63 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
         </div>
       </div>
 
+      {/* ── Distribución visual de segmentos ── */}
+      {activeFilter === "all" && clients.length > 0 && (
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3">
+          <div className="flex h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+            {counts.vip     > 0 && <div className="bg-[#D4AF37]"     style={{ width: `${(counts.vip     / clients.length * 100).toFixed(1)}%` }} />}
+            {counts.activo  > 0 && <div className="bg-emerald-500/80" style={{ width: `${(counts.activo  / clients.length * 100).toFixed(1)}%` }} />}
+            {counts.nuevo   > 0 && <div className="bg-violet-500/80"  style={{ width: `${(counts.nuevo   / clients.length * 100).toFixed(1)}%` }} />}
+            {counts.riesgo  > 0 && <div className="bg-amber-500/80"   style={{ width: `${(counts.riesgo  / clients.length * 100).toFixed(1)}%` }} />}
+            {counts.perdido > 0 && <div className="bg-red-500/70"     style={{ width: `${(counts.perdido / clients.length * 100).toFixed(1)}%` }} />}
+          </div>
+          <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
+            {counts.vip     > 0 && <span className="flex items-center gap-1.5 text-[10px] text-white/45"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4AF37]" />VIP · {counts.vip}</span>}
+            {counts.activo  > 0 && <span className="flex items-center gap-1.5 text-[10px] text-white/45"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />Activos · {counts.activo}</span>}
+            {counts.nuevo   > 0 && <span className="flex items-center gap-1.5 text-[10px] text-white/45"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />Nuevos · {counts.nuevo}</span>}
+            {counts.riesgo  > 0 && <span className="flex items-center gap-1.5 text-[10px] text-white/45"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />En riesgo · {counts.riesgo}</span>}
+            {counts.perdido > 0 && <span className="flex items-center gap-1.5 text-[10px] text-white/45"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />Perdidos · {counts.perdido}</span>}
+          </div>
+        </div>
+      )}
+
       {/* ── Lista de clientes ── */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/[0.10] bg-white/[0.02] py-12 text-center">
-          <Users size={28} className="mx-auto text-white/15" />
-          <p className="mt-3 font-black text-white/60">
-            {search ? `Sin resultados para "${search}"` : "Sin clientes en este segmento"}
+        <div className="rounded-2xl border border-dashed border-white/[0.10] bg-white/[0.02] py-16 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+            <Users size={24} className="text-white/20" />
+          </div>
+          <p className="mt-5 text-base font-black text-white/50">
+            {search
+              ? `Sin resultados para "${search}"`
+              : activeFilter === "all"
+                ? "Todavía no hay clientes"
+                : `Sin clientes en este segmento`}
           </p>
-          <p className="mt-1 text-sm text-white/30">
-            {search ? "Prueba con otro término." : "Cambia el filtro o añade clientes."}
+          <p className="mt-2 text-sm text-white/25 max-w-xs mx-auto">
+            {search
+              ? "Prueba con otro nombre, teléfono o email"
+              : activeFilter === "all"
+                ? "Los clientes aparecen aquí cuando creas reservas o los añades manualmente"
+                : "Cambia el filtro o revisa otro segmento"}
           </p>
+          {!search && activeFilter === "all" && (
+            <a
+              href="/dashboard/agenda"
+              className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-5 py-2.5 text-sm font-black text-[#0D0D0F] transition hover:bg-[#C9A832]"
+            >
+              <CalendarDays size={15} /> Crear primera reserva
+            </a>
+          )}
+          {!search && activeFilter !== "all" && (
+            <button
+              type="button"
+              onClick={() => setFilter("all")}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-2 text-xs font-black text-white/50 transition hover:border-white/20 hover:text-white/70"
+            >
+              Ver todos los segmentos
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -417,6 +464,14 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                           </span>
                           {seg === "vip" && <Crown size={12} className="text-[#D4AF37]" />}
                         </div>
+                        {c.totalAppointments > 0 && (
+                          <div className="mt-1.5 h-1 w-16 overflow-hidden rounded-full bg-white/[0.06]">
+                            <div
+                              className={`h-full rounded-full ${seg === "vip" ? "bg-[#D4AF37]" : "bg-white/30"}`}
+                              style={{ width: `${Math.min(100, (c.totalAppointments / 20) * 100)}%` }}
+                            />
+                          </div>
+                        )}
                       </td>
 
                       {/* Gastado */}

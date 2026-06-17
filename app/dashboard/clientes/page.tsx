@@ -376,18 +376,18 @@ export default async function ClientesPage() {
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0E0E1C]">
-        <div className="grid grid-cols-2 divide-white/[0.06] lg:grid-cols-4 [&>*]:border-b [&>*]:border-white/[0.06] lg:[&>*]:border-b-0 [&>*:not(:last-child)]:border-r [&>*]:border-white/[0.06]">
-          <div className="px-5 py-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
+          <div className="border-b border-r border-white/[0.06] px-5 py-4 lg:border-b-0">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Retención</p>
             <p className="mt-2 text-3xl font-black tabular-nums text-white">{retentionRate}<span className="text-lg text-white/40">%</span></p>
             <p className="mt-1 text-xs text-white/40">clientes que repiten</p>
           </div>
-          <div className="px-5 py-4">
+          <div className="border-b border-white/[0.06] px-5 py-4 lg:border-b-0 lg:border-r">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Revenue CRM</p>
             <p className="mt-2 text-3xl font-black tabular-nums text-[#D4AF37]">€{totalCrmRevenue}</p>
             <p className="mt-1 text-xs text-white/40">generado en total</p>
           </div>
-          <div className="px-5 py-4">
+          <div className="border-r border-white/[0.06] px-5 py-4">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Ticket medio</p>
             <p className="mt-2 text-3xl font-black tabular-nums text-white">€{avgTicket}</p>
             <p className="mt-1 text-xs text-white/40">por cliente con visitas</p>
