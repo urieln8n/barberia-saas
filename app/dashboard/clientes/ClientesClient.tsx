@@ -341,7 +341,10 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                       {/* Cliente */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black ${avatarColor(c.name)}`}>
+                          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black ${avatarColor(c.name)} ${
+                            seg === 'vip'     ? 'ring-1 ring-[#D4AF37]/40' :
+                            seg === 'perdido' ? 'ring-1 ring-red-500/30'   : ''
+                          }`}>
                             {c.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0">
@@ -453,9 +456,16 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
               </tbody>
             </table>
             <div className="border-t border-white/[0.06] bg-white/[0.03] px-5 py-3">
-              <p className="text-xs text-white/30">
-                {filtered.length} cliente{filtered.length !== 1 ? "s" : ""} en este segmento
-              </p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-white/30">
+                  {filtered.length} cliente{filtered.length !== 1 ? "s" : ""} · {filtered.reduce((s, c) => s + c.totalRevenue, 0)} EUR facturados
+                </p>
+                {filtered.filter(c => c.totalRevenue > 0).length > 0 && (
+                  <p className="text-xs text-white/20">
+                    Promedio: {Math.round(filtered.reduce((s, c) => s + c.totalRevenue, 0) / filtered.filter(c => c.totalRevenue > 0).length)} EUR/cliente
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -482,6 +492,9 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                       </div>
                       {c.phone && (
                         <p className="mt-0.5 text-xs text-white/40">{c.phone}</p>
+                      )}
+                      {c.lastServiceName && (
+                        <p className="mt-0.5 text-xs text-white/30">{c.lastServiceName}</p>
                       )}
                     </div>
                     <div className="shrink-0 text-right">
@@ -521,6 +534,18 @@ export function ClientesClient({ clients, barbershopId: _barbershopId, bookingUr
                       )}
                     </div>
                   </div>
+
+                  {nv && (nv === 'Vencida' || nv.startsWith('En ')) && (
+                    <div className={`mt-2 col-span-2 rounded-xl px-3 py-2 ${
+                      nv === 'Vencida'
+                        ? 'bg-red-500/[0.08] border border-red-500/15'
+                        : 'bg-[#D4AF37]/[0.06] border border-[#D4AF37]/15'
+                    }`}>
+                      <p className={`text-xs font-black ${nv === 'Vencida' ? 'text-red-400' : 'text-[#D4AF37]'}`}>
+                        {nv === 'Vencida' ? '⚠ Próxima visita vencida' : `Próxima visita: ${nv}`}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="mt-3 flex gap-2">
                     <Link

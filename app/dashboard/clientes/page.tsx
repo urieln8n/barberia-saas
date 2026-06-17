@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/src/lib/supabase/server";
 import { getCurrentBarbershopId } from "@/src/lib/barbershop/get-current";
-import { Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
+import { AlertTriangle, ChevronDown, Crown, Mail, Phone, StickyNote, UserPlus, Users, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { ClientesClient } from "./ClientesClient";
@@ -324,15 +324,6 @@ export default async function ClientesPage() {
     return days >= 45;
   }).length;
   const vipClients = clients.filter((client) => client.totalAppointments >= 8).length;
-  const withoutNextAppointment = clients.filter((client) => {
-    const hasFuture = appointments.some(
-      (appointment) =>
-        (appointment.client_id ?? firstRelation(appointment.clients)?.id) === client.id &&
-        appointment.appointment_date >= today &&
-        !["cancelled", "completed", "no_show"].includes(appointment.status ?? "")
-    );
-    return !hasFuture;
-  }).length;
   const errorMessage =
     clientsResult.error?.message ??
     appointmentsResult.error?.message ??
@@ -360,119 +351,68 @@ export default async function ClientesPage() {
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total clientes" value={clients.length} description="En tu base de datos" icon={Users} />
-        <StatCard label="Con teléfono" value={clientsWithPhone} description="Puedes contactarlos" icon={Phone} />
-        <StatCard label="Nuevos este mes" value={newClientsThisMonth} description="Registrados este mes" icon={UserPlus} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
-        <StatCard label="Frecuentes" value={recurringClients} description="Más de una visita" icon={TrendingUp} iconBg="bg-amber-50" iconColor="text-amber-700" />
+        <StatCard label="Frecuentes" value={recurringClients} description="Más de una visita" icon={TrendingUp} iconBg="bg-[#D4AF37]/10" iconColor="text-[#D4AF37]" />
+        <StatCard label="Nuevos este mes" value={newClientsThisMonth} description="Registrados este mes" icon={UserPlus} iconBg="bg-emerald-500/[0.10]" iconColor="text-emerald-400" />
+        <StatCard label="Clientes VIP" value={vipClients} description="Top 20% por visitas" icon={Crown} iconBg="bg-[#D4AF37]/10" iconColor="text-[#D4AF37]" />
       </section>
 
-      <section
-        className="rounded-2xl border border-white/[0.10] bg-[#0E0E1C] p-5"
-        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.5)" }}
-      >
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="label-section">Filtros CRM</p>
-            <h2 className="section-heading mt-1">Segmentos listos para actuar</h2>
-            <p className="section-subtext">Usa estos segmentos como lectura operativa. La persistencia avanzada de etiquetas queda preparada para una siguiente iteracion.</p>
-          </div>
-          <Link href="/dashboard/marketing" className="btn-outline">
-            Crear promoción
-          </Link>
-        </div>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {[
-            ["Todos", clients.length],
-            ["Nuevos", newClientsThisMonth],
-            ["Frecuentes", recurringClients],
-            ["Perdidos", lostClients],
-            ["Reactivados", 0],
-            ["VIP", vipClients],
-            ["Sin próxima cita", withoutNextAppointment],
-          ].map(([label, value]) => (
-            <span key={String(label)} className="rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-2 text-xs font-black text-white/70">
-              {label} · {value}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
-        <div id="crear-cliente" className="panel overflow-hidden p-0">
-          <div className="border-b border-white/[0.07] bg-[linear-gradient(180deg,rgba(109,40,217,0.08),transparent)] px-5 py-5 md:px-6">
-            <p className="label-section">Clientes</p>
-            <h2 className="mt-2 text-xl font-black text-white/90">
-              Crear cliente manual
-            </h2>
-            <p className="mt-1.5 max-w-xl text-sm text-white/50">
-              Añade clientes que todavía no han reservado online con una ficha
-              limpia y lista para usar en agenda.
+      {lostClients > 0 && (
+        <section className="flex flex-col gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] px-5 py-4 sm:flex-row sm:items-center">
+          <AlertTriangle size={16} className="shrink-0 text-amber-400" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-black text-amber-300">
+              {lostClients} clientes perdidos · actívalos con una campaña
             </p>
+            <p className="mt-0.5 text-xs text-amber-400/60">Sin visita en más de 45 días</p>
           </div>
+          <Link href="/dashboard/marketing" className="shrink-0 rounded-xl border border-amber-500/25 bg-amber-500/[0.10] px-4 py-2 text-xs font-black text-amber-300 hover:bg-amber-500/20 transition">
+            Crear campaña →
+          </Link>
+        </section>
+      )}
 
-          <form action={createClientAction} className="space-y-5 px-5 py-5 md:px-6">
-            <div>
-              <label className="form-label">
-                Nombre *
-              </label>
-              <input
-                name="name"
-                required
-                placeholder="Ej: Carlos Pérez"
-                className="input py-3"
-              />
-            </div>
-
-            <div className="form-grid">
-              <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <Phone size={13} /> Teléfono
-                </label>
-                <input
-                  name="phone"
-                  placeholder="Ej: 600123123"
-                  className="input py-3"
-                />
+      <section className="space-y-4">
+        {/* Formulario colapsable */}
+        <details className="group overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+          <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 select-none">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#D4AF37]/10">
+                <UserPlus size={16} className="text-[#D4AF37]" />
               </div>
-
               <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <Mail size={13} /> Email
-                </label>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="cliente@email.com"
-                  className="input py-3"
-                />
+                <p className="font-black text-white/85">Añadir cliente manual</p>
+                <p className="text-xs text-white/40">Clientes que no reservan online</p>
               </div>
             </div>
+            <ChevronDown size={16} className="text-white/30 transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="border-t border-white/[0.06] px-5 pb-5 pt-4">
+            <form action={createClientAction} className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="form-label">Nombre *</label>
+                <input name="name" required placeholder="Ej: Carlos Pérez" className="input py-3" />
+              </div>
+              <div>
+                <label className="form-label flex items-center gap-1.5"><Phone size={13} /> Teléfono</label>
+                <input name="phone" placeholder="600123123" className="input py-3" />
+              </div>
+              <div>
+                <label className="form-label flex items-center gap-1.5"><Mail size={13} /> Email</label>
+                <input name="email" type="email" placeholder="cliente@email.com" className="input py-3" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="form-label flex items-center gap-1.5"><StickyNote size={13} /> Notas</label>
+                <textarea name="notes" rows={2} placeholder="Ej: Le gusta degradado bajo." className="input resize-none py-3" />
+              </div>
+              <div className="sm:col-span-2">
+                <button type="submit" className="btn-primary w-full sm:w-auto">Guardar cliente</button>
+              </div>
+            </form>
+          </div>
+        </details>
 
-            <div>
-              <label className="form-label flex items-center gap-1.5">
-                <StickyNote size={13} /> Notas
-              </label>
-              <textarea
-                name="notes"
-                rows={4}
-                placeholder="Ej: Le gusta degradado bajo y barba marcada."
-                className="input resize-none py-3"
-              />
-            </div>
-
-            <div className="flex flex-col gap-3 border-t border-white/[0.07] pt-5 sm:flex-row">
-              <button
-                type="submit"
-                className="btn-primary flex-1"
-              >
-                Guardar cliente
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className="min-w-0">
-          <ClientesClient clients={clients} barbershopId={barbershopId} />
-        </div>
+        {/* Lista de clientes */}
+        <ClientesClient clients={clients} barbershopId={barbershopId} />
       </section>
     </div>
   );

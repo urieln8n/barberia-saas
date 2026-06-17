@@ -35,7 +35,7 @@ export function RetentionActions({
           href={bookingUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[#D9B766]/40 bg-[#FFFBEB] px-3 py-2 text-xs font-bold text-[#8A641F] transition hover:bg-[#FEF3C7]"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.10] px-3 py-2 text-xs font-bold text-[#D4AF37] transition hover:bg-[#D4AF37]/[0.18]"
         >
           <CalendarPlus size={14} />
           Reservar de nuevo
@@ -44,7 +44,7 @@ export function RetentionActions({
       <button
         type="button"
         onClick={copyMessage}
-        className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-neutral-200 px-3 py-2 text-xs font-bold text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-950"
+        className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/[0.10] px-3 py-2 text-xs font-bold text-white/50 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white/80"
       >
         <Copy size={14} />
         {copied ? "Mensaje copiado" : "Copiar mensaje para volver"}
