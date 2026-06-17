@@ -46,7 +46,7 @@ const SEGMENT_CONFIG: Record<
 > = {
   vip:     { label: "VIP",       badgeCls: "border-[#D4AF37]/35 bg-[#D4AF37]/[0.10] text-[#D4AF37]",       icon: Crown },
   activo:  { label: "Activo",    badgeCls: "border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-400",  icon: TrendingUp },
-  nuevo:   { label: "Nuevo",     badgeCls: "border-blue-500/25 bg-blue-500/[0.08] text-blue-400",           icon: Zap },
+  nuevo:   { label: "Nuevo",     badgeCls: "border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] text-[#D4AF37]",       icon: Zap },
   riesgo:  { label: "En Riesgo", badgeCls: "border-amber-500/25 bg-amber-500/[0.08] text-amber-400",        icon: AlertTriangle },
   perdido: { label: "Perdido",   badgeCls: "border-red-500/25 bg-red-500/[0.08] text-red-400",              icon: RotateCcw },
 };

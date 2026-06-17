@@ -35,13 +35,13 @@ const VARIANT_STYLES: Record<
   },
   blue: {
     wrapper:
-      "border-blue-500/25 bg-[#0A0C14]",
-    iconWrapper: "border-blue-500/30 bg-blue-500/[0.15]",
-    iconColor: "text-blue-400",
+      "border-[#7C3AED]/25 bg-[#0A0C14]",
+    iconWrapper: "border-[#7C3AED]/30 bg-[#7C3AED]/[0.15]",
+    iconColor: "text-[#A78BFA]",
     titleColor: "text-white",
     descColor: "text-white/55",
     ctaClass:
-      "bg-blue-600 text-white hover:bg-blue-500",
+      "bg-[#7C3AED] text-white hover:bg-[#6D28D9]",
   },
   green: {
     wrapper:

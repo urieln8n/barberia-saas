@@ -83,18 +83,18 @@ export default function WhatsAppAssistantPage() {
 
       <div className="grid gap-4 md:grid-cols-4">
         <StatCard label="Mensajes respondidos" value="186" description="estimación mensual" icon={MessageCircle} />
-        <StatCard label="Reservas generadas" value="42" description="desde conversaciones" icon={CalendarCheck} iconBg="bg-emerald-50" iconColor="text-emerald-700" />
-        <StatCard label="Tiempo ahorrado" value="9h" description="en respuestas repetidas" icon={Clock3} iconBg="bg-amber-50" iconColor="text-amber-700" />
+        <StatCard label="Reservas generadas" value="42" description="desde conversaciones" icon={CalendarCheck} iconBg="bg-emerald-500/[0.10]" iconColor="text-emerald-400" />
+        <StatCard label="Tiempo ahorrado" value="9h" description="en respuestas repetidas" icon={Clock3} iconBg="bg-amber-500/[0.10]" iconColor="text-amber-400" />
         <StatCard label="Clientes recuperados" value="14" description="con mensajes directos" icon={RotateCcw} iconBg="bg-[#C89B3C]/10" iconColor="text-[#8A641F]" />
       </div>
 
       <section className="section-band overflow-hidden">
-        <div className="h-px w-full bg-gradient-to-r from-[#C89B3C]/20 via-[#C89B3C] to-[#2563EB]/70" />
+        <div className="h-px w-full bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37] to-[#D4AF37]/20" />
         <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="p-5 md:p-7">
             <div className="flex items-center gap-3">
-              <div className="metric-icon bg-emerald-50">
-                <Bot size={17} className="text-emerald-700" />
+              <div className="metric-icon bg-emerald-500/[0.10]">
+                <Bot size={17} className="text-emerald-400" />
               </div>
               <div>
                 <p className="label-section">Estado del asistente</p>

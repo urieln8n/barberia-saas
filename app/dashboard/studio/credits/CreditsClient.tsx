@@ -18,11 +18,11 @@ type Props = { wallet: Wallet; history: Transaction[] };
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  monthly_grant:    { label: "Créditos mensuales",  color: "text-emerald-700 bg-emerald-50"  },
-  purchase:         { label: "Compra",               color: "text-blue-700 bg-blue-50"        },
-  usage:            { label: "Usado",                color: "text-slate-700 bg-slate-100"     },
-  refund:           { label: "Devuelto",             color: "text-amber-700 bg-amber-50"      },
-  admin_adjustment: { label: "Ajuste",               color: "text-violet-700 bg-violet-50"    },
+  monthly_grant:    { label: "Créditos mensuales",  color: "text-emerald-400 bg-emerald-500/[0.08]"  },
+  purchase:         { label: "Compra",               color: "text-violet-400 bg-violet-500/[0.08]"    },
+  usage:            { label: "Usado",                color: "text-white/50 bg-white/[0.06]"           },
+  refund:           { label: "Devuelto",             color: "text-amber-400 bg-amber-500/[0.08]"      },
+  admin_adjustment: { label: "Ajuste",               color: "text-violet-400 bg-violet-500/[0.08]"    },
 };
 
 function formatDate(iso: string) {

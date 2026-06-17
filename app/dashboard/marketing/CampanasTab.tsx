@@ -318,7 +318,7 @@ function saveCampanas(list: Campana[]) {
 const tipoBadge: Record<TipoCampana, { label: string; cls: string }> = {
   descuento:    { label: "Descuento",    cls: "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/25"     },
   reactivacion: { label: "Reactivación", cls: "bg-purple-500/[0.08] text-purple-400 border-purple-500/20" },
-  evento:       { label: "Evento",       cls: "bg-blue-500/[0.08] text-blue-400 border-blue-500/20"       },
+  evento:       { label: "Evento",       cls: "bg-violet-500/[0.08] text-violet-400 border-violet-500/20" },
   temporada:    { label: "Temporada",    cls: "bg-emerald-500/[0.08] text-emerald-400 border-emerald-500/20" },
 };
 

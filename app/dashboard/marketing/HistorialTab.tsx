@@ -195,12 +195,12 @@ export function HistorialTab({ historyVersion }: { historyVersion: number }) {
                     <span
                       className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border ${
                         isTemplate
-                          ? "border-blue-500/20 bg-blue-500/[0.08]"
+                          ? "border-white/[0.12] bg-white/[0.06]"
                           : "border-[#D4AF37]/25 bg-[#D4AF37]/10"
                       }`}
                     >
                       {isTemplate ? (
-                        <FileText size={12} className="text-blue-400" />
+                        <FileText size={12} className="text-white/50" />
                       ) : (
                         <Megaphone size={12} className="text-[#D4AF37]" />
                       )}
@@ -213,7 +213,7 @@ export function HistorialTab({ historyVersion }: { historyVersion: number }) {
                         <span
                           className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
                             isTemplate
-                              ? "bg-blue-500/[0.08] text-blue-400"
+                              ? "bg-blue-500/[0.08] text-white/50"
                               : "bg-[#D4AF37]/10 text-[#D4AF37]"
                           }`}
                         >

@@ -75,7 +75,7 @@ const METHOD_LABEL: Record<string, string> = {
 
 const METHOD_TONE: Record<string, string> = {
   cash: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-  card: "border-blue-500/30 bg-blue-500/10 text-blue-400",
+  card: "border-violet-500/30 bg-violet-500/10 text-violet-400",
   bizum: "border-amber-500/30 bg-amber-500/10 text-amber-400",
   transfer: "border-orange-500/30 bg-orange-500/10 text-orange-400",
   other: "border-white/[0.10] bg-white/[0.06] text-white/50",
@@ -138,12 +138,12 @@ function QuickAction({
       whileTap={{ scale: 0.98 }}
       className="quick-action-card flex min-h-[92px] items-start gap-3 text-left"
     >
-      <span className="metric-icon h-9 w-9 rounded-2xl bg-[#2563EB]/10">
-        <Icon size={16} className="text-[#2563EB]" />
+      <span className="metric-icon h-9 w-9 rounded-2xl bg-[#D4AF37]/10">
+        <Icon size={16} className="text-[#D4AF37]" />
       </span>
       <span className="min-w-0">
         <span className="block text-sm font-black text-white">{label}</span>
-        <span className="mt-0.5 block text-xs leading-5 text-slate-300">{description}</span>
+        <span className="mt-0.5 block text-xs leading-5 text-white/50">{description}</span>
       </span>
     </motion.a>
   );
@@ -954,11 +954,11 @@ export function CajaClient({
                     <tr>
                       <th className="table-header-cell">Hora</th>
                       <th className="table-header-cell">Cliente</th>
-                      <th className="table-header-cell">Barbero</th>
-                      <th className="table-header-cell">Servicio</th>
-                      <th className="table-header-cell">Método</th>
+                      <th className="table-header-cell hidden sm:table-cell">Barbero</th>
+                      <th className="table-header-cell hidden md:table-cell">Servicio</th>
+                      <th className="table-header-cell hidden sm:table-cell">Método</th>
                       <th className="table-header-cell text-right">Importe</th>
-                      <th className="table-header-cell text-right">Propina</th>
+                      <th className="table-header-cell hidden sm:table-cell text-right">Propina</th>
                       <th className="table-header-cell text-right">Total</th>
                     </tr>
                   </thead>
@@ -974,15 +974,15 @@ export function CajaClient({
                         <td className="table-cell font-semibold text-white/80">
                           {movement.clients?.name ?? "—"}
                         </td>
-                        <td className="table-cell">{movement.barbers?.name ?? "—"}</td>
-                        <td className="table-cell">{movement.services?.name ?? "—"}</td>
-                        <td className="table-cell">
+                        <td className="table-cell hidden sm:table-cell">{movement.barbers?.name ?? "—"}</td>
+                        <td className="table-cell hidden md:table-cell">{movement.services?.name ?? "—"}</td>
+                        <td className="table-cell hidden sm:table-cell">
                           <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${METHOD_TONE[movement.payment_method] ?? METHOD_TONE.other}`}>
                             {METHOD_LABEL[movement.payment_method] ?? movement.payment_method}
                           </span>
                         </td>
                         <td className="table-cell text-right">{formatCurrency(Number(movement.amount))}</td>
-                        <td className="table-cell text-right">{formatCurrency(Number(movement.tip_amount))}</td>
+                        <td className="table-cell hidden sm:table-cell text-right">{formatCurrency(Number(movement.tip_amount))}</td>
                         <td className="table-cell text-right font-black text-white/90">
                           {formatCurrency(movementTotal(movement))}
                         </td>

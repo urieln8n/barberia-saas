@@ -67,7 +67,7 @@ const STATUS_CONFIG: Record<
   },
   completed: {
     label: "Completada",
-    cls: "bg-blue-500/10 text-blue-300 border-blue-500/20",
+    cls: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
   },
   cancelled: {
     label: "Cancelada",

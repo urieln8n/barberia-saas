@@ -374,7 +374,7 @@ export function StudioClient({
           <div className="space-y-4">
             <p className="text-sm font-black text-white/80">¿Qué resultado necesitas hoy?</p>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {CAMPAIGNS.map((c) => (
                 <button
                   key={c.type}
@@ -422,7 +422,7 @@ export function StudioClient({
             {/* Platform */}
             <div>
               <p className="mb-2 text-xs font-black text-white/80">¿Dónde vas a publicarlo?</p>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {PLATFORMS.map((p) => (
                   <button
                     key={p.id}
@@ -485,7 +485,7 @@ export function StudioClient({
             {/* Style */}
             <div>
               <p className="mb-2 text-xs font-black text-white/80">Estilo visual</p>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                 {STYLES.map((s) => (
                   <button
                     key={s.id}

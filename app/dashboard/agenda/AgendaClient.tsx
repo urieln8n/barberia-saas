@@ -436,7 +436,7 @@ export function AgendaClient({
                 { label: "Sem. €",     value: money(visibleMetrics.estimatedRevenue), color: "text-[#D4AF37]" },
                 { label: "Libres",     value: visibleMetrics.freeSlots,            color: "text-emerald-400" },
                 { label: "Pend.",      value: visibleMetrics.pendingAppointments,  color: visibleMetrics.pendingAppointments > 0 ? "text-amber-400" : "text-white/40" },
-                { label: "Nuevos",     value: visibleMetrics.newClients,           color: "text-blue-400" },
+                { label: "Nuevos",     value: visibleMetrics.newClients,           color: "text-[#D4AF37]" },
                 { label: "Próxima",    value: nextApptLabel,                       color: "text-white/70" },
               ].map(({ label, value, color }) => (
                 <div key={label} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.05] px-2.5 py-1.5">

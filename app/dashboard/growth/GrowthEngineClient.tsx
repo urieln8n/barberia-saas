@@ -432,7 +432,7 @@ export function GrowthEngineClient({
         </div>
       </section>
 
-      <div role="tablist" className="flex gap-0 overflow-x-auto border-b border-slate-200">
+      <div role="tablist" className="flex gap-0 overflow-x-auto border-b border-white/[0.08]">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -446,11 +446,11 @@ export function GrowthEngineClient({
               onClick={() => setActiveTab(tab.id)}
               className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold transition-colors ${
                 active
-                  ? "border-[#C9922A] text-[#080A0F]"
-                  : "border-transparent text-slate-500 hover:text-slate-900"
+                  ? "border-[#D4AF37] text-white"
+                  : "border-transparent text-white/40 hover:text-white/70"
               }`}
             >
-              <Icon size={16} className={active ? "text-[#C9922A]" : "text-slate-500"} />
+              <Icon size={16} className={active ? "text-[#D4AF37]" : "text-white/40"} />
               {tab.label}
             </button>
           );
@@ -461,9 +461,9 @@ export function GrowthEngineClient({
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map(([label, value, Icon]) => (
             <div key={String(label)} className="metric-card">
-              <Icon size={18} className="text-[#C9922A]" />
-              <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-slate-500">{label}</p>
-              <p className="mt-1 text-3xl font-black text-[#080A0F]">{value}</p>
+              <Icon size={18} className="text-[#D4AF37]" />
+              <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-white/50">{label}</p>
+              <p className="mt-1 text-3xl font-black text-white">{value}</p>
             </div>
           ))}
         </section>
@@ -541,11 +541,11 @@ export function GrowthEngineClient({
           {keywords.map((item) => (
             <article key={item.keyword} className="panel">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-black text-[#080A0F]">{item.keyword}</span>
+                <span className="text-2xl font-black text-white">{item.keyword}</span>
                 <span className={item.priority === "alta" ? "badge-success" : "badge-warning"}>{item.priority}</span>
               </div>
-              <p className="mt-4 text-sm font-bold text-slate-700">{item.publicReply}</p>
-              <p className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">{personalize(item.privateMessage)}</p>
+              <p className="mt-4 text-sm font-bold text-white/70">{item.publicReply}</p>
+              <p className="mt-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm leading-6 text-white/60">{personalize(item.privateMessage)}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="badge-neutral">{item.destinationUrl}</span>
                 <span className="badge-teal">{item.leadTag}</span>
@@ -558,7 +558,7 @@ export function GrowthEngineClient({
       {activeTab === "plantillas" && (
         <section className="space-y-4">
           <div className="panel">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Variables soportadas</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-white/50">Variables soportadas</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {variables.map((variable) => <span key={variable} className="badge-neutral font-mono">{variable}</span>)}
             </div>
@@ -573,7 +573,7 @@ export function GrowthEngineClient({
                   </div>
                   <span className="badge-gold">{template.channel}</span>
                 </div>
-                <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">{personalize(template.body)}</p>
+                <p className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm leading-6 text-white/70">{personalize(template.body)}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <button className="btn-dark" onClick={() => copyText(template.name, template.body)}>Copiar plantilla</button>
                   <button className="btn-outline" onClick={() => copyText("Version personalizada", `${personalize(template.body)}\n\nPD: lo adapto a ${barbershopName ?? "tu barberia"} en 2 minutos.`)}>
@@ -600,7 +600,7 @@ export function GrowthEngineClient({
                   </div>
                   <span className="badge-teal">{prompt.category}</span>
                 </div>
-                <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">{prompt.prompt}</p>
+                <p className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm leading-6 text-white/70">{prompt.prompt}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <button className="btn-dark" onClick={() => copyText(prompt.title, prompt.prompt)}>Copiar prompt</button>
                   <button className="btn-outline" onClick={() => copyText("CTA", prompt.cta)}>Copiar CTA</button>
@@ -627,7 +627,7 @@ export function GrowthEngineClient({
               </div>
               <h2 className="mt-4 section-heading">{idea.title}</h2>
               <p className="mt-2 text-sm font-bold text-[#C9922A]">{idea.hook}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{idea.script}</p>
+              <p className="mt-2 text-sm leading-6 text-white/60">{idea.script}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="badge-teal">{idea.cta}</span>
                 <span className="badge-neutral">{idea.keyword}</span>
@@ -668,9 +668,9 @@ export function GrowthEngineClient({
               ["Estado del modulo", "Fase 1 manual preparada"],
               ["Plan requerido", "Pro para manual, Growth para CRM avanzado, Premium para ADS"],
             ].map(([label, value]) => (
-              <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">{label}</p>
-                <p className="mt-1 break-words text-sm font-bold text-[#080A0F]">{value}</p>
+              <div key={label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-white/40">{label}</p>
+                <p className="mt-1 break-words text-sm font-bold text-white">{value}</p>
               </div>
             ))}
           </div>

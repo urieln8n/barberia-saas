@@ -36,11 +36,11 @@ const METHOD_LABEL: Record<string, string> = {
 };
 
 const METHOD_COLOR: Record<string, string> = {
-  cash:     "bg-green-50 text-green-700 border-green-100",
-  card:     "bg-blue-50 text-blue-700 border-blue-100",
-  bizum:    "bg-amber-50 text-amber-700 border-amber-100",
-  transfer: "bg-orange-50 text-orange-700 border-orange-100",
-  other:    "bg-neutral-100 text-neutral-600 border-neutral-200",
+  cash:     "bg-emerald-500/[0.08] text-emerald-400 border-emerald-500/20",
+  card:     "bg-violet-500/[0.08] text-violet-400 border-violet-500/20",
+  bizum:    "bg-amber-500/[0.08] text-amber-400 border-amber-500/20",
+  transfer: "bg-orange-500/[0.08] text-orange-400 border-orange-500/20",
+  other:    "bg-white/[0.04] text-white/50 border-white/[0.10]",
 };
 
 export function PagosClient({ payments, clients, barbershopId }: Props) {
@@ -171,19 +171,19 @@ export function PagosClient({ payments, clients, barbershopId }: Props) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-[#FAF8F4] shadow-2xl">
-            <div className="h-px w-full bg-gradient-to-r from-[#2F6FEB]/60 via-[#2F6FEB] to-[#2F6FEB]/60" />
+          <div className="w-full max-w-md rounded-2xl bg-[#0E0E1C] shadow-2xl">
+            <div className="h-px w-full bg-gradient-to-r from-[#D4AF37]/40 via-[#D4AF37] to-[#D4AF37]/40" />
             <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2F6FEB]">Pagos</p>
-                  <h2 className="mt-0.5 text-xl font-black text-[#111827]">Registrar pago</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Pagos</p>
+                  <h2 className="mt-0.5 text-xl font-black text-white">Registrar pago</h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
                   aria-label="Cerrar"
-                  className="rounded-xl p-2 transition-colors hover:bg-[#F8FAFC]"
+                  className="rounded-xl p-2 text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
                 >
                   <X size={18} />
                 </button>

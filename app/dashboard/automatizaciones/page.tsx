@@ -180,10 +180,10 @@ export default async function AutomatizacionesPage() {
           ["WhatsApp", rules.filter((rule) => rule.channel === "whatsapp").length, MessageCircle],
           ["Sin worker real", 0, Clock3],
         ] satisfies [string, number, LucideIcon][]).map(([label, value, Icon]) => (
-          <div key={String(label)} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
-            <Icon size={18} className="text-[#C9922A]" />
-            <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-neutral-500">{label}</p>
-            <p className="mt-1 text-3xl font-black text-[#080A0F]">{value}</p>
+          <div key={String(label)} className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
+            <Icon size={18} className="text-[#D4AF37]" />
+            <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-white/50">{label}</p>
+            <p className="mt-1 text-3xl font-black text-white">{value}</p>
           </div>
         ))}
       </section>
@@ -206,15 +206,15 @@ export default async function AutomatizacionesPage() {
             .replaceAll("{{link_resena}}", "tu enlace de Google");
 
           return (
-            <article key={rule.type} className="rounded-2xl border border-[#E7E2D8] bg-white p-5 shadow-sm">
+            <article key={rule.type} className="rounded-2xl border border-white/[0.08] bg-[#0E0E1C] p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/12 text-[#8A641F]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.08] text-[#D4AF37]">
                     <Icon size={18} />
                   </div>
                   <div>
-                    <h2 className="font-black text-[#111827]">{rule.name}</h2>
-                    <p className="mt-1 text-sm leading-6 text-neutral-500">{rule.description}</p>
+                    <h2 className="font-black text-white">{rule.name}</h2>
+                    <p className="mt-1 text-sm leading-6 text-white/50">{rule.description}</p>
                   </div>
                 </div>
                 <span className={rule.is_active ? "badge-success" : "badge-warning"}>
@@ -229,12 +229,12 @@ export default async function AutomatizacionesPage() {
                   <label className="form-label">Plantilla editable</label>
                   <textarea name="template" rows={3} defaultValue={rule.template ?? ""} className="input resize-none py-3" />
                 </div>
-                <div className="rounded-2xl border border-[#E7E2D8] bg-[#FDFBF7] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-neutral-500">Vista previa segura</p>
-                  <p className="mt-2 text-sm font-semibold leading-6 text-neutral-700">{preview || "Sin plantilla configurada."}</p>
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-white/40">Vista previa segura</p>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-white/70">{preview || "Sin plantilla configurada."}</p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs font-semibold text-neutral-500">
+                  <p className="text-xs font-semibold text-white/40">
                     Ultima ejecucion: {rule.last_run_at ? new Date(rule.last_run_at).toLocaleString("es-ES") : "Nunca"}
                   </p>
                   <button type="submit" className={rule.is_active ? "btn-outline" : "btn-dark"}>
